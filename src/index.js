@@ -2,13 +2,15 @@ import './style.css'
 import './socket/index'
 import Phaser from 'phaser';
 import 'normalize.css'
-import cardsUrl from './config/cardsUrl.json'
+import elementsUrl from './config/elementsUrl.json'
 import gameConfig from './config/gameConfig.json'
 import {socket} from "./socket";
+import {Card} from "./class/Card";
+import {MyPlayer} from "./class/MyPlayer";
 
 const eventBus = {
-    init: false,
-    refreshStatus: false,
+    needInit: false,
+    needRefreshStatus: false,
     gameStatus: null
 };
 
@@ -19,44 +21,28 @@ $(document).click(() => {
 
 // 监听
 socket.on('init', (data) => {
-    eventBus.init = true;
+    eventBus.needInit = true;
     eventBus.gameStatus = data;
 });
 
-class Card {
-    constructor(gamingScene, initX, initY, cardName) {
-        this.initX = initX;
-        this.initY = initY;
-        const cardImgObj = gamingScene.add.image(
-            initX,
-            initY,
-            cardName).setInteractive();
-
-        cardImgObj.displayHeight = gameConfig.card.height;
-        cardImgObj.displayWidth = gameConfig.card.width;
-
-        cardImgObj.on('pointerdown', () => {
-            gamingScene.tweens.add({
-                targets: cardImgObj,
-                y: {
-                    value: gameConfig.background.height - gameConfig.card.height,
-                    duration: 200,
-                    delay: 0
-                }
-            });
-        });
-    }
-}
 
 class Gaming extends Phaser.Scene {
     constructor() {
         super();
+        this.mycards = [];
+        this.myPlayer = null;
     }
 
     preload() {
-        this.load.setBaseURL(cardsUrl.baseUrl);
-        for (const cardName in cardsUrl.game) {
-            this.load.image(cardName, cardsUrl.game[cardName]);
+        this.load.setBaseURL(elementsUrl.baseUrl);
+        for (const cardName in elementsUrl.game) {
+            this.load.image(cardName, elementsUrl.game[cardName]);
+        }
+        for (const playerId in elementsUrl.player) {
+            this.load.image(playerId, elementsUrl.player[playerId]);
+        }
+        for (const key in elementsUrl.other) {
+            this.load.image(key, elementsUrl.other[key]);
         }
     }
 
@@ -65,13 +51,18 @@ class Gaming extends Phaser.Scene {
     }
 
     update() {
-        if (eventBus.init) {
+        if (eventBus.needInit) {
             let initX = gameConfig.card.width / 2;
-            eventBus.gameStatus.users[0].cards.forEach(() => {
-                new Card(this, initX, gameConfig.background.height - gameConfig.card.height / 2, "sha");
+
+            const gameStatus = eventBus.gameStatus;
+            this.mycards = gameStatus.users[0].cards.map(() => {
+                const card = new Card(this, initX, gameConfig.background.height - gameConfig.card.height / 2, "sha");
                 initX += gameConfig.card.width;
+                return card;
             });
-            eventBus.init = false;
+            this.myPlayer = new MyPlayer(this, gameStatus.users[0]);
+
+            eventBus.needInit = false;
         }
     }
 }
@@ -81,7 +72,7 @@ const config = {
     width: gameConfig.background.width,
     height: gameConfig.background.height,
     scene: [Gaming],
-    backgroundColor: '#fff'
+    backgroundColor: '#eee'
 };
 const game = new Phaser.Game(config);
 

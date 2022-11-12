@@ -1,0 +1,12 @@
+{
+  "baseUrl": "http://rl7spmf5l.hd-bkt.clouddn.com",
+  "game": {
+    "sha": "/sha.png"
+  },
+  "player": {
+    "SHU002": "wujiang/biao/SHU002.png"
+  },
+  "other": {
+    "greenGouyu": "other/greenGouyu.png"
+  }
+}
