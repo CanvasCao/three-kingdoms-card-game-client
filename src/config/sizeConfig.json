@@ -1,0 +1,22 @@
+{
+  "background": {
+    "width": 1000,
+    "height": 600
+  },
+  "controlCard": {
+    "width": 80,
+    "height": 106
+  },
+  "controlPlayer": {
+    "width": 120,
+    "height": 159.96
+  },
+  "player": {
+    "width": 80,
+    "height": 106.6
+  },
+  "blood": {
+    "height": 16,
+    "width": 25
+  }
+}

@@ -7,6 +7,7 @@
     "SHU002": "wujiang/biao/SHU002.png"
   },
   "other": {
-    "greenGouyu": "other/greenGouyu.png"
+    "greenGouyu": "other/greenGouyu.png",
+    "white": "other/white.png"
   }
 }
