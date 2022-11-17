@@ -5,7 +5,7 @@ import 'normalize.css'
 import elementsUrl from './config/elementsUrl.json'
 import sizeConfig from './config/sizeConfig.json'
 import {socket} from "./socket";
-import {ControlCard} from "./class/ControlCard";
+import {ControlCardsManager} from "./class/ControlCardsManager";
 import {ControlPlayer} from "./class/ControlPlayer";
 import {GameStatusObserved} from "./class/GameStatusObserved";
 import {getMyUserId} from "./utils/utils";
@@ -15,10 +15,8 @@ const myUserId = getMyUserId();
 
 const eventBus = {
     needInit: false,
+    needRefreshStatus: false,
     gameStatus: null,
-
-    needDrawCards: false,
-    drawCardsData: [],
 };
 
 
@@ -27,8 +25,8 @@ $("#GoNextStage").click(() => {
     socket.emit('goNextStage');
 })
 socket.on('goNextStage', (data) => {
-    $("#StageInfo").text(JSON.stringify(data, null, "\t"))
-    console.log(JSON.stringify(data, null, "\t"))
+    // $("#StageInfo").text(JSON.stringify(data, null, "\t"))
+    // console.log(JSON.stringify(data, null, "\t"))
     game.scene.keys.default.gameStatusObserved.setGameStatus(data);
 });
 
@@ -38,9 +36,9 @@ socket.on('init', (data) => {
     eventBus.gameStatus = data;
 });
 
-socket.on('drawCards', (data) => {
-    eventBus.needDrawCards = true;
-    eventBus.drawCardsData = data;
+socket.on('refreshStatus', (data) => {
+    eventBus.needRefreshStatus = true;
+    eventBus.gameStatus = data;
 });
 
 
@@ -50,6 +48,7 @@ class Gaming extends Phaser.Scene {
         this.controlCards = [];
         this.controlPlayer = null;
         this.players = [];
+        this.controlCardsManager =null;
         this.gameStatusObserved = new GameStatusObserved();
     }
 
@@ -80,25 +79,18 @@ class Gaming extends Phaser.Scene {
     update() {
         if (eventBus.needInit) {
             eventBus.needInit = false;
-
             const gameStatus = eventBus.gameStatus;
-            this.controlPlayer = new ControlPlayer(this, gameStatus.users[0]);
 
+            this.controlPlayer = new ControlPlayer(this, eventBus.gameStatus.users.find((user) => user.userId === getMyUserId()));
             this.players = gameStatus.users.map((user) => {
-                const player = new Player(this, user)
-                return player;
+                return new Player(this, user)
             });
-        } else if (eventBus.needDrawCards) {
-            eventBus.needDrawCards = false;
-            const thisTurnPlayer = this.players.find((player) => player.user.userId == eventBus.drawCardsData.userId)
-            thisTurnPlayer.addCards(eventBus.drawCardsData.cards);
+            this.controlCardsManager = new ControlCardsManager(this);
 
-            if (eventBus.drawCardsData.userId == myUserId) {
-                eventBus.drawCardsData.cards.forEach((_card) => {
-                    const card = new ControlCard(this, _card);
-                    this.controlCards.push(card);
-                });
-            }
+            this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
+        } else if (eventBus.needRefreshStatus) {
+            eventBus.needRefreshStatus = false;
+            this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
         }
     }
 }
@@ -108,7 +100,7 @@ const config = {
     width: sizeConfig.background.width,
     height: sizeConfig.background.height,
     scene: [Gaming],
-    backgroundColor: '#eee'
+    backgroundColor: '#ccc'
 };
 const game = new Phaser.Game(config);
 

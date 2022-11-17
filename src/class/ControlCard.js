@@ -3,15 +3,17 @@ import {getMyUserId, uuidv4} from "../utils/utils";
 
 export class ControlCard {
     constructor(gamingScene, card) {
-        this.uuid = uuidv4();
+        this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
         this.card = card;
-        this.cardX = this.gamingScene.controlCards.length * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
+
+        this.index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
+        this.cardX = this.index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
         this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
         this.selected = false;
+        this.clickable = true;
         this.group = this.gamingScene.add.group()
-
 
         this.drawBackground();
         this.drawCardName();
@@ -57,14 +59,20 @@ export class ControlCard {
     }
 
     bindEvent() {
+        const moveDis = 30;
         const onClick = () => {
+            if (!this.clickable) return;
             this.selected = !this.selected;
             this.group.getChildren().forEach((child) => {
+                this.clickable = false;
                 this.gamingScene.tweens.add({
                     targets: child,
                     y: {
-                        value: this.selected ? (child.y - sizeConfig.controlCard.height / 2) : (child.y + sizeConfig.controlCard.height / 2),
-                        duration: 0,
+                        value: this.selected ? (child.y - moveDis) : (child.y + moveDis),
+                        duration: 100,
+                    },
+                    onComplete: () => {
+                        this.clickable = true;
                     }
                 });
             });
@@ -74,9 +82,31 @@ export class ControlCard {
     }
 
     gameStatusNotify(gameStatus) {
-        if (gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'play') {
-
+        const index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
+        if (index == -1) {
+            this.cardNameObj.destroy()
+            this.cardImgObj.destroy()
+            this.cardHuaseNumberObj.destroy()
         }
+
+        if (index !== this.index) {
+            const diff = index - this.index;
+            this.group.getChildren().forEach((child) => {
+                this.clickable = false;
+                this.gamingScene.tweens.add({
+                    targets: child,
+                    x: {
+                        value: this.selected ? (child.x - diff * sizeConfig.controlCard.width) : (child.x + diff * sizeConfig.controlCard.width),
+                        duration: 1000,
+                    },
+                    onComplete: () => {
+                        this.clickable = true;
+                        this.index = index;
+                    }
+                });
+            });
+        }
+
     }
 
 }

@@ -10,7 +10,7 @@ export class GameStatusObserved {
 
     removeObserver(observer) {
         this.observers = this.observers.filter(o => {
-            return o.uuid != observer.uuid;
+            return o.obId != observer.obId;
         });
     }
 

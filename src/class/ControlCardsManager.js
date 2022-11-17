@@ -1,0 +1,30 @@
+import {getMyUserId, uuidv4} from "../utils/utils";
+import intersection from 'lodash/intersection';
+import differenceBy from 'lodash/differenceBy';
+import {ControlCard} from "./ControlCard";
+
+export class ControlCardsManager {
+    constructor(gamingScene) {
+        this.obId = uuidv4();
+
+        this.gamingScene = gamingScene;
+        this.userCards = [];
+        this.gamingScene.gameStatusObserved.addObserver(this);
+    }
+
+    gameStatusNotify(gameStatus) {
+        if (gameStatus.stage.userId == getMyUserId()) {
+            const user = gameStatus.users.find((u) => u.userId == gameStatus.stage.userId);
+
+            // const needMoveCards = intersectionBy(this.controlCards, user.cards, 'cardId');
+            // const needDestoryCards = differenceBy(this.userCards, user.cards, 'cardId');
+            const needNewCards = differenceBy(user.cards, this.userCards, 'cardId');
+            this.userCards = user.cards;
+
+            needNewCards.forEach((c) => {
+                new ControlCard(this.gamingScene, c)
+            })
+        }
+    }
+
+}

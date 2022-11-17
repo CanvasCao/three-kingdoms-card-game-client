@@ -1,7 +1,10 @@
 import sizeConfig from "../config/sizeConfig.json";
+import {getMyUserId, uuidv4} from "../utils/utils";
 
 export class Player {
     constructor(gamingScene, user) {
+        this.obId = uuidv4();
+
         this.gamingScene = gamingScene;
         this.user = user;
         this.playerX = (sizeConfig.background.width / 2 - sizeConfig.player.width / 2);
@@ -15,11 +18,13 @@ export class Player {
         this.drawCardNumber();
         this.drawImageStroke();
         this.bindEvent();
+
+        this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
     drawImageStroke() {
         this.imageStroke = this.gamingScene.add.graphics();
-        this.imageStroke.lineStyle(1, 0x000, 1);
+        this.imageStroke.lineStyle(2, 0x00ff00, 1);
         this.imageStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
             this.playerY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
@@ -85,8 +90,13 @@ export class Player {
         this.playerImage.displayWidth = sizeConfig.player.width;
     }
 
-    addCards(cards) {
-        this.user.cards = this.user.cards.concat(cards);
-        this.cardNumObj.setText(this.user.cards.length)
+    gameStatusNotify(gameStatus) {
+        if (gameStatus.stage.userId === this.user.userId) {
+            this.imageStroke.setAlpha(1);
+            const user = gameStatus.users.find((u) => u.userId === this.user.userId)
+            this.cardNumObj.setText(user.cards.length)
+        } else {
+            this.imageStroke.setAlpha(0);
+        }
     }
 }
