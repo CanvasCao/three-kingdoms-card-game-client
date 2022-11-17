@@ -7,6 +7,7 @@ import sizeConfig from './config/sizeConfig.json'
 import {socket} from "./socket";
 import {ControlCard} from "./class/ControlCard";
 import {ControlPlayer} from "./class/ControlPlayer";
+import {GameStatusObserved} from "./class/GameStatusObserved";
 import {getMyUserId} from "./utils/utils";
 import {Player} from "./class/Player";
 
@@ -14,17 +15,22 @@ const myUserId = getMyUserId();
 
 const eventBus = {
     needInit: false,
-    needRefreshStatus: false,
     gameStatus: null,
 
     needDrawCards: false,
     drawCardsData: [],
 };
 
+
 // UI点击触发事件
-$(document).click(() => {
-    socket.emit('refreshStatus');
+$("#GoNextStage").click(() => {
+    socket.emit('goNextStage');
 })
+socket.on('goNextStage', (data) => {
+    $("#StageInfo").text(JSON.stringify(data, null, "\t"))
+    console.log(JSON.stringify(data, null, "\t"))
+    game.scene.keys.default.gameStatusObserved.setGameStatus(data);
+});
 
 // 监听
 socket.on('init', (data) => {
@@ -37,9 +43,6 @@ socket.on('drawCards', (data) => {
     eventBus.drawCardsData = data;
 });
 
-socket.on('message', (data) => {
-    console.log(data);
-});
 
 class Gaming extends Phaser.Scene {
     constructor() {
@@ -47,6 +50,7 @@ class Gaming extends Phaser.Scene {
         this.controlCards = [];
         this.controlPlayer = null;
         this.players = [];
+        this.gameStatusObserved = new GameStatusObserved();
     }
 
     preload() {
@@ -84,12 +88,10 @@ class Gaming extends Phaser.Scene {
                 const player = new Player(this, user)
                 return player;
             });
-
         } else if (eventBus.needDrawCards) {
             eventBus.needDrawCards = false;
             const thisTurnPlayer = this.players.find((player) => player.user.userId == eventBus.drawCardsData.userId)
             thisTurnPlayer.addCards(eventBus.drawCardsData.cards);
-
 
             if (eventBus.drawCardsData.userId == myUserId) {
                 eventBus.drawCardsData.cards.forEach((_card) => {
