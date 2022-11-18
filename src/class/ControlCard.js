@@ -82,7 +82,7 @@ export class ControlCard {
     }
 
     gameStatusNotify(gameStatus) {
-        const index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
+        const index = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
         if (index == -1) {
             this.cardNameObj.destroy()
             this.cardImgObj.destroy()
@@ -97,7 +97,7 @@ export class ControlCard {
                     targets: child,
                     x: {
                         value: this.selected ? (child.x - diff * sizeConfig.controlCard.width) : (child.x + diff * sizeConfig.controlCard.width),
-                        duration: 1000,
+                        duration: 50,
                     },
                     onComplete: () => {
                         this.clickable = true;

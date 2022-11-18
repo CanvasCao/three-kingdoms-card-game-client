@@ -11,8 +11,6 @@ import {GameStatusObserved} from "./class/GameStatusObserved";
 import {getMyUserId} from "./utils/utils";
 import {Player} from "./class/Player";
 
-const myUserId = getMyUserId();
-
 const eventBus = {
     needInit: false,
     needRefreshStatus: false,
@@ -25,7 +23,7 @@ $("#GoNextStage").click(() => {
     socket.emit('goNextStage');
 })
 socket.on('goNextStage', (data) => {
-    // $("#StageInfo").text(JSON.stringify(data, null, "\t"))
+    $("#StageInfo").text(JSON.stringify(data, null, "\t"))
     // console.log(JSON.stringify(data, null, "\t"))
     game.scene.keys.default.gameStatusObserved.setGameStatus(data);
 });
@@ -37,6 +35,7 @@ socket.on('init', (data) => {
 });
 
 socket.on('refreshStatus', (data) => {
+    // console.log("refreshStatus", data)
     eventBus.needRefreshStatus = true;
     eventBus.gameStatus = data;
 });
@@ -48,7 +47,7 @@ class Gaming extends Phaser.Scene {
         this.controlCards = [];
         this.controlPlayer = null;
         this.players = [];
-        this.controlCardsManager =null;
+        this.controlCardsManager = null;
         this.gameStatusObserved = new GameStatusObserved();
     }
 
@@ -81,14 +80,15 @@ class Gaming extends Phaser.Scene {
             eventBus.needInit = false;
             const gameStatus = eventBus.gameStatus;
 
-            this.controlPlayer = new ControlPlayer(this, eventBus.gameStatus.users.find((user) => user.userId === getMyUserId()));
-            this.players = gameStatus.users.map((user) => {
+            this.controlPlayer = new ControlPlayer(this, eventBus.gameStatus.users[getMyUserId()]);
+            this.players = Object.values(gameStatus.users).map((user) => {
                 return new Player(this, user)
             });
             this.controlCardsManager = new ControlCardsManager(this);
 
             this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
-        } else if (eventBus.needRefreshStatus) {
+        }
+        if (eventBus.needRefreshStatus) {
             eventBus.needRefreshStatus = false;
             this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
         }

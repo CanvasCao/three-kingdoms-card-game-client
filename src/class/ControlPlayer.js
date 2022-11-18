@@ -6,6 +6,7 @@ export class ControlPlayer {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
+        this.player = player;
         this.maxBlood = player.maxBlood || 4;
         this.name = player.name;
         this.playerX = (sizeConfig.background.width - sizeConfig.controlPlayer.width / 2)
@@ -34,7 +35,7 @@ export class ControlPlayer {
         this.playerImage = this.gamingScene.add.image(
             this.playerX,
             this.playerY,
-            "SHU002");
+            this.player.cardId);
         this.playerImage.displayHeight = sizeConfig.controlPlayer.height;
         this.playerImage.displayWidth = sizeConfig.controlPlayer.width;
     }

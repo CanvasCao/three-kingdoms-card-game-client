@@ -14,7 +14,7 @@ export class ControlCardsManager {
 
     gameStatusNotify(gameStatus) {
         if (gameStatus.stage.userId == getMyUserId()) {
-            const user = gameStatus.users.find((u) => u.userId == gameStatus.stage.userId);
+            const user = gameStatus.users[getMyUserId()];
 
             // const needMoveCards = intersectionBy(this.controlCards, user.cards, 'cardId');
             // const needDestoryCards = differenceBy(this.userCards, user.cards, 'cardId');
@@ -22,7 +22,7 @@ export class ControlCardsManager {
             this.userCards = user.cards;
 
             needNewCards.forEach((c) => {
-                new ControlCard(this.gamingScene, c)
+                const controlCard = new ControlCard(this.gamingScene, c);
             })
         }
     }

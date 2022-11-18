@@ -8,7 +8,7 @@ export class Player {
         this.gamingScene = gamingScene;
         this.user = user;
         this.playerX = (sizeConfig.background.width / 2 - sizeConfig.player.width / 2);
-        this.playerY = this.user.index == 0 ? sizeConfig.player.height + 120 : sizeConfig.player.height - 60;
+        this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 120 : sizeConfig.player.height - 60;
         this.bloodImages = [];
         this.isSelected = false;
 
@@ -93,10 +93,10 @@ export class Player {
     gameStatusNotify(gameStatus) {
         if (gameStatus.stage.userId === this.user.userId) {
             this.imageStroke.setAlpha(1);
-            const user = gameStatus.users.find((u) => u.userId === this.user.userId)
-            this.cardNumObj.setText(user.cards.length)
         } else {
             this.imageStroke.setAlpha(0);
         }
+        const user = gameStatus.users[this.user.userId]
+        this.cardNumObj.setText(user.cards.length)
     }
 }
