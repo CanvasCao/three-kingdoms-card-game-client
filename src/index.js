@@ -10,6 +10,7 @@ import {ControlPlayer} from "./class/ControlPlayer";
 import {GameStatusObserved} from "./class/GameStatusObserved";
 import {getMyUserId} from "./utils/utils";
 import {Player} from "./class/Player";
+import emitMap from "./config/emitMap.json";
 
 const eventBus = {
     needInit: false,
@@ -20,22 +21,24 @@ const eventBus = {
 
 // UI点击触发事件
 $("#GoNextStage").click(() => {
-    socket.emit('goNextStage');
+    socket.emit(emitMap.GO_NEXT_STAGE);
 })
-socket.on('goNextStage', (data) => {
+
+socket.on(emitMap.GO_NEXT_STAGE, (data) => {
     $("#StageInfo").text(JSON.stringify(data, null, "\t"))
     // console.log(JSON.stringify(data, null, "\t"))
     game.scene.keys.default.gameStatusObserved.setGameStatus(data);
 });
 
 // 监听
-socket.on('init', (data) => {
+socket.on(emitMap.INIT, (data) => {
+    console.log("INIT",data)
     eventBus.needInit = true;
     eventBus.gameStatus = data;
 });
 
-socket.on('refreshStatus', (data) => {
-    // console.log("refreshStatus", data)
+socket.on(emitMap.REFRESH_STATUS, (data) => {
+    console.log("REFRESH_STATUS", data)
     eventBus.needRefreshStatus = true;
     eventBus.gameStatus = data;
 });
@@ -66,11 +69,11 @@ class Gaming extends Phaser.Scene {
 
     create() {
         // 人到齐 开始选将
-        // socket.emit('start');
+        // socket.emit();
 
         // 选将完成开始游戏
         socket.emit(
-            'init',
+            emitMap.INIT,
             {userId: getMyUserId()}
         );
     }
@@ -80,12 +83,11 @@ class Gaming extends Phaser.Scene {
             eventBus.needInit = false;
             const gameStatus = eventBus.gameStatus;
 
+            this.controlCardsManager = new ControlCardsManager(this);
             this.controlPlayer = new ControlPlayer(this, eventBus.gameStatus.users[getMyUserId()]);
             this.players = Object.values(gameStatus.users).map((user) => {
                 return new Player(this, user)
             });
-            this.controlCardsManager = new ControlCardsManager(this);
-
             this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
         }
         if (eventBus.needRefreshStatus) {

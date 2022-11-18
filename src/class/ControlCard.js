@@ -87,6 +87,7 @@ export class ControlCard {
             this.cardNameObj.destroy()
             this.cardImgObj.destroy()
             this.cardHuaseNumberObj.destroy()
+            this.gamingScene.gameStatusObserved.removeObserver(this);
         }
 
         if (index !== this.index) {

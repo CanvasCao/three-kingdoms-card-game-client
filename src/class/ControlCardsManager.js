@@ -19,10 +19,11 @@ export class ControlCardsManager {
             // const needMoveCards = intersectionBy(this.controlCards, user.cards, 'cardId');
             // const needDestoryCards = differenceBy(this.userCards, user.cards, 'cardId');
             const needNewCards = differenceBy(user.cards, this.userCards, 'cardId');
+
             this.userCards = user.cards;
 
             needNewCards.forEach((c) => {
-                const controlCard = new ControlCard(this.gamingScene, c);
+                new ControlCard(this.gamingScene, c);
             })
         }
     }
