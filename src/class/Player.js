@@ -7,7 +7,7 @@ export class Player {
 
         this.gamingScene = gamingScene;
         this.user = user;
-        this.playerX = (sizeConfig.background.width / 2 - sizeConfig.player.width / 2);
+        this.playerX = (sizeConfig.background.width / 2);
         this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 120 : sizeConfig.player.height - 60;
         this.bloodImages = [];
         this.isSelected = false;

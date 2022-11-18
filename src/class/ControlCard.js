@@ -12,7 +12,7 @@ export class ControlCard {
         this.index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
         this.cardX = this.index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
         this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
-        this.selected = false;
+        this.curSelected = false;
         this.isMoving = false;
         this.fadeInDistance = 1000;
         this.group = this.gamingScene.add.group();
@@ -24,6 +24,7 @@ export class ControlCard {
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
+        this.gamingScene.gameFEStatusObserved.addObserver(this);
     }
 
     drawBackground() {
@@ -67,40 +68,13 @@ export class ControlCard {
     }
 
     bindEvent() {
-        const moveDis = 30;
         const onClick = () => {
-            if (this.isMoving) return;
-            this.selected = !this.selected;
-            this.group.getChildren().forEach((child) => {
-                this.isMoving = true;
-                this.gamingScene.tweens.add({
-                    targets: child,
-                    y: {
-                        value: this.selected ? (child.y - moveDis) : (child.y + moveDis),
-                        duration: 100,
-                    },
-                    onComplete: () => {
-                        this.isMoving = false;
-                    }
-                });
-            });
+            const curStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus
+            curStatus.selectedCards = [this.card];
+            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
         }
 
         this.cardImgObj.on('pointerdown', onClick);
-    }
-
-    gameStatusNotify(gameStatus) {
-        this.currentIndex = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
-
-        if (this.currentIndex == -1) {
-            this.destoryAll();
-            return;
-        }
-
-        if (this.currentIndex !== this.index) {
-            this.adjustLocation();
-        }
-
     }
 
     adjustLocation() {
@@ -115,7 +89,7 @@ export class ControlCard {
                 targets: child,
                 x: {
                     value: child.x + diff * sizeConfig.controlCard.width,
-                    duration: 1000,
+                    duration: 100,
                 },
                 onComplete: () => {
                     this.isMoving = false;
@@ -150,4 +124,42 @@ export class ControlCard {
         this.cardHuaseNumberObj.destroy()
         this.gamingScene.gameStatusObserved.removeObserver(this);
     }
+
+    gameStatusNotify(gameStatus) {
+        this.currentIndex = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
+
+        if (this.currentIndex == -1) {
+            this.destoryAll();
+            return;
+        }
+
+        if (this.currentIndex !== this.index) {
+            this.adjustLocation();
+        }
+    }
+
+    gameFEStatusNotify(gameFEStatus) {
+        const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
+        if (this.curSelected == isSelected) return;
+        if (this.isMoving) return;
+        const moveDis = 30;
+
+        this.group.getChildren().forEach((child) => {
+            this.isMoving = true;
+            this.gamingScene.tweens.add({
+                targets: child,
+                y: {
+                    value: isSelected ? (child.y - moveDis) : (child.y + moveDis),
+                    duration: 0,
+                },
+                onComplete: () => {
+                    this.isMoving = false;
+                    this.curSelected = isSelected
+                }
+            });
+        });
+
+
+    }
+
 }

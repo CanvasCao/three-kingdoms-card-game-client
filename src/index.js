@@ -7,7 +7,9 @@ import sizeConfig from './config/sizeConfig.json'
 import {socket} from "./socket";
 import {ControlCardsManager} from "./class/ControlCardsManager";
 import {ControlPlayer} from "./class/ControlPlayer";
+import {ControlButtons} from "./class/ControlButtons";
 import {GameStatusObserved} from "./class/GameStatusObserved";
+import {GameFEStatusObserved} from "./class/GameFEStatusObserved";
 import {getMyUserId} from "./utils/utils";
 import {Player} from "./class/Player";
 import emitMap from "./config/emitMap.json";
@@ -56,6 +58,7 @@ class Gaming extends Phaser.Scene {
         this.players = [];
         this.controlCardsManager = null;
         this.gameStatusObserved = new GameStatusObserved();
+        this.gameFEStatusObserved = new GameFEStatusObserved();
     }
 
     preload() {
@@ -87,11 +90,12 @@ class Gaming extends Phaser.Scene {
             eventBus.needInit = false;
             const gameStatus = eventBus.gameStatus;
 
+            this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
+
             this.controlPlayer = new ControlPlayer(this, eventBus.gameStatus.users[getMyUserId()]);
-            this.players = Object.values(gameStatus.users).map((user) => {
-                return new Player(this, user)
-            });
+            this.players = Object.values(gameStatus.users).map((user) => new Player(this, user));
+
             this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
         }
         if (eventBus.needRefreshStatus) {
