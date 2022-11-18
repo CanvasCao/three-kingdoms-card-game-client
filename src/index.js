@@ -30,15 +30,19 @@ socket.on(emitMap.GO_NEXT_STAGE, (data) => {
     game.scene.keys.default.gameStatusObserved.setGameStatus(data);
 });
 
-// 监听
+// 监听只可能有一次
 socket.on(emitMap.INIT, (data) => {
-    console.log("INIT",data)
+    if (eventBus.inited) {
+        return
+    }
+    //console.log("INIT",data)
     eventBus.needInit = true;
     eventBus.gameStatus = data;
+    eventBus.inited = true
 });
 
 socket.on(emitMap.REFRESH_STATUS, (data) => {
-    console.log("REFRESH_STATUS", data)
+    //console.log("REFRESH_STATUS", data)
     eventBus.needRefreshStatus = true;
     eventBus.gameStatus = data;
 });

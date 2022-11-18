@@ -8,16 +8,19 @@ export class ControlCard {
         this.gamingScene = gamingScene;
         this.card = card;
 
+        // 初始化index
         this.index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
         this.cardX = this.index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
         this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
         this.selected = false;
-        this.clickable = true;
-        this.group = this.gamingScene.add.group()
+        this.isMoving = false;
+        this.fadeInDistance = 1000;
+        this.group = this.gamingScene.add.group();
 
         this.drawBackground();
         this.drawCardName();
         this.drawHuaseNumber();
+        this.fadeInAll();
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
@@ -25,46 +28,51 @@ export class ControlCard {
 
     drawBackground() {
         this.cardImgObj = this.gamingScene.add.image(
-            this.cardX,
+            this.cardX + this.fadeInDistance,
             this.cardY,
             'white').setInteractive();
         this.cardImgObj.displayHeight = sizeConfig.controlCard.height;
         this.cardImgObj.displayWidth = sizeConfig.controlCard.width;
+        this.cardImgObj.setAlpha(0)
         this.group.add(this.cardImgObj)
     }
 
     drawCardName() {
         this.cardNameObj = this.gamingScene.add.text(
-            this.cardX,
+            this.cardX + this.fadeInDistance,
             this.cardY,
             this.card.chineseName,
             {fill: "#000", align: "center"}
         )
         this.cardNameObj.setPadding(0, 5, 0, 0);
         this.cardNameObj.setOrigin(0.5, 0.5);
+        this.cardNameObj.setAlpha(0)
+
         this.group.add(this.cardNameObj)
 
     }
 
     drawHuaseNumber() {
         this.cardHuaseNumberObj = this.gamingScene.add.text(
-            this.cardX - sizeConfig.controlCard.width / 2,
+            this.cardX - sizeConfig.controlCard.width / 2 + this.fadeInDistance,
             this.cardY - sizeConfig.controlCard.height / 2,
             this.card.huase + ' ' + this.card.number,
             {fill: "#000", align: "center"}
         )
         this.cardHuaseNumberObj.setPadding(0, 5, 0, 0);
         this.cardHuaseNumberObj.setOrigin(0, 0);
+        this.cardHuaseNumberObj.setAlpha(0);
+
         this.group.add(this.cardHuaseNumberObj)
     }
 
     bindEvent() {
         const moveDis = 30;
         const onClick = () => {
-            if (!this.clickable) return;
+            if (this.isMoving) return;
             this.selected = !this.selected;
             this.group.getChildren().forEach((child) => {
-                this.clickable = false;
+                this.isMoving = true;
                 this.gamingScene.tweens.add({
                     targets: child,
                     y: {
@@ -72,7 +80,7 @@ export class ControlCard {
                         duration: 100,
                     },
                     onComplete: () => {
-                        this.clickable = true;
+                        this.isMoving = false;
                     }
                 });
             });
@@ -82,32 +90,64 @@ export class ControlCard {
     }
 
     gameStatusNotify(gameStatus) {
-        const index = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
-        if (index == -1) {
-            this.cardNameObj.destroy()
-            this.cardImgObj.destroy()
-            this.cardHuaseNumberObj.destroy()
-            this.gamingScene.gameStatusObserved.removeObserver(this);
+        this.currentIndex = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
+
+        if (this.currentIndex == -1) {
+            this.destoryAll();
+            return;
         }
 
-        if (index !== this.index) {
-            const diff = index - this.index;
-            this.group.getChildren().forEach((child) => {
-                this.clickable = false;
-                this.gamingScene.tweens.add({
-                    targets: child,
-                    x: {
-                        value: this.selected ? (child.x - diff * sizeConfig.controlCard.width) : (child.x + diff * sizeConfig.controlCard.width),
-                        duration: 50,
-                    },
-                    onComplete: () => {
-                        this.clickable = true;
-                        this.index = index;
-                    }
-                });
-            });
+        if (this.currentIndex !== this.index) {
+            this.adjustLocation();
         }
 
     }
 
+    adjustLocation() {
+        if (this.isMoving) {
+            return
+        }
+
+        const diff = this.currentIndex - this.index;
+        this.isMoving = true;
+        this.group.getChildren().forEach((child) => {
+            this.gamingScene.tweens.add({
+                targets: child,
+                x: {
+                    value: child.x + diff * sizeConfig.controlCard.width,
+                    duration: 1000,
+                },
+                onComplete: () => {
+                    this.isMoving = false;
+                    this.index = this.currentIndex;
+                }
+            });
+        });
+    }
+
+    fadeInAll() {
+        this.isMoving = true;
+        this.group.getChildren().forEach((child) => {
+            this.gamingScene.tweens.add({
+                targets: child,
+                x: {
+                    value: child.x - this.fadeInDistance,
+                    duration: 500,
+                },
+                alpha: {
+                    value: 1
+                },
+                onComplete: () => {
+                    this.isMoving = false;
+                }
+            });
+        });
+    }
+
+    destoryAll() {
+        this.cardNameObj.destroy()
+        this.cardImgObj.destroy()
+        this.cardHuaseNumberObj.destroy()
+        this.gamingScene.gameStatusObserved.removeObserver(this);
+    }
 }
