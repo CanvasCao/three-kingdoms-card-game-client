@@ -12,17 +12,17 @@ export class ControlPlayer {
         this.playerX = (sizeConfig.background.width - sizeConfig.controlPlayer.width / 2)
         this.playerY = (sizeConfig.background.height - sizeConfig.controlPlayer.height / 2)
 
-        this.drawGreenBorder();
         this.drawPlayer();
         this.drawBloodBg();
         this.drawBloods();
+        this.drawGreenBorder();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
     drawGreenBorder() {
         this.imageStroke = this.gamingScene.add.graphics();
-        this.imageStroke.lineStyle(10, 0x00ff00, 1);
+        this.imageStroke.lineStyle(4, 0x00ff00, 1);
         this.imageStroke.strokeRect(
             this.playerX - sizeConfig.controlPlayer.width / 2,
             this.playerY - sizeConfig.controlPlayer.height / 2,

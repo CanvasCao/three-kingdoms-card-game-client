@@ -10,6 +10,8 @@
   },
   "other": {
     "greenGouyu": "other/greenGouyu.png",
-    "white": "other/white.png"
+    "white": "other/white.png",
+    "red": "other/red.png",
+    "bg": "other/bg.png"
   }
 }

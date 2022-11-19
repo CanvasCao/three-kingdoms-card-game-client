@@ -1,5 +1,6 @@
 import sizeConfig from "../config/sizeConfig.json";
-import {getMyUserId, uuidv4} from "../utils/utils";
+import responseCardsConfig from "../config/responseCardsConfig.json";
+import {getMyUserId, getIsMyPlayTurn, uuidv4} from "../utils/utils";
 
 export class ControlCard {
     constructor(gamingScene, card) {
@@ -12,7 +13,10 @@ export class ControlCard {
         this.index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
         this.cardX = this.index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
         this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
-        this.curSelected = false;
+
+        this.disableTint = 0x999999
+        this.cardDisable = true;
+        this.prev_selected = false;
         this.isMoving = false;
         this.fadeInDistance = 1000;
         this.group = this.gamingScene.add.group();
@@ -20,7 +24,7 @@ export class ControlCard {
         this.drawBackground();
         this.drawCardName();
         this.drawHuaseNumber();
-        this.fadeInAll();
+        this.initFadeIn();
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
@@ -31,11 +35,12 @@ export class ControlCard {
         this.cardImgObj = this.gamingScene.add.image(
             this.cardX + this.fadeInDistance,
             this.cardY,
-            'white').setInteractive();
+            'white').setInteractive({cursor: 'pointer'});
         this.cardImgObj.displayHeight = sizeConfig.controlCard.height;
         this.cardImgObj.displayWidth = sizeConfig.controlCard.width;
         this.cardImgObj.setAlpha(0)
-        this.group.add(this.cardImgObj)
+        this.group.add(this.cardImgObj);
+        this.setCardDisable(this.gamingScene.gameStatusObserved.gameStatus)
     }
 
     drawCardName() {
@@ -48,9 +53,7 @@ export class ControlCard {
         this.cardNameObj.setPadding(0, 5, 0, 0);
         this.cardNameObj.setOrigin(0.5, 0.5);
         this.cardNameObj.setAlpha(0)
-
         this.group.add(this.cardNameObj)
-
     }
 
     drawHuaseNumber() {
@@ -63,18 +66,26 @@ export class ControlCard {
         this.cardHuaseNumberObj.setPadding(0, 5, 0, 0);
         this.cardHuaseNumberObj.setOrigin(0, 0);
         this.cardHuaseNumberObj.setAlpha(0);
-
         this.group.add(this.cardHuaseNumberObj)
     }
 
     bindEvent() {
-        const onClick = () => {
-            const curStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus
-            curStatus.selectedCards = [this.card];
-            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
-        }
+        this.cardImgObj.on('pointerdown', () => {
+            if(this.cardDisable){
+                return
+            }
 
-        this.cardImgObj.on('pointerdown', onClick);
+            const curStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+
+            // 选中再点击就是反选
+            if (curStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
+                curStatus.selectedCards = []
+                curStatus.selectedTargetUsers = []
+            } else { // 选中
+                curStatus.selectedCards = [this.card]
+            }
+            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
+        });
     }
 
     adjustLocation() {
@@ -99,7 +110,7 @@ export class ControlCard {
         });
     }
 
-    fadeInAll() {
+    initFadeIn() {
         this.isMoving = true;
         this.group.getChildren().forEach((child) => {
             this.gamingScene.tweens.add({
@@ -109,7 +120,8 @@ export class ControlCard {
                     duration: 500,
                 },
                 alpha: {
-                    value: 1
+                    value: 1,
+                    duration: 500,
                 },
                 onComplete: () => {
                     this.isMoving = false;
@@ -118,7 +130,32 @@ export class ControlCard {
         });
     }
 
+
+    setCardDisable(gameStatus) {
+        const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
+        if (!isMyPlayTurn) {
+            this.cardImgObj.setTint(this.disableTint)
+            this.cardDisable = true
+            return
+        }
+
+        if (!responseCardsConfig.canPlayCardInMyPlayTurn.includes(this.card.name)) {
+            this.cardImgObj.setTint(this.disableTint)
+            this.cardDisable = true
+            return
+        }
+
+        this.cardImgObj.clearTint()
+        this.cardDisable = false
+    }
+
     destoryAll() {
+        // TODO 好像是Phaser的bug 只能遍历到两个child
+        // this.group.getChildren().forEach((child,i) => {
+        //     console.log(child,i)
+        //     child.destroy()
+        // })
+
         this.cardNameObj.destroy()
         this.cardImgObj.destroy()
         this.cardHuaseNumberObj.destroy()
@@ -128,38 +165,40 @@ export class ControlCard {
     gameStatusNotify(gameStatus) {
         this.currentIndex = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
 
+        // 这张牌重新查询自己在手牌的新位置 没有就destory自己
         if (this.currentIndex == -1) {
             this.destoryAll();
             return;
         }
 
+        // 这张牌重新查询自己在手牌的新位置 位置不同就调整位置
         if (this.currentIndex !== this.index) {
             this.adjustLocation();
         }
+
+        this.setCardDisable(gameStatus);
     }
 
     gameFEStatusNotify(gameFEStatus) {
         const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
-        if (this.curSelected == isSelected) return;
+        if (this.prev_selected == isSelected) return;
         if (this.isMoving) return;
-        const moveDis = 30;
+        const whenSelectedMoveDistance = 30;
 
         this.group.getChildren().forEach((child) => {
             this.isMoving = true;
             this.gamingScene.tweens.add({
                 targets: child,
                 y: {
-                    value: isSelected ? (child.y - moveDis) : (child.y + moveDis),
-                    duration: 0,
+                    value: isSelected ? (child.y - whenSelectedMoveDistance) : (child.y + whenSelectedMoveDistance),
+                    duration: 100,
                 },
                 onComplete: () => {
                     this.isMoving = false;
-                    this.curSelected = isSelected
+                    this.prev_selected = isSelected
                 }
             });
         });
-
-
     }
 
 }

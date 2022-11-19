@@ -2,9 +2,9 @@ export class GameFEStatusObserved {
     constructor() {
         this.originState = {
             selectedCards: [],
-            selectedCardTargetUsers: [],
+            selectedTargetUsers: [],
         }
-        this.gameFEStatus = this.originState;
+        this.gameFEStatus = {...this.originState};
         this.observers = [];
     }
 
@@ -19,7 +19,7 @@ export class GameFEStatusObserved {
     }
 
     resetGameEFStatus() {
-        this.gameFEStatus = this.originState;
+        this.gameFEStatus = {...this.originState};
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });

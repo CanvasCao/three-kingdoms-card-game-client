@@ -23,4 +23,11 @@ const getMyUserId = () => {
     }
 }
 
-export {getMyUserId, uuidv4}
+const getIsMyPlayTurn = (gameStatus) => {
+    return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'play';
+}
+export {
+    getIsMyPlayTurn,
+    getMyUserId,
+    uuidv4
+}

@@ -27,7 +27,7 @@ $("#GoNextStage").click(() => {
 })
 
 socket.on(emitMap.GO_NEXT_STAGE, (data) => {
-    $("#StageInfo").text(JSON.stringify(data, null, "\t"))
+    //$("#StageInfo").text(JSON.stringify(data, null, "\t"))
     // console.log(JSON.stringify(data, null, "\t"))
     game.scene.keys.default.gameStatusObserved.setGameStatus(data);
 });
@@ -53,10 +53,14 @@ socket.on(emitMap.REFRESH_STATUS, (data) => {
 class Gaming extends Phaser.Scene {
     constructor() {
         super();
+
+        this.socket = socket;
+
         this.controlCards = [];
         this.controlPlayer = null;
         this.players = [];
         this.controlCardsManager = null;
+
         this.gameStatusObserved = new GameStatusObserved();
         this.gameFEStatusObserved = new GameFEStatusObserved();
     }
@@ -75,6 +79,11 @@ class Gaming extends Phaser.Scene {
     }
 
     create() {
+        const bg = this.add.image(0, 0, 'bg');
+        bg.setOrigin(0, 0)
+        bg.displayWidth = sizeConfig.background.width;
+        bg.displayHeight = sizeConfig.background.height;
+
         // 人到齐 开始选将
         // socket.emit();
 

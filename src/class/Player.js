@@ -8,28 +8,40 @@ export class Player {
         this.gamingScene = gamingScene;
         this.user = user;
         this.playerX = (sizeConfig.background.width / 2);
-        this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 120 : sizeConfig.player.height - 60;
+        this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 180 : sizeConfig.player.height - 60;
         this.bloodImages = [];
-        this.isSelected = false;
+        this.isCurSelected = false;
 
+        this.drawMyTurnStroke();
+        this.drawSelectedStroke();
         this.drawPlayer();
-        this.drawGraphics();
+        this.drawBloodsBg();
         this.drawBlood();
         this.drawCardNumber();
-        this.drawImageStroke();
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
+        this.gamingScene.gameFEStatusObserved.addObserver(this);
     }
 
-    drawImageStroke() {
-        this.imageStroke = this.gamingScene.add.graphics();
-        this.imageStroke.lineStyle(2, 0x00ff00, 1);
-        this.imageStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
+    drawMyTurnStroke() {
+        this.myTurnStroke = this.gamingScene.add.graphics();
+        this.myTurnStroke.lineStyle(10, 0x00ff00, 1);
+        this.myTurnStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
             this.playerY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
             sizeConfig.player.height);
-        this.imageStroke.setAlpha(0);
+        this.myTurnStroke.setAlpha(0);
+    }
+
+    drawSelectedStroke() {
+        this.selectedStroke = this.gamingScene.add.graphics();
+        this.selectedStroke.lineStyle(10, 0xffff00, 1);
+        this.selectedStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
+            this.playerY - sizeConfig.player.height / 2,
+            sizeConfig.player.width,
+            sizeConfig.player.height);
+        this.selectedStroke.setAlpha(0);
     }
 
     drawCardNumber() {
@@ -59,12 +71,17 @@ export class Player {
 
     bindEvent() {
         this.playerImage.on('pointerdown', () => {
-            this.isSelected = !this.isSelected;
-            this.imageStroke.setAlpha(this.isSelected ? 1 : 0);
+            if(this.gamingScene.gameFEStatusObserved.gameFEStatus.selectedCards<=0){
+                return;
+            }
+
+            const curStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus
+            curStatus.selectedTargetUsers = [this.user];
+            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
         });
     }
 
-    drawGraphics() {
+    drawBloodsBg() {
         const graphicsW = 18 * 0.8
         const graphicsH = 100 * 0.8
         this.graphics = this.gamingScene.add.graphics();
@@ -85,18 +102,23 @@ export class Player {
         this.playerImage = this.gamingScene.add.image(
             this.playerX,
             this.playerY,
-            this.user.cardId).setInteractive();
+            this.user.cardId).setInteractive({ cursor: 'pointer' });
         this.playerImage.displayHeight = sizeConfig.player.height;
         this.playerImage.displayWidth = sizeConfig.player.width;
     }
 
     gameStatusNotify(gameStatus) {
         if (gameStatus.stage.userId === this.user.userId) {
-            this.imageStroke.setAlpha(1);
+            this.myTurnStroke.setAlpha(1);
         } else {
-            this.imageStroke.setAlpha(0);
+            this.myTurnStroke.setAlpha(0);
         }
         const user = gameStatus.users[this.user.userId]
         this.cardNumObj.setText(user.cards.length)
+    }
+
+    gameFEStatusNotify(gameFEStatus) {
+        const isSelected = !!gameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)
+        this.selectedStroke.setAlpha(isSelected ? 1 : 0);
     }
 }

@@ -1,0 +1,10 @@
+{
+  "responseCardMap": {
+    "杀": [
+      "闪"
+    ]
+  },
+  "canPlayCardInMyPlayTurn": [
+    "杀"
+  ]
+}
