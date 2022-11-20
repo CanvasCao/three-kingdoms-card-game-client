@@ -26,8 +26,19 @@ const getMyUserId = () => {
 const getIsMyPlayTurn = (gameStatus) => {
     return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'play';
 }
+
+const getIsMyResponseTurn = (gameStatus) => {
+    return gameStatus.responseStages?.[0]?.userId == getMyUserId();
+}
+
+const getCanPlayInMyTurn = (gameStatus) => {
+    return gameStatus.responseStages.length <= 0 && getIsMyPlayTurn(gameStatus);
+}
+
 export {
     getIsMyPlayTurn,
+    getIsMyResponseTurn,
+    getCanPlayInMyTurn,
     getMyUserId,
     uuidv4
 }

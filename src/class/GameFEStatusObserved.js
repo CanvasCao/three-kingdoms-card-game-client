@@ -26,7 +26,6 @@ export class GameFEStatusObserved {
     }
 
     setGameEFStatus(gameFEStatus) {
-        console.log(gameFEStatus)
         this.gameFEStatus = gameFEStatus;
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);

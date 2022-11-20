@@ -1,6 +1,6 @@
 import sizeConfig from "../config/sizeConfig.json";
 import textConfig from "../config/textConfig.json";
-import {getIsMyPlayTurn, getMyUserId, uuidv4} from "../utils/utils";
+import {getIsMyPlayTurn, getIsMyResponseTurn, getCanPlayInMyTurn, getMyUserId, uuidv4} from "../utils/utils";
 import {socket} from "../socket";
 import emitMap from "../config/emitMap.json";
 
@@ -14,7 +14,7 @@ export class ControlButtons {
         this.cardBtnsY = sizeConfig.background.height - sizeConfig.controlCard.height - sizeConfig.background.height * 0.12;
         this.btnRightOffset = 180;
 
-        this.isMyPlayTurn = false;
+        this.prev_isMyPlayTurn = false;
 
         this.okBtnGroup = {};
         this.cancelBtnGroup = {};
@@ -102,7 +102,21 @@ export class ControlButtons {
         });
 
         this.okBtnImg.on('pointerdown', () => {
-            console.log("STRIKE")
+            const gameFEgameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus
+            if (!this.canClickOkBtnInMyPlayStage(gameFEgameFEStatus)) {
+                return
+            }
+
+            this.gamingScene.socket.emit(
+                emitMap.ACTION,
+                {
+                    cards: gameFEgameFEStatus.selectedCards,
+                    actionCardName: gameFEgameFEStatus.selectedCards[0].name,
+                    originId: getMyUserId(),
+                    targetId: gameFEgameFEStatus.selectedTargetUsers[0].userId,
+                }
+            )
+            this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
         });
 
         this.endBtnImg.on('pointerdown', () => {
@@ -138,37 +152,73 @@ export class ControlButtons {
         });
     }
 
+
     disableBtn(group) {
         group.img.setTint(0xcccccc)
     }
 
-    gameStatusNotify(gameStatus) {
-        const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
-        if (isMyPlayTurn) {
+    canClickOkBtnInMyPlayStage(gameFEStatus) {
+        return gameFEStatus.selectedCards.length > 0 && gameFEStatus.selectedTargetUsers.length > 0
+    }
+
+    canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {
+        return gameStatus.responseStages?.[0]?.cardNames?.includes(gameFEStatus.selectedCards?.[0]?.name)
+    }
+
+    hideAllBtns() {
+        this.hideBtn(this.okBtnGroup);
+        this.hideBtn(this.cancelBtnGroup)
+        this.hideBtn(this.endBtnGroup)
+    }
+
+    setButtonStatusByGameStatus(gameStatus) {
+        const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
+        const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
+        this.isMyResponseTurn = isMyResponseTurn
+        this.canPlayInMyTurn = canPlayInMyTurn
+
+        if (canPlayInMyTurn) {
+            // 我的出牌阶段
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.showBtn(this.endBtnGroup)
-        } else if (this.isMyPlayTurn !== isMyPlayTurn) {
-            this.hideBtn(this.okBtnGroup);
-            this.hideBtn(this.cancelBtnGroup)
+        } else if (isMyResponseTurn) {
+            // 我的响应阶段
+            this.showBtn(this.okBtnGroup)
+            this.disableBtn(this.okBtnGroup)
+            this.showBtn(this.cancelBtnGroup)
+        } else {
+            this.hideAllBtns();
+        }
+    }
+
+    setButtonStatusByGameFEStatus(gameFEStatus) {
+        if (this.canPlayInMyTurn) {
+            this.canClickOkBtnInMyPlayStage(gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+
+            if (gameFEStatus.selectedCards.length > 0) {
+                this.showBtn(this.cancelBtnGroup)
+                this.hideBtn(this.endBtnGroup)
+            } else {
+                this.hideBtn(this.cancelBtnGroup)
+                this.showBtn(this.endBtnGroup)
+            }
+        } else if (this.isMyResponseTurn) {
+            this.canClickOkBtnInMyResponseStage(
+                this.gamingScene.gameStatusObserved.gameStatus,
+                gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+
+            this.showBtn(this.cancelBtnGroup)
             this.hideBtn(this.endBtnGroup)
         }
-        this.isMyPlayTurn = isMyPlayTurn
+    }
+
+    gameStatusNotify(gameStatus) {
+        this.setButtonStatusByGameStatus(gameStatus)
     }
 
     gameFEStatusNotify(gameFEStatus) {
-        if (gameFEStatus.selectedCards.length > 0 && gameFEStatus.selectedTargetUsers.length > 0) {
-            this.showBtn(this.okBtnGroup)
-        } else {
-            this.disableBtn(this.okBtnGroup)
-        }
-
-        if (gameFEStatus.selectedCards.length > 0) {
-            this.showBtn(this.cancelBtnGroup)
-            this.hideBtn(this.endBtnGroup)
-        } else {
-            this.hideBtn(this.cancelBtnGroup)
-            this.showBtn(this.endBtnGroup)
-        }
+        this.setButtonStatusByGameFEStatus(gameFEStatus);
     }
+
 }

@@ -1,6 +1,6 @@
 import sizeConfig from "../config/sizeConfig.json";
-import responseCardsConfig from "../config/responseCardsConfig.json";
-import {getMyUserId, getIsMyPlayTurn, uuidv4} from "../utils/utils";
+import canPlayCardsInMyTurn from "../config/canPlayCardsInMyTurn.json";
+import {getMyUserId, getIsMyPlayTurn, uuidv4, getIsMyResponseTurn} from "../utils/utils";
 
 export class ControlCard {
     constructor(gamingScene, card) {
@@ -71,7 +71,7 @@ export class ControlCard {
 
     bindEvent() {
         this.cardImgObj.on('pointerdown', () => {
-            if(this.cardDisable){
+            if (this.cardDisable) {
                 return
             }
 
@@ -79,8 +79,8 @@ export class ControlCard {
 
             // 选中再点击就是反选
             if (curStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
-                curStatus.selectedCards = []
-                curStatus.selectedTargetUsers = []
+                curStatus.selectedCards = [];
+                curStatus.selectedTargetUsers = [];
             } else { // 选中
                 curStatus.selectedCards = [this.card]
             }
@@ -133,13 +133,15 @@ export class ControlCard {
 
     setCardDisable(gameStatus) {
         const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
-        if (!isMyPlayTurn) {
+        const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
+        if (!isMyPlayTurn && !isMyResponseTurn) {
             this.cardImgObj.setTint(this.disableTint)
             this.cardDisable = true
             return
         }
 
-        if (!responseCardsConfig.canPlayCardInMyPlayTurn.includes(this.card.name)) {
+        const ablePlayCards = isMyPlayTurn ? canPlayCardsInMyTurn.cards : gameStatus.responseStages[0].cardNames;
+        if (!ablePlayCards.includes(this.card.name)) {
             this.cardImgObj.setTint(this.disableTint)
             this.cardDisable = true
             return

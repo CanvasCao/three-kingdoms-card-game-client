@@ -27,8 +27,8 @@ $("#GoNextStage").click(() => {
 })
 
 socket.on(emitMap.GO_NEXT_STAGE, (data) => {
-    //$("#StageInfo").text(JSON.stringify(data, null, "\t"))
-    // console.log(JSON.stringify(data, null, "\t"))
+    $("#StageInfo").text(JSON.stringify(data, null, "\t"))
+    console.log(JSON.stringify(data, null, "\t"))
     game.scene.keys.default.gameStatusObserved.setGameStatus(data);
 });
 
@@ -40,7 +40,7 @@ socket.on(emitMap.INIT, (data) => {
     //console.log("INIT",data)
     eventBus.needInit = true;
     eventBus.gameStatus = data;
-    eventBus.inited = true
+    eventBus.inited = true;
 });
 
 socket.on(emitMap.REFRESH_STATUS, (data) => {
@@ -119,7 +119,6 @@ const config = {
     width: sizeConfig.background.width,
     height: sizeConfig.background.height,
     scene: [Gaming],
-    backgroundColor: '#ccc'
 };
 const game = new Phaser.Game(config);
 
