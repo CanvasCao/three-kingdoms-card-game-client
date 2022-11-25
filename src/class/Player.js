@@ -21,6 +21,7 @@ export class Player {
         this.drawBloods();
         this.setBloods(this.user.currentBlood);
         this.drawCardNumber();
+        this.drawStageText();
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
@@ -70,6 +71,21 @@ export class Player {
             bloodImage.displayWidth = sizeConfig.blood.width * 0.8;
             this.bloodImages.push(bloodImage);
         }
+    }
+
+    drawStageText() {
+        this.stageText = this.gamingScene.add.text(
+            this.playerX,
+            this.playerY + sizeConfig.player.height / 2 + 5,
+            "",
+            {fill: "#000", align: "center"}
+        );
+
+        this.stageText.setOrigin(0.5, 0.5)
+        const padding = 2;
+        this.stageText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
+        this.stageText.setBackgroundColor("#fff")
+        this.stageText.setFontSize(12)
     }
 
     setBloods(number) {
@@ -131,8 +147,11 @@ export class Player {
         const user = gameStatus.users[this.user.userId]
         if (gameStatus.stage.userId === this.user.userId) {
             this.myTurnStroke.setAlpha(1);
+            this.stageText.setAlpha(1);
+            this.stageText.setText(gameStatus.stage.stageNameCN + '...')
         } else {
             this.myTurnStroke.setAlpha(0);
+            this.stageText.setAlpha(0)
         }
         if (this.cardNumber != user.cards.length) {
             this.cardNumObj.setText(user.cards.length)

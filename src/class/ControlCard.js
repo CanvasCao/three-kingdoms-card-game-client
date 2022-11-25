@@ -1,6 +1,5 @@
 import sizeConfig from "../config/sizeConfig.json";
-import canPlayCardsInMyTurn from "../config/canPlayCardsInMyTurn.json";
-import {getMyUserId, getIsMyPlayTurn, uuidv4, getIsMyResponseTurn} from "../utils/utils";
+import {getMyUserId, getIsMyPlayTurn, uuidv4, getIsMyResponseTurn, getCanPlayCardsInMyPlayTurn} from "../utils/utils";
 
 export class ControlCard {
     constructor(gamingScene, card) {
@@ -140,7 +139,10 @@ export class ControlCard {
             return
         }
 
-        const ablePlayCards = isMyPlayTurn ? canPlayCardsInMyTurn.cards : gameStatus.responseStages[0].cardNames;
+        const ablePlayCards = isMyPlayTurn
+            ? getCanPlayCardsInMyPlayTurn(gameStatus.users[getMyUserId()])
+            : gameStatus.responseStages[0].cardNames;
+
         if (!ablePlayCards.includes(this.card.name)) {
             this.cardImgObj.setTint(this.disableTint)
             this.cardDisable = true

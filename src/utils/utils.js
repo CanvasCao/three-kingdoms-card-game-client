@@ -35,10 +35,21 @@ const getCanPlayInMyTurn = (gameStatus) => {
     return gameStatus.responseStages.length <= 0 && getIsMyPlayTurn(gameStatus);
 }
 
+const getCanPlayCardsInMyPlayTurn = (user) => {
+    const cards = [
+        "杀"
+    ]
+    if (user.maxBlood > user.currentBlood) {
+        cards.push("桃")
+    }
+    return cards
+}
+
 export {
     getIsMyPlayTurn,
     getIsMyResponseTurn,
     getCanPlayInMyTurn,
     getMyUserId,
+    getCanPlayCardsInMyPlayTurn,
     uuidv4
 }
