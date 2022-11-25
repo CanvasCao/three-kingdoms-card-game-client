@@ -9,14 +9,17 @@ export class Player {
         this.user = user;
         this.playerX = (sizeConfig.background.width / 2);
         this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 180 : sizeConfig.player.height - 60;
-        this.bloodImages = [];
+        this.bloodImages = [];//从下往上
+        this.currentBlood = this.user.currentBlood;
+        this.cardNumber = 0;
         this.isCurSelected = false;
 
         this.drawMyTurnStroke();
         this.drawSelectedStroke();
         this.drawPlayer();
         this.drawBloodsBg();
-        this.drawBlood();
+        this.drawBloods();
+        this.setBloods(this.user.currentBlood);
         this.drawCardNumber();
         this.bindEvent();
 
@@ -48,7 +51,7 @@ export class Player {
         this.cardNumObj = this.gamingScene.add.text((
             this.playerX - sizeConfig.player.width / 2),
             this.playerY + sizeConfig.player.height / 2 - 22,
-            0,
+            this.cardNumber,
             {fill: "#000", align: "center"}
         );
 
@@ -57,7 +60,7 @@ export class Player {
         this.cardNumObj.setBackgroundColor("#fff")
     }
 
-    drawBlood() {
+    drawBloods() {
         for (let i = 0; i < this.user.maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
                 this.playerX + sizeConfig.player.width / 2 - 7,
@@ -69,9 +72,26 @@ export class Player {
         }
     }
 
+    setBloods(number) {
+        for (let i = 0; i < this.bloodImages.length; i++) {
+            const bloodNumber = i + 1;
+            const alpha = (bloodNumber > number) ? 0 : 1
+
+            this.gamingScene.tweens.add({
+                targets: this.bloodImages[i],
+                alpha: {
+                    value: alpha,
+                    duration: 500,
+                    // ease: "Bounce.easeIn"
+                    ease: "Bounce.easeInOut"
+                }
+            });
+        }
+    }
+
     bindEvent() {
         this.playerImage.on('pointerdown', () => {
-            if(this.gamingScene.gameFEStatusObserved.gameFEStatus.selectedCards<=0){
+            if (this.gamingScene.gameFEStatusObserved.gameFEStatus.selectedCards <= 0) {
                 return;
             }
 
@@ -102,19 +122,27 @@ export class Player {
         this.playerImage = this.gamingScene.add.image(
             this.playerX,
             this.playerY,
-            this.user.cardId).setInteractive({ cursor: 'pointer' });
+            this.user.cardId).setInteractive({cursor: 'pointer'});
         this.playerImage.displayHeight = sizeConfig.player.height;
         this.playerImage.displayWidth = sizeConfig.player.width;
     }
 
     gameStatusNotify(gameStatus) {
+        const user = gameStatus.users[this.user.userId]
         if (gameStatus.stage.userId === this.user.userId) {
             this.myTurnStroke.setAlpha(1);
         } else {
             this.myTurnStroke.setAlpha(0);
         }
-        const user = gameStatus.users[this.user.userId]
-        this.cardNumObj.setText(user.cards.length)
+        if (this.cardNumber != user.cards.length) {
+            this.cardNumObj.setText(user.cards.length)
+            this.cardNumber = user.cards.length
+        }
+        if (this.currentBlood != user.currentBlood) {
+            this.setBloods(user.currentBlood)
+            this.currentBlood = user.currentBlood
+        }
+
     }
 
     gameFEStatusNotify(gameFEStatus) {

@@ -98,25 +98,50 @@ export class ControlButtons {
 
     bindEvent() {
         this.cancelBtnImg.on('pointerdown', () => {
-            this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+            if (this.isMyResponseTurn) {
+                this.gamingScene.socket.emit(
+                    emitMap.RESPONSE,
+                    {
+                        originId: getMyUserId(),
+                    }
+                )
+                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+            } else if (this.canPlayInMyTurn) {
+                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+            }
         });
 
         this.okBtnImg.on('pointerdown', () => {
-            const gameFEgameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus
-            if (!this.canClickOkBtnInMyPlayStage(gameFEgameFEStatus)) {
-                return
-            }
-
-            this.gamingScene.socket.emit(
-                emitMap.ACTION,
-                {
-                    cards: gameFEgameFEStatus.selectedCards,
-                    actionCardName: gameFEgameFEStatus.selectedCards[0].name,
-                    originId: getMyUserId(),
-                    targetId: gameFEgameFEStatus.selectedTargetUsers[0].userId,
+            const gameFEgameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+            const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+            if (this.isMyResponseTurn) {
+                if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEgameFEStatus)) {
+                    return
                 }
-            )
-            this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+                this.gamingScene.socket.emit(
+                    emitMap.RESPONSE,
+                    {
+                        cards: gameFEgameFEStatus.selectedCards,
+                        actionCardName: gameFEgameFEStatus.selectedCards[0].name,
+                        originId: getMyUserId(),
+                    }
+                )
+                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+            } else if (this.canPlayInMyTurn) {
+                if (!this.canClickOkBtnInMyPlayStage(gameFEgameFEStatus)) {
+                    return
+                }
+                this.gamingScene.socket.emit(
+                    emitMap.ACTION,
+                    {
+                        cards: gameFEgameFEStatus.selectedCards,
+                        actionCardName: gameFEgameFEStatus.selectedCards[0].name,
+                        originId: getMyUserId(),
+                        targetId: gameFEgameFEStatus.selectedTargetUsers[0].userId,
+                    }
+                )
+                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+            }
         });
 
         this.endBtnImg.on('pointerdown', () => {

@@ -13,6 +13,13 @@ import {GameFEStatusObserved} from "./class/GameFEStatusObserved";
 import {getMyUserId} from "./utils/utils";
 import {Player} from "./class/Player";
 import emitMap from "./config/emitMap.json";
+import JSONEditor from "./jsoneditor/jsoneditor.min.js";
+import  "./jsoneditor/jsoneditor.min.css";
+
+
+// create the editor
+const container = document.getElementById('jsoneditor')
+const editor = new JSONEditor(container, {})
 
 const eventBus = {
     needInit: false,
@@ -27,8 +34,7 @@ $("#GoNextStage").click(() => {
 })
 
 socket.on(emitMap.GO_NEXT_STAGE, (data) => {
-    $("#StageInfo").text(JSON.stringify(data, null, "\t"))
-    console.log(JSON.stringify(data, null, "\t"))
+    editor.set(data)
     game.scene.keys.default.gameStatusObserved.setGameStatus(data);
 });
 
@@ -41,12 +47,14 @@ socket.on(emitMap.INIT, (data) => {
     eventBus.needInit = true;
     eventBus.gameStatus = data;
     eventBus.inited = true;
+    editor.set(data)
 });
 
 socket.on(emitMap.REFRESH_STATUS, (data) => {
     //console.log("REFRESH_STATUS", data)
     eventBus.needRefreshStatus = true;
     eventBus.gameStatus = data;
+    editor.set(data)
 });
 
 
