@@ -1,0 +1,54 @@
+{
+  "STRIKE": {
+    "CN": "杀",
+    "EN": "Strike"
+  },
+  "DODGE": {
+    "CN": "闪",
+    "EN": "Dodge"
+  },
+  "PEACH": {
+    "CN": "桃",
+    "EN": "Peach"
+  },
+  "ARROW_BARRAGE": {
+    "CN": "万箭齐发",
+    "EN": "Arrow Barrage"
+  },
+  "BARBARIAN_INVASION": {
+    "CN": "南蛮入侵",
+    "EN": "Barbarian Invasion"
+  },
+  "SOMETHING_FOR_NOTHING": {
+    "CN": "无中生有",
+    "EN": "Something for Nothing"
+  },
+  "BOUNTIFUL_HARVEST": {
+    "CN": "五谷丰登",
+    "EN": "Bountiful Harvest"
+  },
+  "CONTENTMENT": {
+    "CN": "乐不思蜀",
+    "EN": "Contentment"
+  },
+  "LIGHTNING": {
+    "CN": "闪电",
+    "EN": "Lightning"
+  },
+  "DISMANTLE": {
+    "CN": "过河拆桥",
+    "EN": "Dismantle"
+  },
+  "SNATCH": {
+    "CN": "顺手牵羊",
+    "EN": "Snatch"
+  },
+  "BORROWED_SWORD": {
+    "CN": "借刀杀人",
+    "EN": "Borrowed Sword"
+  },
+  "CANCEL": {
+    "CN": "无懈可击",
+    "EN": "Cancel"
+  }
+}

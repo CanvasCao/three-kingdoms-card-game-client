@@ -46,7 +46,7 @@ export class ControlCard {
         this.cardNameObj = this.gamingScene.add.text(
             this.cardX + this.fadeInDistance,
             this.cardY,
-            this.card.chineseName,
+            this.card.nameCN,
             {fill: "#000", align: "center"}
         )
         this.cardNameObj.setPadding(0, 5, 0, 0);
@@ -78,10 +78,10 @@ export class ControlCard {
 
             // 选中再点击就是反选
             if (curStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
-                curStatus.selectedCards = [];
-                curStatus.selectedTargetUsers = [];
+                this.gamingScene.gameFEStatusObserved.resetGameEFStatus()
             } else { // 选中
-                curStatus.selectedCards = [this.card]
+                curStatus.selectedCards = [this.card];
+                curStatus.actualCardName = this.card.name;
             }
             this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
         });

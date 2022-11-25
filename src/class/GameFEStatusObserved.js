@@ -2,6 +2,7 @@ export class GameFEStatusObserved {
     constructor() {
         this.originState = {
             selectedCards: [],
+            actualCardName: "",
             selectedTargetUsers: [],
         }
         this.gameFEStatus = {...this.originState};

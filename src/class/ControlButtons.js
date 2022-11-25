@@ -1,6 +1,13 @@
 import sizeConfig from "../config/sizeConfig.json";
 import textConfig from "../config/textConfig.json";
-import {getIsMyPlayTurn, getIsMyResponseTurn, getCanPlayInMyTurn, getMyUserId, uuidv4} from "../utils/utils";
+import {
+    getIsMyPlayTurn,
+    getIsMyResponseTurn,
+    getCanPlayInMyTurn,
+    getMyUserId,
+    uuidv4,
+    getHowManyTargetsNeed
+} from "../utils/utils";
 import {socket} from "../socket";
 import emitMap from "../config/emitMap.json";
 
@@ -43,7 +50,7 @@ export class ControlButtons {
         this.okText = this.gamingScene.add.text(
             this.cardBtnsX,
             this.cardBtnsY,
-            textConfig.OK.CH,
+            textConfig.OK.CN,
             {fill: "#fff", align: "center"}
         )
         this.okText.setPadding(0, 5, 0, 0);
@@ -65,7 +72,7 @@ export class ControlButtons {
         this.cancelText = this.gamingScene.add.text(
             this.cardBtnsX + this.btnRightOffset,
             this.cardBtnsY,
-            textConfig.CANCEL.CH,
+            textConfig.CANCEL.CN,
             {fill: "#fff", align: "center"}
         )
         this.cancelText.setPadding(0, 5, 0, 0);
@@ -87,7 +94,7 @@ export class ControlButtons {
         this.endBtnText = this.gamingScene.add.text(
             this.cardBtnsX + this.btnRightOffset,
             this.cardBtnsY,
-            textConfig.END.CH,
+            textConfig.END.CN,
             {fill: "#fff", align: "center"}
         )
         this.endBtnText.setPadding(0, 5, 0, 0);
@@ -135,9 +142,9 @@ export class ControlButtons {
                     emitMap.ACTION,
                     {
                         cards: gameFEgameFEStatus.selectedCards,
-                        actionCardName: gameFEgameFEStatus.selectedCards[0].name,
+                        actualCardName: gameFEgameFEStatus.actualCardName,
                         originId: getMyUserId(),
-                        targetId: gameFEgameFEStatus.selectedTargetUsers[0].userId,
+                        targetId: gameFEgameFEStatus.selectedTargetUsers?.[0]?.userId,
                     }
                 )
                 this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
@@ -183,7 +190,13 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyPlayStage(gameFEStatus) {
-        return gameFEStatus.selectedCards.length > 0 && gameFEStatus.selectedTargetUsers.length > 0
+        if (gameFEStatus?.actualCardName && gameFEStatus.selectedCards.length > 0) {
+            const targetMinMaxNumber = getHowManyTargetsNeed(gameFEStatus.actualCardName);
+            const ifSelectedTargetsQualified = gameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.min
+                && gameFEStatus.selectedTargetUsers.length <= targetMinMaxNumber.max;
+            return ifSelectedTargetsQualified;
+        }
+        return false
     }
 
     canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {

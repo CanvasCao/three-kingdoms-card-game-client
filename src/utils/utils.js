@@ -1,3 +1,5 @@
+import cardConfig from "../config/cardConfig.json"
+
 const getRelativePositionToCanvas = (gameObject, camera) => {
     return {
         x: (gameObject.x - camera.worldView.x) * camera.zoom,
@@ -45,11 +47,21 @@ const getCanPlayCardsInMyPlayTurn = (user) => {
     return cards
 }
 
+const getHowManyTargetsNeed = (actualCardName) => {
+    if ([cardConfig.STRIKE.CN].includes(actualCardName)) {
+        return {min: 1, max: 1}
+    }
+    if ([cardConfig.PEACH.CN].includes(actualCardName)) {
+        return {min: 0, max: 0}
+    }
+}
+
 export {
     getIsMyPlayTurn,
     getIsMyResponseTurn,
     getCanPlayInMyTurn,
     getMyUserId,
     getCanPlayCardsInMyPlayTurn,
+    getHowManyTargetsNeed,
     uuidv4
 }
