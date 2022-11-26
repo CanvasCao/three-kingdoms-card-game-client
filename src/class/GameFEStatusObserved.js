@@ -1,11 +1,20 @@
 export class GameFEStatusObserved {
     constructor() {
-        this.originState = {
+        this.originCardState = {
             selectedCards: [],
-            actualCardName: "",
+            actualCard: null,
+        }
+        this.originTargetState = {
             selectedTargetUsers: [],
         }
-        this.gameFEStatus = {...this.originState};
+        this.originSkillState = {
+            selectedSkill: ""
+        }
+        this.gameFEStatus = {
+            ...this.originCardState,
+            ...this.originTargetState,
+            ...this.originSkillState,
+        };
         this.observers = [];
     }
 
@@ -19,8 +28,13 @@ export class GameFEStatusObserved {
         });
     }
 
-    resetGameEFStatus() {
-        this.gameFEStatus = {...this.originState};
+    reset() {
+        this.gameFEStatus = {
+            ...this.gameFEStatus,
+            ...this.originCardState,
+            ...this.originTargetState,
+            ...this.originSkillState,
+        };
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });

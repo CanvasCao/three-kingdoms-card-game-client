@@ -112,9 +112,9 @@ export class ControlButtons {
                         originId: getMyUserId(),
                     }
                 )
-                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+                this.gamingScene.gameFEStatusObserved.reset();
             } else if (this.canPlayInMyTurn) {
-                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+                this.gamingScene.gameFEStatusObserved.reset();
             }
         });
 
@@ -129,11 +129,11 @@ export class ControlButtons {
                     emitMap.RESPONSE,
                     {
                         cards: gameFEgameFEStatus.selectedCards,
-                        actionCardName: gameFEgameFEStatus.selectedCards[0].name,
+                        actualCard: gameFEgameFEStatus.selectedCards[0],
                         originId: getMyUserId(),
                     }
                 )
-                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+                this.gamingScene.gameFEStatusObserved.reset();
             } else if (this.canPlayInMyTurn) {
                 if (!this.canClickOkBtnInMyPlayStage(gameFEgameFEStatus)) {
                     return
@@ -142,12 +142,12 @@ export class ControlButtons {
                     emitMap.ACTION,
                     {
                         cards: gameFEgameFEStatus.selectedCards,
-                        actualCardName: gameFEgameFEStatus.actualCardName,
+                        actualCard: gameFEgameFEStatus.selectedCards[0],
                         originId: getMyUserId(),
                         targetId: gameFEgameFEStatus.selectedTargetUsers?.[0]?.userId,
                     }
                 )
-                this.gamingScene.gameFEStatusObserved.resetGameEFStatus();
+                this.gamingScene.gameFEStatusObserved.reset();
             }
         });
 
@@ -190,8 +190,8 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyPlayStage(gameFEStatus) {
-        if (gameFEStatus?.actualCardName && gameFEStatus.selectedCards.length > 0) {
-            const targetMinMaxNumber = getHowManyTargetsNeed(gameFEStatus.actualCardName);
+        if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
+            const targetMinMaxNumber = getHowManyTargetsNeed(gameFEStatus.actualCard);
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.min
                 && gameFEStatus.selectedTargetUsers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;
@@ -200,7 +200,7 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {
-        return gameStatus.responseStages?.[0]?.cardNames?.includes(gameFEStatus.selectedCards?.[0]?.name)
+        return gameStatus.responseStages?.[0]?.cardNames?.includes(gameFEStatus.actualCard.CN)
     }
 
     hideAllBtns() {

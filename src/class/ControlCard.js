@@ -1,5 +1,12 @@
 import sizeConfig from "../config/sizeConfig.json";
-import {getMyUserId, getIsMyPlayTurn, uuidv4, getIsMyResponseTurn, getCanPlayCardsInMyPlayTurn} from "../utils/utils";
+import {
+    getMyUserId,
+    getIsMyPlayTurn,
+    uuidv4,
+    getIsMyResponseTurn,
+    getCanPlayThisCardInMyPlayTurn
+} from "../utils/utils";
+import {CARD_TYPE} from "../utils/cardConfig";
 
 export class ControlCard {
     constructor(gamingScene, card) {
@@ -13,7 +20,7 @@ export class ControlCard {
         this.cardX = this.index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
         this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
 
-        this.disableTint = 0x999999
+        this.disableTint = 0x999999;
         this.cardDisable = true;
         this.prev_selected = false;
         this.isMoving = false;
@@ -46,7 +53,7 @@ export class ControlCard {
         this.cardNameObj = this.gamingScene.add.text(
             this.cardX + this.fadeInDistance,
             this.cardY,
-            this.card.nameCN,
+            this.card.CN,
             {fill: "#000", align: "center"}
         )
         this.cardNameObj.setPadding(0, 5, 0, 0);
@@ -59,7 +66,7 @@ export class ControlCard {
         this.cardHuaseNumberObj = this.gamingScene.add.text(
             this.cardX - sizeConfig.controlCard.width / 2 + this.fadeInDistance,
             this.cardY - sizeConfig.controlCard.height / 2,
-            this.card.huase + ' ' + this.card.number,
+            this.card.huase + ' ' + this.card.cardNumDesc,
             {fill: "#000", align: "center"}
         )
         this.cardHuaseNumberObj.setPadding(0, 5, 0, 0);
@@ -78,10 +85,12 @@ export class ControlCard {
 
             // 选中再点击就是反选
             if (curStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
-                this.gamingScene.gameFEStatusObserved.resetGameEFStatus()
+                curStatus.selectedCards = [];
+                curStatus.actualCard = null;
+                curStatus.selectedTargetUsers = [];
             } else { // 选中
                 curStatus.selectedCards = [this.card];
-                curStatus.actualCardName = this.card.name;
+                curStatus.actualCard = this.card;
             }
             this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
         });
@@ -139,14 +148,22 @@ export class ControlCard {
             return
         }
 
-        const ablePlayCards = isMyPlayTurn
-            ? getCanPlayCardsInMyPlayTurn(gameStatus.users[getMyUserId()])
-            : gameStatus.responseStages[0].cardNames;
+        if (isMyPlayTurn) {
+            const canPlayThisCardInMyPlayTurn = getCanPlayThisCardInMyPlayTurn(gameStatus.users[getMyUserId()], this.card)
+            if (!canPlayThisCardInMyPlayTurn) {
+                this.cardImgObj.setTint(this.disableTint)
+                this.cardDisable = true
+                return
+            }
+        }
 
-        if (!ablePlayCards.includes(this.card.name)) {
-            this.cardImgObj.setTint(this.disableTint)
-            this.cardDisable = true
-            return
+        if (isMyResponseTurn) {
+            const canPlayCardsInMyPlayTurn = gameStatus.responseStages[0].cardNames
+            if (!canPlayCardsInMyPlayTurn.includes(this.card.CN)) {
+                this.cardImgObj.setTint(this.disableTint)
+                this.cardDisable = true
+                return
+            }
         }
 
         this.cardImgObj.clearTint()

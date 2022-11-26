@@ -1,4 +1,4 @@
-import cardConfig from "../config/cardConfig.json"
+import {CARD_CONFIG, CARD_TYPE} from "./cardConfig";
 
 const getRelativePositionToCanvas = (gameObject, camera) => {
     return {
@@ -37,21 +37,28 @@ const getCanPlayInMyTurn = (gameStatus) => {
     return gameStatus.responseStages.length <= 0 && getIsMyPlayTurn(gameStatus);
 }
 
-const getCanPlayCardsInMyPlayTurn = (user) => {
+const getCanPlayThisCardInMyPlayTurn = (user, card) => {
+    if ([CARD_TYPE.PLUS_HORSE, CARD_TYPE.MINUS_HORSE, CARD_TYPE.SHIELD, CARD_TYPE.WEAPON].includes(card.type)) {
+        return true
+    }
+
     const cards = [
-        "杀"
+        CARD_CONFIG.SHA.CN, CARD_CONFIG.GUO_HE_CHAI_QIAO.CN
     ]
     if (user.maxBlood > user.currentBlood) {
-        cards.push("桃")
+        cards.push(CARD_CONFIG.TAO.CN)
     }
-    return cards
+    return cards.includes(card.CN)
 }
 
-const getHowManyTargetsNeed = (actualCardName) => {
-    if ([cardConfig.STRIKE.CN].includes(actualCardName)) {
+const getHowManyTargetsNeed = (actualCard) => {
+    if ([CARD_TYPE.PLUS_HORSE, CARD_TYPE.MINUS_HORSE, CARD_TYPE.SHIELD, CARD_TYPE.WEAPON].includes(actualCard.type)) {
+        return {min: 0, max: 0}
+    }
+    if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.GUO_HE_CHAI_QIAO.CN].includes(actualCard.CN)) {
         return {min: 1, max: 1}
     }
-    if ([cardConfig.PEACH.CN].includes(actualCardName)) {
+    if ([CARD_CONFIG.TAO.CN].includes(actualCard.CN)) {
         return {min: 0, max: 0}
     }
 }
@@ -61,7 +68,7 @@ export {
     getIsMyResponseTurn,
     getCanPlayInMyTurn,
     getMyUserId,
-    getCanPlayCardsInMyPlayTurn,
+    getCanPlayThisCardInMyPlayTurn,
     getHowManyTargetsNeed,
     uuidv4
 }

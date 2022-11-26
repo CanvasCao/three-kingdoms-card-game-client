@@ -9,7 +9,7 @@ export class Player {
         this.user = user;
         this.playerX = (sizeConfig.background.width / 2);
         this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 180 : sizeConfig.player.height - 60;
-        this.bloodImages = [];//从下往上
+        this.bloodImages = []; //从下往上
         this.currentBlood = this.user.currentBlood;
         this.cardNumber = 0;
         this.isCurSelected = false;
@@ -22,6 +22,7 @@ export class Player {
         this.setBloods(this.user.currentBlood);
         this.drawCardNumber();
         this.drawStageText();
+        this.drawEquipment();
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
@@ -86,6 +87,21 @@ export class Player {
         this.stageText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         this.stageText.setBackgroundColor("#fff")
         this.stageText.setFontSize(12)
+    }
+
+    drawEquipment() {
+        // this.weaponText = this.gamingScene.add.text(
+        //     this.playerX,
+        //     this.playerY + sizeConfig.player.height / 2 + 5,
+        //     "",
+        //     {fill: "#000", align: "center"}
+        // );
+        //
+        // this.weaponText.setOrigin(0.5, 0.5)
+        // const padding = 2;
+        // this.weaponText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
+        // this.weaponText.setBackgroundColor("#fff")
+        // this.weaponText.setFontSize(12)
     }
 
     setBloods(number) {
