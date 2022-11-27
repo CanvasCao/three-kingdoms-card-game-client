@@ -30,11 +30,11 @@ const getIsMyPlayTurn = (gameStatus) => {
 }
 
 const getIsMyResponseTurn = (gameStatus) => {
-    return gameStatus.responseStages?.[0]?.userId == getMyUserId();
+    return gameStatus.responseStages?.[0]?.originId == getMyUserId();
 }
 
 const getIsOthersResponseTurn = (gameStatus) => {
-    if (gameStatus.responseStages?.[0]?.userId && gameStatus.responseStages?.[0]?.userId != getMyUserId()) {
+    if (gameStatus.responseStages?.[0]?.originId && gameStatus.responseStages?.[0]?.originId != getMyUserId()) {
         return true;
     }
     return false;

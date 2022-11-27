@@ -119,32 +119,33 @@ export class ControlButtons {
         });
 
         this.okBtnImg.on('pointerdown', () => {
-            const gameFEgameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+            const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
             const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+
             if (this.isMyResponseTurn) {
-                if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEgameFEStatus)) {
+                if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus)) {
                     return
                 }
+
                 this.gamingScene.socket.emit(
                     emitMap.RESPONSE,
                     {
-                        cards: gameFEgameFEStatus.selectedCards,
-                        actualCard: gameFEgameFEStatus.selectedCards[0],
-                        originId: getMyUserId(),
+                        cards: gameFEStatus.selectedCards,
+                        actualCard: gameFEStatus.selectedCards[0],
                     }
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
             } else if (this.canPlayInMyTurn) {
-                if (!this.canClickOkBtnInMyPlayStage(gameFEgameFEStatus)) {
+                if (!this.canClickOkBtnInMyPlayStage(gameFEStatus)) {
                     return
                 }
                 this.gamingScene.socket.emit(
                     emitMap.ACTION,
                     {
-                        cards: gameFEgameFEStatus.selectedCards,
-                        actualCard: gameFEgameFEStatus.selectedCards[0],
+                        cards: gameFEStatus.selectedCards,
+                        actualCard: gameFEStatus.selectedCards[0],
                         originId: getMyUserId(),
-                        targetId: gameFEgameFEStatus.selectedTargetUsers?.[0]?.userId,
+                        targetId: gameFEStatus.selectedTargetUsers?.[0]?.userId,
                     }
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
@@ -231,7 +232,7 @@ export class ControlButtons {
     }
 
     setButtonStatusByGameFEStatus(gameFEStatus) {
-        const gameStatus= this.gamingScene.gameStatusObserved.gameStatus
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
         if (this.canPlayInMyTurn) {
             this.canClickOkBtnInMyPlayStage(gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
 
@@ -246,7 +247,6 @@ export class ControlButtons {
             this.canClickOkBtnInMyResponseStage(
                 gameStatus,
                 gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
-
             this.showBtn(this.cancelBtnGroup)
             this.hideBtn(this.endBtnGroup)
         }
@@ -257,7 +257,6 @@ export class ControlButtons {
     }
 
     gameFEStatusNotify(gameFEStatus) {
-        console.log("141234",gameFEStatus)
         this.setButtonStatusByGameFEStatus(gameFEStatus);
     }
 
