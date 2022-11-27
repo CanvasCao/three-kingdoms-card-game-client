@@ -164,8 +164,8 @@ export class ControlCard {
         }
 
         if (isMyResponseTurn) {
-            const canPlayCardsInMyPlayTurn = gameStatus.responseStages[0].cardNames
-            if (!canPlayCardsInMyPlayTurn.includes(this.card.CN)) {
+            const canPlayCardNameInMyPlayTurn = gameStatus.responseStages[0].cardName
+            if (canPlayCardNameInMyPlayTurn != this.card.CN) {
                 this.cardImgObj.setTint(this.disableTint)
                 this.cardDisable = true
                 return

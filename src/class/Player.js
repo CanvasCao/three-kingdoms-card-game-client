@@ -25,6 +25,10 @@ export class Player {
         this.drawCardNumber();
         this.drawStageText();
         this.drawEquipments();
+        if (this.user.isDead) {
+            this.drawIsDead();
+            this._isDead = true;
+        }
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
@@ -138,6 +142,21 @@ export class Player {
         this[groupName].huaseNumText.setAlpha(0)
     }
 
+    drawIsDead() {
+        this.playerImage.setTint(0x666666);
+        this.isDeadText = this.gamingScene.add.text(
+            this.playerX,
+            this.playerY,
+            "阵亡",
+            {fill: "#000", align: "center"}
+        );
+        this.isDeadText.setOrigin(0.5, 0.5)
+        const padding = 2;
+        this.isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
+        this.isDeadText.setBackgroundColor("#fff")
+        this.isDeadText.setFontSize(16)
+    }
+
     setBloods(number) {
         for (let i = 0; i < this.bloodImages.length; i++) {
             const bloodNumber = i + 1;
@@ -203,27 +222,8 @@ export class Player {
         this.playerImage.displayWidth = sizeConfig.player.width;
     }
 
-    gameStatusNotify(gameStatus) {
-        const user = gameStatus.users[this.user.userId]
-        if (gameStatus.stage.userId === this.user.userId) {
-            this.myTurnStroke.setAlpha(1);
-            this.stageText.setAlpha(1);
-            this.stageText.setText(gameStatus.stage.stageNameCN + '阶段...')
-        } else {
-            this.myTurnStroke.setAlpha(0);
-            this.stageText.setAlpha(0)
-        }
-
-        if (this._cardNumber != user.cards.length) {
-            this.cardNumObj.setText(user.cards.length)
-            this._cardNumber = user.cards.length
-        }
-
-        if (this._currentBlood != user.currentBlood) {
-            this.setBloods(user.currentBlood)
-            this._currentBlood = user.currentBlood
-        }
-
+    onEquipmentsChange(gameStatus) {
+        const user = gameStatus.users[this.user.userId];
         [
             {card: "weaponCard", group: "weaponGroup"},
             {card: "shieldCard", group: "shieldGroup"},
@@ -255,12 +255,36 @@ export class Player {
         })
     }
 
-    gameFEStatusNotify(gameFEStatus) {
-        this.setStrokeSelected(gameFEStatus);
-        this.setPlayerDisable(gameFEStatus);
+    onPlayerBloodChange(gameStatus) {
+        const user = gameStatus.users[this.user.userId]
+
+        if (this._currentBlood != user.currentBlood) {
+            this.setBloods(user.currentBlood)
+            this._currentBlood = user.currentBlood
+        }
     }
 
-    setPlayerDisable(gameFEStatus) {
+    onCardNumberChange(gameStatus) {
+        const user = gameStatus.users[this.user.userId]
+
+        if (this._cardNumber != user.cards.length) {
+            this.cardNumObj.setText(user.cards.length)
+            this._cardNumber = user.cards.length
+        }
+    }
+
+    onPlayerTurnAndStageChange(gameStatus) {
+        if (gameStatus.stage.userId === this.user.userId) {
+            this.myTurnStroke.setAlpha(1);
+            this.stageText.setAlpha(1);
+            this.stageText.setText(gameStatus.stage.stageNameCN + '阶段...')
+        } else {
+            this.myTurnStroke.setAlpha(0);
+            this.stageText.setAlpha(0)
+        }
+    }
+
+    onPlayerDisableChange(gameFEStatus) {
         if (this.user.userId == getMyUserId()) {
             return;
         }
@@ -287,8 +311,35 @@ export class Player {
         }
     }
 
-    setStrokeSelected(gameFEStatus) {
+    onPlayerSelectedChange(gameFEStatus) {
         const isSelected = !!gameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)
         this.selectedStroke.setAlpha(isSelected ? 1 : 0);
+    }
+
+    onPlayerDieChange(gameStatus) {
+        const user = gameStatus.users[this.user.userId]
+        if (user.isDead) {
+            this.drawIsDead();
+            this._isDead = true;
+        }
+    }
+
+    gameStatusNotify(gameStatus) {
+        if (this._isDead)
+            return
+
+        this.onPlayerTurnAndStageChange(gameStatus);
+        this.onCardNumberChange(gameStatus);
+        this.onPlayerBloodChange(gameStatus);
+        this.onEquipmentsChange(gameStatus);
+        this.onPlayerDieChange(gameStatus)
+    }
+
+    gameFEStatusNotify(gameFEStatus) {
+        if (this._isDead)
+            return
+
+        this.onPlayerSelectedChange(gameFEStatus);
+        this.onPlayerDisableChange(gameFEStatus);
     }
 }

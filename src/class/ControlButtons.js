@@ -201,7 +201,7 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {
-        return gameStatus.responseStages?.[0]?.cardNames?.includes(gameFEStatus?.actualCard?.CN)
+        return gameStatus.responseStages?.[0]?.cardName == gameFEStatus?.actualCard?.CN
     }
 
     hideAllBtns() {
