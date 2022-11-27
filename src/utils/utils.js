@@ -33,6 +33,13 @@ const getIsMyResponseTurn = (gameStatus) => {
     return gameStatus.responseStages?.[0]?.userId == getMyUserId();
 }
 
+const getIsOthersResponseTurn = (gameStatus) => {
+    if (gameStatus.responseStages?.[0]?.userId && gameStatus.responseStages?.[0]?.userId != getMyUserId()) {
+        return true;
+    }
+    return false;
+}
+
 const getCanPlayInMyTurn = (gameStatus) => {
     return gameStatus.responseStages.length <= 0 && getIsMyPlayTurn(gameStatus);
 }
@@ -63,12 +70,27 @@ const getHowManyTargetsNeed = (actualCard) => {
     }
 }
 
+const getDistanceBetweenMeAndTarget = (users, targetUserId) => {
+    const meUser = users[getMyUserId()];
+    const targetUser = users[targetUserId];
+    const userNumber = Object.keys(users).length;
+
+    const tableDistance = Math.min(
+        Math.abs(meUser.location - targetUser.location),
+        Math.abs(meUser.location + userNumber - targetUser.location),
+        Math.abs(meUser.location - (targetUser.location + userNumber))
+    )
+    return tableDistance + (meUser?.minusHorseCard?.horseDistance || 0) + (targetUser?.plusHorseCard?.horseDistance || 0)
+}
+
 export {
     getIsMyPlayTurn,
     getIsMyResponseTurn,
+    getIsOthersResponseTurn,
     getCanPlayInMyTurn,
     getMyUserId,
     getCanPlayThisCardInMyPlayTurn,
     getHowManyTargetsNeed,
+    getDistanceBetweenMeAndTarget,
     uuidv4
 }

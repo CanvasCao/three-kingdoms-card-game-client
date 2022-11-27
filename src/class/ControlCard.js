@@ -4,7 +4,7 @@ import {
     getIsMyPlayTurn,
     uuidv4,
     getIsMyResponseTurn,
-    getCanPlayThisCardInMyPlayTurn
+    getCanPlayThisCardInMyPlayTurn, getIsOthersResponseTurn
 } from "../utils/utils";
 import {CARD_TYPE} from "../utils/cardConfig";
 
@@ -81,18 +81,24 @@ export class ControlCard {
                 return
             }
 
-            const curStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+            const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+            const curStatus = this.gamingScene.gameStatusObserved.gameStatus;
+
+            if (getIsOthersResponseTurn(curStatus)) {
+                return
+            }
 
             // 选中再点击就是反选
-            if (curStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
-                curStatus.selectedCards = [];
-                curStatus.actualCard = null;
-                curStatus.selectedTargetUsers = [];
+            if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
+                curFEStatus.selectedCards = [];
+                curFEStatus.actualCard = null;
+                curFEStatus.selectedTargetUsers = [];
             } else { // 选中
-                curStatus.selectedCards = [this.card];
-                curStatus.actualCard = this.card;
+                curFEStatus.selectedCards = [this.card];
+                curFEStatus.actualCard = this.card;
+                curFEStatus.selectedTargetUsers = [];
             }
-            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
+            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curFEStatus);
         });
     }
 

@@ -200,7 +200,7 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {
-        return gameStatus.responseStages?.[0]?.cardNames?.includes(gameFEStatus.actualCard.CN)
+        return gameStatus.responseStages?.[0]?.cardNames?.includes(gameFEStatus?.actualCard?.CN)
     }
 
     hideAllBtns() {
@@ -231,6 +231,7 @@ export class ControlButtons {
     }
 
     setButtonStatusByGameFEStatus(gameFEStatus) {
+        const gameStatus= this.gamingScene.gameStatusObserved.gameStatus
         if (this.canPlayInMyTurn) {
             this.canClickOkBtnInMyPlayStage(gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
 
@@ -243,7 +244,7 @@ export class ControlButtons {
             }
         } else if (this.isMyResponseTurn) {
             this.canClickOkBtnInMyResponseStage(
-                this.gamingScene.gameStatusObserved.gameStatus,
+                gameStatus,
                 gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
 
             this.showBtn(this.cancelBtnGroup)
@@ -256,6 +257,7 @@ export class ControlButtons {
     }
 
     gameFEStatusNotify(gameFEStatus) {
+        console.log("141234",gameFEStatus)
         this.setButtonStatusByGameFEStatus(gameFEStatus);
     }
 

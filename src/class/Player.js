@@ -1,5 +1,6 @@
 import sizeConfig from "../config/sizeConfig.json";
-import {getMyUserId, uuidv4} from "../utils/utils";
+import {getDistanceBetweenMeAndTarget, getHowManyTargetsNeed, getMyUserId, uuidv4} from "../utils/utils";
+import {CARD_CONFIG} from "../utils/cardConfig";
 
 export class Player {
     constructor(gamingScene, user) {
@@ -8,10 +9,12 @@ export class Player {
         this.gamingScene = gamingScene;
         this.user = user;
         this.playerX = (sizeConfig.background.width / 2);
-        this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 180 : sizeConfig.player.height - 60;
+        this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 280 : sizeConfig.player.height - 60;
         this.bloodImages = []; //从下往上
-        this.currentBlood = this.user.currentBlood;
-        this.cardNumber = 0;
+
+        this._currentBlood = this.user.currentBlood;
+        this._cardNumber = 0;
+        this._actualCardId = '';
 
         this.drawMyTurnStroke();
         this.drawSelectedStroke();
@@ -52,7 +55,7 @@ export class Player {
         this.cardNumObj = this.gamingScene.add.text((
             this.playerX - sizeConfig.player.width / 2),
             this.playerY - 22,
-            this.cardNumber,
+            this._cardNumber,
             {fill: "#000", align: "center"}
         );
 
@@ -154,13 +157,23 @@ export class Player {
 
     bindEvent() {
         this.playerImage.on('pointerdown', () => {
-            if (this.gamingScene.gameFEStatusObserved.gameFEStatus.selectedCards <= 0) {
+            const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+            const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+            if (curGameFEStatus.selectedCards <= 0) {
                 return;
             }
 
-            const curStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus
-            curStatus.selectedTargetUsers = [this.user];
-            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curStatus);
+            if (this.distanceDisable) {
+                return;
+            }
+
+            const targetMinMaxNumber = getHowManyTargetsNeed(curGameFEStatus.actualCard);
+            if (curGameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.max) {
+                return;
+            }
+
+            curGameFEStatus.selectedTargetUsers = [this.user];
+            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curGameFEStatus);
         });
     }
 
@@ -201,14 +214,14 @@ export class Player {
             this.stageText.setAlpha(0)
         }
 
-        if (this.cardNumber != user.cards.length) {
+        if (this._cardNumber != user.cards.length) {
             this.cardNumObj.setText(user.cards.length)
-            this.cardNumber = user.cards.length
+            this._cardNumber = user.cards.length
         }
 
-        if (this.currentBlood != user.currentBlood) {
+        if (this._currentBlood != user.currentBlood) {
             this.setBloods(user.currentBlood)
-            this.currentBlood = user.currentBlood
+            this._currentBlood = user.currentBlood
         }
 
         [
@@ -243,6 +256,38 @@ export class Player {
     }
 
     gameFEStatusNotify(gameFEStatus) {
+        this.setStrokeSelected(gameFEStatus);
+        this.setPlayerDisable(gameFEStatus);
+    }
+
+    setPlayerDisable(gameFEStatus) {
+        if (this.user.userId == getMyUserId()) {
+            return;
+        }
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
+
+        // 计算杀的距离
+        if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
+            if (gameFEStatus?.actualCard?.CN == CARD_CONFIG.SHA.CN) {
+                const myDistance = gameStatus.users[getMyUserId()]?.weaponCard?.distance || 1;
+                const distanceBetweenMeAndTarget = getDistanceBetweenMeAndTarget(gameStatus.users, this.user.userId)
+
+                if (myDistance >= distanceBetweenMeAndTarget) {
+                    this.playerImage.clearTint();
+                    this.distanceDisable = false;
+                } else {
+                    this.playerImage.setTint(0x666666);
+                    this.distanceDisable = true;
+                }
+            } else {
+                this.playerImage.clearTint();
+                this.distanceDisable = false;
+            }
+            this._actualCardId = gameFEStatus?.actualCard?.cardId
+        }
+    }
+
+    setStrokeSelected(gameFEStatus) {
         const isSelected = !!gameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)
         this.selectedStroke.setAlpha(isSelected ? 1 : 0);
     }
