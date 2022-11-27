@@ -12,7 +12,6 @@ export class Player {
         this.bloodImages = []; //从下往上
         this.currentBlood = this.user.currentBlood;
         this.cardNumber = 0;
-        this.isCurSelected = false;
 
         this.drawMyTurnStroke();
         this.drawSelectedStroke();
@@ -22,7 +21,7 @@ export class Player {
         this.setBloods(this.user.currentBlood);
         this.drawCardNumber();
         this.drawStageText();
-        this.drawEquipment();
+        this.drawEquipments();
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
@@ -52,14 +51,15 @@ export class Player {
     drawCardNumber() {
         this.cardNumObj = this.gamingScene.add.text((
             this.playerX - sizeConfig.player.width / 2),
-            this.playerY + sizeConfig.player.height / 2 - 22,
+            this.playerY - 22,
             this.cardNumber,
             {fill: "#000", align: "center"}
         );
 
         const padding = 2;
         this.cardNumObj.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        this.cardNumObj.setBackgroundColor("#fff")
+        this.cardNumObj.setBackgroundColor("#fff");
+        this.cardNumObj.setFontSize(10)
     }
 
     drawBloods() {
@@ -77,7 +77,7 @@ export class Player {
     drawStageText() {
         this.stageText = this.gamingScene.add.text(
             this.playerX,
-            this.playerY + sizeConfig.player.height / 2 + 5,
+            this.playerY + sizeConfig.player.height / 2 + 10,
             "",
             {fill: "#000", align: "center"}
         );
@@ -86,22 +86,53 @@ export class Player {
         const padding = 2;
         this.stageText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         this.stageText.setBackgroundColor("#fff")
-        this.stageText.setFontSize(12)
+        this.stageText.setFontSize(10)
+        this.stageText.setAlpha(0)
     }
 
-    drawEquipment() {
-        // this.weaponText = this.gamingScene.add.text(
-        //     this.playerX,
-        //     this.playerY + sizeConfig.player.height / 2 + 5,
-        //     "",
-        //     {fill: "#000", align: "center"}
-        // );
-        //
-        // this.weaponText.setOrigin(0.5, 0.5)
-        // const padding = 2;
-        // this.weaponText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        // this.weaponText.setBackgroundColor("#fff")
-        // this.weaponText.setFontSize(12)
+    drawEquipments() {
+        for (let i = 0; i < 4; i++) {
+            this.drawEquipment(i);
+        }
+    }
+
+    drawEquipment(index) {
+        const padding = 2;
+        const offsetY = 16;
+        const groupMap = {0: 'weaponGroup', 1: 'shieldGroup', 2: 'plusHorseGroup', 3: 'minusHorseGroup'};
+        const groupName = groupMap[index];
+        this[groupName] = {};
+        this[groupName].distanceText = this.gamingScene.add.text(
+            this.playerX - sizeConfig.player.width / 2,
+            this.playerY + offsetY * index,
+            "1",
+            {fill: "#000", align: "left", fixedWidth: 84}
+        );
+        this[groupName].distanceText.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
+        this[groupName].distanceText.setBackgroundColor("#ccc")
+        this[groupName].distanceText.setFontSize(10)
+        this[groupName].distanceText.setAlpha(0)
+
+        this[groupName].nameText = this.gamingScene.add.text(
+            this.playerX - sizeConfig.player.width / 2 + 14,
+            this.playerY + offsetY * index,
+            "2",
+            {fill: "#000", align: "justify", fixedWidth: 80}
+        );
+        this[groupName].nameText.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
+        this[groupName].nameText.setFontSize(10)
+        this[groupName].nameText.setAlpha(0)
+
+
+        this[groupName].huaseNumText = this.gamingScene.add.text(
+            this.playerX - sizeConfig.player.width / 2 + 56,
+            this.playerY + offsetY * index,
+            "3",
+            {fill: "#000", align: "center", fixedWidth: 28}
+        );
+        this[groupName].huaseNumText.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
+        this[groupName].huaseNumText.setFontSize(10)
+        this[groupName].huaseNumText.setAlpha(0)
     }
 
     setBloods(number) {
@@ -164,20 +195,51 @@ export class Player {
         if (gameStatus.stage.userId === this.user.userId) {
             this.myTurnStroke.setAlpha(1);
             this.stageText.setAlpha(1);
-            this.stageText.setText(gameStatus.stage.stageNameCN + '...')
+            this.stageText.setText(gameStatus.stage.stageNameCN + '阶段...')
         } else {
             this.myTurnStroke.setAlpha(0);
             this.stageText.setAlpha(0)
         }
+
         if (this.cardNumber != user.cards.length) {
             this.cardNumObj.setText(user.cards.length)
             this.cardNumber = user.cards.length
         }
+
         if (this.currentBlood != user.currentBlood) {
             this.setBloods(user.currentBlood)
             this.currentBlood = user.currentBlood
         }
 
+        [
+            {card: "weaponCard", group: "weaponGroup"},
+            {card: "shieldCard", group: "shieldGroup"},
+            {card: "plusHorseCard", group: "plusHorseGroup"},
+            {card: "minusHorseCard", group: "minusHorseGroup"},
+        ].forEach((ele, index) => {
+            const card = user[ele.card]
+            const group = this[ele.group]
+            if (user[ele.card]) {
+                group.distanceText.setText(card.distanceDesc)
+                group.nameText.setText(card.CN)
+                group.huaseNumText.setText(card.cardNumDesc + card.huase)
+                this.gamingScene.tweens.add({
+                    targets: [group.distanceText, group.nameText, group.huaseNumText],
+                    alpha: {
+                        value: 0.95,
+                        duration: 100,
+                    },
+                });
+            } else {
+                this.gamingScene.tweens.add({
+                    targets: [group.distanceText, group.nameText, group.huaseNumText],
+                    alpha: {
+                        value: 0,
+                        duration: 0,
+                    },
+                });
+            }
+        })
     }
 
     gameFEStatusNotify(gameFEStatus) {
