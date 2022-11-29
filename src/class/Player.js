@@ -290,8 +290,10 @@ export class Player {
         }
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
 
-        // 计算杀的距离
+
         if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
+
+            // 计算杀的距离
             if (gameFEStatus?.actualCard?.CN == CARD_CONFIG.SHA.CN) {
                 const myDistance = gameStatus.users[getMyUserId()]?.weaponCard?.distance || 1;
                 const distanceBetweenMeAndTarget = getDistanceBetweenMeAndTarget(gameStatus.users, this.user.userId)

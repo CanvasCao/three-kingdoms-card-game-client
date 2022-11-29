@@ -50,11 +50,16 @@ const getCanPlayThisCardInMyPlayTurn = (user, card) => {
     }
 
     const cards = [
-        CARD_CONFIG.SHA.CN, CARD_CONFIG.GUO_HE_CHAI_QIAO.CN
+        CARD_CONFIG.SHA.CN, CARD_CONFIG.GUO_HE_CHAI_QIAO.CN, CARD_CONFIG.LE_BU_SI_SHU.CN
     ]
     if (user.maxBlood > user.currentBlood) {
         cards.push(CARD_CONFIG.TAO.CN)
     }
+
+    if (!user.pandingCards.find((c) => c.CN == CARD_CONFIG.SHAN_DIAN.CN)) {
+        cards.push(CARD_CONFIG.SHAN_DIAN.CN)
+    }
+
     return cards.includes(card.CN)
 }
 
@@ -62,12 +67,13 @@ const getHowManyTargetsNeed = (actualCard) => {
     if ([CARD_TYPE.PLUS_HORSE, CARD_TYPE.MINUS_HORSE, CARD_TYPE.SHIELD, CARD_TYPE.WEAPON].includes(actualCard.type)) {
         return {min: 0, max: 0}
     }
-    if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.GUO_HE_CHAI_QIAO.CN].includes(actualCard.CN)) {
+    if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.GUO_HE_CHAI_QIAO.CN, CARD_CONFIG.LE_BU_SI_SHU.CN].includes(actualCard.CN)) {
         return {min: 1, max: 1}
     }
-    if ([CARD_CONFIG.TAO.CN].includes(actualCard.CN)) {
+    if ([CARD_CONFIG.TAO.CN, CARD_CONFIG.SHAN_DIAN.CN].includes(actualCard.CN)) {
         return {min: 0, max: 0}
     }
+    return {min: 100, max: 100}
 }
 
 const getDistanceBetweenMeAndTarget = (users, targetUserId) => {

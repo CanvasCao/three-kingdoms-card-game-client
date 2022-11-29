@@ -97,8 +97,8 @@ const CARD_CONFIG = {
         "EN": "Contentment",
         type: CARD_TYPE.DELAYED_SCROLL
     },
-    "SHEN_DIAN": {
-        KEY: "SHEN_DIAN",
+    "SHAN_DIAN": {
+        KEY: "SHAN_DIAN",
         "CN": "闪电",
         "EN": "Lightning",
         type: CARD_TYPE.DELAYED_SCROLL
