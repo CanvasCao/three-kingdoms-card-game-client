@@ -8,12 +8,30 @@ const CARD_TYPE = {
     PLUS_HORSE: "PLUS_HORSE",
     MINUS_HORSE: "MINUS_HORSE"
 }
+const CARD_ATTRIBUTE = {
+    LIGHTNING: "LIGHTNING",
+    FIRE: "FIRE",
+}
 const CARD_CONFIG = {
     "SHA": {
         KEY: "SHA",
         "CN": "杀",
         "EN": "Strike",
         type: CARD_TYPE.BASIC
+    },
+    "LEI_SHA": {
+        KEY: "LEI_SHA",
+        "CN": "雷杀",
+        "EN": "Lightning Strike",
+        type: CARD_TYPE.BASIC,
+        attribute: CARD_ATTRIBUTE.LIGHTNING,
+    },
+    "HUO_SHA": {
+        KEY: "HUO_SHA",
+        "CN": "火杀",
+        "EN": "Fire Strike",
+        type: CARD_TYPE.BASIC,
+        attribute: CARD_ATTRIBUTE.FIRE,
     },
     "SHAN": {
         KEY: "SHAN",

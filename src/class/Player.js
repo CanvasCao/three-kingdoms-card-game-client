@@ -8,12 +8,16 @@ export class Player {
 
         this.gamingScene = gamingScene;
         this.user = user;
-        this.playerX = (sizeConfig.background.width / 2);
-        this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 280 : sizeConfig.player.height - 60;
+        // this.playerX = (sizeConfig.background.width / 2);
+        // this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 280 : sizeConfig.player.height - 60;
+        const xmap = {0: -200, 1: 0, 2: 200};
+        this.playerX = (sizeConfig.background.width / 2) + xmap[this.user.location];
+        this.playerY = sizeConfig.player.height + 100;
         this.bloodImages = []; //从下往上
 
         this._currentBlood = this.user.currentBlood;
         this._cardNumber = 0;
+        this._isTieSuo = this.user.isTieSuo;
         this._actualCardId = '';
 
         this.drawMyTurnStroke();
@@ -59,7 +63,7 @@ export class Player {
         this.cardNumObj = this.gamingScene.add.text((
             this.playerX - sizeConfig.player.width / 2),
             this.playerY - 22,
-            this._cardNumber,
+            this._cardNumber + ' ' + (this.user.isTieSuo ? '铁索' : ''),
             {fill: "#000", align: "center"}
         );
 
@@ -191,7 +195,10 @@ export class Player {
                 return;
             }
 
-            curGameFEStatus.selectedTargetUsers = [this.user];
+            if (curGameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)) {
+                return;
+            }
+            curGameFEStatus.selectedTargetUsers.push(this.user);
             this.gamingScene.gameFEStatusObserved.setGameEFStatus(curGameFEStatus);
         });
     }
@@ -268,8 +275,12 @@ export class Player {
         const user = gameStatus.users[this.user.userId]
 
         if (this._cardNumber != user.cards.length) {
-            this.cardNumObj.setText(user.cards.length)
+            this.cardNumObj.setText(user.cards.length + ' ' + (user.isTieSuo ? '铁索' : ''))
             this._cardNumber = user.cards.length
+        }
+        if (this._isTieSuo != user.cards.length) {
+            this.cardNumObj.setText(user.cards.length + ' ' + (user.isTieSuo ? '铁索' : ''))
+            this._isTieSuo = user.isTieSuo
         }
     }
 

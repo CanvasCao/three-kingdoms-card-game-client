@@ -6,10 +6,11 @@ import {
     getCanPlayInMyTurn,
     getMyUserId,
     uuidv4,
-    getHowManyTargetsNeed
+    getHowManyTargetsNeed, getIsEquipmentCard
 } from "../utils/utils";
 import {socket} from "../socket";
 import emitMap from "../config/emitMap.json";
+import {CARD_CONFIG} from "../utils/cardConfig";
 
 export class ControlButtons {
     constructor(gamingScene) {
@@ -129,24 +130,17 @@ export class ControlButtons {
 
                 this.gamingScene.socket.emit(
                     emitMap.RESPONSE,
-                    {
-                        cards: gameFEStatus.selectedCards,
-                        actualCard: gameFEStatus.selectedCards[0],
-                    }
+                    this.generateResponse(),
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
             } else if (this.canPlayInMyTurn) {
                 if (!this.canClickOkBtnInMyPlayStage(gameFEStatus)) {
                     return
                 }
+
                 this.gamingScene.socket.emit(
                     emitMap.ACTION,
-                    {
-                        cards: gameFEStatus.selectedCards,
-                        actualCard: gameFEStatus.selectedCards[0],
-                        originId: getMyUserId(),
-                        targetId: gameFEStatus.selectedTargetUsers?.[0]?.userId,
-                    }
+                    this.generateAction()
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
             }
@@ -157,7 +151,50 @@ export class ControlButtons {
         });
     }
 
-    // show 包含 able
+    generateAction() {
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+
+        const actualCard = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]));
+        // actualCard.cardId = uuidv4(); 为什么当时加了actualCard.cardId？
+        if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
+            return {
+                cards: gameFEStatus.selectedCards,
+                actualCard,
+                actions: gameFEStatus.selectedTargetUsers.map((targetUser) => {
+                    return {
+                        originId: getMyUserId(),
+                        targetId: targetUser.userId,
+                    }
+                })
+            }
+        } else if (actualCard.CN == CARD_CONFIG.TAO.CN || actualCard.CN == CARD_CONFIG.SHAN_DIAN.CN || getIsEquipmentCard(actualCard)) {
+            return {
+                cards: gameFEStatus.selectedCards,
+                actualCard,
+                originId: getMyUserId(),
+                targetId: getMyUserId(),
+            }
+        } else if (actualCard.CN == CARD_CONFIG.LE_BU_SI_SHU.CN) {
+            return {
+                cards: gameFEStatus.selectedCards,
+                actualCard,
+                originId: getMyUserId(),
+                targetId: gameFEStatus.selectedTargetUsers[0].userId,
+            }
+        }
+    }
+
+    generateResponse() {
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+        return {
+            cards: gameFEStatus.selectedCards,
+            actualCard: gameFEStatus.selectedCards[0],
+        }
+    }
+
+// show 包含 able
     showBtn(group, cb) {
         this.gamingScene.tweens.add({
             targets: [group.img, group.text],
@@ -201,7 +238,11 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {
-        return gameStatus.responseStages?.[0]?.cardName == gameFEStatus?.actualCard?.CN
+        if (gameStatus.taoResStages.length > 0) {
+            return gameFEStatus?.actualCard?.CN == CARD_CONFIG.TAO.CN
+        } else if (gameStatus.shanResStages.length > 0) {
+            return gameFEStatus?.actualCard?.CN == CARD_CONFIG.SHAN.CN
+        }
     }
 
     hideAllBtns() {
