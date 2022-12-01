@@ -1,4 +1,5 @@
 import sizeConfig from "../config/sizeConfig.json";
+import colorConfig from "../config/colorConfig.json";
 import {
     getMyUserId,
     getIsMyPlayTurn,
@@ -21,6 +22,7 @@ export class ControlCard {
         this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
 
         this.disableTint = 0x999999;
+        this.ableTint = colorConfig.card;
         this.cardDisable = true;
         this.prev_selected = false;
         this.isMoving = false;
@@ -45,6 +47,7 @@ export class ControlCard {
         this.cardImgObj.displayHeight = sizeConfig.controlCard.height;
         this.cardImgObj.displayWidth = sizeConfig.controlCard.width;
         this.cardImgObj.setAlpha(0)
+        this.cardImgObj.setTint(this.ableTint);
         this.group.add(this.cardImgObj);
         this.setCardDisable(this.gamingScene.gameStatusObserved.gameStatus)
     }
@@ -172,7 +175,7 @@ export class ControlCard {
             }
         }
 
-        this.cardImgObj.clearTint()
+        this.cardImgObj.setTint(this.ableTint);
         this.cardDisable = false
     }
 
