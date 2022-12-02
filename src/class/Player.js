@@ -1,24 +1,35 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {getDistanceBetweenMeAndTarget, getHowManyTargetsNeed, getMyUserId, uuidv4} from "../utils/utils";
-import {CARD_CONFIG} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 
 export class Player {
     constructor(gamingScene, user) {
         this.obId = uuidv4();
 
+        // init
         this.gamingScene = gamingScene;
         this.user = user;
+
+        // init inner state
+        this.disable = false;
+
+        // location
         // this.playerX = (sizeConfig.background.width / 2);
         // this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 280 : sizeConfig.player.height - 60;
         const xmap = {0: -200, 1: 0, 2: 200};
         this.playerX = (sizeConfig.background.width / 2) + xmap[this.user.location];
         this.playerY = sizeConfig.player.height + 100;
+
+        // phaser objects
         this.bloodImages = []; //从下往上
         this.pandingCardImages = []; //从右往左
         this.pandingCardTexts = []; //从右往左
 
-        this.maxPandingCardsNumber = 3;
+        // varible
+        this.maxPandingCardsNumber = Object.keys(DELAY_SCROLL_CARDS_CONFIG).length;
+
+        // last state cache
         this._currentBlood = this.user.currentBlood;
         this._cardNumber = this.user.cards.length;
         this._isTieSuo = this.user.isTieSuo;
@@ -47,7 +58,7 @@ export class Player {
 
     drawMyTurnStroke() {
         this.myTurnStroke = this.gamingScene.add.graphics();
-        this.myTurnStroke.lineStyle(10, 0x00ff00, 1);
+        this.myTurnStroke.lineStyle(10, colorConfig.myTurnStroke, 1);
         this.myTurnStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
             this.playerY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
@@ -57,7 +68,7 @@ export class Player {
 
     drawSelectedStroke() {
         this.selectedStroke = this.gamingScene.add.graphics();
-        this.selectedStroke.lineStyle(10, 0xffff00, 1);
+        this.selectedStroke.lineStyle(10, colorConfig.selectedPlayerStroke, 1);
         this.selectedStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
             this.playerY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
@@ -68,7 +79,7 @@ export class Player {
     drawCardNumber() {
         this.cardNumObj = this.gamingScene.add.text((
             this.playerX - sizeConfig.player.width / 2),
-            this.playerY - 22,
+            this.playerY - 5,
             this._cardNumber,
             {fill: "#000", align: "center"}
         );
@@ -192,7 +203,7 @@ export class Player {
     }
 
     drawIsDead() {
-        this.playerImage.setTint(0x666666);
+        this.playerImage.setTint(colorConfig.disablePlayer);
         this.isDeadText = this.gamingScene.add.text(
             this.playerX,
             this.playerY,
@@ -227,11 +238,11 @@ export class Player {
         this.playerImage.on('pointerdown', () => {
             const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
             const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus;
-            if (curGameFEStatus.selectedCards <= 0) {
+            if (curGameFEStatus.selectedCards.length <= 0) {
                 return;
             }
 
-            if (this.distanceDisable) {
+            if (this.disable) {
                 return;
             }
 
@@ -243,6 +254,7 @@ export class Player {
             if (curGameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)) {
                 return;
             }
+
             curGameFEStatus.selectedTargetUsers.push(this.user);
             this.gamingScene.gameFEStatusObserved.setGameEFStatus(curGameFEStatus);
         });
@@ -364,6 +376,13 @@ export class Player {
         }
     }
 
+
+    setPlayerDisable() {
+        // this.playerImage.setTint(colorConfig.disablePlayer);
+        this.playerImage.setTint(0x666666);
+        this.disable = true;
+    }
+
     onPlayerDisableChange(gameFEStatus) {
         if (this.user.userId == getMyUserId()) {
             return;
@@ -371,23 +390,36 @@ export class Player {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
 
 
+        const setPlayerDisable = () => {
+            this.playerImage.setTint(colorConfig.disablePlayer);
+            this.disable = true;
+        }
+        const setPlayerAble = () => {
+            this.playerImage.clearTint();
+            this.disable = false;
+        }
+
         if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
 
+            const actualCardName = gameFEStatus?.actualCard?.CN
             // 计算杀的距离
-            if (gameFEStatus?.actualCard?.CN == CARD_CONFIG.SHA.CN) {
-                const myDistance = gameStatus.users[getMyUserId()]?.weaponCard?.distance || 1;
+            if (actualCardName == BASIC_CARDS_CONFIG.SHA.CN) {
+                const attackDistance = gameStatus.users[getMyUserId()]?.weaponCard?.distance || 1;
                 const distanceBetweenMeAndTarget = getDistanceBetweenMeAndTarget(gameStatus.users, this.user.userId)
 
-                if (myDistance >= distanceBetweenMeAndTarget) {
-                    this.playerImage.clearTint();
-                    this.distanceDisable = false;
+                if (attackDistance >= distanceBetweenMeAndTarget) {
+                    setPlayerAble()
                 } else {
-                    this.playerImage.setTint(0x666666);
-                    this.distanceDisable = true;
+                    this.setPlayerDisable();
+                }
+            } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
+                if (gameStatus.users[this.user.userId].pandingCards.find((c) => c.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
+                    setPlayerDisable()
+                } else {
+                    setPlayerAble()
                 }
             } else {
-                this.playerImage.clearTint();
-                this.distanceDisable = false;
+                setPlayerAble()
             }
             this._actualCardId = gameFEStatus?.actualCard?.cardId
         }

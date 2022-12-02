@@ -7,7 +7,7 @@ import {
     getIsMyResponseTurn,
     getCanPlayThisCardInMyPlayTurn, getIsOthersResponseTurn
 } from "../utils/utils";
-import {CARD_CONFIG, CARD_TYPE} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG} from "../utils/cardConfig";
 
 export class ControlCard {
     constructor(gamingScene, card) {
@@ -167,7 +167,7 @@ export class ControlCard {
         }
 
         if (isMyResponseTurn) {
-            const canPlayCardNameInMyPlayTurn = gameStatus.taoResStages.length > 0 ? CARD_CONFIG.TAO.CN : CARD_CONFIG.SHAN.CN
+            const canPlayCardNameInMyPlayTurn = gameStatus.taoResStages.length > 0 ? BASIC_CARDS_CONFIG.TAO.CN : BASIC_CARDS_CONFIG.SHAN.CN
             if (canPlayCardNameInMyPlayTurn != this.card.CN) {
                 this.cardImgObj.setTint(this.disableTint)
                 this.cardDisable = true

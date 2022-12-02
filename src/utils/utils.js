@@ -1,4 +1,4 @@
-import {CARD_CONFIG, CARD_TYPE} from "./cardConfig";
+import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "./cardConfig";
 
 const getRelativePositionToCanvas = (gameObject, camera) => {
     return {
@@ -56,35 +56,40 @@ const getCanPlayInMyTurn = (gameStatus) => {
 }
 
 const getCanPlayThisCardInMyPlayTurn = (user, card) => {
-    if ([CARD_TYPE.PLUS_HORSE, CARD_TYPE.MINUS_HORSE, CARD_TYPE.SHIELD, CARD_TYPE.WEAPON].includes(card.type)) {
+    if (getIsEquipmentCard(card)) {
         return true
     }
 
     const cards = [
-        CARD_CONFIG.SHA.CN,CARD_CONFIG.LEI_SHA.CN,CARD_CONFIG.HUO_SHA.CN, CARD_CONFIG.GUO_HE_CHAI_QIAO.CN, CARD_CONFIG.LE_BU_SI_SHU.CN
+        BASIC_CARDS_CONFIG.SHA.CN,
+        BASIC_CARDS_CONFIG.LEI_SHA.CN,
+        BASIC_CARDS_CONFIG.HUO_SHA.CN,
+
+        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
+        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN
     ]
     if (user.maxBlood > user.currentBlood) {
-        cards.push(CARD_CONFIG.TAO.CN)
+        cards.push(BASIC_CARDS_CONFIG.TAO.CN)
     }
 
-    if (!user.pandingCards.find((c) => c.CN == CARD_CONFIG.SHAN_DIAN.CN)) {
-        cards.push(CARD_CONFIG.SHAN_DIAN.CN)
+    if (!user.pandingCards.find((c) => c.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
+        cards.push(SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)
     }
 
     return cards.includes(card.CN)
 }
 
 const getHowManyTargetsNeed = (actualCard) => {
-    if ([CARD_TYPE.PLUS_HORSE, CARD_TYPE.MINUS_HORSE, CARD_TYPE.SHIELD, CARD_TYPE.WEAPON].includes(actualCard.type)) {
+    if (getIsEquipmentCard(actualCard)) {
         return {min: 0, max: 0}
     }
-    if ([CARD_CONFIG.GUO_HE_CHAI_QIAO.CN, CARD_CONFIG.LE_BU_SI_SHU.CN].includes(actualCard.CN)) {
+    if ([SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN, SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN].includes(actualCard.CN)) {
         return {min: 1, max: 1}
     }
-    if ([CARD_CONFIG.SHA.CN,CARD_CONFIG.LEI_SHA.CN,CARD_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
-        return {min: 2, max: 3}
+    if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
+        return {min: 1, max: 3}
     }
-    if ([CARD_CONFIG.TAO.CN, CARD_CONFIG.SHAN_DIAN.CN].includes(actualCard.CN)) {
+    if ([BASIC_CARDS_CONFIG.TAO.CN, SCROLL_CARDS_CONFIG.SHAN_DIAN.CN].includes(actualCard.CN)) {
         return {min: 0, max: 0}
     }
     return {min: 100, max: 100}
@@ -104,7 +109,7 @@ const getDistanceBetweenMeAndTarget = (users, targetUserId) => {
 }
 
 const getIsEquipmentCard = (card) => {
-    return [CARD_TYPE.PLUS_HORSE, CARD_TYPE.MINUS_HORSE, CARD_TYPE.SHIELD, CARD_TYPE.WEAPON].includes(card.type)
+    return CARD_TYPE.EQUIPMENT == card.type
 }
 
 export {

@@ -10,7 +10,7 @@ import {
 } from "../utils/utils";
 import {socket} from "../socket";
 import emitMap from "../config/emitMap.json";
-import {CARD_CONFIG} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 
 export class ControlButtons {
     constructor(gamingScene) {
@@ -156,8 +156,8 @@ export class ControlButtons {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
 
         const actualCard = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]));
-        // actualCard.cardId = uuidv4(); 为什么当时加了actualCard.cardId？
-        if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
+        actualCard.cardId = uuidv4(); // 作为前端判断要不要重新计算和刷新disable的依据
+        if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
@@ -168,14 +168,14 @@ export class ControlButtons {
                     }
                 })
             }
-        } else if (actualCard.CN == CARD_CONFIG.TAO.CN || actualCard.CN == CARD_CONFIG.SHAN_DIAN.CN || getIsEquipmentCard(actualCard)) {
+        } else if (actualCard.CN == BASIC_CARDS_CONFIG.TAO.CN || actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN || getIsEquipmentCard(actualCard)) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
                 originId: getMyUserId(),
                 targetId: getMyUserId(),
             }
-        } else if (actualCard.CN == CARD_CONFIG.LE_BU_SI_SHU.CN) {
+        } else if (actualCard.CN == SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
@@ -239,9 +239,9 @@ export class ControlButtons {
 
     canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {
         if (gameStatus.taoResStages.length > 0) {
-            return gameFEStatus?.actualCard?.CN == CARD_CONFIG.TAO.CN
+            return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.TAO.CN
         } else if (gameStatus.shanResStages.length > 0) {
-            return gameFEStatus?.actualCard?.CN == CARD_CONFIG.SHAN.CN
+            return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.SHAN.CN
         }
     }
 
