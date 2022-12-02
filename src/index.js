@@ -14,55 +14,25 @@ import {getMyUserId} from "./utils/utils";
 import {Player} from "./class/Player";
 import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
-import  "./jsoneditor/jsoneditor.min.css";
+import "./jsoneditor/jsoneditor.min.css";
 
 
 // create the editor
 const container = document.getElementById('jsoneditor')
 const editor = new JSONEditor(container, {})
 
-const eventBus = {
-    needInit: false,
-    needRefreshStatus: false,
-    gameStatus: null,
-};
-
-
 // UI点击触发事件
 $("#GoNextStage").click(() => {
     socket.emit(emitMap.GO_NEXT_STAGE);
 })
-
-socket.on(emitMap.GO_NEXT_STAGE, (data) => {
-    editor.set(data)
-    game.scene.keys.default.gameStatusObserved.setGameStatus(data);
-});
-
-// 监听只可能有一次
-socket.on(emitMap.INIT, (data) => {
-    if (eventBus.inited) {
-        return
-    }
-    //console.log("INIT",data)
-    eventBus.needInit = true;
-    eventBus.gameStatus = data;
-    eventBus.inited = true;
-    editor.set(data)
-});
-
-socket.on(emitMap.REFRESH_STATUS, (data) => {
-    //console.log("REFRESH_STATUS", data)
-    eventBus.needRefreshStatus = true;
-    eventBus.gameStatus = data;
-    editor.set(data)
-});
-
 
 class Gaming extends Phaser.Scene {
     constructor() {
         super();
 
         this.socket = socket;
+
+        this.inited = false;
 
         this.controlCards = [];
         this.controlPlayer = null;
@@ -100,25 +70,44 @@ class Gaming extends Phaser.Scene {
             emitMap.INIT,
             {userId: getMyUserId()}
         );
-    }
 
-    update() {
-        if (eventBus.needInit) {
-            eventBus.needInit = false;
-            const gameStatus = eventBus.gameStatus;
+        // 监听只可能有一次
+        socket.on(emitMap.INIT, (data) => {
+            if (this.inited) {
+                return
+            }
+            // console.log("INIT",data)
+            // this.gameStatus = data;
 
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
 
-            this.controlPlayer = new ControlPlayer(this, eventBus.gameStatus.users[getMyUserId()]);
-            this.players = Object.values(gameStatus.users).map((user) => new Player(this, user));
+            this.controlPlayer = new ControlPlayer(this, data.users[getMyUserId()]);
+            this.players = Object.values(data.users).map((user) => new Player(this, user));
 
-            this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
-        }
-        if (eventBus.needRefreshStatus) {
-            eventBus.needRefreshStatus = false;
-            this.gameStatusObserved.setGameStatus(eventBus.gameStatus);
-        }
+            this.gameStatusObserved.setGameStatus(data);
+
+            this.inited = true;
+            editor.set(data)
+        });
+
+        socket.on(emitMap.REFRESH_STATUS, (data) => {
+            // console.log("REFRESH_STATUS", data)
+            this.gameStatusObserved.setGameStatus(data);
+            editor.set(data)
+        });
+
+        socket.on(emitMap.GO_NEXT_STAGE, (data) => {
+            editor.set(data)
+            this.gameStatusObserved.setGameStatus(data);
+        });
+
+        socket.on(emitMap.PANDING, (data) => {
+            console.log(data)
+        });
+    }
+
+    update() {
     }
 }
 

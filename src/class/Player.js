@@ -400,8 +400,8 @@ export class Player {
         }
 
         if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
-
             const actualCardName = gameFEStatus?.actualCard?.CN
+
             // 计算杀的距离
             if (actualCardName == BASIC_CARDS_CONFIG.SHA.CN) {
                 const attackDistance = gameStatus.users[getMyUserId()]?.weaponCard?.distance || 1;

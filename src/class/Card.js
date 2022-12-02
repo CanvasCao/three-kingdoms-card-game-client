@@ -9,7 +9,7 @@ import {
 } from "../utils/utils";
 import {BASIC_CARDS_CONFIG} from "../utils/cardConfig";
 
-export class ControlCard {
+export class Card {
     constructor(gamingScene, card) {
         this.obId = uuidv4();
 
@@ -21,13 +21,14 @@ export class ControlCard {
         this.cardX = this.index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
         this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
 
-        this.disableTint = 0x999999;
+        this.disableTint = colorConfig.disableCard;
         this.ableTint = colorConfig.card;
         this.cardDisable = true;
-        this.prev_selected = false;
         this.isMoving = false;
         this.fadeInDistance = 1000;
         this.group = this.gamingScene.add.group();
+
+        this._selected = false;
 
         this.drawBackground();
         this.drawCardName();
@@ -147,7 +148,6 @@ export class ControlCard {
         });
     }
 
-
     setCardDisable(gameStatus) {
         const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
         const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
@@ -211,7 +211,7 @@ export class ControlCard {
 
     gameFEStatusNotify(gameFEStatus) {
         const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
-        if (this.prev_selected == isSelected) return;
+        if (this._selected == isSelected) return;
         if (this.isMoving) return;
         const whenSelectedMoveDistance = 30;
 
@@ -225,7 +225,7 @@ export class ControlCard {
                 },
                 onComplete: () => {
                     this.isMoving = false;
-                    this.prev_selected = isSelected
+                    this._selected = isSelected
                 }
             });
         });

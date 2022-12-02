@@ -1,7 +1,7 @@
 import {getMyUserId, uuidv4} from "../utils/utils";
 import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
-import {ControlCard} from "./ControlCard";
+import {Card} from "./Card";
 
 export class ControlCardsManager {
     constructor(gamingScene) {
@@ -21,7 +21,7 @@ export class ControlCardsManager {
         this.userCards = user.cards;
 
         needNewCards.forEach((c) => {
-            new ControlCard(this.gamingScene, c);
+            new Card(this.gamingScene, c);
         })
 
     }

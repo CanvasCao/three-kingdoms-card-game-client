@@ -4,5 +4,6 @@
   "REFRESH_STATUS": "refresh_status",
 
   "ACTION": "action",
-  "RESPONSE": "response"
+  "RESPONSE": "response",
+  "PANDING": "panding"
 }
