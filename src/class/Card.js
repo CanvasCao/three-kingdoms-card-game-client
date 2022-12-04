@@ -17,17 +17,36 @@ export class Card {
         this.card = card;
 
         // 初始化index
-        this.index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
-        this.cardX = this.index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
-        this.cardY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
+        this._index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
+        this.cardInitStartX = sizeConfig.background.width / 2
+        this.cardInitStartY = sizeConfig.background.height / 2
+        this.cardInitEndX = this._index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
+        this.cardInitEndY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
 
+
+        // tint
         this.disableTint = colorConfig.disableCard;
         this.ableTint = colorConfig.card;
+
+        // inner state
         this.cardDisable = true;
         this.isMoving = false;
-        this.fadeInDistance = 1000;
-        this.group = this.gamingScene.add.group();
 
+        // phaser obj
+        this.group = this.gamingScene.add.group();
+        this.cardNameObj = null;
+        this.cardImgObj = null;
+        this.cardHuaseNumberObj = null;
+
+        // animationOffset
+        this.cardNameObjOffsetX = 0
+        this.cardNameObjOffsetY = 0
+        this.cardImgObjOffsetX = 0
+        this.cardImgObjOffsetY = 0
+        this.cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width / 2
+        this.cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2
+
+        // prev state
         this._selected = false;
 
         this.drawBackground();
@@ -42,8 +61,8 @@ export class Card {
 
     drawBackground() {
         this.cardImgObj = this.gamingScene.add.image(
-            this.cardX + this.fadeInDistance,
-            this.cardY,
+            this.cardInitStartX,
+            this.cardInitStartY,
             'white').setInteractive({cursor: 'pointer'});
         this.cardImgObj.displayHeight = sizeConfig.controlCard.height;
         this.cardImgObj.displayWidth = sizeConfig.controlCard.width;
@@ -55,8 +74,8 @@ export class Card {
 
     drawCardName() {
         this.cardNameObj = this.gamingScene.add.text(
-            this.cardX + this.fadeInDistance,
-            this.cardY,
+            this.cardInitStartX,
+            this.cardInitStartY,
             this.card.CN,
             {fill: "#000", align: "center"}
         )
@@ -68,8 +87,8 @@ export class Card {
 
     drawHuaseNumber() {
         this.cardHuaseNumberObj = this.gamingScene.add.text(
-            this.cardX - sizeConfig.controlCard.width / 2 + this.fadeInDistance,
-            this.cardY - sizeConfig.controlCard.height / 2,
+            this.cardInitStartX + this.cardHuaseNumberObjOffsetX,
+            this.cardInitStartY + this.cardHuaseNumberObjOffsetY,
             this.card.huase + ' ' + this.card.cardNumDesc,
             {fill: "#000", align: "center"}
         )
@@ -111,7 +130,12 @@ export class Card {
             return
         }
 
-        const diff = this.currentIndex - this.index;
+        // 这张牌重新查询自己在手牌的新位置 位置不同就调整位置
+        const diff = this.currentIndex - this._index;
+        if (diff == 0) {
+            return;
+        }
+
         this.isMoving = true;
         this.group.getChildren().forEach((child) => {
             this.gamingScene.tweens.add({
@@ -122,7 +146,7 @@ export class Card {
                 },
                 onComplete: () => {
                     this.isMoving = false;
-                    this.index = this.currentIndex;
+                    this._index = this.currentIndex;
                 }
             });
         });
@@ -130,22 +154,29 @@ export class Card {
 
     initFadeIn() {
         this.isMoving = true;
-        this.group.getChildren().forEach((child) => {
+        [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj].forEach((obj, index) => {
+            const offsetX = (index == 2) ? this.cardHuaseNumberObjOffsetX : 0;
+            const offsetY = (index == 2) ? this.cardHuaseNumberObjOffsetY : 0;
             this.gamingScene.tweens.add({
-                targets: child,
+                targets: obj,
                 x: {
-                    value: child.x - this.fadeInDistance,
+                    value: this.cardInitEndX + offsetX,
+                    duration: 500,
+                },
+                y: {
+                    value: this.cardInitEndY + offsetY,
                     duration: 500,
                 },
                 alpha: {
                     value: 1,
-                    duration: 500,
+                    duration: 50,
                 },
                 onComplete: () => {
                     this.isMoving = false;
                 }
             });
-        });
+        })
+
     }
 
     setCardDisable(gameStatus) {
@@ -201,10 +232,7 @@ export class Card {
             return;
         }
 
-        // 这张牌重新查询自己在手牌的新位置 位置不同就调整位置
-        if (this.currentIndex !== this.index) {
-            this.adjustLocation();
-        }
+        this.adjustLocation();
 
         this.setCardDisable(gameStatus);
     }

@@ -19,7 +19,7 @@ export class Player {
         // this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 280 : sizeConfig.player.height - 60;
         const xmap = {0: -200, 1: 0, 2: 200};
         this.playerX = (sizeConfig.background.width / 2) + xmap[this.user.location];
-        this.playerY = sizeConfig.player.height + 100;
+        this.playerY = sizeConfig.player.height;
 
         // phaser objects
         this.bloodImages = []; //从下往上
