@@ -8,8 +8,9 @@ import {
     getCanPlayThisCardInMyPlayTurn, getIsOthersResponseTurn
 } from "../utils/utils";
 import {BASIC_CARDS_CONFIG} from "../utils/cardConfig";
+import {sharedDrawCard} from "../utils/drawCardUtils";
 
-export class Card {
+export class ControlCard {
     constructor(gamingScene, card) {
         this.obId = uuidv4();
 
@@ -17,7 +18,7 @@ export class Card {
         this.card = card;
 
         // 初始化index
-        this._index = this.gamingScene.controlCardsManager.userCards.findIndex((c) => c.cardId == this.card.cardId);
+        this._index = this.gamingScene.controlCardsManager._userCards.findIndex((c) => c.cardId == this.card.cardId);
         this.cardInitStartX = sizeConfig.background.width / 2
         this.cardInitStartY = sizeConfig.background.height / 2
         this.cardInitEndX = this._index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
@@ -39,63 +40,33 @@ export class Card {
         this.cardHuaseNumberObj = null;
 
         // animationOffset
-        this.cardNameObjOffsetX = 0
-        this.cardNameObjOffsetY = 0
-        this.cardImgObjOffsetX = 0
-        this.cardImgObjOffsetY = 0
         this.cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width / 2
         this.cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2
 
         // prev state
         this._selected = false;
 
-        this.drawBackground();
-        this.drawCardName();
-        this.drawHuaseNumber();
-        this.initFadeIn();
+        this.drawCard();
+        this.fadeIn();
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
         this.gamingScene.gameFEStatusObserved.addObserver(this);
     }
 
-    drawBackground() {
-        this.cardImgObj = this.gamingScene.add.image(
-            this.cardInitStartX,
-            this.cardInitStartY,
-            'white').setInteractive({cursor: 'pointer'});
-        this.cardImgObj.displayHeight = sizeConfig.controlCard.height;
-        this.cardImgObj.displayWidth = sizeConfig.controlCard.width;
-        this.cardImgObj.setAlpha(0)
-        this.cardImgObj.setTint(this.ableTint);
-        this.group.add(this.cardImgObj);
+    drawCard() {
+        const {
+            cardImgObj,
+            cardNameObj,
+            cardHuaseNumberObj
+        } = sharedDrawCard(this.gamingScene, this.card, {x: this.cardInitStartX, y: this.cardInitStartY})
+        this.cardImgObj = cardImgObj
+        this.cardNameObj = cardNameObj
+        this.cardHuaseNumberObj = cardHuaseNumberObj
+        this.group.add(cardImgObj);
+        this.group.add(cardNameObj);
+        this.group.add(cardHuaseNumberObj);
         this.setCardDisable(this.gamingScene.gameStatusObserved.gameStatus)
-    }
-
-    drawCardName() {
-        this.cardNameObj = this.gamingScene.add.text(
-            this.cardInitStartX,
-            this.cardInitStartY,
-            this.card.CN,
-            {fill: "#000", align: "center"}
-        )
-        this.cardNameObj.setPadding(0, 5, 0, 0);
-        this.cardNameObj.setOrigin(0.5, 0.5);
-        this.cardNameObj.setAlpha(0)
-        this.group.add(this.cardNameObj)
-    }
-
-    drawHuaseNumber() {
-        this.cardHuaseNumberObj = this.gamingScene.add.text(
-            this.cardInitStartX + this.cardHuaseNumberObjOffsetX,
-            this.cardInitStartY + this.cardHuaseNumberObjOffsetY,
-            this.card.huase + ' ' + this.card.cardNumDesc,
-            {fill: "#000", align: "center"}
-        )
-        this.cardHuaseNumberObj.setPadding(0, 5, 0, 0);
-        this.cardHuaseNumberObj.setOrigin(0, 0);
-        this.cardHuaseNumberObj.setAlpha(0);
-        this.group.add(this.cardHuaseNumberObj)
     }
 
     bindEvent() {
@@ -152,7 +123,7 @@ export class Card {
         });
     }
 
-    initFadeIn() {
+    fadeIn() {
         this.isMoving = true;
         [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj].forEach((obj, index) => {
             const offsetX = (index == 2) ? this.cardHuaseNumberObjOffsetX : 0;
@@ -173,6 +144,32 @@ export class Card {
                 },
                 onComplete: () => {
                     this.isMoving = false;
+                }
+            });
+        })
+
+    }
+
+    fadeOut() {
+        this.isMoving = true;
+        [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj].forEach((obj, index) => {
+            const offsetX = (index == 2) ? this.cardHuaseNumberObjOffsetX : 0;
+            const offsetY = (index == 2) ? this.cardHuaseNumberObjOffsetY : 0;
+            this.gamingScene.tweens.add({
+                targets: obj,
+                x: {
+                    value: sizeConfig.background.width / 2 + offsetX,
+                    duration: 100,
+                },
+                y: {
+                    value: sizeConfig.background.height / 2 + offsetY,
+                    duration: 100,
+                },
+                onComplete: () => {
+                    this.isMoving = false;
+                    setTimeout(() => {
+                        this.destoryAll();
+                    }, 2000)
                 }
             });
         })

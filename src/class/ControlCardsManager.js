@@ -1,14 +1,14 @@
 import {getMyUserId, uuidv4} from "../utils/utils";
 import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
-import {Card} from "./Card";
+import {ControlCard} from "./ControlCard";
 
 export class ControlCardsManager {
     constructor(gamingScene) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
-        this.userCards = [];
+        this._userCards = [];
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
@@ -17,13 +17,11 @@ export class ControlCardsManager {
 
         // const needMoveCards = intersectionBy(this.controlCards, user.cards, 'cardId');
         // const needDestoryCards = differenceBy(this.userCards, user.cards, 'cardId');
-        const needNewCards = differenceBy(user.cards, this.userCards, 'cardId');
-        this.userCards = user.cards;
+        const needNewCards = differenceBy(user.cards, this._userCards, 'cardId');
+        this._userCards = user.cards;
 
         needNewCards.forEach((c) => {
-            new Card(this.gamingScene, c);
+            new ControlCard(this.gamingScene, c);
         })
-
     }
-
 }

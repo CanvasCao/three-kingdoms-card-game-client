@@ -191,6 +191,7 @@ export class ControlButtons {
         return {
             cards: gameFEStatus.selectedCards,
             actualCard: gameFEStatus.selectedCards[0],
+            originId: getMyUserId(),
         }
     }
 

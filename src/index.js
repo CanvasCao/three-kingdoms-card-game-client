@@ -15,11 +15,13 @@ import {Player} from "./class/Player";
 import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
 import "./jsoneditor/jsoneditor.min.css";
+import {PublicControlCardsManager} from "./class/PublicCardsManager";
 
 
 // create the editor
 const container = document.getElementById('jsoneditor')
-const editor = new JSONEditor(container, {})
+export const editor = new JSONEditor(container, {})
+export const editor2 = new JSONEditor(container, {})
 
 // UI点击触发事件
 $("#GoNextStage").click(() => {
@@ -29,15 +31,12 @@ $("#GoNextStage").click(() => {
 class Gaming extends Phaser.Scene {
     constructor() {
         super();
-
         this.socket = socket;
-
         this.inited = false;
 
         this.controlCards = [];
         this.controlPlayer = null;
         this.players = [];
-        this.controlCardsManager = null;
 
         this.gameStatusObserved = new GameStatusObserved();
         this.gameFEStatusObserved = new GameFEStatusObserved();
@@ -76,34 +75,28 @@ class Gaming extends Phaser.Scene {
             if (this.inited) {
                 return
             }
-            // console.log("INIT",data)
-            // this.gameStatus = data;
-
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
-
+            this.publicCardsManager = new PublicControlCardsManager(this);
             this.controlPlayer = new ControlPlayer(this, data.users[getMyUserId()]);
             this.players = Object.values(data.users).map((user) => new Player(this, user));
 
             this.gameStatusObserved.setGameStatus(data);
 
             this.inited = true;
-            editor.set(data)
         });
 
         socket.on(emitMap.REFRESH_STATUS, (data) => {
             // console.log("REFRESH_STATUS", data)
             this.gameStatusObserved.setGameStatus(data);
-            editor.set(data)
         });
 
         socket.on(emitMap.GO_NEXT_STAGE, (data) => {
-            editor.set(data)
             this.gameStatusObserved.setGameStatus(data);
         });
 
-        socket.on(emitMap.PANDING, (data) => {
-            console.log(data)
+        socket.on(emitMap.PLAY_PUBLIC_CARD, (data) => {
+            this.publicCardsManager.add(data)
         });
     }
 

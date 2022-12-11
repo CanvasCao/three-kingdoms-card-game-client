@@ -1,3 +1,5 @@
+import {editor2} from "../index";
+
 export class GameFEStatusObserved {
     constructor() {
         this.originCardState = {
@@ -10,10 +12,15 @@ export class GameFEStatusObserved {
         this.originSkillState = {
             selectedSkill: ""
         }
+        this.publicCardsState = {
+            publicCards: [] // 存储后端card对象 前端PublicCard不维护数组
+        }
+
         this.gameFEStatus = {
             ...this.originCardState,
             ...this.originTargetState,
             ...this.originSkillState,
+            ...this.publicCardsState
         };
         this.observers = [];
     }
@@ -42,6 +49,7 @@ export class GameFEStatusObserved {
 
     setGameEFStatus(gameFEStatus) {
         this.gameFEStatus = gameFEStatus;
+        editor2.set(gameFEStatus)
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });

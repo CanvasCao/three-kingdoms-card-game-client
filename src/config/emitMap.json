@@ -5,5 +5,5 @@
 
   "ACTION": "action",
   "RESPONSE": "response",
-  "PANDING": "panding"
+  "PLAY_PUBLIC_CARD": "play_public_card"
 }

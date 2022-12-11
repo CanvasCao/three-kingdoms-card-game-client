@@ -1,3 +1,5 @@
+import {editor} from "../index";
+
 export class GameStatusObserved {
     constructor() {
         this.gameStatus = {};
@@ -16,6 +18,7 @@ export class GameStatusObserved {
 
     setGameStatus(gameStatus) {
         this.gameStatus = gameStatus;
+        editor.set(gameStatus);
         this.observers.forEach(observer => {
             observer.gameStatusNotify(this.gameStatus);
         });
