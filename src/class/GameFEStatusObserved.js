@@ -42,6 +42,7 @@ export class GameFEStatusObserved {
             ...this.originTargetState,
             ...this.originSkillState,
         };
+        editor2.set(this.gameFEStatus)
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });

@@ -1,6 +1,12 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
-import {getDistanceBetweenMeAndTarget, getHowManyTargetsNeed, getMyUserId, uuidv4} from "../utils/utils";
+import {
+    getCantSelectMeAsTargetCardNames,
+    getDistanceBetweenMeAndTarget,
+    getHowManyTargetsNeed,
+    getMyUserId,
+    uuidv4
+} from "../utils/utils";
 import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 
 export class Player {
@@ -227,7 +233,6 @@ export class Player {
                 alpha: {
                     value: alpha,
                     duration: 500,
-                    // ease: "Bounce.easeIn"
                     ease: "Bounce.easeInOut"
                 }
             });
@@ -243,6 +248,10 @@ export class Player {
             }
 
             if (this.disable) {
+                return;
+            }
+
+            if (getCantSelectMeAsTargetCardNames().includes(curGameFEStatus.actualCard.CN) && this.user.userId == getMyUserId()) {
                 return;
             }
 

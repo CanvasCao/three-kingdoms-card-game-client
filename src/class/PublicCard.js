@@ -94,7 +94,7 @@ export class PublicCard {
                 targets: child,
                 x: {
                     value: this.cardInitStartX + diffDis,
-                    duration: 100,
+                    duration: 500,
                 },
                 onComplete: () => {
                     // this.isMoving = false;

@@ -112,6 +112,14 @@ const getIsEquipmentCard = (card) => {
     return CARD_TYPE.EQUIPMENT == card.type
 }
 
+const getCantSelectMeAsTargetCardNames = () => {
+    return [
+        BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,
+        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN, SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN,
+        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN, SCROLL_CARDS_CONFIG.JUE_DOU
+    ]
+}
+
 export {
     getIsMyPlayTurn,
     getIsMyResponseTurn,
@@ -122,5 +130,6 @@ export {
     getHowManyTargetsNeed,
     getDistanceBetweenMeAndTarget,
     getIsEquipmentCard,
+    getCantSelectMeAsTargetCardNames,
     uuidv4
 }

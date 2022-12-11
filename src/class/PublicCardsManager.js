@@ -8,8 +8,6 @@ export class PublicControlCardsManager {
     constructor(gamingScene) {
         this.obId = uuidv4();
         this.gamingScene = gamingScene;
-        // this.gamingScene.gameStatusObserved.addObserver(this);
-        // this.gamingScene.gameFEStatusObserved.addObserver(this);
     }
 
     add(data) {
@@ -23,9 +21,5 @@ export class PublicControlCardsManager {
             gameFEStatus.publicCards.push(card);// 必须先update gameFEStatus, PublicCard初始化的位置需要gameFEStatus
         })
         this.gamingScene.gameFEStatusObserved.setGameEFStatus(gameFEStatus)
-    }
-
-    gameStatusNotify(gameStatus) {
-
     }
 }
