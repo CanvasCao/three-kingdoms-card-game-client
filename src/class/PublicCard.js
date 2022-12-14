@@ -15,7 +15,6 @@ export class PublicCard {
         this.cardInitStartX = sizeConfig.background.width / 2
         this.cardInitStartY = sizeConfig.background.height / 2
 
-
         // tint
         this.disableTint = colorConfig.disableCard;
         this.ableTint = colorConfig.card;
