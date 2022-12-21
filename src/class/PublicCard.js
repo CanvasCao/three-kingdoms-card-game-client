@@ -5,15 +5,17 @@ import {sharedDrawCard} from "../utils/drawCardUtils";
 import {differenceBy} from "lodash";
 
 export class PublicCard {
-    constructor(gamingScene, card, message) {
+    constructor(gamingScene, card, message, publicCards) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
         this.card = card;
         this.message = message;
+        this.publicCards = publicCards;
 
-        this.cardInitStartX = sizeConfig.background.width / 2
-        this.cardInitStartY = sizeConfig.background.height / 2
+        const initDiffDistance = this.getInitDiffDistance(this.publicCards);
+        this.cardInitStartX = initDiffDistance + sizeConfig.background.width / 2;
+        this.cardInitStartY = sizeConfig.background.height / 2;
 
         // tint
         this.disableTint = colorConfig.disableCard;
@@ -40,7 +42,7 @@ export class PublicCard {
 
         setTimeout(() => {
             this.destoryAll();
-        }, 10000)
+        }, 5000)
     }
 
     drawCard() {
@@ -70,7 +72,7 @@ export class PublicCard {
         )
         this.cardMessageObj.setPadding(0, 5, 0, 0);
         this.cardMessageObj.setOrigin(0.5, 1);
-        this.cardMessageObj.setFontSize(8);
+        this.cardMessageObj.setFontSize(9);
         this.cardMessageObj.setAlpha(1)
         this.group.add(this.cardMessageObj);
 
@@ -83,23 +85,35 @@ export class PublicCard {
         // }
 
         const publicCards = gameFEStatus.publicCards;
+        const diffDis = this.getDiffDistance(publicCards);
+
+        // this.isMoving = true;
+        [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj, this.cardMessageObj].forEach((obj, index) => {
+            const offsetX = (index == 2) ? this.cardHuaseNumberObjOffsetX : 0;
+            const offsetY = (index == 2) ? this.cardHuaseNumberObjOffsetY : 0;
+            this.gamingScene.tweens.add({
+                targets: obj,
+                x: {
+                    value: sizeConfig.background.width / 2 + diffDis + offsetX,
+                    duration: 500,
+                },
+            });
+        })
+    }
+
+
+    getInitDiffDistance(publicCards) {
+        const cardLen = publicCards - 1;
+        const middle = (cardLen - 1) / 2;
+        const diffDis = (cardLen - middle) * sizeConfig.controlCard.width;
+        return diffDis;
+    }
+
+    getDiffDistance(publicCards) {
         const middle = (publicCards.length - 1) / 2;
         const myindex = publicCards.findIndex((c) => c.cardId == this.card.cardId);
         const diffDis = (myindex - middle) * sizeConfig.controlCard.width;
-
-        // this.isMoving = true;
-        this.group.getChildren().forEach((child) => {
-            this.gamingScene.tweens.add({
-                targets: child,
-                x: {
-                    value: this.cardInitStartX + diffDis,
-                    duration: 500,
-                },
-                onComplete: () => {
-                    // this.isMoving = false;
-                }
-            });
-        });
+        return diffDis;
     }
 
     destoryAll() {

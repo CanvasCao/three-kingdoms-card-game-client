@@ -11,15 +11,16 @@ export class PublicControlCardsManager {
     }
 
     add(data) {
-        // cards:
+        // cards:[]
         // message
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-        data.cards.forEach((card)=>{
-            new PublicCard(this.gamingScene, card,data.message);
+
+        data.cards.forEach((card) => {
+            gameFEStatus.publicCards.push(card);
+            new PublicCard(this.gamingScene, card, data.message,gameFEStatus.publicCards);
         })
-        data.cards.forEach((card)=>{
-            gameFEStatus.publicCards.push(card);// 必须先update gameFEStatus, PublicCard初始化的位置需要gameFEStatus
-        })
+
+        // setGameEFStatus 是为了adjust location
         this.gamingScene.gameFEStatusObserved.setGameEFStatus(gameFEStatus)
     }
 }
