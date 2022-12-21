@@ -6,7 +6,9 @@ import {
     getCanPlayInMyTurn,
     getMyUserId,
     uuidv4,
-    getHowManyTargetsNeed, getIsEquipmentCard
+    getHowManyTargetsNeed,
+    getIsEquipmentCard,
+    getMyResponseStage
 } from "../utils/utils";
 import {socket} from "../socket";
 import emitMap from "../config/emitMap.json";
@@ -106,7 +108,7 @@ export class ControlButtons {
 
     bindEvent() {
         this.cancelBtnImg.on('pointerdown', () => {
-            if (this.isMyResponseTurn) {
+            if (this._isMyResponseTurn) {
                 this.gamingScene.socket.emit(
                     emitMap.RESPONSE,
                     {
@@ -114,7 +116,7 @@ export class ControlButtons {
                     }
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
-            } else if (this.canPlayInMyTurn) {
+            } else if (this._canPlayInMyTurn) {
                 this.gamingScene.gameFEStatusObserved.reset();
             }
         });
@@ -123,7 +125,7 @@ export class ControlButtons {
             const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
             const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
 
-            if (this.isMyResponseTurn) {
+            if (this._isMyResponseTurn) {
                 if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus)) {
                     return
                 }
@@ -133,7 +135,7 @@ export class ControlButtons {
                     this.generateResponse(),
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
-            } else if (this.canPlayInMyTurn) {
+            } else if (this._canPlayInMyTurn) {
                 if (!this.canClickOkBtnInMyPlayStage(gameFEStatus)) {
                     return
                 }
@@ -156,7 +158,7 @@ export class ControlButtons {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
 
         const actualCard = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]));
-        actualCard.cardId = uuidv4(); // 作为前端判断要不要重新计算和刷新disable的依据
+        actualCard.cardId = uuidv4(); // TODO 作为前端判断要不要重新计算和刷新disable的依据
         if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
             return {
                 cards: gameFEStatus.selectedCards,
@@ -188,14 +190,17 @@ export class ControlButtons {
     generateResponse() {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+        const responseStage = getMyResponseStage(gameStatus);
+
         return {
             cards: gameFEStatus.selectedCards,
             actualCard: gameFEStatus.selectedCards[0],
             originId: getMyUserId(),
+            targetId: responseStage.targetId
         }
     }
 
-// show 包含 able
+    // show 包含 able
     showBtn(group, cb) {
         this.gamingScene.tweens.add({
             targets: [group.img, group.text],
@@ -255,8 +260,8 @@ export class ControlButtons {
     setButtonStatusByGameStatus(gameStatus) {
         const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-        this.isMyResponseTurn = isMyResponseTurn
-        this.canPlayInMyTurn = canPlayInMyTurn
+        this._isMyResponseTurn = isMyResponseTurn
+        this._canPlayInMyTurn = canPlayInMyTurn
 
         if (canPlayInMyTurn) {
             // 我的出牌阶段
@@ -275,7 +280,7 @@ export class ControlButtons {
 
     setButtonStatusByGameFEStatus(gameFEStatus) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
-        if (this.canPlayInMyTurn) {
+        if (this._canPlayInMyTurn) {
             this.canClickOkBtnInMyPlayStage(gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
 
             if (gameFEStatus.selectedCards.length > 0) {
@@ -285,7 +290,7 @@ export class ControlButtons {
                 this.hideBtn(this.cancelBtnGroup)
                 this.showBtn(this.endBtnGroup)
             }
-        } else if (this.isMyResponseTurn) {
+        } else if (this._isMyResponseTurn) {
             this.canClickOkBtnInMyResponseStage(
                 gameStatus,
                 gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)

@@ -4,7 +4,6 @@
     "sha": "/sha.png"
   },
   "player": {
-    "one": "wujiang/biao/one.png",
     "SHU001": "wujiang/biao/SHU001.png",
     "SHU002": "wujiang/biao/SHU002.jpeg",
     "SHU003": "wujiang/biao/SHU003.png"
@@ -12,7 +11,6 @@
   "other": {
     "greenGouyu": "other/greenGouyu.png",
     "white": "other/white.png",
-    "red": "other/red.png",
     "bg": "other/bg.png",
     "tiesuo": "other/tiesuo.png"
   }

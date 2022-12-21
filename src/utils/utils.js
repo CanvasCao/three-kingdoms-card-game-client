@@ -31,14 +31,21 @@ const getIsMyPlayTurn = (gameStatus) => {
 
 const getIsMyResponseTurn = (gameStatus) => {
     if (gameStatus.taoResStages.length > 0) {
-        return gameStatus.taoResStages?.[0]?.originId == getMyUserId();
+        return gameStatus.taoResStages[0]?.originId == getMyUserId();
     }
     if (gameStatus.shanResStages.length > 0) {
-        console.log(gameStatus.shanResStages?.[0]?.originId)
-        console.log(getMyUserId())
-        return gameStatus.shanResStages?.[0]?.originId == getMyUserId();
+        return gameStatus.shanResStages[0]?.originId == getMyUserId();
     }
     return false;
+}
+
+const getMyResponseStage=(gameStatus)=>{
+    if (gameStatus.taoResStages.length > 0) {
+        return gameStatus.taoResStages[0];
+    }
+    if (gameStatus.shanResStages.length > 0) {
+        return gameStatus.shanResStages[0];
+    }
 }
 
 const getIsOthersResponseTurn = (gameStatus) => {
@@ -121,11 +128,12 @@ const getCantSelectMeAsTargetCardNames = () => {
 }
 
 export {
+    getMyUserId,
     getIsMyPlayTurn,
     getIsMyResponseTurn,
+    getMyResponseStage,
     getIsOthersResponseTurn,
     getCanPlayInMyTurn,
-    getMyUserId,
     getCanPlayThisCardInMyPlayTurn,
     getHowManyTargetsNeed,
     getDistanceBetweenMeAndTarget,
