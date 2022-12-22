@@ -8,9 +8,10 @@ import {
     uuidv4,
     getHowManyTargetsNeed,
     getIsEquipmentCard,
-    getMyResponseStage
+    getMyResponseStage,
+    getIsMyThrowTurn,
+    getNeedThrowCardNumber
 } from "../utils/utils";
-import {socket} from "../socket";
 import emitMap from "../config/emitMap.json";
 import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 
@@ -24,7 +25,9 @@ export class ControlButtons {
         this.cardBtnsY = sizeConfig.background.height - sizeConfig.controlCard.height - sizeConfig.background.height * 0.12;
         this.btnRightOffset = 180;
 
-        this.prev_isMyPlayTurn = false;
+        this._isMyResponseTurn;
+        this._canPlayInMyTurn;
+        this._isMyThrowTurn;
 
         this.okBtnGroup = {};
         this.cancelBtnGroup = {};
@@ -109,12 +112,6 @@ export class ControlButtons {
     bindEvent() {
         this.cancelBtnImg.on('pointerdown', () => {
             if (this._isMyResponseTurn) {
-                this.gamingScene.socket.emit(
-                    emitMap.RESPONSE,
-                    {
-                        originId: getMyUserId(),
-                    }
-                )
                 this.gamingScene.gameFEStatusObserved.reset();
             } else if (this._canPlayInMyTurn) {
                 this.gamingScene.gameFEStatusObserved.reset();
@@ -251,6 +248,12 @@ export class ControlButtons {
         }
     }
 
+    canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus) {
+        const myUser = gameStatus.users[getMyUserId()];
+        const needThrowCardNumber = getNeedThrowCardNumber(myUser);
+        return gameFEStatus.selectedCards.length == needThrowCardNumber
+    }
+
     hideAllBtns() {
         this.hideBtn(this.okBtnGroup);
         this.hideBtn(this.cancelBtnGroup)
@@ -260,19 +263,24 @@ export class ControlButtons {
     setButtonStatusByGameStatus(gameStatus) {
         const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
+        const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
         this._isMyResponseTurn = isMyResponseTurn
         this._canPlayInMyTurn = canPlayInMyTurn
+        this._isMyThrowTurn = isMyThrowTurn
 
         if (canPlayInMyTurn) {
-            // 我的出牌阶段
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.showBtn(this.endBtnGroup)
         } else if (isMyResponseTurn) {
-            // 我的响应阶段
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.showBtn(this.cancelBtnGroup)
+        } else if (isMyThrowTurn) {
+            this.showBtn(this.okBtnGroup)
+            this.disableBtn(this.okBtnGroup)
+            this.hideBtn(this.cancelBtnGroup)
+            this.hideBtn(this.endBtnGroup)
         } else {
             this.hideAllBtns();
         }
@@ -291,11 +299,11 @@ export class ControlButtons {
                 this.showBtn(this.endBtnGroup)
             }
         } else if (this._isMyResponseTurn) {
-            this.canClickOkBtnInMyResponseStage(
-                gameStatus,
-                gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+            this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
             this.showBtn(this.cancelBtnGroup)
             this.hideBtn(this.endBtnGroup)
+        } else if (this._isMyThrowTurn) {
+            this.canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
         }
     }
 

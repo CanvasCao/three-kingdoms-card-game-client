@@ -5,10 +5,14 @@ import {
     getIsMyPlayTurn,
     uuidv4,
     getIsMyResponseTurn,
-    getCanPlayThisCardInMyPlayTurn, getIsOthersResponseTurn
+    getCanPlayThisCardInMyPlayTurn,
+    getIsOthersResponseTurn,
+    getIsMyThrowTurn,
+    getNeedThrowCardNumber
 } from "../utils/utils";
 import {BASIC_CARDS_CONFIG} from "../utils/cardConfig";
 import {sharedDrawCard} from "../utils/drawCardUtils";
+import differenceBy from "lodash/differenceBy";
 
 export class ControlCard {
     constructor(gamingScene, card) {
@@ -30,7 +34,7 @@ export class ControlCard {
         this.ableTint = colorConfig.card;
 
         // inner state
-        this.cardDisable = true;
+        this._cardDisable = false;
         this.isMoving = false;
 
         // phaser obj
@@ -66,34 +70,48 @@ export class ControlCard {
         this.group.add(cardImgObj);
         this.group.add(cardNameObj);
         this.group.add(cardHuaseNumberObj);
-        this.setCardDisable(this.gamingScene.gameStatusObserved.gameStatus)
+        this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus)
     }
 
     bindEvent() {
         this.cardImgObj.on('pointerdown', () => {
-            if (this.cardDisable) {
-                return
-            }
+                if (this._cardDisable) {
+                    return
+                }
 
-            const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-            const curStatus = this.gamingScene.gameStatusObserved.gameStatus;
+                const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+                const curStatus = this.gamingScene.gameStatusObserved.gameStatus;
+                if (getIsOthersResponseTurn(curStatus)) {
+                    return
+                }
 
-            if (getIsOthersResponseTurn(curStatus)) {
-                return
-            }
+                const isMyPlayTurn = getIsMyPlayTurn(curStatus);
+                const isMyResponseTurn = getIsMyResponseTurn(curStatus);
+                const isMyThrowTurn = getIsMyThrowTurn(curStatus);
 
-            // 选中再点击就是反选
-            if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
-                curFEStatus.selectedCards = [];
-                curFEStatus.actualCard = null;
-                curFEStatus.selectedTargetUsers = [];
-            } else { // 选中
-                curFEStatus.selectedCards = [this.card];
-                curFEStatus.actualCard = this.card;
-                curFEStatus.selectedTargetUsers = [];
+                if (isMyPlayTurn || isMyResponseTurn) {
+                    // 选中再点击就是反选
+                    if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
+                        curFEStatus.selectedCards = [];
+                        curFEStatus.actualCard = null;
+                        curFEStatus.selectedTargetUsers = [];
+                    } else { // 选中
+                        curFEStatus.selectedCards = [this.card];
+                        curFEStatus.actualCard = this.card;
+                        curFEStatus.selectedTargetUsers = [];
+                    }
+                } else if (isMyThrowTurn) {
+                    // setCardDisableByGameFEStatus set _cardDisable的时候 已经计算了选中卡牌数量
+                    // debugger
+                    if (curFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId)) {
+                        curFEStatus.selectedCards = differenceBy(curFEStatus.selectedCards, [this.card], 'cardId');
+                    } else {
+                        curFEStatus.selectedCards.push(this.card);
+                    }
+                }
+                this.gamingScene.gameFEStatusObserved.setGameEFStatus(curFEStatus);
             }
-            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curFEStatus);
-        });
+        );
     }
 
     adjustLocation() {
@@ -176,12 +194,13 @@ export class ControlCard {
 
     }
 
-    setCardDisable(gameStatus) {
+    setCardDisableByGameStatus(gameStatus) {
         const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
         const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
-        if (!isMyPlayTurn && !isMyResponseTurn) {
+        const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
+        if (!isMyPlayTurn && !isMyResponseTurn && !isMyThrowTurn) {
             this.cardImgObj.setTint(this.disableTint)
-            this.cardDisable = true
+            this._cardDisable = true
             return
         }
 
@@ -189,22 +208,50 @@ export class ControlCard {
             const canPlayThisCardInMyPlayTurn = getCanPlayThisCardInMyPlayTurn(gameStatus.users[getMyUserId()], this.card)
             if (!canPlayThisCardInMyPlayTurn) {
                 this.cardImgObj.setTint(this.disableTint)
-                this.cardDisable = true
+                this._cardDisable = true
                 return
             }
         }
 
         if (isMyResponseTurn) {
-            const canPlayCardNameInMyPlayTurn = gameStatus.taoResStages.length > 0 ? BASIC_CARDS_CONFIG.TAO.CN : BASIC_CARDS_CONFIG.SHAN.CN
+            const canPlayCardNameInMyPlayTurn = gameStatus.taoResStages.length > 0 ?
+                BASIC_CARDS_CONFIG.TAO.CN :
+                BASIC_CARDS_CONFIG.SHAN.CN;
+
             if (canPlayCardNameInMyPlayTurn != this.card.CN) {
                 this.cardImgObj.setTint(this.disableTint)
-                this.cardDisable = true
+                this._cardDisable = true
                 return
             }
         }
 
+        if (isMyThrowTurn) {
+            return
+        }
+
         this.cardImgObj.setTint(this.ableTint);
-        this.cardDisable = false
+        this._cardDisable = false;
+    }
+
+    setCardDisableByGameFEStatus(gameFEStatus) {
+        const curStatus = this.gamingScene.gameStatusObserved.gameStatus;
+
+        const isMyThrowTurn = getIsMyThrowTurn(curStatus);
+        if (isMyThrowTurn) {
+            const myUser = curStatus.users[getMyUserId()];
+            const needThrowCardNumber = getNeedThrowCardNumber(myUser);
+            const haveSelectedEnoughThrowCard = gameFEStatus.selectedCards.length >= needThrowCardNumber;
+            const isSelected = gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId);
+            // 选中了足够的弃牌 没选中的所有牌都是disable
+            if (haveSelectedEnoughThrowCard && !isSelected) {
+                this.cardImgObj.setTint(this.disableTint)
+                this._cardDisable = true
+            }
+            if(!haveSelectedEnoughThrowCard){
+                this.cardImgObj.setTint(this.ableTint);
+                this._cardDisable = false;
+            }
+        }
     }
 
     destoryAll() {
@@ -231,10 +278,16 @@ export class ControlCard {
 
         this.adjustLocation();
 
-        this.setCardDisable(gameStatus);
+        this.setCardDisableByGameStatus(gameStatus);
     }
 
     gameFEStatusNotify(gameFEStatus) {
+        this.setCardSelected(gameFEStatus);
+
+        this.setCardDisableByGameFEStatus(gameFEStatus);
+    }
+
+    setCardSelected(gameFEStatus) {
         const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
         if (this._selected == isSelected) return;
         if (this.isMoving) return;
@@ -255,5 +308,4 @@ export class ControlCard {
             });
         });
     }
-
 }

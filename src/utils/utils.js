@@ -29,6 +29,10 @@ const getIsMyPlayTurn = (gameStatus) => {
     return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'play';
 }
 
+const getIsMyThrowTurn = (gameStatus) => {
+    return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'throw';
+}
+
 const getIsMyResponseTurn = (gameStatus) => {
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0]?.originId == getMyUserId();
@@ -39,7 +43,7 @@ const getIsMyResponseTurn = (gameStatus) => {
     return false;
 }
 
-const getMyResponseStage=(gameStatus)=>{
+const getMyResponseStage = (gameStatus) => {
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0];
     }
@@ -127,9 +131,14 @@ const getCantSelectMeAsTargetCardNames = () => {
     ]
 }
 
+const getNeedThrowCardNumber=(user)=>{
+    return user.cards.length - user.currentBlood
+}
+
 export {
     getMyUserId,
     getIsMyPlayTurn,
+    getIsMyThrowTurn,
     getIsMyResponseTurn,
     getMyResponseStage,
     getIsOthersResponseTurn,
@@ -139,5 +148,6 @@ export {
     getDistanceBetweenMeAndTarget,
     getIsEquipmentCard,
     getCantSelectMeAsTargetCardNames,
+    getNeedThrowCardNumber,
     uuidv4
 }
