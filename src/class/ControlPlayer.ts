@@ -1,8 +1,23 @@
 import sizeConfig from "../config/sizeConfig.json";
 import {getMyUserId, uuidv4} from "../utils/utils";
+import {GamingScene} from "../types/phaser";
+import {Card, GameStatus, User} from "../types/gameStatus";
 
 export class ControlPlayer {
-    constructor(gamingScene, player = {}) {
+    obId: string;
+    gamingScene: GamingScene;
+    player: User;
+    maxBlood: number;
+    name: string;
+    playerX: number;
+    playerY: number;
+
+    imageStroke?: Phaser.GameObjects.Graphics;
+    playerImage?: Phaser.GameObjects.Image;
+    graphics?: Phaser.GameObjects.Graphics;
+    bloodImages?: Phaser.GameObjects.Image[];
+
+    constructor(gamingScene: GamingScene, player: User) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
@@ -67,11 +82,11 @@ export class ControlPlayer {
         }
     }
 
-    gameStatusNotify(gameStatus) {
+    gameStatusNotify(gameStatus: GameStatus) {
         if (gameStatus.stage.userId === getMyUserId()) {
-            this.imageStroke.setAlpha(1);
+            this.imageStroke!.setAlpha(1);
         } else {
-            this.imageStroke.setAlpha(0);
+            this.imageStroke!.setAlpha(0);
         }
     }
 }

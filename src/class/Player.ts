@@ -8,9 +8,48 @@ import {
     uuidv4
 } from "../utils/utils";
 import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
+import {GamingScene, PlayerEquipmentGroup} from "../types/phaser";
+import {Card, GameStatus, User} from "../types/gameStatus";
+import {ColorConfigJson} from "../types/config";
+import {Game} from "phaser";
+import {GameFEStatus} from "../types/gameFEStatus";
+
+const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
 export class Player {
-    constructor(gamingScene, user) {
+    obId: string;
+    gamingScene: GamingScene;
+    user: User;
+    disable: boolean;
+    _pandingCardsLength: number;
+    playerX: number;
+    playerY: number;
+
+    bloodImages?: Phaser.GameObjects.Image[];
+    pandingCardImages?: Phaser.GameObjects.Image[];
+    pandingCardTexts?: Phaser.GameObjects.Text[];
+    maxPandingCardsNumber: number;
+
+    _currentBlood: number;
+    _cardNumber: number;
+    _isTieSuo: boolean;
+    _actualCardId?: string;
+    _isDead?: boolean;
+
+    myTurnStroke?: Phaser.GameObjects.Graphics;
+    selectedStroke?: Phaser.GameObjects.Graphics;
+    cardNumObj?: Phaser.GameObjects.Text;
+    tieSuoImage?: Phaser.GameObjects.Image;
+    stageText?: Phaser.GameObjects.Text;
+    weaponGroup?: PlayerEquipmentGroup;
+    shieldGroup?: PlayerEquipmentGroup;
+    plusHorseGroup?: PlayerEquipmentGroup;
+    minusHorseGroup?: PlayerEquipmentGroup;
+    playerImage?: Phaser.GameObjects.Image;
+    isDeadText?: Phaser.GameObjects.Text;
+    bloodsBgGraphics?: Phaser.GameObjects.Graphics;
+
+    constructor(gamingScene: GamingScene, user: User) {
         this.obId = uuidv4();
 
         // init
@@ -19,11 +58,13 @@ export class Player {
 
         // init inner state
         this.disable = false;
+        this._pandingCardsLength = 0
 
         // location
         // this.playerX = (sizeConfig.background.width / 2);
         // this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 280 : sizeConfig.player.height - 60;
         const xmap = {0: -200, 1: 0, 2: 200};
+        // @ts-ignore
         this.playerX = (sizeConfig.background.width / 2) + xmap[this.user.location];
         this.playerY = sizeConfig.player.height;
 
@@ -64,7 +105,7 @@ export class Player {
 
     drawMyTurnStroke() {
         this.myTurnStroke = this.gamingScene.add.graphics();
-        this.myTurnStroke.lineStyle(10, colorConfig.myTurnStroke, 1);
+        this.myTurnStroke.lineStyle(10, colorConfigJson.myTurnStroke, 1);
         this.myTurnStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
             this.playerY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
@@ -74,7 +115,7 @@ export class Player {
 
     drawSelectedStroke() {
         this.selectedStroke = this.gamingScene.add.graphics();
-        this.selectedStroke.lineStyle(10, colorConfig.selectedPlayerStroke, 1);
+        this.selectedStroke.lineStyle(10, colorConfigJson.selectedPlayerStroke, 1);
         this.selectedStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
             this.playerY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
@@ -86,7 +127,8 @@ export class Player {
         this.cardNumObj = this.gamingScene.add.text((
             this.playerX - sizeConfig.player.width / 2),
             this.playerY - 5,
-            this._cardNumber,
+            this._cardNumber.toString(),
+            // @ts-ignore
             {fill: "#000", align: "center"}
         );
 
@@ -116,21 +158,22 @@ export class Player {
             pandingCardImage.displayHeight = 12;
             pandingCardImage.displayWidth = 12;
             pandingCardImage.setRotation(Math.PI / 4)
-            pandingCardImage.setTint(colorConfig.card)
-            pandingCardImage.setAlpha(1)
+            pandingCardImage.setTint(colorConfigJson.card)
+            pandingCardImage.setAlpha(0)
 
-            this.pandingCardImages.push(pandingCardImage);
+            this.pandingCardImages!.push(pandingCardImage);
 
             const pandingCardText = this.gamingScene.add.text(
                 this.playerX + sizeConfig.player.width / 2 - 10 - stepX * i,
                 this.playerY + sizeConfig.player.height / 2 + 2,
-                "乐",
+                "",
+                // @ts-ignore
                 {fill: "#000", align: "center"}
             );
             pandingCardText.setOrigin(0.5, 0.5)
             pandingCardText.setFontSize(10)
-            pandingCardText.setAlpha(1)
-            this.pandingCardTexts.push(pandingCardText);
+            pandingCardText.setAlpha(0)
+            this.pandingCardTexts!.push(pandingCardText);
         }
     }
 
@@ -142,7 +185,7 @@ export class Player {
                 "greenGouyu");
             bloodImage.displayHeight = sizeConfig.blood.height * 0.8;
             bloodImage.displayWidth = sizeConfig.blood.width * 0.8;
-            this.bloodImages.push(bloodImage);
+            this.bloodImages!.push(bloodImage);
         }
     }
 
@@ -151,6 +194,7 @@ export class Player {
             this.playerX,
             this.playerY + sizeConfig.player.height / 2 + 10,
             "",
+            // @ts-ignore
             {fill: "#fff", align: "center", stroke: '#ff0000', strokeThickness: 6}
         );
 
@@ -168,52 +212,61 @@ export class Player {
         }
     }
 
-    drawEquipment(index) {
+    drawEquipment(index: number) {
         const padding = 1;
         const offsetY = 12;
         const offsetYStep = 14;
-        const groupMap = {0: 'weaponGroup', 1: 'shieldGroup', 2: 'plusHorseGroup', 3: 'minusHorseGroup'};
+        const groupMap: { [key: number]: 'weaponGroup' | 'shieldGroup' | 'plusHorseGroup' | 'minusHorseGroup' } = {
+            0: 'weaponGroup',
+            1: 'shieldGroup',
+            2: 'plusHorseGroup',
+            3: 'minusHorseGroup'
+        };
         const groupName = groupMap[index];
         this[groupName] = {};
-        this[groupName].distanceText = this.gamingScene.add.text(
+        this[groupName]!.distanceText = this.gamingScene.add.text(
             this.playerX - sizeConfig.player.width / 2,
             this.playerY + offsetY + offsetYStep * index,
             "",
+            // @ts-ignore
             {fill: "#000", align: "left", fixedWidth: 84}
         );
-        this[groupName].distanceText.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
-        this[groupName].distanceText.setBackgroundColor("#ccc")
-        this[groupName].distanceText.setFontSize(9)
-        this[groupName].distanceText.setAlpha(0)
+        this[groupName]!.distanceText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
+        this[groupName]!.distanceText!.setBackgroundColor("#ccc")
+        this[groupName]!.distanceText!.setFontSize(9)
+        this[groupName]!.distanceText!.setAlpha(0)
 
-        this[groupName].nameText = this.gamingScene.add.text(
+        this[groupName]!.nameText = this.gamingScene.add.text(
             this.playerX - sizeConfig.player.width / 2 + 14,
             this.playerY + offsetY + offsetYStep * index,
             "",
+            // @ts-ignore
             {fill: "#000", align: "justify", fixedWidth: 80}
         );
-        this[groupName].nameText.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
-        this[groupName].nameText.setFontSize(9)
-        this[groupName].nameText.setAlpha(0)
+        this[groupName]!.nameText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
+        this[groupName]!.nameText!.setFontSize(9)
+        this[groupName]!.nameText!.setAlpha(0)
 
 
-        this[groupName].huaseNumText = this.gamingScene.add.text(
+        this[groupName]!.huaseNumText = this.gamingScene.add.text(
             this.playerX - sizeConfig.player.width / 2 + 56,
             this.playerY + offsetY + offsetYStep * index,
             "",
+            // @ts-ignore
             {fill: "#000", align: "center", fixedWidth: 28}
         );
-        this[groupName].huaseNumText.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
-        this[groupName].huaseNumText.setFontSize(9)
-        this[groupName].huaseNumText.setAlpha(0)
+        this[groupName]!.huaseNumText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
+        this[groupName]!.huaseNumText!.setFontSize(9)
+        this[groupName]!.huaseNumText!.setAlpha(0)
     }
 
     drawIsDead() {
-        this.playerImage.setTint(colorConfig.disablePlayer);
+        this.playerImage!.setTint(colorConfigJson.disablePlayer);
         this.isDeadText = this.gamingScene.add.text(
             this.playerX,
             this.playerY,
             "阵亡",
+            // @ts-ignore
             {fill: "#000", align: "center"}
         );
         this.isDeadText.setOrigin(0.5, 0.5)
@@ -223,13 +276,13 @@ export class Player {
         this.isDeadText.setFontSize(16)
     }
 
-    setBloods(number) {
-        for (let i = 0; i < this.bloodImages.length; i++) {
+    setBloods(number: number) {
+        for (let i = 0; i < this.bloodImages!.length; i++) {
             const bloodNumber = i + 1;
             const alpha = (bloodNumber > number) ? 0 : 1
 
             this.gamingScene.tweens.add({
-                targets: this.bloodImages[i],
+                targets: this.bloodImages![i],
                 alpha: {
                     value: alpha,
                     duration: 500,
@@ -240,7 +293,7 @@ export class Player {
     }
 
     bindEvent() {
-        this.playerImage.on('pointerdown', () => {
+        this.playerImage!.on('pointerdown', () => {
             const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
             const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus;
             if (curGameFEStatus.selectedCards.length <= 0) {
@@ -260,7 +313,7 @@ export class Player {
                 return;
             }
 
-            if (curGameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)) {
+            if (curGameFEStatus.selectedTargetUsers.find((u: User) => u.userId == this.user.userId)) {
                 return;
             }
 
@@ -272,9 +325,9 @@ export class Player {
     drawBloodsBg() {
         const graphicsW = 18 * 0.8
         const graphicsH = 100 * 0.8
-        this.graphics = this.gamingScene.add.graphics();
-        this.graphics.fillStyle(0x000, 1);
-        this.graphics.fillRoundedRect(
+        this.bloodsBgGraphics = this.gamingScene.add.graphics();
+        this.bloodsBgGraphics.fillStyle(0x000, 1);
+        this.bloodsBgGraphics.fillRoundedRect(
             this.playerX + sizeConfig.player.width / 2 - graphicsW,
             this.playerY + sizeConfig.player.height / 2 - graphicsH,
             graphicsW,
@@ -295,7 +348,7 @@ export class Player {
         this.playerImage.displayWidth = sizeConfig.player.width;
     }
 
-    onEquipmentsChange(gameStatus) {
+    onEquipmentsChange(gameStatus: GameStatus) {
         const user = gameStatus.users[this.user.userId];
         [
             {card: "weaponCard", group: "weaponGroup"},
@@ -303,9 +356,10 @@ export class Player {
             {card: "plusHorseCard", group: "plusHorseGroup"},
             {card: "minusHorseCard", group: "minusHorseGroup"},
         ].forEach((ele, index) => {
-            const card = user[ele.card]
+            const card = user[ele.card as keyof User] as Card
+            // @ts-ignore
             const group = this[ele.group]
-            if (user[ele.card]) {
+            if (user[ele.card as keyof User]) {
                 group.distanceText.setText(card.distanceDesc)
                 group.nameText.setText(card.CN)
                 group.huaseNumText.setText(card.cardNumDesc + card.huase)
@@ -328,25 +382,25 @@ export class Player {
         })
     }
 
-    onPandingCardsChange(gameStatus) {
+    onPandingCardsChange(gameStatus: GameStatus) {
         const user = gameStatus.users[this.user.userId];
 
         if (this._pandingCardsLength != user.pandingCards.length) {
             for (let i = 0; i < this.maxPandingCardsNumber; i++) {
                 if (user.pandingCards[i]) {
-                    this.pandingCardImages[i].setAlpha(1)
-                    this.pandingCardTexts[i].setAlpha(1)
-                    this.pandingCardTexts[i].setText(user.pandingCards[i].CN.slice(0, 1))
+                    this.pandingCardImages![i].setAlpha(1)
+                    this.pandingCardTexts![i].setAlpha(1)
+                    this.pandingCardTexts![i].setText(user.pandingCards[i].CN.slice(0, 1))
                 } else {
-                    this.pandingCardImages[i].setAlpha(0)
-                    this.pandingCardTexts[i].setAlpha(0)
+                    this.pandingCardImages![i].setAlpha(0)
+                    this.pandingCardTexts![i].setAlpha(0)
                 }
             }
             this._pandingCardsLength = user.pandingCards.length
         }
     }
 
-    onPlayerBloodChange(gameStatus) {
+    onPlayerBloodChange(gameStatus: GameStatus) {
         const user = gameStatus.users[this.user.userId]
 
         if (this._currentBlood != user.currentBlood) {
@@ -355,44 +409,44 @@ export class Player {
         }
     }
 
-    onCardNumberChange(gameStatus) {
+    onCardNumberChange(gameStatus: GameStatus) {
         const user = gameStatus.users[this.user.userId]
 
         if (this._cardNumber != user.cards.length) {
-            this.cardNumObj.setText(user.cards.length)
+            this.cardNumObj!.setText(user.cards.length.toString())
             this._cardNumber = user.cards.length
         }
     }
 
-    onTieSuoChange(gameStatus) {
+    onTieSuoChange(gameStatus: GameStatus) {
         const user = gameStatus.users[this.user.userId]
 
         if (this._isTieSuo != user.isTieSuo) {
-            this.tieSuoImage.setAlpha(user.isTieSuo ? 1 : 0)
+            this.tieSuoImage!.setAlpha(user.isTieSuo ? 1 : 0)
             // this.tieSuoImage.setAlpha(1)
-            this._isTieSuo = user._isTieSuo
+            this._isTieSuo = user.isTieSuo
         }
     }
 
-    onPlayerTurnAndStageChange(gameStatus) {
+    onPlayerTurnAndStageChange(gameStatus: GameStatus) {
         if (gameStatus.stage.userId === this.user.userId) {
-            this.myTurnStroke.setAlpha(1);
-            this.stageText.setAlpha(1);
-            this.stageText.setText(gameStatus.stage.stageNameCN + '阶段...')
+            this.myTurnStroke!.setAlpha(1);
+            this.stageText!.setAlpha(1);
+            this.stageText!.setText(gameStatus.stage.stageNameCN + '阶段...')
         } else {
-            this.myTurnStroke.setAlpha(0);
-            this.stageText.setAlpha(0)
+            this.myTurnStroke!.setAlpha(0);
+            this.stageText!.setAlpha(0)
         }
     }
 
 
     setPlayerDisable() {
-        // this.playerImage.setTint(colorConfig.disablePlayer);
-        this.playerImage.setTint(0x666666);
+        // this.playerImage.setTint(colorConfigJson.disablePlayer);
+        this.playerImage!.setTint(0x666666);
         this.disable = true;
     }
 
-    onPlayerDisableChange(gameFEStatus) {
+    onPlayerDisableChange(gameFEStatus: GameFEStatus) {
         if (this.user.userId == getMyUserId()) {
             return;
         }
@@ -400,11 +454,11 @@ export class Player {
 
 
         const setPlayerDisable = () => {
-            this.playerImage.setTint(colorConfig.disablePlayer);
+            this.playerImage!.setTint(colorConfigJson.disablePlayer);
             this.disable = true;
         }
         const setPlayerAble = () => {
-            this.playerImage.clearTint();
+            this.playerImage!.clearTint();
             this.disable = false;
         }
 
@@ -422,7 +476,7 @@ export class Player {
                     this.setPlayerDisable();
                 }
             } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
-                if (gameStatus.users[this.user.userId].pandingCards.find((c) => c.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
+                if (gameStatus.users[this.user.userId].pandingCards.find((c: Card) => c.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
                     setPlayerDisable()
                 } else {
                     setPlayerAble()
@@ -434,12 +488,12 @@ export class Player {
         }
     }
 
-    onPlayerSelectedChange(gameFEStatus) {
+    onPlayerSelectedChange(gameFEStatus: GameFEStatus) {
         const isSelected = !!gameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)
-        this.selectedStroke.setAlpha(isSelected ? 1 : 0);
+        this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
     }
 
-    onPlayerDieChange(gameStatus) {
+    onPlayerDieChange(gameStatus: GameStatus) {
         const user = gameStatus.users[this.user.userId]
         if (user.isDead) {
             this.drawIsDead();
@@ -447,7 +501,7 @@ export class Player {
         }
     }
 
-    gameStatusNotify(gameStatus) {
+    gameStatusNotify(gameStatus: GameStatus) {
         if (this._isDead)
             return
 
@@ -460,7 +514,7 @@ export class Player {
         this.onPlayerDieChange(gameStatus)
     }
 
-    gameFEStatusNotify(gameFEStatus) {
+    gameFEStatusNotify(gameFEStatus: GameFEStatus) {
         if (this._isDead)
             return
 

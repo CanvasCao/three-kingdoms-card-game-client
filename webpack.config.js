@@ -1,6 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const webpack = require('webpack')
 
 module.exports = {
@@ -11,10 +11,13 @@ module.exports = {
         },
         compress: true,
         port: 9000,
-        hot:true,
+        hot: true,
+    },
+    resolve: {
+        extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
     },
     entry: {
-        main: path.resolve(__dirname, './src/index.js'),
+        main: path.resolve(__dirname, './src/index.ts'),
     },
     output: {
         path: path.resolve(__dirname, './dist'),
@@ -22,9 +25,18 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.tsx?$/,
+                use: [
+                    {
+                        loader: "ts-loader",
+                    },
+                ],
+                exclude: /node_modules/,
+            },
             // JavaScript
             {
-                test: /\.js$/,
+                test: /\.(j)sx?$/,
                 exclude: /node_modules/,
                 use: ['babel-loader'],
             },

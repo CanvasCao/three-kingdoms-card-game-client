@@ -1,5 +1,7 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
+import {GamingScene} from "../types/phaser";
+import {Card} from "../types/gameStatus";
 
 // tint
 const disableTint = colorConfig.disableCard;
@@ -7,7 +9,10 @@ const ableTint = colorConfig.card;
 const cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width / 2
 const cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2
 
-const sharedDrawCard = (gamingScene, card, {x, y}) => {
+const sharedDrawCard = (
+    gamingScene: GamingScene,
+    card: Card,
+    {x, y}: { x: number, y: number }) => {
     // background
     const cardImgObj = gamingScene.add.image(
         x,
@@ -16,6 +21,7 @@ const sharedDrawCard = (gamingScene, card, {x, y}) => {
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setAlpha(1)
+    // @ts-ignore
     cardImgObj.setTint(ableTint);
 
 
@@ -24,6 +30,7 @@ const sharedDrawCard = (gamingScene, card, {x, y}) => {
         x,
         y,
         card.CN,
+        // @ts-ignore
         {fill: "#000", align: "center"}
     )
     cardNameObj.setPadding(0, 5, 0, 0);
@@ -35,6 +42,7 @@ const sharedDrawCard = (gamingScene, card, {x, y}) => {
         x + cardHuaseNumberObjOffsetX,
         y + cardHuaseNumberObjOffsetY,
         card.huase + ' ' + card.cardNumDesc,
+        // @ts-ignore
         {fill: "#000", align: "center"}
     )
     cardHuaseNumberObj.setPadding(0, 5, 0, 0);

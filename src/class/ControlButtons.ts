@@ -1,7 +1,6 @@
 import sizeConfig from "../config/sizeConfig.json";
 import textConfig from "../config/textConfig.json";
 import {
-    getIsMyPlayTurn,
     getIsMyResponseTurn,
     getCanPlayInMyTurn,
     getMyUserId,
@@ -14,9 +13,35 @@ import {
 } from "../utils/utils";
 import emitMap from "../config/emitMap.json";
 import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
+import {BtnGroup, GamingScene} from "../types/phaser";
+import Phaser from "phaser";
+import {GameFEStatus} from "../types/gameFEStatus";
+import {GameStatus, User} from "../types/gameStatus";
 
 export class ControlButtons {
-    constructor(gamingScene) {
+    obId: string;
+    gamingScene: GamingScene;
+
+    cardBtnsX: number;
+    cardBtnsY: number;
+    btnRightOffset: number;
+
+    _isMyResponseTurn?: boolean;
+    _canPlayInMyTurn?: boolean;
+    _isMyThrowTurn?: boolean;
+
+    okBtnGroup: BtnGroup;
+    cancelBtnGroup: BtnGroup;
+    endBtnGroup: BtnGroup;
+
+    okBtnImg?: Phaser.GameObjects.Image;
+    okText?: Phaser.GameObjects.Text;
+    cancelBtnImg?: Phaser.GameObjects.Image;
+    cancelText?: Phaser.GameObjects.Text;
+    endBtnImg?: Phaser.GameObjects.Image;
+    endText?: Phaser.GameObjects.Text;
+
+    constructor(gamingScene: GamingScene) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
@@ -57,6 +82,7 @@ export class ControlButtons {
             this.cardBtnsX,
             this.cardBtnsY,
             textConfig.OK.CN,
+            // @ts-ignore
             {fill: "#fff", align: "center"}
         )
         this.okText.setPadding(0, 5, 0, 0);
@@ -79,6 +105,7 @@ export class ControlButtons {
             this.cardBtnsX + this.btnRightOffset,
             this.cardBtnsY,
             textConfig.CANCEL.CN,
+            // @ts-ignore
             {fill: "#fff", align: "center"}
         )
         this.cancelText.setPadding(0, 5, 0, 0);
@@ -97,20 +124,21 @@ export class ControlButtons {
         this.endBtnImg.setAlpha(0)
         this.endBtnGroup.img = this.endBtnImg
 
-        this.endBtnText = this.gamingScene.add.text(
+        this.endText = this.gamingScene.add.text(
             this.cardBtnsX + this.btnRightOffset,
             this.cardBtnsY,
             textConfig.END.CN,
+            // @ts-ignore
             {fill: "#fff", align: "center"}
         )
-        this.endBtnText.setPadding(0, 5, 0, 0);
-        this.endBtnText.setOrigin(0.5, 0.5);
-        this.endBtnText.setAlpha(0)
-        this.endBtnGroup.text = this.endBtnText
+        this.endText.setPadding(0, 5, 0, 0);
+        this.endText.setOrigin(0.5, 0.5);
+        this.endText.setAlpha(0)
+        this.endBtnGroup.text = this.endText
     }
 
     bindEvent() {
-        this.cancelBtnImg.on('pointerdown', () => {
+        this.cancelBtnImg!.on('pointerdown', () => {
             if (this._isMyResponseTurn) {
                 this.gamingScene.socket.emit(
                     emitMap.RESPONSE,
@@ -124,7 +152,7 @@ export class ControlButtons {
             }
         });
 
-        this.okBtnImg.on('pointerdown', () => {
+        this.okBtnImg!.on('pointerdown', () => {
             const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
             const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
 
@@ -161,7 +189,7 @@ export class ControlButtons {
             }
         });
 
-        this.endBtnImg.on('pointerdown', () => {
+        this.endBtnImg!.on('pointerdown', () => {
             this.gamingScene.socket.emit(emitMap.GO_NEXT_STAGE)
         });
     }
@@ -176,7 +204,7 @@ export class ControlButtons {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
-                actions: gameFEStatus.selectedTargetUsers.map((targetUser) => {
+                actions: gameFEStatus.selectedTargetUsers.map((targetUser: User) => {
                     return {
                         originId: getMyUserId(),
                         targetId: targetUser.userId,
@@ -209,12 +237,12 @@ export class ControlButtons {
             cards: gameFEStatus.selectedCards,
             actualCard: gameFEStatus.selectedCards[0],
             originId: getMyUserId(),
-            targetId: responseStage.targetId
+            targetId: responseStage!.targetId
         }
     }
 
     // show 包含 able
-    showBtn(group, cb) {
+    showBtn(group: BtnGroup, cb?: Function) {
         this.gamingScene.tweens.add({
             targets: [group.img, group.text],
             alpha: {
@@ -225,10 +253,10 @@ export class ControlButtons {
                 cb && cb()
             }
         });
-        group.img.setTint(0xcc0000)
+        group.img!.setTint(0xcc0000)
     }
 
-    hideBtn(group, cb) {
+    hideBtn(group: BtnGroup, cb?: Function) {
         this.gamingScene.tweens.add({
             targets: [group.img, group.text],
             alpha: {
@@ -242,11 +270,11 @@ export class ControlButtons {
     }
 
 
-    disableBtn(group) {
-        group.img.setTint(0xcccccc)
+    disableBtn(group: BtnGroup) {
+        group.img!.setTint(0xcccccc)
     }
 
-    canClickOkBtnInMyPlayStage(gameFEStatus) {
+    canClickOkBtnInMyPlayStage(gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
             const targetMinMaxNumber = getHowManyTargetsNeed(gameFEStatus.actualCard);
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.min
@@ -256,7 +284,7 @@ export class ControlButtons {
         return false
     }
 
-    canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) {
+    canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         if (gameStatus.taoResStages.length > 0) {
             return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.TAO.CN
         } else if (gameStatus.shanResStages.length > 0) {
@@ -264,7 +292,7 @@ export class ControlButtons {
         }
     }
 
-    canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus) {
+    canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         const myUser = gameStatus.users[getMyUserId()];
         const needThrowCardNumber = getNeedThrowCardNumber(myUser);
         return gameFEStatus.selectedCards.length == needThrowCardNumber
@@ -276,7 +304,7 @@ export class ControlButtons {
         this.hideBtn(this.endBtnGroup)
     }
 
-    setButtonStatusByGameStatus(gameStatus) {
+    setButtonStatusByGameStatus(gameStatus: GameStatus) {
         const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
@@ -302,7 +330,7 @@ export class ControlButtons {
         }
     }
 
-    setButtonStatusByGameFEStatus(gameFEStatus) {
+    setButtonStatusByGameFEStatus(gameFEStatus: GameFEStatus) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
         if (this._canPlayInMyTurn) {
             this.canClickOkBtnInMyPlayStage(gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
@@ -323,11 +351,11 @@ export class ControlButtons {
         }
     }
 
-    gameStatusNotify(gameStatus) {
+    gameStatusNotify(gameStatus: GameStatus) {
         this.setButtonStatusByGameStatus(gameStatus)
     }
 
-    gameFEStatusNotify(gameFEStatus) {
+    gameFEStatusNotify(gameFEStatus: GameFEStatus) {
         this.setButtonStatusByGameFEStatus(gameFEStatus);
     }
 

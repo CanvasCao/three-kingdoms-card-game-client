@@ -1,13 +1,15 @@
+import {Card, GameStatus, User, GameStatusUsers} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "./cardConfig";
 
-const getRelativePositionToCanvas = (gameObject, camera) => {
-    return {
-        x: (gameObject.x - camera.worldView.x) * camera.zoom,
-        y: (gameObject.y - camera.worldView.y) * camera.zoom
-    }
-}
+// const getRelativePositionToCanvas = (gameObject, camera) => {
+//     return {
+//         x: (gameObject.x - camera.worldView.x) * camera.zoom,
+//         y: (gameObject.y - camera.worldView.y) * camera.zoom
+//     }
+// }
 
 function uuidv4() {
+    // @ts-ignore
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
@@ -25,15 +27,15 @@ const getMyUserId = () => {
     }
 }
 
-const getIsMyPlayTurn = (gameStatus) => {
+const getIsMyPlayTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'play';
 }
 
-const getIsMyThrowTurn = (gameStatus) => {
+const getIsMyThrowTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'throw';
 }
 
-const getIsMyResponseTurn = (gameStatus) => {
+const getIsMyResponseTurn = (gameStatus: GameStatus) => {
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0]?.originId == getMyUserId();
     }
@@ -43,7 +45,7 @@ const getIsMyResponseTurn = (gameStatus) => {
     return false;
 }
 
-const getMyResponseStage = (gameStatus) => {
+const getMyResponseStage = (gameStatus: GameStatus) => {
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0];
     }
@@ -52,7 +54,7 @@ const getMyResponseStage = (gameStatus) => {
     }
 }
 
-const getIsOthersResponseTurn = (gameStatus) => {
+const getIsOthersResponseTurn = (gameStatus: GameStatus) => {
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0]?.originId != getMyUserId();
     }
@@ -62,11 +64,11 @@ const getIsOthersResponseTurn = (gameStatus) => {
     return false;
 }
 
-const getCanPlayInMyTurn = (gameStatus) => {
+const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
     return gameStatus.shanResStages.length <= 0 && gameStatus.taoResStages.length <= 0 && getIsMyPlayTurn(gameStatus);
 }
 
-const getCanPlayThisCardInMyPlayTurn = (user, card) => {
+const getCanPlayThisCardInMyPlayTurn = (user: User, card: Card) => {
     if (getIsEquipmentCard(card)) {
         return true
     }
@@ -90,7 +92,7 @@ const getCanPlayThisCardInMyPlayTurn = (user, card) => {
     return cards.includes(card.CN)
 }
 
-const getHowManyTargetsNeed = (actualCard) => {
+const getHowManyTargetsNeed = (actualCard: Card) => {
     if (getIsEquipmentCard(actualCard)) {
         return {min: 0, max: 0}
     }
@@ -106,7 +108,7 @@ const getHowManyTargetsNeed = (actualCard) => {
     return {min: 100, max: 100}
 }
 
-const getDistanceBetweenMeAndTarget = (users, targetUserId) => {
+const getDistanceBetweenMeAndTarget = (users: GameStatusUsers, targetUserId: string) => {
     const meUser = users[getMyUserId()];
     const targetUser = users[targetUserId];
     const userNumber = Object.keys(users).length;
@@ -119,7 +121,7 @@ const getDistanceBetweenMeAndTarget = (users, targetUserId) => {
     return tableDistance + (meUser?.minusHorseCard?.horseDistance || 0) + (targetUser?.plusHorseCard?.horseDistance || 0)
 }
 
-const getIsEquipmentCard = (card) => {
+const getIsEquipmentCard = (card: Card) => {
     return CARD_TYPE.EQUIPMENT == card.type
 }
 
@@ -131,7 +133,7 @@ const getCantSelectMeAsTargetCardNames = () => {
     ]
 }
 
-const getNeedThrowCardNumber=(user)=>{
+const getNeedThrowCardNumber = (user: User) => {
     return user.cards.length - user.currentBlood
 }
 

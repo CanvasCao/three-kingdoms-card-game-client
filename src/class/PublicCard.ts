@@ -3,9 +3,37 @@ import colorConfig from "../config/colorConfig.json";
 import {getMyUserId, uuidv4} from "../utils/utils";
 import {sharedDrawCard} from "../utils/drawCardUtils";
 import {differenceBy} from "lodash";
+import {GameFEStatus} from "../types/gameFEStatus";
+import {GamingScene} from "../types/phaser";
+import {Card} from "../types/gameStatus";
 
 export class PublicCard {
-    constructor(gamingScene, card, message, publicCards) {
+    obId: string;
+    gamingScene: GamingScene;
+    card: Card;
+
+    message: string;
+    publicCards: Card[];
+
+    cardInitStartX: number;
+    cardInitStartY: number;
+
+    disableTint: string;
+    ableTint: string;
+
+    isMoving: boolean;
+
+    group: Phaser.GameObjects.Group;
+    cardNameObj: Phaser.GameObjects.Text | null;
+    cardImgObj: Phaser.GameObjects.Image | null;
+    cardHuaseNumberObj: Phaser.GameObjects.Text | null;
+    cardMessageObj: Phaser.GameObjects.Text | null;
+
+    cardHuaseNumberObjOffsetX: number;
+    cardHuaseNumberObjOffsetY: number;
+
+
+    constructor(gamingScene: GamingScene, card: Card, message: string, publicCards: Card[]) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
@@ -65,6 +93,7 @@ export class PublicCard {
             this.cardInitStartY + sizeConfig.controlCard.height / 2,
             this.message,
             {
+                // @ts-ignore
                 fill: "#000",
                 align: "center",
                 wordWrap: {width: sizeConfig.controlCard.width * 0.7, useAdvancedWrap: true}
@@ -78,7 +107,7 @@ export class PublicCard {
 
     }
 
-    adjustLocation(gameFEStatus) {
+    adjustLocation(gameFEStatus: GameFEStatus) {
         // TODO isMoving有bug 第二张牌打出以后第一张牌isMoving依然是true 导致无法移动
         // if (this.isMoving) {
         //     return
@@ -102,14 +131,14 @@ export class PublicCard {
     }
 
 
-    getInitDiffDistance(publicCards) {
-        const cardLen = publicCards - 1;
+    getInitDiffDistance(publicCards: Card[]) {
+        const cardLen = publicCards.length - 1;
         const middle = (cardLen - 1) / 2;
         const diffDis = (cardLen - middle) * sizeConfig.controlCard.width;
         return diffDis;
     }
 
-    getDiffDistance(publicCards) {
+    getDiffDistance(publicCards: Card[]) {
         const middle = (publicCards.length - 1) / 2;
         const myindex = publicCards.findIndex((c) => c.cardId == this.card.cardId);
         const diffDis = (myindex - middle) * sizeConfig.controlCard.width;
@@ -123,10 +152,10 @@ export class PublicCard {
         //     child.destroy()
         // })
 
-        this.cardNameObj.destroy();
-        this.cardImgObj.destroy();
-        this.cardHuaseNumberObj.destroy();
-        this.cardMessageObj.destroy();
+        this.cardNameObj!.destroy();
+        this.cardImgObj!.destroy();
+        this.cardHuaseNumberObj!.destroy();
+        this.cardMessageObj!.destroy();
         this.removeCardsfromGameFEStatus()// from gameFEStatusObserved
         this.gamingScene.gameFEStatusObserved.removeObserver(this);
         this.gamingScene.gameStatusObserved.removeObserver(this);
@@ -140,7 +169,7 @@ export class PublicCard {
         this.gamingScene.gameFEStatusObserved.setGameEFStatus(gameFEStatus)
     }
 
-    gameFEStatusNotify(gameFEStatus) {
+    gameFEStatusNotify(gameFEStatus: GameFEStatus) {
         this.adjustLocation(gameFEStatus);
     }
 

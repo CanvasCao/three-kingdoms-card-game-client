@@ -13,16 +13,45 @@ import {
 import {BASIC_CARDS_CONFIG} from "../utils/cardConfig";
 import {sharedDrawCard} from "../utils/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
+import {GamingScene} from "../types/phaser";
+import {Card, GameStatus} from "../types/gameStatus";
+import {GameFEStatus} from "../types/gameFEStatus";
 
 export class ControlCard {
-    constructor(gamingScene, card) {
+    obId: string;
+    gamingScene: GamingScene;
+    card: Card;
+    _index: number;
+    cardInitStartX: number;
+    cardInitStartY: number;
+    cardInitEndX: number;
+    cardInitEndY: number;
+
+    disableTint: string;
+    ableTint: string;
+
+    _cardDisable: boolean;
+    _stage: string;
+    isMoving: boolean;
+
+    group: Phaser.GameObjects.Group;
+    cardNameObj: Phaser.GameObjects.Text | null;
+    cardImgObj: Phaser.GameObjects.Image | null;
+    cardHuaseNumberObj: Phaser.GameObjects.Text | null;
+
+    cardHuaseNumberObjOffsetX: number;
+    cardHuaseNumberObjOffsetY: number;
+
+    _selected: boolean;
+
+    constructor(gamingScene: GamingScene, card: Card) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
         this.card = card;
 
         // 初始化index
-        this._index = this.gamingScene.controlCardsManager._userCards.findIndex((c) => c.cardId == this.card.cardId);
+        this._index = this.gamingScene.controlCardsManager._userCards.findIndex((c: Card) => c.cardId == this.card.cardId);
         this.cardInitStartX = sizeConfig.background.width / 2
         this.cardInitStartY = sizeConfig.background.height / 2
         this.cardInitEndX = this._index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
@@ -75,7 +104,7 @@ export class ControlCard {
     }
 
     bindEvent() {
-        this.cardImgObj.on('pointerdown', () => {
+        this.cardImgObj!.on('pointerdown', () => {
                 if (this._cardDisable) {
                     return
                 }
@@ -102,7 +131,7 @@ export class ControlCard {
                         curFEStatus.selectedTargetUsers = [];
                     }
                 } else if (isMyThrowTurn) {
-                    if (curFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId)) {
+                    if (curFEStatus.selectedCards.map((c: Card) => c.cardId).includes(this.card.cardId)) {
                         curFEStatus.selectedCards = differenceBy(curFEStatus.selectedCards, [this.card], 'cardId');
                     } else {
                         const myUser = curStatus.users[getMyUserId()];
@@ -118,13 +147,13 @@ export class ControlCard {
         );
     }
 
-    adjustLocation() {
+    adjustLocation(currentIndex: number) {
         if (this.isMoving) {
             return
         }
 
         // 这张牌重新查询自己在手牌的新位置 位置不同就调整位置
-        const diff = this.currentIndex - this._index;
+        const diff = currentIndex - this._index;
         if (diff == 0) {
             return;
         }
@@ -134,12 +163,13 @@ export class ControlCard {
             this.gamingScene.tweens.add({
                 targets: child,
                 x: {
+                    // @ts-ignore
                     value: child.x + diff * sizeConfig.controlCard.width,
                     duration: 100,
                 },
                 onComplete: () => {
                     this.isMoving = false;
-                    this._index = this.currentIndex;
+                    this._index = currentIndex;
                 }
             });
         });
@@ -198,13 +228,14 @@ export class ControlCard {
 
     }
 
-    setCardDisableByGameStatus(gameStatus) {
-        const newStage = gameStatus.stage.name;
+    setCardDisableByGameStatus(gameStatus: GameStatus) {
+        const newStage = gameStatus.stage.stageName;
         const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
         const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
         if (!isMyPlayTurn && !isMyResponseTurn && !isMyThrowTurn) {
-            this.cardImgObj.setTint(this.disableTint)
+            // @ts-ignore
+            this.cardImgObj!.setTint(this.disableTint)
             this._cardDisable = true
             return
         }
@@ -212,7 +243,8 @@ export class ControlCard {
         if (isMyPlayTurn) {
             const canPlayThisCardInMyPlayTurn = getCanPlayThisCardInMyPlayTurn(gameStatus.users[getMyUserId()], this.card)
             if (!canPlayThisCardInMyPlayTurn) {
-                this.cardImgObj.setTint(this.disableTint)
+                // @ts-ignore
+                this.cardImgObj!.setTint(this.disableTint)
                 this._cardDisable = true
                 return
             }
@@ -224,19 +256,22 @@ export class ControlCard {
                 BASIC_CARDS_CONFIG.SHAN.CN;
 
             if (canPlayCardNameInMyPlayTurn != this.card.CN) {
-                this.cardImgObj.setTint(this.disableTint)
+                // @ts-ignore
+                this.cardImgObj!.setTint(this.disableTint)
                 this._cardDisable = true
                 return
             }
         }
 
         if (isMyThrowTurn && this._stage != "throw") {
-            this.cardImgObj.setTint(this.ableTint);
+            // @ts-ignore
+            this.cardImgObj!.setTint(this.ableTint);
             this._cardDisable = false;
             return
         }
 
-        this.cardImgObj.setTint(this.ableTint);
+        // @ts-ignore
+        this.cardImgObj!.setTint(this.ableTint);
         this._cardDisable = false;
 
         this._stage = newStage;
@@ -249,31 +284,31 @@ export class ControlCard {
         //     child.destroy()
         // })
 
-        this.cardNameObj.destroy()
-        this.cardImgObj.destroy()
-        this.cardHuaseNumberObj.destroy()
+        this.cardNameObj!.destroy()
+        this.cardImgObj!.destroy()
+        this.cardHuaseNumberObj!.destroy()
         this.gamingScene.gameStatusObserved.removeObserver(this);
     }
 
-    gameStatusNotify(gameStatus) {
-        this.currentIndex = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
+    gameStatusNotify(gameStatus: GameStatus) {
+        const currentIndex = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
 
         // 这张牌重新查询自己在手牌的新位置 没有就destory自己
-        if (this.currentIndex == -1) {
+        if (currentIndex == -1) {
             this.destoryAll();
             return;
         }
 
-        this.adjustLocation();
+        this.adjustLocation(currentIndex);
 
         this.setCardDisableByGameStatus(gameStatus);
     }
 
-    gameFEStatusNotify(gameFEStatus) {
+    gameFEStatusNotify(gameFEStatus: GameFEStatus) {
         this.setCardSelected(gameFEStatus);
     }
 
-    setCardSelected(gameFEStatus) {
+    setCardSelected(gameFEStatus: GameFEStatus) {
         const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
         if (this._selected == isSelected) return;
         if (this.isMoving) return;
@@ -284,6 +319,7 @@ export class ControlCard {
             this.gamingScene.tweens.add({
                 targets: child,
                 y: {
+                    // @ts-ignore
                     value: isSelected ? (child.y - whenSelectedMoveDistance) : (child.y + whenSelectedMoveDistance),
                     duration: 100,
                 },

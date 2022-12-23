@@ -1,7 +1,29 @@
-import {editor2} from "../index";
+// import {editor2} from "../index";
 import {cloneDeep} from "lodash";
+import {GameFEStatus} from "../types/gameFEStatus";
+import {FEObserver} from "../types/observer";
 
 export class GameFEStatusObserved {
+    originCardState: {
+        selectedCards: GameFEStatus['selectedCards'],
+        actualCard: GameFEStatus['actualCard'],
+    }
+    originTargetState: {
+        selectedTargetUsers: GameFEStatus['selectedTargetUsers'],
+    }
+
+    originSkillState: {
+        selectedSkill: GameFEStatus['selectedSkill']
+    }
+
+    publicCardsState: {
+        publicCards: GameFEStatus['publicCards']
+    }
+
+    gameFEStatus: GameFEStatus
+
+    observers: FEObserver[]
+
     constructor() {
         this.originCardState = {
             selectedCards: [],
@@ -11,7 +33,7 @@ export class GameFEStatusObserved {
             selectedTargetUsers: [],
         }
         this.originSkillState = {
-            selectedSkill: ""
+            selectedSkill: []
         }
         this.publicCardsState = {
             publicCards: [] // 存储后端card对象 前端PublicCard不维护数组
@@ -26,11 +48,11 @@ export class GameFEStatusObserved {
         this.observers = [];
     }
 
-    addObserver(observer) {
+    addObserver(observer: FEObserver) {
         this.observers.push(observer);
     }
 
-    removeObserver(observer) {
+    removeObserver(observer: FEObserver) {
         this.observers = this.observers.filter(o => {
             return o.obId != observer.obId;
         });
@@ -43,15 +65,15 @@ export class GameFEStatusObserved {
             ...cloneDeep(this.originTargetState),
             ...cloneDeep(this.originSkillState),
         };
-        editor2.set(this.gameFEStatus)
+        // editor2.set(this.gameFEStatus)
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });
     }
 
-    setGameEFStatus(gameFEStatus) {
+    setGameEFStatus(gameFEStatus: GameFEStatus) {
         this.gameFEStatus = gameFEStatus;
-        editor2.set(gameFEStatus)
+        // editor2.set(gameFEStatus)
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });

@@ -2,9 +2,15 @@ import {getMyUserId, uuidv4} from "../utils/utils";
 import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
 import {ControlCard} from "./ControlCard";
+import {GamingScene} from "../types/phaser";
+import {Card, GameStatus} from "../types/gameStatus";
 
 export class ControlCardsManager {
-    constructor(gamingScene) {
+    obId: string;
+    gamingScene: GamingScene;
+    _userCards: Card[];
+
+    constructor(gamingScene: GamingScene) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
@@ -12,7 +18,7 @@ export class ControlCardsManager {
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
-    gameStatusNotify(gameStatus) {
+    gameStatusNotify(gameStatus: GameStatus) {
         const user = gameStatus.users[getMyUserId()];
 
         // const needMoveCards = intersectionBy(this.controlCards, user.cards, 'cardId');

@@ -1,5 +1,5 @@
 import './style.css'
-import './socket/index'
+import './socket'
 import Phaser from 'phaser';
 import 'normalize.css'
 import elementsUrl from './config/elementsUrl.json'
@@ -16,12 +16,15 @@ import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
 import "./jsoneditor/jsoneditor.min.css";
 import {PublicControlCardsManager} from "./class/PublicCardsManager";
-
+import {Socket} from "./socket/socket.io.esm.min";
+import {Card, GameStatus} from './types/gameStatus';
+import {ElementsUrlJson} from './types/config';
+import {EmitPlayPublicCardData} from './types/emit';
 
 // create the editor
-const container = document.getElementById('jsoneditor')
-export const editor = new JSONEditor(container, {})
-export const editor2 = new JSONEditor(container, {})
+// const container = document.getElementById('jsoneditor')
+// export const editor = new JSONEditor(container, {})
+// export const editor2 = new JSONEditor(container, {})
 
 // UI点击触发事件
 $("#GoNextStage").click(() => {
@@ -29,8 +32,21 @@ $("#GoNextStage").click(() => {
 })
 
 class Gaming extends Phaser.Scene {
+    socket: Socket;
+    inited: boolean;
+    controlCards: Card[];
+    controlPlayer: any;
+    players: any;
+    gameStatusObserved: any;
+    gameFEStatusObserved: any;
+    controlButtons: any;
+    controlCardsManager: any;
+    publicCardsManager: any;
+
     constructor() {
+        // @ts-ignore
         super();
+
         this.socket = socket;
         this.inited = false;
 
@@ -43,15 +59,13 @@ class Gaming extends Phaser.Scene {
     }
 
     preload() {
+        const elementsUrlJson = elementsUrl as unknown as ElementsUrlJson;
         this.load.setBaseURL(elementsUrl.baseUrl);
-        for (const cardName in elementsUrl.game) {
-            this.load.image(cardName, elementsUrl.game[cardName]);
-        }
         for (const playerId in elementsUrl.player) {
-            this.load.image(playerId, elementsUrl.player[playerId]);
+            this.load.image(playerId, elementsUrlJson.player[playerId]);
         }
         for (const key in elementsUrl.other) {
-            this.load.image(key, elementsUrl.other[key]);
+            this.load.image(key, elementsUrlJson.other[key]);
         }
     }
 
@@ -71,7 +85,7 @@ class Gaming extends Phaser.Scene {
         );
 
         // 监听只可能有一次
-        socket.on(emitMap.INIT, (data) => {
+        socket.on(emitMap.INIT, (data: GameStatus) => {
             if (this.inited) {
                 return
             }
@@ -86,16 +100,16 @@ class Gaming extends Phaser.Scene {
             this.inited = true;
         });
 
-        socket.on(emitMap.REFRESH_STATUS, (data) => {
+        socket.on(emitMap.REFRESH_STATUS, (data: GameStatus) => {
             // console.log("REFRESH_STATUS", data)
             this.gameStatusObserved.setGameStatus(data);
         });
 
-        socket.on(emitMap.GO_NEXT_STAGE, (data) => {
+        socket.on(emitMap.GO_NEXT_STAGE, (data: GameStatus) => {
             this.gameStatusObserved.setGameStatus(data);
         });
 
-        socket.on(emitMap.PLAY_PUBLIC_CARD, (data) => {
+        socket.on(emitMap.PLAY_PUBLIC_CARD, (data: EmitPlayPublicCardData) => {
             this.publicCardsManager.add(data)
         });
     }
