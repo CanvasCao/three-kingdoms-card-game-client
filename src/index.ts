@@ -35,13 +35,13 @@ class Gaming extends Phaser.Scene {
     socket: Socket;
     inited: boolean;
     controlCards: Card[];
-    controlPlayer: any;
-    players: any;
-    gameStatusObserved: any;
-    gameFEStatusObserved: any;
-    controlButtons: any;
-    controlCardsManager: any;
-    publicCardsManager: any;
+    controlPlayer: ControlPlayer | undefined;
+    players: Player[];
+    gameStatusObserved: GameStatusObserved;
+    gameFEStatusObserved: GameFEStatusObserved;
+    controlButtons: ControlButtons | undefined;
+    controlCardsManager: ControlCardsManager | undefined;
+    publicControlCardsManager: PublicControlCardsManager | undefined;
 
     constructor() {
         // @ts-ignore
@@ -51,7 +51,6 @@ class Gaming extends Phaser.Scene {
         this.inited = false;
 
         this.controlCards = [];
-        this.controlPlayer = null;
         this.players = [];
 
         this.gameStatusObserved = new GameStatusObserved();
@@ -91,7 +90,7 @@ class Gaming extends Phaser.Scene {
             }
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
-            this.publicCardsManager = new PublicControlCardsManager(this);
+            this.publicControlCardsManager = new PublicControlCardsManager(this);
             this.controlPlayer = new ControlPlayer(this, data.users[getMyUserId()]);
             this.players = Object.values(data.users).map((user) => new Player(this, user));
 
@@ -110,7 +109,7 @@ class Gaming extends Phaser.Scene {
         });
 
         socket.on(emitMap.PLAY_PUBLIC_CARD, (data: EmitPlayPublicCardData) => {
-            this.publicCardsManager.add(data)
+            this.publicControlCardsManager!.add(data)
         });
     }
 

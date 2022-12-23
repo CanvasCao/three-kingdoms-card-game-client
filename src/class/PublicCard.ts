@@ -158,7 +158,6 @@ export class PublicCard {
         this.cardMessageObj!.destroy();
         this.removeCardsfromGameFEStatus()// from gameFEStatusObserved
         this.gamingScene.gameFEStatusObserved.removeObserver(this);
-        this.gamingScene.gameStatusObserved.removeObserver(this);
     }
 
     removeCardsfromGameFEStatus() {

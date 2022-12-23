@@ -153,8 +153,8 @@ export class ControlButtons {
         });
 
         this.okBtnImg!.on('pointerdown', () => {
-            const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-            const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+            const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+            const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
             if (this._isMyResponseTurn) {
                 if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus)) {
@@ -229,8 +229,8 @@ export class ControlButtons {
     }
 
     generateResponse() {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
         const responseStage = getMyResponseStage(gameStatus);
 
         return {
@@ -331,7 +331,7 @@ export class ControlButtons {
     }
 
     setButtonStatusByGameFEStatus(gameFEStatus: GameFEStatus) {
-        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
         if (this._canPlayInMyTurn) {
             this.canClickOkBtnInMyPlayStage(gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
 

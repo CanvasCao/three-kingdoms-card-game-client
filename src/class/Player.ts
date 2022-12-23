@@ -304,11 +304,11 @@ export class Player {
                 return;
             }
 
-            if (getCantSelectMeAsTargetCardNames().includes(curGameFEStatus.actualCard.CN) && this.user.userId == getMyUserId()) {
+            if (getCantSelectMeAsTargetCardNames().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
                 return;
             }
 
-            const targetMinMaxNumber = getHowManyTargetsNeed(curGameFEStatus.actualCard);
+            const targetMinMaxNumber = getHowManyTargetsNeed(curGameFEStatus.actualCard!);
             if (curGameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.max) {
                 return;
             }
@@ -450,7 +450,7 @@ export class Player {
         if (this.user.userId == getMyUserId()) {
             return;
         }
-        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
 
 
         const setPlayerDisable = () => {

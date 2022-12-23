@@ -51,7 +51,7 @@ export class ControlCard {
         this.card = card;
 
         // 初始化index
-        this._index = this.gamingScene.controlCardsManager._userCards.findIndex((c: Card) => c.cardId == this.card.cardId);
+        this._index = this.gamingScene.controlCardsManager!._userCards.findIndex((c: Card) => c.cardId == this.card.cardId);
         this.cardInitStartX = sizeConfig.background.width / 2
         this.cardInitStartY = sizeConfig.background.height / 2
         this.cardInitEndX = this._index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
@@ -100,7 +100,7 @@ export class ControlCard {
         this.group.add(cardImgObj);
         this.group.add(cardNameObj);
         this.group.add(cardHuaseNumberObj);
-        this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus)
+        this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus!)
     }
 
     bindEvent() {
@@ -109,9 +109,9 @@ export class ControlCard {
                     return
                 }
 
-                const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-                const curStatus = this.gamingScene.gameStatusObserved.gameStatus;
-                if (getIsOthersResponseTurn(curStatus)) {
+                const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+                const curStatus = this.gamingScene.gameStatusObserved.gameStatus!;
+                if (getIsOthersResponseTurn(curStatus!)) {
                     return
                 }
 

@@ -4,11 +4,11 @@ import {GameStatus} from "../types/gameStatus";
 import {Observer} from "../types/observer";
 
 export class GameStatusObserved {
-    gameStatus: GameStatus | {};
+    gameStatus?: GameStatus;
     observers: Observer[];
 
     constructor() {
-        this.gameStatus = {};
+        this.gameStatus;
         this.observers = [];
     }
 
@@ -22,7 +22,7 @@ export class GameStatusObserved {
         });
     }
 
-    setGameStatus(gameStatus: GameFEStatus) {
+    setGameStatus(gameStatus: GameStatus) {
         this.gameStatus = gameStatus;
         editor.set(gameStatus);
         this.observers.forEach(observer => {
