@@ -22,9 +22,9 @@ import {ElementsUrlJson} from './types/config';
 import {EmitPlayPublicCardData} from './types/emit';
 
 // create the editor
-// const container = document.getElementById('jsoneditor')
-// export const editor = new JSONEditor(container, {})
-// export const editor2 = new JSONEditor(container, {})
+const container = document.getElementById('jsoneditor')
+export const editor = new JSONEditor(container, {})
+export const editor2 = new JSONEditor(container, {})
 
 // UI点击触发事件
 $("#GoNextStage").click(() => {

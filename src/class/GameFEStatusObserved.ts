@@ -1,4 +1,4 @@
-// import {editor2} from "../index";
+import {editor2} from "../index";
 import {cloneDeep} from "lodash";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {FEObserver} from "../types/observer";
@@ -65,7 +65,7 @@ export class GameFEStatusObserved {
             ...cloneDeep(this.originTargetState),
             ...cloneDeep(this.originSkillState),
         };
-        // editor2.set(this.gameFEStatus)
+        editor2.set(this.gameFEStatus)
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });
@@ -73,7 +73,7 @@ export class GameFEStatusObserved {
 
     setGameEFStatus(gameFEStatus: GameFEStatus) {
         this.gameFEStatus = gameFEStatus;
-        // editor2.set(gameFEStatus)
+        editor2.set(gameFEStatus)
         this.observers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });

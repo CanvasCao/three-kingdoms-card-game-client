@@ -1,4 +1,4 @@
-// import {editor} from "../index";
+import {editor} from "../index";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {GameStatus} from "../types/gameStatus";
 import {Observer} from "../types/observer";
@@ -24,7 +24,7 @@ export class GameStatusObserved {
 
     setGameStatus(gameStatus: GameFEStatus) {
         this.gameStatus = gameStatus;
-        // editor.set(gameStatus);
+        editor.set(gameStatus);
         this.observers.forEach(observer => {
             observer.gameStatusNotify(this.gameStatus as GameStatus);
         });
