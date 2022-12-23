@@ -35,6 +35,7 @@ export class ControlCard {
 
         // inner state
         this._cardDisable = false;
+        this._stage = ''
         this.isMoving = false;
 
         // phaser obj
@@ -101,12 +102,15 @@ export class ControlCard {
                         curFEStatus.selectedTargetUsers = [];
                     }
                 } else if (isMyThrowTurn) {
-                    // setCardDisableByGameFEStatus set _cardDisable的时候 已经计算了选中卡牌数量
-                    // debugger
                     if (curFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId)) {
                         curFEStatus.selectedCards = differenceBy(curFEStatus.selectedCards, [this.card], 'cardId');
                     } else {
-                        curFEStatus.selectedCards.push(this.card);
+                        const myUser = curStatus.users[getMyUserId()];
+                        const needThrowCardNumber = getNeedThrowCardNumber(myUser);
+                        const haveSelectedEnoughThrowCard = curFEStatus.selectedCards.length >= needThrowCardNumber;
+                        if (!haveSelectedEnoughThrowCard) {
+                            curFEStatus.selectedCards.push(this.card);
+                        }
                     }
                 }
                 this.gamingScene.gameFEStatusObserved.setGameEFStatus(curFEStatus);
@@ -195,6 +199,7 @@ export class ControlCard {
     }
 
     setCardDisableByGameStatus(gameStatus) {
+        const newStage = gameStatus.stage.name;
         const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
         const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
@@ -225,33 +230,16 @@ export class ControlCard {
             }
         }
 
-        if (isMyThrowTurn) {
+        if (isMyThrowTurn && this._stage != "throw") {
+            this.cardImgObj.setTint(this.ableTint);
+            this._cardDisable = false;
             return
         }
 
         this.cardImgObj.setTint(this.ableTint);
         this._cardDisable = false;
-    }
 
-    setCardDisableByGameFEStatus(gameFEStatus) {
-        const curStatus = this.gamingScene.gameStatusObserved.gameStatus;
-
-        const isMyThrowTurn = getIsMyThrowTurn(curStatus);
-        if (isMyThrowTurn) {
-            const myUser = curStatus.users[getMyUserId()];
-            const needThrowCardNumber = getNeedThrowCardNumber(myUser);
-            const haveSelectedEnoughThrowCard = gameFEStatus.selectedCards.length >= needThrowCardNumber;
-            const isSelected = gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId);
-            // 选中了足够的弃牌 没选中的所有牌都是disable
-            if (haveSelectedEnoughThrowCard && !isSelected) {
-                this.cardImgObj.setTint(this.disableTint)
-                this._cardDisable = true
-            }
-            if(!haveSelectedEnoughThrowCard){
-                this.cardImgObj.setTint(this.ableTint);
-                this._cardDisable = false;
-            }
-        }
+        this._stage = newStage;
     }
 
     destoryAll() {
@@ -283,8 +271,6 @@ export class ControlCard {
 
     gameFEStatusNotify(gameFEStatus) {
         this.setCardSelected(gameFEStatus);
-
-        this.setCardDisableByGameFEStatus(gameFEStatus);
     }
 
     setCardSelected(gameFEStatus) {
