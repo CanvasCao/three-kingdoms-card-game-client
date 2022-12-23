@@ -112,6 +112,12 @@ export class ControlButtons {
     bindEvent() {
         this.cancelBtnImg.on('pointerdown', () => {
             if (this._isMyResponseTurn) {
+                this.gamingScene.socket.emit(
+                    emitMap.RESPONSE,
+                    {
+                        originId: getMyUserId(),
+                    }
+                )
                 this.gamingScene.gameFEStatusObserved.reset();
             } else if (this._canPlayInMyTurn) {
                 this.gamingScene.gameFEStatusObserved.reset();
@@ -140,6 +146,16 @@ export class ControlButtons {
                 this.gamingScene.socket.emit(
                     emitMap.ACTION,
                     this.generateAction()
+                )
+                this.gamingScene.gameFEStatusObserved.reset();
+            } else if (this._isMyThrowTurn) {
+                if (!this.canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus)) {
+                    return
+                }
+
+                this.gamingScene.socket.emit(
+                    emitMap.THROW,
+                    {cards: gameFEStatus.selectedCards}
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
             }

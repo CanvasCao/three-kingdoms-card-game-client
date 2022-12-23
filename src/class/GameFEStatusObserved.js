@@ -1,4 +1,5 @@
 import {editor2} from "../index";
+import {cloneDeep} from "lodash";
 
 export class GameFEStatusObserved {
     constructor() {
@@ -17,10 +18,10 @@ export class GameFEStatusObserved {
         }
 
         this.gameFEStatus = {
-            ...this.originCardState,
-            ...this.originTargetState,
-            ...this.originSkillState,
-            ...this.publicCardsState
+            ...cloneDeep(this.originCardState),
+            ...cloneDeep(this.originTargetState),
+            ...cloneDeep(this.originSkillState),
+            ...cloneDeep(this.publicCardsState)
         };
         this.observers = [];
     }
@@ -37,10 +38,10 @@ export class GameFEStatusObserved {
 
     reset() {
         this.gameFEStatus = {
-            ...this.gameFEStatus,
-            ...this.originCardState,
-            ...this.originTargetState,
-            ...this.originSkillState,
+            ...cloneDeep(this.gameFEStatus),
+            ...cloneDeep(this.originCardState),
+            ...cloneDeep(this.originTargetState),
+            ...cloneDeep(this.originSkillState),
         };
         editor2.set(this.gameFEStatus)
         this.observers.forEach(observer => {
