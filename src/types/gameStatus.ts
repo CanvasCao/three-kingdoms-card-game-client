@@ -1,11 +1,14 @@
 export type GameStatus = {
     users: GameStatusUsers,
     stage: Stage,
-    action: oneTargetAction | multiTargetsAction,
+    action: OneTargetAction | MultiTargetsAction,
     shanResStages: ShanStage[],
     taoResStages: TaoStage[],
-    tieSuoTempStorage: tieSuoTempStorageItem[],
-    throwedCards: Card[],
+    scrollResStages: ScrollResStage[],
+    wuxieResStage: WuxieResStage,
+    wuxieChain: WuxieChain,
+    tieSuoTempStorage: TieSuoTempStorageItem[],
+    // throwedCards: Card[],
 };
 
 
@@ -66,14 +69,14 @@ export type Stage = {
     stageNameCN: string,
 }
 
-export type oneTargetAction = {
+export type OneTargetAction = {
     cards: Card[],
     actualCard: Card,
     originId: string,
     targetId: string,
 }
 
-export type multiTargetsAction = {
+export type MultiTargetsAction = {
     cards: Card[],
     actualCard: Card,
     actions: {
@@ -90,7 +93,21 @@ export type ShanStage = {
 
 export type TaoStage = ShanStage
 
-export type tieSuoTempStorageItem = {
+export type ScrollResStage = {
+    originId: string,
+    targetId: string,
+    cards: Card[],
+    actualCard: Card,
+    isEffect: boolean,
+}
+
+export type WuxieResStage = {
+    hasWuxiePlayerIds: string[],
+}
+
+export type WuxieChain = OneTargetAction[];
+
+export type TieSuoTempStorageItem = {
     damage: number,
     targetId: string,
     originId?: string,

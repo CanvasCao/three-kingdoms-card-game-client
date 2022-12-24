@@ -1,22 +1,23 @@
 import sizeConfig from "../config/sizeConfig.json";
 import textConfig from "../config/textConfig.json";
 import {
-    getIsMyResponseTurn,
+    getIsMyResponseCardTurn,
     getCanPlayInMyTurn,
     getMyUserId,
     uuidv4,
     getHowManyTargetsNeed,
     getIsEquipmentCard,
-    getMyResponseStage,
+    getMyResponseTargetAndCardName,
     getIsMyThrowTurn,
     getNeedThrowCardNumber
 } from "../utils/utils";
 import emitMap from "../config/emitMap.json";
-import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 import {BtnGroup, GamingScene} from "../types/phaser";
 import Phaser from "phaser";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {GameStatus, User} from "../types/gameStatus";
+import {EmitActionData, EmitResponseData, EmitThrowData} from "../types/emit";
 
 export class ControlButtons {
     obId: string;
@@ -183,7 +184,7 @@ export class ControlButtons {
 
                 this.gamingScene.socket.emit(
                     emitMap.THROW,
-                    {cards: gameFEStatus.selectedCards}
+                    {cards: gameFEStatus.selectedCards} as EmitThrowData
                 )
                 this.gamingScene.gameFEStatusObserved.reset();
             }
@@ -194,13 +195,18 @@ export class ControlButtons {
         });
     }
 
-    generateAction() {
+    generateAction(): (EmitActionData | undefined) {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
 
         const actualCard = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]));
         actualCard.cardId = uuidv4(); // TODO 作为前端判断要不要重新计算和刷新disable的依据
-        if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
+
+        // 多目标卡牌
+        if ([BASIC_CARDS_CONFIG.SHA.CN,
+            BASIC_CARDS_CONFIG.LEI_SHA.CN,
+            BASIC_CARDS_CONFIG.HUO_SHA.CN,
+            SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,].includes(actualCard.CN)) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
@@ -211,14 +217,21 @@ export class ControlButtons {
                     }
                 })
             }
-        } else if (actualCard.CN == BASIC_CARDS_CONFIG.TAO.CN || actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN || getIsEquipmentCard(actualCard)) {
+        }
+        // 自己为目标卡牌
+        else if (actualCard.CN == BASIC_CARDS_CONFIG.TAO.CN ||
+            actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.SHAN_DIAN.CN ||
+            actualCard.CN == SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN ||
+            getIsEquipmentCard(actualCard)) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
                 originId: getMyUserId(),
                 targetId: getMyUserId(),
             }
-        } else if (actualCard.CN == SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
+        }
+        // 单目标卡牌
+        else if (actualCard.CN == SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
@@ -228,16 +241,15 @@ export class ControlButtons {
         }
     }
 
-    generateResponse() {
+    generateResponse(): EmitResponseData {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-        const responseStage = getMyResponseStage(gameStatus);
 
         return {
             cards: gameFEStatus.selectedCards,
             actualCard: gameFEStatus.selectedCards[0],
             originId: getMyUserId(),
-            targetId: responseStage!.targetId
+            targetId: getMyResponseTargetAndCardName(gameStatus)!.targetId
         }
     }
 
@@ -285,7 +297,9 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        if (gameStatus.taoResStages.length > 0) {
+        if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
+            return gameFEStatus?.actualCard?.CN == SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN
+        } else if (gameStatus.taoResStages.length > 0) {
             return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.TAO.CN
         } else if (gameStatus.shanResStages.length > 0) {
             return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.SHAN.CN
@@ -305,22 +319,19 @@ export class ControlButtons {
     }
 
     setButtonStatusByGameStatus(gameStatus: GameStatus) {
-        const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
-        const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-        const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
-        this._isMyResponseTurn = isMyResponseTurn
-        this._canPlayInMyTurn = canPlayInMyTurn
-        this._isMyThrowTurn = isMyThrowTurn
+        this._isMyResponseTurn = getIsMyResponseCardTurn(gameStatus);
+        this._canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
+        this._isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
-        if (canPlayInMyTurn) {
+        if (this._canPlayInMyTurn) {
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.showBtn(this.endBtnGroup)
-        } else if (isMyResponseTurn) {
+        } else if (this._isMyResponseTurn) {
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.showBtn(this.cancelBtnGroup)
-        } else if (isMyThrowTurn) {
+        } else if (this._isMyThrowTurn) {
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.hideBtn(this.cancelBtnGroup)

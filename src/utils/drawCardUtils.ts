@@ -41,7 +41,7 @@ const sharedDrawCard = (
     const cardHuaseNumberObj = gamingScene.add.text(
         x + cardHuaseNumberObjOffsetX,
         y + cardHuaseNumberObjOffsetY,
-        card.huase + ' ' + card.cardNumDesc,
+        card.cardNumDesc + '\r\n' + card.huase,
         // @ts-ignore
         {fill: "#000", align: "center"}
     )

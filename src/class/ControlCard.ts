@@ -4,13 +4,14 @@ import {
     getMyUserId,
     getIsMyPlayTurn,
     uuidv4,
-    getIsMyResponseTurn,
+    getIsMyResponseCardTurn,
     getCanPlayThisCardInMyPlayTurn,
     getIsOthersResponseTurn,
     getIsMyThrowTurn,
-    getNeedThrowCardNumber
+    getNeedThrowCardNumber,
+    getMyResponseTargetAndCardName
 } from "../utils/utils";
-import {BASIC_CARDS_CONFIG} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 import {sharedDrawCard} from "../utils/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../types/phaser";
@@ -105,7 +106,7 @@ export class ControlCard {
 
     bindEvent() {
         this.cardImgObj!.on('pointerdown', () => {
-                if (this._cardDisable) {
+                if (this._cardDisable) { // 弃牌阶段做数量判断 不判断_cardDisable
                     return
                 }
 
@@ -116,7 +117,7 @@ export class ControlCard {
                 }
 
                 const isMyPlayTurn = getIsMyPlayTurn(curStatus);
-                const isMyResponseTurn = getIsMyResponseTurn(curStatus);
+                const isMyResponseTurn = getIsMyResponseCardTurn(curStatus);
                 const isMyThrowTurn = getIsMyThrowTurn(curStatus);
 
                 if (isMyPlayTurn || isMyResponseTurn) {
@@ -230,10 +231,16 @@ export class ControlCard {
 
     setCardDisableByGameStatus(gameStatus: GameStatus) {
         const newStage = gameStatus.stage.stageName;
+        if (newStage !== this._stage) {
+            return;
+        }
+
         const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
-        const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
+        const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
-        if (!isMyPlayTurn && !isMyResponseTurn && !isMyThrowTurn) {
+
+
+        if (!isMyPlayTurn && !isMyResponseCardTurn) {
             // @ts-ignore
             this.cardImgObj!.setTint(this.disableTint)
             this._cardDisable = true
@@ -250,24 +257,14 @@ export class ControlCard {
             }
         }
 
-        if (isMyResponseTurn) {
-            const canPlayCardNameInMyPlayTurn = gameStatus.taoResStages.length > 0 ?
-                BASIC_CARDS_CONFIG.TAO.CN :
-                BASIC_CARDS_CONFIG.SHAN.CN;
-
-            if (canPlayCardNameInMyPlayTurn != this.card.CN) {
+        if (isMyResponseCardTurn) {
+            const canPlayCardName = getMyResponseTargetAndCardName(gameStatus)!.cardName
+            if (canPlayCardName != this.card.CN) {
                 // @ts-ignore
                 this.cardImgObj!.setTint(this.disableTint)
                 this._cardDisable = true
                 return
             }
-        }
-
-        if (isMyThrowTurn && this._stage != "throw") {
-            // @ts-ignore
-            this.cardImgObj!.setTint(this.ableTint);
-            this._cardDisable = false;
-            return
         }
 
         // @ts-ignore

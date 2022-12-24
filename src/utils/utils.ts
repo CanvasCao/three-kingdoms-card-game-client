@@ -35,7 +35,10 @@ const getIsMyThrowTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'throw';
 }
 
-const getIsMyResponseTurn = (gameStatus: GameStatus) => {
+const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
+    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
+        return gameStatus.wuxieResStage.hasWuxiePlayerIds.includes(getMyUserId())
+    }
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0]?.originId == getMyUserId();
     }
@@ -45,16 +48,31 @@ const getIsMyResponseTurn = (gameStatus: GameStatus) => {
     return false;
 }
 
-const getMyResponseStage = (gameStatus: GameStatus) => {
+const getMyResponseTargetAndCardName = (gameStatus: GameStatus): { targetId: string, cardName: string } | undefined => {
+    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
+        return {
+            targetId: gameStatus.wuxieChain[gameStatus.wuxieChain.length - 1].originId, // 我无懈可击的目标是锦囊的来源
+            cardName: SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN,
+        }
+    }
     if (gameStatus.taoResStages.length > 0) {
-        return gameStatus.taoResStages[0];
+        return {
+            targetId: gameStatus.taoResStages[0].targetId,
+            cardName: BASIC_CARDS_CONFIG.TAO.CN,
+        }
     }
     if (gameStatus.shanResStages.length > 0) {
-        return gameStatus.shanResStages[0];
+        return {
+            targetId: gameStatus.shanResStages[0].targetId,
+            cardName: BASIC_CARDS_CONFIG.SHAN.CN,
+        }
     }
 }
 
 const getIsOthersResponseTurn = (gameStatus: GameStatus) => {
+    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
+        return !gameStatus.wuxieResStage.hasWuxiePlayerIds.includes(getMyUserId())
+    }
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0]?.originId != getMyUserId();
     }
@@ -64,8 +82,17 @@ const getIsOthersResponseTurn = (gameStatus: GameStatus) => {
     return false;
 }
 
+const getIsMyScrollEffectTurn = (gameStatus: GameStatus) => {
+    if (gameStatus.scrollResStages.length > 0) {
+        return gameStatus.scrollResStages[0].isEffect && gameStatus.scrollResStages[0]?.originId == getMyUserId();
+    }
+}
+
 const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
-    return gameStatus.shanResStages.length <= 0 && gameStatus.taoResStages.length <= 0 && getIsMyPlayTurn(gameStatus);
+    return gameStatus.shanResStages.length <= 0 &&
+        gameStatus.taoResStages.length <= 0 &&
+        gameStatus.wuxieResStage?.hasWuxiePlayerIds.length <= 0 &&
+        getIsMyPlayTurn(gameStatus);
 }
 
 const getCanPlayThisCardInMyPlayTurn = (user: User, card: Card) => {
@@ -102,7 +129,10 @@ const getHowManyTargetsNeed = (actualCard: Card) => {
     if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
         return {min: 1, max: 3}
     }
-    if ([BASIC_CARDS_CONFIG.TAO.CN, SCROLL_CARDS_CONFIG.SHAN_DIAN.CN].includes(actualCard.CN)) {
+    if ([BASIC_CARDS_CONFIG.TAO.CN,
+        SCROLL_CARDS_CONFIG.SHAN_DIAN.CN,
+        SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
+        SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN].includes(actualCard.CN)) {
         return {min: 0, max: 0}
     }
     return {min: 100, max: 100}
@@ -137,19 +167,51 @@ const getNeedThrowCardNumber = (user: User) => {
     return user.cards.length - user.currentBlood
 }
 
+const getIfUserHasAnyCard = (user: User) => {
+    return user.cards.length ||
+        user.pandingCards.length ||
+        user.plusHorseCard ||
+        user.minusHorseCard ||
+        user.shieldCard ||
+        user.weaponCard
+}
+
 export {
     getMyUserId,
+
+    // my turn for UI
     getIsMyPlayTurn,
+
+    // 我需要出牌的状态
+    getIsMyResponseCardTurn, // response 包括闪桃无懈可击 不包括弃牌
     getIsMyThrowTurn,
-    getIsMyResponseTurn,
-    getMyResponseStage,
-    getIsOthersResponseTurn,
     getCanPlayInMyTurn,
+
+    // 我需要响应锦囊 但是不出牌的状态
+    getIsMyScrollEffectTurn,
+
+    // 我的等待状态
+    getIsOthersResponseTurn,
+
+    // other
+    getMyResponseTargetAndCardName,
     getCanPlayThisCardInMyPlayTurn,
-    getHowManyTargetsNeed,
+
+    // cal distance
     getDistanceBetweenMeAndTarget,
+
+    // card type
     getIsEquipmentCard,
+
+    // Player class validate target
     getCantSelectMeAsTargetCardNames,
+    getHowManyTargetsNeed,
+
+    // 弃牌
     getNeedThrowCardNumber,
+
+    // validate 锦囊 target
+    getIfUserHasAnyCard,
+
     uuidv4
 }

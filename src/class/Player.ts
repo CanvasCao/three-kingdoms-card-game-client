@@ -3,11 +3,11 @@ import colorConfig from "../config/colorConfig.json";
 import {
     getCantSelectMeAsTargetCardNames,
     getDistanceBetweenMeAndTarget,
-    getHowManyTargetsNeed,
+    getHowManyTargetsNeed, getIfUserHasAnyCard,
     getMyUserId,
     uuidv4
 } from "../utils/utils";
-import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../types/phaser";
 import {Card, GameStatus, User} from "../types/gameStatus";
 import {ColorConfigJson} from "../types/config";
@@ -441,8 +441,7 @@ export class Player {
 
 
     setPlayerDisable() {
-        // this.playerImage.setTint(colorConfigJson.disablePlayer);
-        this.playerImage!.setTint(0x666666);
+        this.playerImage!.setTint(colorConfigJson.disablePlayer);
         this.disable = true;
     }
 
@@ -480,6 +479,12 @@ export class Player {
                     setPlayerDisable()
                 } else {
                     setPlayerAble()
+                }
+            } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+                if (getIfUserHasAnyCard(gameStatus.users[this.user.userId])){
+                    setPlayerAble()
+                } else {
+                    setPlayerDisable()
                 }
             } else {
                 setPlayerAble()
