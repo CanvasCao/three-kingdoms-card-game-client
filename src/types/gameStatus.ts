@@ -6,9 +6,8 @@ export type GameStatus = {
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
     wuxieResStage: WuxieResStage,
-    wuxieChain: WuxieChain,
     tieSuoTempStorage: TieSuoTempStorageItem[],
-    // throwedCards: Card[],
+    throwedCards?: Card[],
 };
 
 
@@ -103,6 +102,7 @@ export type ScrollResStage = {
 
 export type WuxieResStage = {
     hasWuxiePlayerIds: string[],
+    wuxieChain: WuxieChain,
 }
 
 export type WuxieChain = OneTargetAction[];

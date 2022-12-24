@@ -12,6 +12,7 @@ export type EmitResponseData = {
     actualCard: Card,
     originId: string,
     targetId: string,
+    wuxieTargetCardId?: string,
 }
 
 export type EmitThrowData = {

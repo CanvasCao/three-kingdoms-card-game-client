@@ -48,10 +48,16 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
     return false;
 }
 
-const getMyResponseTargetAndCardName = (gameStatus: GameStatus): { targetId: string, cardName: string } | undefined => {
-    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
+const getMyResponseInfo = (gameStatus: GameStatus): {
+    targetId: string,
+    cardName: string,
+    wuxieTargetCardId?: string
+} | undefined => {
+    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length > 0) {
+        const chainItem = gameStatus.wuxieResStage.wuxieChain[gameStatus.wuxieResStage.wuxieChain.length - 1]
         return {
-            targetId: gameStatus.wuxieChain[gameStatus.wuxieChain.length - 1].originId, // 我无懈可击的目标是锦囊的来源
+            targetId: chainItem.originId, // 我无懈可击的目标人
+            wuxieTargetCardId: chainItem.actualCard.cardId,// 我无懈可击的目标卡
             cardName: SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN,
         }
     }
@@ -91,7 +97,7 @@ const getIsMyScrollEffectTurn = (gameStatus: GameStatus) => {
 const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
     return gameStatus.shanResStages.length <= 0 &&
         gameStatus.taoResStages.length <= 0 &&
-        gameStatus.wuxieResStage?.hasWuxiePlayerIds.length <= 0 &&
+        gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length == 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 
@@ -106,7 +112,8 @@ const getCanPlayThisCardInMyPlayTurn = (user: User, card: Card) => {
         BASIC_CARDS_CONFIG.HUO_SHA.CN,
 
         SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
-        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN
+        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN,
+        SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
     ]
     if (user.maxBlood > user.currentBlood) {
         cards.push(BASIC_CARDS_CONFIG.TAO.CN)
@@ -194,7 +201,7 @@ export {
     getIsOthersResponseTurn,
 
     // other
-    getMyResponseTargetAndCardName,
+    getMyResponseInfo,
     getCanPlayThisCardInMyPlayTurn,
 
     // cal distance

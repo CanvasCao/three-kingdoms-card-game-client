@@ -7,7 +7,7 @@ import {
     uuidv4,
     getHowManyTargetsNeed,
     getIsEquipmentCard,
-    getMyResponseTargetAndCardName,
+    getMyResponseInfo,
     getIsMyThrowTurn,
     getNeedThrowCardNumber
 } from "../utils/utils";
@@ -245,11 +245,13 @@ export class ControlButtons {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
+        const info = getMyResponseInfo(gameStatus)!
         return {
             cards: gameFEStatus.selectedCards,
             actualCard: gameFEStatus.selectedCards[0],
             originId: getMyUserId(),
-            targetId: getMyResponseTargetAndCardName(gameStatus)!.targetId
+            targetId: info.targetId,
+            wuxieTargetCardId: info.wuxieTargetCardId
         }
     }
 

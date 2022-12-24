@@ -2,16 +2,14 @@ import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {
     getMyUserId,
-    getIsMyPlayTurn,
     uuidv4,
     getIsMyResponseCardTurn,
     getCanPlayThisCardInMyPlayTurn,
-    getIsOthersResponseTurn,
     getIsMyThrowTurn,
     getNeedThrowCardNumber,
-    getMyResponseTargetAndCardName
+    getMyResponseInfo,
+    getCanPlayInMyTurn
 } from "../utils/utils";
-import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 import {sharedDrawCard} from "../utils/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../types/phaser";
@@ -32,7 +30,6 @@ export class ControlCard {
     ableTint: string;
 
     _cardDisable: boolean;
-    _stage: string;
     isMoving: boolean;
 
     group: Phaser.GameObjects.Group;
@@ -65,7 +62,6 @@ export class ControlCard {
 
         // inner state
         this._cardDisable = false;
-        this._stage = ''
         this.isMoving = false;
 
         // phaser obj
@@ -101,7 +97,7 @@ export class ControlCard {
         this.group.add(cardImgObj);
         this.group.add(cardNameObj);
         this.group.add(cardHuaseNumberObj);
-        this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus!)
+        this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus!, true)
     }
 
     bindEvent() {
@@ -112,15 +108,15 @@ export class ControlCard {
 
                 const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
                 const curStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-                if (getIsOthersResponseTurn(curStatus!)) {
+
+                const canPlayInMyTurn = getCanPlayInMyTurn(curStatus);
+                const isMyResponseTurn = getIsMyResponseCardTurn(curStatus);
+                const isMyThrowTurn = getIsMyThrowTurn(curStatus);
+                if (!canPlayInMyTurn && !isMyResponseTurn && !isMyThrowTurn) {
                     return
                 }
 
-                const isMyPlayTurn = getIsMyPlayTurn(curStatus);
-                const isMyResponseTurn = getIsMyResponseCardTurn(curStatus);
-                const isMyThrowTurn = getIsMyThrowTurn(curStatus);
-
-                if (isMyPlayTurn || isMyResponseTurn) {
+                if (canPlayInMyTurn || isMyResponseTurn) {
                     // 选中再点击就是反选
                     if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
                         curFEStatus.selectedCards = [];
@@ -229,25 +225,20 @@ export class ControlCard {
 
     }
 
-    setCardDisableByGameStatus(gameStatus: GameStatus) {
-        const newStage = gameStatus.stage.stageName;
-        if (newStage !== this._stage) {
-            return;
-        }
-
-        const isMyPlayTurn = getIsMyPlayTurn(gameStatus);
+    setCardDisableByGameStatus(gameStatus: GameStatus, force = false) {
+        const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
 
-        if (!isMyPlayTurn && !isMyResponseCardTurn) {
+        if (!canPlayInMyTurn && !isMyResponseCardTurn && !isMyThrowTurn) {
             // @ts-ignore
             this.cardImgObj!.setTint(this.disableTint)
             this._cardDisable = true
             return
         }
 
-        if (isMyPlayTurn) {
+        if (canPlayInMyTurn) {
             const canPlayThisCardInMyPlayTurn = getCanPlayThisCardInMyPlayTurn(gameStatus.users[getMyUserId()], this.card)
             if (!canPlayThisCardInMyPlayTurn) {
                 // @ts-ignore
@@ -258,7 +249,7 @@ export class ControlCard {
         }
 
         if (isMyResponseCardTurn) {
-            const canPlayCardName = getMyResponseTargetAndCardName(gameStatus)!.cardName
+            const canPlayCardName = getMyResponseInfo(gameStatus)!.cardName
             if (canPlayCardName != this.card.CN) {
                 // @ts-ignore
                 this.cardImgObj!.setTint(this.disableTint)
@@ -270,8 +261,6 @@ export class ControlCard {
         // @ts-ignore
         this.cardImgObj!.setTint(this.ableTint);
         this._cardDisable = false;
-
-        this._stage = newStage;
     }
 
     destoryAll() {
