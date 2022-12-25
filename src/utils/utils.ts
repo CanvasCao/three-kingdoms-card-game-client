@@ -36,8 +36,8 @@ const getIsMyThrowTurn = (gameStatus: GameStatus) => {
 }
 
 const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
-    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
-        return gameStatus.wuxieResStage.hasWuxiePlayerIds.includes(getMyUserId())
+    if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length) {
+        return gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyUserId())
     }
     if (gameStatus.taoResStages.length > 0) {
         return gameStatus.taoResStages[0]?.originId == getMyUserId();
@@ -48,13 +48,20 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
     return false;
 }
 
+const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
+    return gameStatus.shanResStages.length <= 0 &&
+        gameStatus.taoResStages.length <= 0 &&
+        gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length == 0 &&
+        getIsMyPlayTurn(gameStatus);
+}
+
 const getMyResponseInfo = (gameStatus: GameStatus): {
     targetId: string,
     cardName: string,
     wuxieTargetCardId?: string
 } | undefined => {
-    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length > 0) {
-        const chainItem = gameStatus.wuxieResStage.wuxieChain[gameStatus.wuxieResStage.wuxieChain.length - 1]
+    if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
+        const chainItem = gameStatus.wuxieSimultaneousResStage.wuxieChain[gameStatus.wuxieSimultaneousResStage.wuxieChain.length - 1]
         return {
             targetId: chainItem.originId, // 我无懈可击的目标人
             wuxieTargetCardId: chainItem.actualCard.cardId,// 我无懈可击的目标卡
@@ -75,30 +82,10 @@ const getMyResponseInfo = (gameStatus: GameStatus): {
     }
 }
 
-const getIsOthersResponseTurn = (gameStatus: GameStatus) => {
-    if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
-        return !gameStatus.wuxieResStage.hasWuxiePlayerIds.includes(getMyUserId())
-    }
-    if (gameStatus.taoResStages.length > 0) {
-        return gameStatus.taoResStages[0]?.originId != getMyUserId();
-    }
-    if (gameStatus.shanResStages.length > 0) {
-        return gameStatus.shanResStages[0]?.originId != getMyUserId();
-    }
-    return false;
-}
-
 const getIsMyScrollEffectTurn = (gameStatus: GameStatus) => {
     if (gameStatus.scrollResStages.length > 0) {
         return gameStatus.scrollResStages[0].isEffect && gameStatus.scrollResStages[0]?.originId == getMyUserId();
     }
-}
-
-const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
-    return gameStatus.shanResStages.length <= 0 &&
-        gameStatus.taoResStages.length <= 0 &&
-        gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length == 0 &&
-        getIsMyPlayTurn(gameStatus);
 }
 
 const getCanPlayThisCardInMyPlayTurn = (user: User, card: Card) => {
@@ -119,7 +106,7 @@ const getCanPlayThisCardInMyPlayTurn = (user: User, card: Card) => {
         cards.push(BASIC_CARDS_CONFIG.TAO.CN)
     }
 
-    if (!user.pandingCards.find((c) => c.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
+    if (!user.pandingSigns.find((sign) => sign.actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
         cards.push(SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)
     }
 
@@ -176,7 +163,7 @@ const getNeedThrowCardNumber = (user: User) => {
 
 const getIfUserHasAnyCard = (user: User) => {
     return user.cards.length ||
-        user.pandingCards.length ||
+        user.pandingSigns.length ||
         user.plusHorseCard ||
         user.minusHorseCard ||
         user.shieldCard ||
@@ -196,9 +183,6 @@ export {
 
     // 我需要响应锦囊 但是不出牌的状态
     getIsMyScrollEffectTurn,
-
-    // 我的等待状态
-    getIsOthersResponseTurn,
 
     // other
     getMyResponseInfo,

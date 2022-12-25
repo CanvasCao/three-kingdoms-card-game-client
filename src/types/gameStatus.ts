@@ -5,7 +5,7 @@ export type GameStatus = {
     shanResStages: ShanStage[],
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
-    wuxieResStage: WuxieResStage,
+    wuxieSimultaneousResStage: WuxieSimultaneousResStage,
     tieSuoTempStorage: TieSuoTempStorageItem[],
     throwedCards?: Card[],
 };
@@ -23,7 +23,7 @@ export type User = {
 
     // cards
     cards: Card[],
-    pandingCards: Card[],
+    pandingSigns: PandingSign[],
     weaponCard: Card,
     shieldCard: Card,
     plusHorseCard: Card,
@@ -60,6 +60,12 @@ export type Card = {
     horseDistance?: number,
     distance?: number,
     distanceDesc?: string,
+}
+
+export type PandingSign = {
+    card: Card,
+    actualCard: Card,
+    isEffect: boolean, // undefined/null 未开始结算生效 true结算生效 false结算失效
 }
 
 export type Stage = {
@@ -100,12 +106,17 @@ export type ScrollResStage = {
     isEffect: boolean,
 }
 
-export type WuxieResStage = {
+export type WuxieSimultaneousResStage = {
     hasWuxiePlayerIds: string[],
     wuxieChain: WuxieChain,
 }
 
-export type WuxieChain = OneTargetAction[];
+export type WuxieChain = {
+    cards: Card[],
+    actualCard: Card,
+    originId: string, // 延迟锦囊的WuxieChain[0]来源是自己
+    targetId: string,
+}[];
 
 export type TieSuoTempStorageItem = {
     damage: number,

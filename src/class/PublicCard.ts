@@ -70,7 +70,7 @@ export class PublicCard {
 
         setTimeout(() => {
             this.destoryAll();
-        }, 5000)
+        }, 15000)
     }
 
     drawCard() {

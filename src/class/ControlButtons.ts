@@ -299,7 +299,7 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        if (gameStatus.wuxieResStage?.hasWuxiePlayerIds?.length) {
+        if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length) {
             return gameFEStatus?.actualCard?.CN == SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN
         } else if (gameStatus.taoResStages.length > 0) {
             return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.TAO.CN
