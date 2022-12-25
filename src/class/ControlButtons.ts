@@ -206,16 +206,14 @@ export class ControlButtons {
         if ([BASIC_CARDS_CONFIG.SHA.CN,
             BASIC_CARDS_CONFIG.LEI_SHA.CN,
             BASIC_CARDS_CONFIG.HUO_SHA.CN,
-            SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,].includes(actualCard.CN)) {
+            SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
+            SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
+        ].includes(actualCard.CN)) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
-                actions: gameFEStatus.selectedTargetUsers.map((targetUser: User) => {
-                    return {
-                        originId: getMyUserId(),
-                        targetId: targetUser.userId,
-                    }
-                })
+                originId: getMyUserId(),
+                targetIds: gameFEStatus.selectedTargetUsers.map((targetUser: User) => targetUser.userId)
             }
         }
         // 自己为目标卡牌
@@ -238,6 +236,13 @@ export class ControlButtons {
                 originId: getMyUserId(),
                 targetId: gameFEStatus.selectedTargetUsers[0].userId,
             }
+        }
+        // 不选目标 但是所有人都是目标
+        else if (
+            actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN ||
+            actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN ||
+            actualCard.CN == SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
+        ) {
         }
     }
 

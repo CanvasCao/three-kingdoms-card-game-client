@@ -51,7 +51,7 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
 const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
     return gameStatus.shanResStages.length <= 0 &&
         gameStatus.taoResStages.length <= 0 &&
-        gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length == 0 &&
+        gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 

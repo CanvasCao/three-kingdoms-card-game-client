@@ -84,10 +84,8 @@ export type OneTargetAction = {
 export type MultiTargetsAction = {
     cards: Card[],
     actualCard: Card,
-    actions: {
-        originId: string,
-        targetId: string,
-    }[],
+    originId: string,
+    targetIds: string[],
 }
 
 export type ShanStage = {
