@@ -65,7 +65,7 @@ export class ControlButtons {
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
-        this.gamingScene.gameFEStatusObserved.addObserver(this);
+        this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
     }
 
 
@@ -147,9 +147,9 @@ export class ControlButtons {
                         originId: getMyUserId(),
                     }
                 )
-                this.gamingScene.gameFEStatusObserved.reset();
+                this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._canPlayInMyTurn) {
-                this.gamingScene.gameFEStatusObserved.reset();
+                this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             }
         });
 
@@ -166,7 +166,7 @@ export class ControlButtons {
                     emitMap.RESPONSE,
                     this.generateResponse(),
                 )
-                this.gamingScene.gameFEStatusObserved.reset();
+                this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._canPlayInMyTurn) {
                 if (!this.canClickOkBtnInMyPlayStage(gameFEStatus)) {
                     return
@@ -176,7 +176,7 @@ export class ControlButtons {
                     emitMap.ACTION,
                     this.generateAction()
                 )
-                this.gamingScene.gameFEStatusObserved.reset();
+                this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._isMyThrowTurn) {
                 if (!this.canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus)) {
                     return
@@ -186,7 +186,7 @@ export class ControlButtons {
                     emitMap.THROW,
                     {cards: gameFEStatus.selectedCards} as EmitThrowData
                 )
-                this.gamingScene.gameFEStatusObserved.reset();
+                this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             }
         });
 

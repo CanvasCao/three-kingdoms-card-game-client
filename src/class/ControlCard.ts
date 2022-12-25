@@ -82,7 +82,7 @@ export class ControlCard {
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
-        this.gamingScene.gameFEStatusObserved.addObserver(this);
+        this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
     }
 
     drawCard() {
@@ -139,7 +139,7 @@ export class ControlCard {
                         }
                     }
                 }
-                this.gamingScene.gameFEStatusObserved.setGameEFStatus(curFEStatus);
+                this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curFEStatus);
             }
         );
     }
@@ -274,6 +274,7 @@ export class ControlCard {
         this.cardImgObj!.destroy()
         this.cardHuaseNumberObj!.destroy()
         this.gamingScene.gameStatusObserved.removeObserver(this);
+        this.gamingScene.gameFEStatusObserved.removeSelectedStatusObserver(this);
     }
 
     gameStatusNotify(gameStatus: GameStatus) {

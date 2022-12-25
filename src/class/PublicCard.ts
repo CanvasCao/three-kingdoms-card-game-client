@@ -66,7 +66,7 @@ export class PublicCard {
         this.drawCard();
         this.drawMessge();
 
-        this.gamingScene.gameFEStatusObserved.addObserver(this);
+        this.gamingScene.gameFEStatusObserved.addPublicCardsObserver(this);
 
         setTimeout(() => {
             this.destoryAll();
@@ -157,7 +157,7 @@ export class PublicCard {
         this.cardHuaseNumberObj!.destroy();
         this.cardMessageObj!.destroy();
         this.removeCardsfromGameFEStatus()// from gameFEStatusObserved
-        this.gamingScene.gameFEStatusObserved.removeObserver(this);
+        this.gamingScene.gameFEStatusObserved.removePublicCardsObserver(this);
     }
 
     removeCardsfromGameFEStatus() {
@@ -165,7 +165,7 @@ export class PublicCard {
 
         const leftCards = differenceBy(gameFEStatus.publicCards, [this.card], 'cardId');
         gameFEStatus.publicCards = leftCards;
-        this.gamingScene.gameFEStatusObserved.setGameEFStatus(gameFEStatus)
+        this.gamingScene.gameFEStatusObserved.setPublicCardsGameEFStatus(gameFEStatus)
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {

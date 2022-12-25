@@ -100,7 +100,7 @@ export class Player {
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
-        this.gamingScene.gameFEStatusObserved.addObserver(this);
+        this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
     }
 
     drawMyTurnStroke() {
@@ -318,7 +318,7 @@ export class Player {
             }
 
             curGameFEStatus.selectedTargetUsers.push(this.user);
-            this.gamingScene.gameFEStatusObserved.setGameEFStatus(curGameFEStatus);
+            this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
         });
     }
 

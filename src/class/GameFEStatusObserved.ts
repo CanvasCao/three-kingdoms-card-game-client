@@ -22,7 +22,8 @@ export class GameFEStatusObserved {
 
     gameFEStatus: GameFEStatus
 
-    observers: FEObserver[]
+    selectedStatusObservers: FEObserver[]
+    publicCardsObservers: FEObserver[]
 
     constructor() {
         this.originCardState = {
@@ -45,20 +46,31 @@ export class GameFEStatusObserved {
             ...cloneDeep(this.originSkillState),
             ...cloneDeep(this.publicCardsState)
         };
-        this.observers = [];
+        this.selectedStatusObservers = [];
+        this.publicCardsObservers = [];
     }
 
-    addObserver(observer: FEObserver) {
-        this.observers.push(observer);
+    addSelectedStatusObserver(observer: FEObserver) {
+        this.selectedStatusObservers.push(observer);
     }
 
-    removeObserver(observer: FEObserver) {
-        this.observers = this.observers.filter(o => {
+    addPublicCardsObserver(observer: FEObserver) {
+        this.publicCardsObservers.push(observer);
+    }
+
+    removeSelectedStatusObserver(observer: FEObserver) {
+        this.selectedStatusObservers = this.selectedStatusObservers.filter(o => {
             return o.obId != observer.obId;
         });
     }
 
-    reset() {
+    removePublicCardsObserver(observer: FEObserver) {
+        this.publicCardsObservers = this.publicCardsObservers.filter(o => {
+            return o.obId != observer.obId;
+        });
+    }
+
+    resetSelectedStatus() {
         this.gameFEStatus = {
             ...cloneDeep(this.gameFEStatus),
             ...cloneDeep(this.originCardState),
@@ -66,15 +78,23 @@ export class GameFEStatusObserved {
             ...cloneDeep(this.originSkillState),
         };
         editor2.set(this.gameFEStatus)
-        this.observers.forEach(observer => {
+        this.selectedStatusObservers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });
     }
 
-    setGameEFStatus(gameFEStatus: GameFEStatus) {
+    setSelectedGameEFStatus(gameFEStatus: GameFEStatus) {
         this.gameFEStatus = gameFEStatus;
         editor2.set(gameFEStatus)
-        this.observers.forEach(observer => {
+        this.selectedStatusObservers.forEach(observer => {
+            observer.gameFEStatusNotify(this.gameFEStatus);
+        });
+    }
+
+    setPublicCardsGameEFStatus(gameFEStatus: GameFEStatus) {
+        this.gameFEStatus = gameFEStatus;
+        editor2.set(gameFEStatus)
+        this.publicCardsObservers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });
     }

@@ -25,6 +25,6 @@ export class PublicControlCardsManager {
         })
 
         // setGameEFStatus 是为了adjust location
-        this.gamingScene.gameFEStatusObserved.setGameEFStatus(gameFEStatus)
+        this.gamingScene.gameFEStatusObserved.setPublicCardsGameEFStatus(gameFEStatus)
     }
 }
