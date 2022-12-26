@@ -15,6 +15,12 @@ import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../types/phaser";
 import {Card, GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
+import {
+    cardHuaseNumberObjOffsetX,
+    cardHuaseNumberObjOffsetY,
+    cardNameObjOffsetX,
+    cardNameObjOffsetY
+} from "../config/offsetConfig";
 
 export class ControlCard {
     obId: string;
@@ -36,9 +42,6 @@ export class ControlCard {
     cardNameObj: Phaser.GameObjects.Text | null;
     cardImgObj: Phaser.GameObjects.Image | null;
     cardHuaseNumberObj: Phaser.GameObjects.Text | null;
-
-    cardHuaseNumberObjOffsetX: number;
-    cardHuaseNumberObjOffsetY: number;
 
     _selected: boolean;
 
@@ -69,10 +72,6 @@ export class ControlCard {
         this.cardNameObj = null;
         this.cardImgObj = null;
         this.cardHuaseNumberObj = null;
-
-        // animationOffset
-        this.cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width / 2
-        this.cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2
 
         // prev state
         this._selected = false;
@@ -175,8 +174,15 @@ export class ControlCard {
     fadeIn() {
         this.isMoving = true;
         [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj].forEach((obj, index) => {
-            const offsetX = (index == 2) ? this.cardHuaseNumberObjOffsetX : 0;
-            const offsetY = (index == 2) ? this.cardHuaseNumberObjOffsetY : 0;
+            let offsetX = 0, offsetY = 0;
+            if (index == 1) {
+                offsetX = cardNameObjOffsetX
+                offsetY = cardNameObjOffsetY
+            } else if (index == 2) {
+                offsetX = cardHuaseNumberObjOffsetX
+                offsetY = cardHuaseNumberObjOffsetY
+            }
+
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
@@ -202,25 +208,25 @@ export class ControlCard {
     fadeOut() {
         this.isMoving = true;
         [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj].forEach((obj, index) => {
-            const offsetX = (index == 2) ? this.cardHuaseNumberObjOffsetX : 0;
-            const offsetY = (index == 2) ? this.cardHuaseNumberObjOffsetY : 0;
-            this.gamingScene.tweens.add({
-                targets: obj,
-                x: {
-                    value: sizeConfig.background.width / 2 + offsetX,
-                    duration: 100,
-                },
-                y: {
-                    value: sizeConfig.background.height / 2 + offsetY,
-                    duration: 100,
-                },
-                onComplete: () => {
-                    this.isMoving = false;
-                    setTimeout(() => {
-                        this.destoryAll();
-                    }, 2000)
-                }
-            });
+            // const offsetX = (index == 2) ? cardHuaseNumberObjOffsetX : 0;
+            // const offsetY = (index == 2) ? cardHuaseNumberObjOffsetY : 0;
+            // this.gamingScene.tweens.add({
+            //     targets: obj,
+            //     x: {
+            //         value: sizeConfig.background.width / 2 + offsetX,
+            //         duration: 100,
+            //     },
+            //     y: {
+            //         value: sizeConfig.background.height / 2 + offsetY,
+            //         duration: 100,
+            //     },
+            //     onComplete: () => {
+            //         this.isMoving = false;
+            //         setTimeout(() => {
+            //             this.destoryAll();
+            //         }, 2000)
+            //     }
+            // });
         })
 
     }

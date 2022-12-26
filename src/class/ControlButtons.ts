@@ -10,7 +10,7 @@ import {
     getNeedThrowCardNumber
 } from "../utils/gameStatusUtils";
 import emitMap from "../config/emitMap.json";
-import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {BtnGroup, GamingScene} from "../types/phaser";
 import Phaser from "phaser";
 import {GameFEStatus} from "../types/gameFEStatus";

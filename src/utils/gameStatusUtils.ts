@@ -1,6 +1,6 @@
 import {Card, GameStatus, User} from "../types/gameStatus";
-import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "./cardConfig";
-import {CARD_CONFIG_WITH_FE_INFO} from "./cardConfigWithFEInfo";
+import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {CARD_CONFIG_WITH_FE_INFO} from "../config/cardConfigWithFEInfo";
 
 // const getRelativePositionToCanvas = (gameObject, camera) => {
 //     return {

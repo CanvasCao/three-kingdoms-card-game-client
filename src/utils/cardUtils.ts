@@ -1,5 +1,5 @@
 import {Card} from "../types/gameStatus";
-import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "./cardConfig";
+import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 
 export const attachFEInfoToCard = (card: Card) => {
     if (card.CN == SCROLL_CARDS_CONFIG.HUO_GONG.CN) {
@@ -71,7 +71,7 @@ export const attachFEInfoToCard = (card: Card) => {
             SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
         ].includes(card.CN)) {
             card.noNeedSetTargetDueToImDefaultTarget = true
-        }else {
+        } else {
             card.noNeedSetTargetIndeed = true
         }
 

@@ -7,7 +7,7 @@ import {
     getMyUserId,
     uuidv4
 } from "../utils/gameStatusUtils";
-import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
+import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../types/phaser";
 import {Card, GameStatus, PandingSign, User} from "../types/gameStatus";
 import {ColorConfigJson} from "../types/config";

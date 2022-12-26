@@ -1,11 +1,17 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
-import {getMyUserId, uuidv4} from "../utils/gameStatusUtils";
+import {uuidv4} from "../utils/gameStatusUtils";
 import {sharedDrawCard} from "../utils/drawCardUtils";
 import {differenceBy} from "lodash";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {GamingScene} from "../types/phaser";
 import {Card} from "../types/gameStatus";
+import {
+    cardHuaseNumberObjOffsetX,
+    cardHuaseNumberObjOffsetY,
+    cardNameObjOffsetX,
+    cardNameObjOffsetY
+} from "../config/offsetConfig";
 
 export class PublicCard {
     obId: string;
@@ -28,10 +34,6 @@ export class PublicCard {
     cardImgObj: Phaser.GameObjects.Image | null;
     cardHuaseNumberObj: Phaser.GameObjects.Text | null;
     cardMessageObj: Phaser.GameObjects.Text | null;
-
-    cardHuaseNumberObjOffsetX: number;
-    cardHuaseNumberObjOffsetY: number;
-
 
     constructor(gamingScene: GamingScene, card: Card, message: string, publicCards: Card[]) {
         this.obId = uuidv4();
@@ -58,10 +60,6 @@ export class PublicCard {
         this.cardImgObj = null;
         this.cardHuaseNumberObj = null;
         this.cardMessageObj = null;
-
-        // animationOffset
-        this.cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width / 2
-        this.cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2
 
         this.drawCard();
 
@@ -102,8 +100,14 @@ export class PublicCard {
 
         // this.isMoving = true;
         [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj, this.cardMessageObj].forEach((obj, index) => {
-            const offsetX = (index == 2) ? this.cardHuaseNumberObjOffsetX : 0;
-            const offsetY = (index == 2) ? this.cardHuaseNumberObjOffsetY : 0;
+            let offsetX = 0, offsetY = 0;
+            if (index == 1) {
+                offsetX = cardNameObjOffsetX
+                offsetY = cardNameObjOffsetY
+            } else if (index == 2) {
+                offsetX = cardHuaseNumberObjOffsetX
+                offsetY = cardHuaseNumberObjOffsetY
+            }
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
