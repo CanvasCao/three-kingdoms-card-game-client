@@ -1,7 +1,7 @@
 export type GameStatus = {
     users: GameStatusUsers,
     stage: Stage,
-    action: OneTargetAction | MultiTargetsAction,
+    action: NoTargetAction | OneTargetAction | MultiTargetsAction,
     shanResStages: ShanStage[],
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
@@ -60,6 +60,14 @@ export type Card = {
     horseDistance?: number,
     distance?: number,
     distanceDesc?: string,
+
+    canClickMySelfAsTarget?: boolean,
+    canPlayInMyTurn: boolean,
+    targetMinMax: { min: number, max: number },
+    noNeedSetTargetDueToImDefaultTarget?: boolean,
+    noNeedSetTargetIndeed?: boolean,
+    couldHaveMultiTarget?: boolean,
+    canOnlyHaveOneTarget?: boolean,
 }
 
 export type PandingSign = {
@@ -72,6 +80,12 @@ export type Stage = {
     userId: string,
     stageName: string,
     stageNameCN: string,
+}
+
+export type NoTargetAction = {
+    cards: Card[],
+    actualCard: Card,
+    originId: string,
 }
 
 export type OneTargetAction = {

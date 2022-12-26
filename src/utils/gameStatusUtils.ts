@@ -1,5 +1,6 @@
 import {Card, GameStatus, User, GameStatusUsers} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "./cardConfig";
+import { CARD_CONFIG_WITH_FE_INFO } from "./cardConfigWithFEInfo";
 
 // const getRelativePositionToCanvas = (gameObject, camera) => {
 //     return {
@@ -93,51 +94,23 @@ const getIsMyScrollEffectTurn = (gameStatus: GameStatus) => {
     }
 }
 
-const getCanPlayThisCardInMyPlayTurn = (user: User, card: Card) => {
-    if (getIsEquipmentCard(card)) {
-        return true
-    }
+const getInMyPlayTurnCanPlayCardNamesClourse = (user: User) => {
+    let canPlayInMyTurnCardNames: string[];
+    return () => {
+        if (!canPlayInMyTurnCardNames) {
+            canPlayInMyTurnCardNames = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canPlayInMyTurn).map((c) => c.CN!)
+        }
 
-    const cards = [
-        BASIC_CARDS_CONFIG.SHA.CN,
-        BASIC_CARDS_CONFIG.LEI_SHA.CN,
-        BASIC_CARDS_CONFIG.HUO_SHA.CN,
+        let amendCanPlayInMyTurnCardNames: string[] = canPlayInMyTurnCardNames;
+        if (user.maxBlood <= user.currentBlood) {
+            amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != BASIC_CARDS_CONFIG.TAO.CN)
+        }
 
-        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
-        SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
-        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN,
-        SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
-    ]
-    if (user.maxBlood > user.currentBlood) {
-        cards.push(BASIC_CARDS_CONFIG.TAO.CN)
+        if (user.pandingSigns.find((sign) => sign.actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
+            amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)
+        }
+        return amendCanPlayInMyTurnCardNames
     }
-
-    if (!user.pandingSigns.find((sign) => sign.actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
-        cards.push(SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)
-    }
-
-    return cards.includes(card.CN)
-}
-
-const getHowManyTargetsNeed = (actualCard: Card) => {
-    if (getIsEquipmentCard(actualCard)) {
-        return {min: 0, max: 0}
-    }
-    if ([SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
-        SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
-        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN].includes(actualCard.CN)) {
-        return {min: 1, max: 1}
-    }
-    if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
-        return {min: 1, max: 3}
-    }
-    if ([BASIC_CARDS_CONFIG.TAO.CN,
-        SCROLL_CARDS_CONFIG.SHAN_DIAN.CN,
-        SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
-        SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN].includes(actualCard.CN)) {
-        return {min: 0, max: 0}
-    }
-    return {min: 100, max: 100}
 }
 
 const getDistanceBetweenMeAndTarget = (users: GameStatusUsers, targetUserId: string) => {
@@ -157,12 +130,14 @@ const getIsEquipmentCard = (card: Card) => {
     return CARD_TYPE.EQUIPMENT == card.type
 }
 
-const getCantSelectMeAsTargetCardNames = () => {
-    return [
-        BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,
-        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN, SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN,
-        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN, SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN, SCROLL_CARDS_CONFIG.JUE_DOU
-    ]
+const getCanSelectMeAsTargetCardNamesClosure = () => {
+    let names: string[];
+    return () => {
+        if (!names) {
+            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsTarget).map((c) => c.CN!)
+        }
+        return names
+    }
 }
 
 const getNeedThrowCardNumber = (user: User) => {
@@ -194,7 +169,7 @@ export {
 
     // other
     getMyResponseInfo,
-    getCanPlayThisCardInMyPlayTurn,
+    getInMyPlayTurnCanPlayCardNamesClourse,
 
     // cal distance
     getDistanceBetweenMeAndTarget,
@@ -202,9 +177,8 @@ export {
     // card type
     getIsEquipmentCard,
 
-    // Player class validate target
-    getCantSelectMeAsTargetCardNames,
-    getHowManyTargetsNeed,
+    // Player validate
+    getCanSelectMeAsTargetCardNamesClosure,
 
     // 弃牌
     getNeedThrowCardNumber,

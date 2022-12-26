@@ -26,8 +26,8 @@ export class ControlCardsManager {
         const needNewCards = differenceBy(user.cards, this._userCards, 'cardId');
         this._userCards = user.cards;
 
-        needNewCards.forEach((c) => {
-            new ControlCard(this.gamingScene, c);
+        needNewCards.forEach((card) => {
+            new ControlCard(this.gamingScene, card);
         })
     }
 }

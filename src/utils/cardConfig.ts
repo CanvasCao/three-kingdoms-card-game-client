@@ -112,6 +112,15 @@ const IMMEDIATE_SCROLL_CARDS_CONFIG = {
         "EN": "Cancel",
         type: CARD_TYPE.SCROLL
     },
+
+    // junzheng
+    "HUO_GONG": {
+        KEY: "HUO_GONG",
+        "CN": "火攻",
+        "EN": "Fire Attack",
+        type: CARD_TYPE.SCROLL,
+        canClickMySelfAsTarget: true
+    },
 }
 
 const DELAY_SCROLL_CARDS_CONFIG = { // 延时锦囊
@@ -273,7 +282,8 @@ const PLUS_HORSE_CARDS_CONFIG = {
         "EN": "Plus horse",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
-    }, "JUE_YING": {
+    },
+    "JUE_YING": {
         KEY: "JUE_YING",
         "CN": "绝影",
         "EN": "Plus horse",
@@ -327,6 +337,7 @@ const CARD_CONFIG = {
 
 export {
     CARD_TYPE,
+    CARD_CONFIG,
     BASIC_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,

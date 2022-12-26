@@ -1,11 +1,11 @@
-import {Card, MultiTargetsAction, OneTargetAction} from "./gameStatus";
+import {Card, MultiTargetsAction, NoTargetAction, OneTargetAction} from "./gameStatus";
 
 export type EmitPlayPublicCardData = {
     cards: Card[];
     message: string;
 }
 
-export type EmitActionData = OneTargetAction | MultiTargetsAction
+export type EmitActionData = NoTargetAction | OneTargetAction | MultiTargetsAction
 
 export type EmitResponseData = {
     cards: Card[],

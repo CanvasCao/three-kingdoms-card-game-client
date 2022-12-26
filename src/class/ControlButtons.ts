@@ -5,8 +5,6 @@ import {
     getCanPlayInMyTurn,
     getMyUserId,
     uuidv4,
-    getHowManyTargetsNeed,
-    getIsEquipmentCard,
     getMyResponseInfo,
     getIsMyThrowTurn,
     getNeedThrowCardNumber
@@ -18,6 +16,7 @@ import Phaser from "phaser";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {GameStatus, User} from "../types/gameStatus";
 import {EmitActionData, EmitResponseData, EmitThrowData} from "../types/emit";
+import {attachFEInfoToCard} from "../utils/cardUtils";
 
 export class ControlButtons {
     obId: string;
@@ -199,50 +198,36 @@ export class ControlButtons {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
 
-        const actualCard = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]));
+        const actualCard = attachFEInfoToCard(JSON.parse(JSON.stringify(gameFEStatus.actualCard)));
         actualCard.cardId = uuidv4(); // TODO 作为前端判断要不要重新计算和刷新disable的依据
 
-        // 多目标卡牌
-        if ([BASIC_CARDS_CONFIG.SHA.CN,
-            BASIC_CARDS_CONFIG.LEI_SHA.CN,
-            BASIC_CARDS_CONFIG.HUO_SHA.CN,
-            SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
-            SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
-        ].includes(actualCard.CN)) {
+        if (actualCard.couldHaveMultiTarget) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
                 originId: getMyUserId(),
                 targetIds: gameFEStatus.selectedTargetUsers.map((targetUser: User) => targetUser.userId)
             }
-        }
-        // 自己为目标卡牌
-        else if (actualCard.CN == BASIC_CARDS_CONFIG.TAO.CN ||
-            actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.SHAN_DIAN.CN ||
-            actualCard.CN == SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN ||
-            getIsEquipmentCard(actualCard)) {
+        } else if (actualCard.noNeedSetTargetDueToImDefaultTarget) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
                 originId: getMyUserId(),
                 targetId: getMyUserId(),
             }
-        }
-        // 单目标卡牌
-        else if (actualCard.CN == SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
+        } else if (actualCard.canOnlyHaveOneTarget) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
                 originId: getMyUserId(),
                 targetId: gameFEStatus.selectedTargetUsers[0].userId,
             }
-        }
-        // 不选目标 但是所有人都是目标
-        else if (
-            actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN ||
-            actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN ||
-            actualCard.CN == SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
-        ) {
+        } else if (actualCard.noNeedSetTargetIndeed) {
+            return {
+                cards: gameFEStatus.selectedCards,
+                actualCard,
+                originId: getMyUserId(),
+            }
         }
     }
 
@@ -295,7 +280,7 @@ export class ControlButtons {
 
     canClickOkBtnInMyPlayStage(gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
-            const targetMinMaxNumber = getHowManyTargetsNeed(gameFEStatus.actualCard);
+            const targetMinMaxNumber = attachFEInfoToCard(gameFEStatus.actualCard).targetMinMax;
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.min
                 && gameFEStatus.selectedTargetUsers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;

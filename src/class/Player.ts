@@ -1,9 +1,9 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {
-    getCantSelectMeAsTargetCardNames,
+    getCanSelectMeAsTargetCardNamesClosure,
     getDistanceBetweenMeAndTarget,
-    getHowManyTargetsNeed, getIfUserHasAnyCard,
+    getIfUserHasAnyCard,
     getMyUserId,
     uuidv4
 } from "../utils/gameStatusUtils";
@@ -11,8 +11,8 @@ import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from
 import {GamingScene, PlayerEquipmentGroup} from "../types/phaser";
 import {Card, GameStatus, PandingSign, User} from "../types/gameStatus";
 import {ColorConfigJson} from "../types/config";
-import {Game} from "phaser";
 import {GameFEStatus} from "../types/gameFEStatus";
+import {attachFEInfoToCard} from "../utils/cardUtils";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
@@ -310,13 +310,13 @@ export class Player {
             }
 
             // validate不能以自己为目标的卡
-            if (getCantSelectMeAsTargetCardNames().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
+            if (!getCanSelectMeAsTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
                 return;
             }
 
             // validate是否选择了足够目标
-            const targetMinMaxNumber = getHowManyTargetsNeed(curGameFEStatus.actualCard!);
-            if (curGameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.max) {
+            const targetMinMax = attachFEInfoToCard(curGameFEStatus.actualCard!).targetMinMax;
+            if (curGameFEStatus.selectedTargetUsers.length >= targetMinMax.max) {
                 return;
             }
 

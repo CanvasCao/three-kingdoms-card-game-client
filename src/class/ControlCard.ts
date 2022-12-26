@@ -4,7 +4,7 @@ import {
     getMyUserId,
     uuidv4,
     getIsMyResponseCardTurn,
-    getCanPlayThisCardInMyPlayTurn,
+    getInMyPlayTurnCanPlayCardNamesClourse,
     getIsMyThrowTurn,
     getNeedThrowCardNumber,
     getMyResponseInfo,
@@ -239,8 +239,8 @@ export class ControlCard {
         }
 
         if (canPlayInMyTurn) {
-            const canPlayThisCardInMyPlayTurn = getCanPlayThisCardInMyPlayTurn(gameStatus.users[getMyUserId()], this.card)
-            if (!canPlayThisCardInMyPlayTurn) {
+            const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.users[getMyUserId()])()
+            if (!canPlayCardNames.includes(this.card.CN)) {
                 // @ts-ignore
                 this.cardImgObj!.setTint(this.disableTint)
                 this._cardDisable = true
