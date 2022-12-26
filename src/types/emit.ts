@@ -15,6 +15,13 @@ export type EmitResponseData = {
     wuxieTargetCardId?: string,
 }
 
+export type EmitCardBoardData = {
+    originId: string,
+    targetId: string,
+    card: Card,
+    type: "REMOVE" | "MOVE",
+}
+
 export type EmitThrowData = {
     cards: Card[]
 }

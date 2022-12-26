@@ -1,5 +1,5 @@
 import sizeConfig from "../config/sizeConfig.json";
-import {getMyUserId, uuidv4} from "../utils/utils";
+import {getMyUserId, uuidv4} from "../utils/gameStatusUtils";
 import {GamingScene} from "../types/phaser";
 import {Card, GameStatus, User} from "../types/gameStatus";
 

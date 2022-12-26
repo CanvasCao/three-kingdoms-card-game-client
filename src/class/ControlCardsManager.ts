@@ -1,4 +1,4 @@
-import {getMyUserId, uuidv4} from "../utils/utils";
+import {getMyUserId, uuidv4} from "../utils/gameStatusUtils";
 import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
 import {ControlCard} from "./ControlCard";

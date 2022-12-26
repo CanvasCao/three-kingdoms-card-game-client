@@ -102,6 +102,7 @@ export type ScrollResStage = {
     cards: Card[],
     actualCard: Card,
     isEffect: boolean,
+    stageId: string, // 前端刷新Board的依据
 }
 
 export type WuxieSimultaneousResStage = {

@@ -1,6 +1,6 @@
 export type ElementsUrlJson = {
     baseUrl: string,
-    game: { [key: string]: string },
+    card: { [key: string]: string },
     player: { [key: string]: string },
     other: { [key: string]: string },
 }

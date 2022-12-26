@@ -6,7 +6,7 @@ import {
     getHowManyTargetsNeed, getIfUserHasAnyCard,
     getMyUserId,
     uuidv4
-} from "../utils/utils";
+} from "../utils/gameStatusUtils";
 import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../types/phaser";
 import {Card, GameStatus, PandingSign, User} from "../types/gameStatus";
@@ -20,7 +20,7 @@ export class Player {
     obId: string;
     gamingScene: GamingScene;
     user: User;
-    disable: boolean;
+    _disable: boolean;
     _pandingCardsLength: number;
     playerX: number;
     playerY: number;
@@ -57,7 +57,7 @@ export class Player {
         this.user = user;
 
         // init inner state
-        this.disable = false;
+        this._disable = false;
         this._pandingCardsLength = 0
 
         // location
@@ -300,20 +300,23 @@ export class Player {
                 return;
             }
 
-            if (this.disable) {
+            if (this._disable) {
                 return;
             }
 
+            // 自己已经选中过
+            if (curGameFEStatus.selectedTargetUsers.find((u: User) => u.userId == this.user.userId)) {
+                return;
+            }
+
+            // validate不能以自己为目标的卡
             if (getCantSelectMeAsTargetCardNames().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
                 return;
             }
 
+            // validate是否选择了足够目标
             const targetMinMaxNumber = getHowManyTargetsNeed(curGameFEStatus.actualCard!);
             if (curGameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.max) {
-                return;
-            }
-
-            if (curGameFEStatus.selectedTargetUsers.find((u: User) => u.userId == this.user.userId)) {
                 return;
             }
 
@@ -442,7 +445,7 @@ export class Player {
 
     setPlayerDisable() {
         this.playerImage!.setTint(colorConfigJson.disablePlayer);
-        this.disable = true;
+        this._disable = true;
     }
 
     onPlayerDisableChange(gameFEStatus: GameFEStatus) {
@@ -454,11 +457,11 @@ export class Player {
 
         const setPlayerDisable = () => {
             this.playerImage!.setTint(colorConfigJson.disablePlayer);
-            this.disable = true;
+            this._disable = true;
         }
         const setPlayerAble = () => {
             this.playerImage!.clearTint();
-            this.disable = false;
+            this._disable = false;
         }
 
         if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
@@ -480,7 +483,8 @@ export class Player {
                 } else {
                     setPlayerAble()
                 }
-            } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+            } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
+                actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
                 if (getIfUserHasAnyCard(gameStatus.users[this.user.userId])) {
                     setPlayerAble()
                 } else {

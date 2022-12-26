@@ -15,6 +15,10 @@ function uuidv4() {
     );
 }
 
+function verticalRotationSting(s: string) {
+    return s.split('').join('\r\n')
+}
+
 const getMyUserId = () => {
     const key = 'three-kingdom-user-id';
     const userid = localStorage.getItem(key);
@@ -52,6 +56,7 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
     return gameStatus.shanResStages.length <= 0 &&
         gameStatus.taoResStages.length <= 0 &&
         gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length <= 0 &&
+        gameStatus.scrollResStages.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 
@@ -99,6 +104,7 @@ const getCanPlayThisCardInMyPlayTurn = (user: User, card: Card) => {
         BASIC_CARDS_CONFIG.HUO_SHA.CN,
 
         SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
+        SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
         SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN,
         SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
     ]
@@ -117,7 +123,9 @@ const getHowManyTargetsNeed = (actualCard: Card) => {
     if (getIsEquipmentCard(actualCard)) {
         return {min: 0, max: 0}
     }
-    if ([SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN, SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN].includes(actualCard.CN)) {
+    if ([SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
+        SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
+        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN].includes(actualCard.CN)) {
         return {min: 1, max: 1}
     }
     if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCard.CN)) {
@@ -153,7 +161,7 @@ const getCantSelectMeAsTargetCardNames = () => {
     return [
         BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,
         SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN, SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN,
-        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN, SCROLL_CARDS_CONFIG.JUE_DOU
+        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN, SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN, SCROLL_CARDS_CONFIG.JUE_DOU
     ]
 }
 
@@ -204,5 +212,6 @@ export {
     // validate 锦囊 target
     getIfUserHasAnyCard,
 
-    uuidv4
+    uuidv4,
+    verticalRotationSting
 }

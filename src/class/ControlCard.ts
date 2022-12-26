@@ -9,7 +9,7 @@ import {
     getNeedThrowCardNumber,
     getMyResponseInfo,
     getCanPlayInMyTurn
-} from "../utils/utils";
+} from "../utils/gameStatusUtils";
 import {sharedDrawCard} from "../utils/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../types/phaser";

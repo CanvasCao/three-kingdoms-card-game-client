@@ -10,7 +10,7 @@ import {ControlPlayer} from "./class/ControlPlayer";
 import {ControlButtons} from "./class/ControlButtons";
 import {GameStatusObserved} from "./class/GameStatusObserved";
 import {GameFEStatusObserved} from "./class/GameFEStatusObserved";
-import {getMyUserId} from "./utils/utils";
+import {getMyUserId} from "./utils/gameStatusUtils";
 import {Player} from "./class/Player";
 import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
@@ -20,6 +20,7 @@ import {Socket} from "./socket/socket.io.esm.min";
 import {Card, GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
 import {EmitPlayPublicCardData} from './types/emit';
+import {PlayerCardsBoard} from './class/PlayerCardsBoard';
 
 // create the editor
 const container = document.getElementById('jsoneditor')
@@ -39,6 +40,7 @@ class Gaming extends Phaser.Scene {
     players: Player[];
     gameStatusObserved: GameStatusObserved;
     gameFEStatusObserved: GameFEStatusObserved;
+    playerCardsBoard: PlayerCardsBoard | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
     publicControlCardsManager: PublicControlCardsManager | undefined;
@@ -60,6 +62,9 @@ class Gaming extends Phaser.Scene {
     preload() {
         const elementsUrlJson = elementsUrl as unknown as ElementsUrlJson;
         this.load.setBaseURL(elementsUrl.baseUrl);
+        for (const key in elementsUrl.card) {
+            this.load.image(key, elementsUrlJson.card[key]);
+        }
         for (const playerId in elementsUrl.player) {
             this.load.image(playerId, elementsUrlJson.player[playerId]);
         }
@@ -88,6 +93,7 @@ class Gaming extends Phaser.Scene {
             if (this.inited) {
                 return
             }
+            this.playerCardsBoard = new PlayerCardsBoard(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
             this.publicControlCardsManager = new PublicControlCardsManager(this);

@@ -1,5 +1,9 @@
 {
   "baseUrl": "http://www.caoyuhao.top",
+  "card": {
+    "sha": "card/sha.png",
+    "cardBg": "card/cardBg.png"
+  },
   "player": {
     "SHU001": "wujiang/biao/SHU001.png",
     "SHU002": "wujiang/biao/SHU002.jpeg",

@@ -10,7 +10,7 @@ import {
     getMyResponseInfo,
     getIsMyThrowTurn,
     getNeedThrowCardNumber
-} from "../utils/utils";
+} from "../utils/gameStatusUtils";
 import emitMap from "../config/emitMap.json";
 import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../utils/cardConfig";
 import {BtnGroup, GamingScene} from "../types/phaser";
