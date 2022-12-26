@@ -362,7 +362,7 @@ export class Player {
             const card = user[ele.card as keyof User] as Card
             // @ts-ignore
             const group = this[ele.group]
-            if (user[ele.card as keyof User]) {
+            if (card) {
                 group.distanceText.setText(card.distanceDesc)
                 group.nameText.setText(card.CN)
                 group.huaseNumText.setText(card.cardNumDesc + card.huase)

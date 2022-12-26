@@ -24,6 +24,8 @@ const boardSize = {
     width: 760,
 }
 
+const boardDepth = 100;
+
 export class PlayerCardsBoard {
     obId: string;
     gamingScene: GamingScene;
@@ -90,7 +92,7 @@ export class PlayerCardsBoard {
         this.maskImg.displayWidth = sizeConfig.background.width;
         this.maskImg.setAlpha(0)
         this.maskImg.setOrigin(0, 0)
-        this.maskImg.setDepth(100)
+        this.maskImg.setDepth(boardDepth)
 
         this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
         // @ts-ignore
@@ -98,7 +100,7 @@ export class PlayerCardsBoard {
         this.boardImg.displayHeight = boardSize.height;
         this.boardImg.displayWidth = boardSize.width;
         this.boardImg.setAlpha(0)
-        this.boardImg.setDepth(100)
+        this.boardImg.setDepth(boardDepth)
     }
 
     drawTitle() {
@@ -106,7 +108,7 @@ export class PlayerCardsBoard {
         this.titleText.setOrigin(0.5, 0.5)
         this.titleText.setAlpha(0)
         this.titleText.setPadding(0, 2, 0, 0)
-        this.titleText.setDepth(100)
+        this.titleText.setDepth(boardDepth)
     }
 
     drawCardCategories() {
@@ -133,7 +135,7 @@ export class PlayerCardsBoard {
             text.setFontSize(fontSize)
             text.setOrigin(0, 0.5)
             text.setAlpha(0)
-            text.setDepth(100)
+            text.setDepth(boardDepth)
         })
     }
 
@@ -147,7 +149,7 @@ export class PlayerCardsBoard {
         this.handCardsPlaceholder.displayWidth = 675;
         this.handCardsPlaceholder.setOrigin(0, 0.5)
         this.handCardsPlaceholder.setAlpha(0)
-        this.handCardsPlaceholder.setDepth(100)
+        this.handCardsPlaceholder.setDepth(boardDepth)
 
         const equipmentTexts = ["武器牌", "防具牌", "+1🐎", "-1🐎"] as string[];
         equipmentTexts.forEach((equipmentText: string, index) => {
@@ -160,14 +162,14 @@ export class PlayerCardsBoard {
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
-            img.setDepth(100)
+            img.setDepth(boardDepth)
 
             const text = this.gamingScene.add.text(
                 this.initX + gridOffset.column1.x + (index * (sizeConfig.controlCard.width + cardMargin)),
                 this.initY + gridOffset.line2.y, equipmentText)
             text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
-            text.setDepth(100)
+            text.setDepth(boardDepth)
             text.setPadding(0, 2, 0, 0);
 
             this.equipmentCardsPlaceholders.push(img)
@@ -185,14 +187,14 @@ export class PlayerCardsBoard {
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
-            img.setDepth(100)
+            img.setDepth(boardDepth)
 
             const text = this.gamingScene.add.text(
                 this.initX + gridOffset.column2.x + (index * (sizeConfig.controlCard.width + cardMargin)),
                 this.initY + gridOffset.line2.y, delayText)
             text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
-            text.setDepth(100)
+            text.setDepth(boardDepth)
             text.setPadding(0, 2, 0, 0)
 
             this.pandingCardsPlaceholders.push(img)
@@ -210,29 +212,27 @@ export class PlayerCardsBoard {
             cardImg.setInteractive({cursor: 'pointer'})
             cardImg.displayHeight = sizeConfig.controlCard.height;
             cardImg.displayWidth = sizeConfig.controlCard.width;
-            cardImg.setDepth(100)
+            cardImg.setDepth(boardDepth)
             cardImg.setInteractive();
-            cardImg.on('pointerdown', () => {
-                this.gamingScene.socket.emit(
-                    emitMap.CARD_BOARD_ACTION,
-                    this.getEmitCardBoardActionData(targetUser, card, scrollResStage)
-                )
-            })
-
+            cardImg.on('pointerdown', this.getCardClickHandler(targetUser, card, scrollResStage))
             this.destoryObjects.push(cardImg);
         })
     }
 
-    drawTargetEquipmentCards(targetUser: User) {
+    drawTargetEquipmentCards(targetUser: User, scrollResStage: ScrollResStage) {
         ['weaponCard', 'shieldCard', 'plusHorseCard', 'minusHorseCard'].forEach((key, index) => {
-            const card = targetUser[key as keyof User];
+            const card = targetUser[key as keyof User] as Card;
             if (!card) {
                 return
             }
-            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawCard(this.gamingScene, card as Card, {
+
+            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line2.y,
+                depth: boardDepth,
             })
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetUser, card, scrollResStage))
+
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
             this.destoryObjects.push(cardImgObj);
@@ -240,17 +240,29 @@ export class PlayerCardsBoard {
 
     }
 
-    drawTargetScrollCards(targetUser: User) {
+    drawTargetScrollCards(targetUser: User, scrollResStage: ScrollResStage) {
         targetUser.pandingSigns.forEach((sign, index) => {
             const card = sign.card
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line2.y,
+                depth: boardDepth,
             })
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetUser, card, scrollResStage))
+
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
             this.destoryObjects.push(cardImgObj);
         })
+    }
+
+    getCardClickHandler(targetUser: User, card: Card, scrollResStage: ScrollResStage) {
+        return () => {
+            this.gamingScene.socket.emit(
+                emitMap.CARD_BOARD_ACTION,
+                this.getEmitCardBoardActionData(targetUser, card, scrollResStage)
+            )
+        }
     }
 
     showBoard(show: boolean) {
@@ -273,13 +285,12 @@ export class PlayerCardsBoard {
     updateTargetCards(gameStatus: GameStatus) {
         const scrollResStage = gameStatus.scrollResStages?.[0];
         const targetUser = gameStatus.users[scrollResStage.targetId]
-
         this.titleText!.setAlpha(1)
         this.titleText!.setText(`${scrollResStage?.actualCard.CN} 选择一张 ${gameStatus.users[targetUser.userId].name} 的卡牌`)
 
         this.drawTargetUserCards(targetUser, scrollResStage);
-        this.drawTargetEquipmentCards(targetUser);
-        this.drawTargetScrollCards(targetUser);
+        this.drawTargetEquipmentCards(targetUser,scrollResStage);
+        this.drawTargetScrollCards(targetUser,scrollResStage);
     }
 
     destoryTargetCards() {

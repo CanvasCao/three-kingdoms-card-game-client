@@ -13,7 +13,12 @@ const cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2
 const sharedDrawCard = (
     gamingScene: GamingScene,
     card: Card,
-    {x, y, message}: { x: number, y: number, message?: string }) => {
+    {x, y, message, depth = 0}: {
+        x: number,
+        y: number,
+        message?: string,
+        depth?: number
+    }) => {
     // background
     const cardImgObj = gamingScene.add.image(x, y, 'white').setInteractive({cursor: 'pointer'});
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
@@ -21,6 +26,7 @@ const sharedDrawCard = (
     cardImgObj.setAlpha(1)
     // @ts-ignore
     cardImgObj.setTint(ableTint);
+    cardImgObj.setDepth(depth)
 
 
     // cardName
@@ -31,6 +37,8 @@ const sharedDrawCard = (
     cardNameObj.setPadding(0, 5, 0, 0);
     cardNameObj.setOrigin(0.5, 0.5);
     cardNameObj.setAlpha(1)
+    cardNameObj.setDepth(depth)
+
 
     // huase + number
     const cardHuaseNumberObj = gamingScene.add.text(
@@ -43,6 +51,7 @@ const sharedDrawCard = (
     cardHuaseNumberObj.setPadding(0, 5, 0, 0);
     cardHuaseNumberObj.setOrigin(0, 0);
     cardHuaseNumberObj.setAlpha(1);
+    cardHuaseNumberObj.setDepth(depth)
 
     // meaasge
     let cardMessageObj
@@ -59,6 +68,7 @@ const sharedDrawCard = (
         cardMessageObj.setOrigin(0.5, 1);
         cardMessageObj.setFontSize(9);
         cardMessageObj.setAlpha(1)
+        cardMessageObj.setDepth(depth)
     }
 
     return {
