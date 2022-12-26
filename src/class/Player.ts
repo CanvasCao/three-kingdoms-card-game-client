@@ -2,7 +2,7 @@ import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {
     getCanSelectMeAsTargetCardNamesClosure,
-    getDistanceBetweenMeAndTarget,
+    getDistanceFromAToB,
     getIfUserHasAnyCard,
     getMyUserId,
     uuidv4
@@ -466,11 +466,12 @@ export class Player {
 
         if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
             const actualCardName = gameFEStatus?.actualCard?.CN
-
+            const meUser = gameStatus.users[getMyUserId()];
+            const targetUser = gameStatus.users[this.user.userId];
             // 计算杀的距离
             if (actualCardName == BASIC_CARDS_CONFIG.SHA.CN) {
-                const attackDistance = gameStatus.users[getMyUserId()]?.weaponCard?.distance || 1;
-                const distanceBetweenMeAndTarget = getDistanceBetweenMeAndTarget(gameStatus.users, this.user.userId)
+                const attackDistance = meUser?.weaponCard?.distance || 1;
+                const distanceBetweenMeAndTarget = getDistanceFromAToB(meUser, targetUser, Object.keys(gameStatus.users).length)
 
                 if (attackDistance >= distanceBetweenMeAndTarget) {
                     setPlayerAble()
@@ -478,14 +479,23 @@ export class Player {
                     this.setPlayerDisable();
                 }
             } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
-                if (gameStatus.users[this.user.userId].pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
+                if (targetUser.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
                     setPlayerDisable()
                 } else {
                     setPlayerAble()
                 }
+            } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN ||
+                actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN
+            ) {
+                const distanceBetweenMeAndTarget = getDistanceFromAToB(meUser, targetUser, Object.keys(gameStatus.users).length)
+                if (1 >= distanceBetweenMeAndTarget) {
+                    setPlayerAble()
+                } else {
+                    this.setPlayerDisable();
+                }
             } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
                 actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
-                if (getIfUserHasAnyCard(gameStatus.users[this.user.userId])) {
+                if (getIfUserHasAnyCard(targetUser)) {
                     setPlayerAble()
                 } else {
                     setPlayerDisable()

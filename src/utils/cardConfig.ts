@@ -119,7 +119,6 @@ const IMMEDIATE_SCROLL_CARDS_CONFIG = {
         "CN": "火攻",
         "EN": "Fire Attack",
         type: CARD_TYPE.SCROLL,
-        canClickMySelfAsTarget: true
     },
 }
 

@@ -1,6 +1,6 @@
-import {Card, GameStatus, User, GameStatusUsers} from "../types/gameStatus";
+import {Card, GameStatus, User} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "./cardConfig";
-import { CARD_CONFIG_WITH_FE_INFO } from "./cardConfigWithFEInfo";
+import {CARD_CONFIG_WITH_FE_INFO} from "./cardConfigWithFEInfo";
 
 // const getRelativePositionToCanvas = (gameObject, camera) => {
 //     return {
@@ -113,17 +113,13 @@ const getInMyPlayTurnCanPlayCardNamesClourse = (user: User) => {
     }
 }
 
-const getDistanceBetweenMeAndTarget = (users: GameStatusUsers, targetUserId: string) => {
-    const meUser = users[getMyUserId()];
-    const targetUser = users[targetUserId];
-    const userNumber = Object.keys(users).length;
-
+const getDistanceFromAToB = (AUser: User, BUser: User, userNumber: number) => {
     const tableDistance = Math.min(
-        Math.abs(meUser.location - targetUser.location),
-        Math.abs(meUser.location + userNumber - targetUser.location),
-        Math.abs(meUser.location - (targetUser.location + userNumber))
+        Math.abs(AUser.location - BUser.location),
+        Math.abs((AUser.location + userNumber) - BUser.location),
+        Math.abs(AUser.location - (BUser.location + userNumber))
     )
-    return tableDistance + (meUser?.minusHorseCard?.horseDistance || 0) + (targetUser?.plusHorseCard?.horseDistance || 0)
+    return tableDistance + (AUser?.minusHorseCard?.horseDistance || 0) + (BUser?.plusHorseCard?.horseDistance || 0)
 }
 
 const getIsEquipmentCard = (card: Card) => {
@@ -156,7 +152,7 @@ const getIfUserHasAnyCard = (user: User) => {
 export {
     getMyUserId,
 
-    // my turn for UI
+    // my turn for UI and getCanPlayInMyTurn
     getIsMyPlayTurn,
 
     // 我需要出牌的状态
@@ -169,10 +165,9 @@ export {
 
     // other
     getMyResponseInfo,
-    getInMyPlayTurnCanPlayCardNamesClourse,
 
     // cal distance
-    getDistanceBetweenMeAndTarget,
+    getDistanceFromAToB,
 
     // card type
     getIsEquipmentCard,
@@ -180,10 +175,13 @@ export {
     // Player validate
     getCanSelectMeAsTargetCardNamesClosure,
 
+    // play card validate
+    getInMyPlayTurnCanPlayCardNamesClourse,
+
     // 弃牌
     getNeedThrowCardNumber,
 
-    // validate 锦囊 target
+    // validate shun chai target
     getIfUserHasAnyCard,
 
     uuidv4,
