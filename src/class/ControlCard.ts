@@ -109,13 +109,13 @@ export class ControlCard {
                 const curStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
                 const canPlayInMyTurn = getCanPlayInMyTurn(curStatus);
-                const isMyResponseTurn = getIsMyResponseCardTurn(curStatus);
+                const isMyResponseCardTurn = getIsMyResponseCardTurn(curStatus);
                 const isMyThrowTurn = getIsMyThrowTurn(curStatus);
-                if (!canPlayInMyTurn && !isMyResponseTurn && !isMyThrowTurn) {
+                if (!canPlayInMyTurn && !isMyResponseCardTurn && !isMyThrowTurn) {
                     return
                 }
 
-                if (canPlayInMyTurn || isMyResponseTurn) {
+                if (canPlayInMyTurn || isMyResponseCardTurn) {
                     // 选中再点击就是反选
                     if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
                         curFEStatus.selectedCards = [];

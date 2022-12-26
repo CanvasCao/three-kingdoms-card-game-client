@@ -26,7 +26,7 @@ export class ControlButtons {
     cardBtnsY: number;
     btnRightOffset: number;
 
-    _isMyResponseTurn?: boolean;
+    _isMyResponseCardTurn?: boolean;
     _canPlayInMyTurn?: boolean;
     _isMyThrowTurn?: boolean;
 
@@ -50,7 +50,7 @@ export class ControlButtons {
         this.cardBtnsY = sizeConfig.background.height - sizeConfig.controlCard.height - sizeConfig.background.height * 0.12;
         this.btnRightOffset = 180;
 
-        this._isMyResponseTurn;
+        this._isMyResponseCardTurn;
         this._canPlayInMyTurn;
         this._isMyThrowTurn;
 
@@ -139,7 +139,7 @@ export class ControlButtons {
 
     bindEvent() {
         this.cancelBtnImg!.on('pointerdown', () => {
-            if (this._isMyResponseTurn) {
+            if (this._isMyResponseCardTurn) {
                 this.gamingScene.socket.emit(
                     emitMap.RESPONSE,
                     {
@@ -156,7 +156,7 @@ export class ControlButtons {
             const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
             const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
-            if (this._isMyResponseTurn) {
+            if (this._isMyResponseCardTurn) {
                 if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus)) {
                     return
                 }
@@ -295,6 +295,11 @@ export class ControlButtons {
             return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.TAO.CN
         } else if (gameStatus.shanResStages.length > 0) {
             return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.SHAN.CN
+        } else if (gameStatus.scrollResStages.length > 0) {
+            return gameFEStatus?.actualCard?.CN ==
+                (gameStatus.scrollResStages[0].actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN ?
+                    BASIC_CARDS_CONFIG.SHAN.CN :
+                    BASIC_CARDS_CONFIG.SHA.CN)
         }
     }
 
@@ -311,7 +316,7 @@ export class ControlButtons {
     }
 
     setButtonStatusByGameStatus(gameStatus: GameStatus) {
-        this._isMyResponseTurn = getIsMyResponseCardTurn(gameStatus);
+        this._isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
         this._canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         this._isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
@@ -319,7 +324,7 @@ export class ControlButtons {
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.showBtn(this.endBtnGroup)
-        } else if (this._isMyResponseTurn) {
+        } else if (this._isMyResponseCardTurn) {
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
             this.showBtn(this.cancelBtnGroup)
@@ -345,7 +350,7 @@ export class ControlButtons {
                 this.hideBtn(this.cancelBtnGroup)
                 this.showBtn(this.endBtnGroup)
             }
-        } else if (this._isMyResponseTurn) {
+        } else if (this._isMyResponseCardTurn) {
             this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
             this.showBtn(this.cancelBtnGroup)
             this.hideBtn(this.endBtnGroup)

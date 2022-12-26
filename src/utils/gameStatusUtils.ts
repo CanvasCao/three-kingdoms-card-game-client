@@ -41,11 +41,14 @@ const getIsMyThrowTurn = (gameStatus: GameStatus) => {
 }
 
 const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
+    if (gameStatus.taoResStages.length > 0) {
+        return gameStatus.taoResStages[0]?.originId == getMyUserId();
+    }
     if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length) {
         return gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyUserId())
     }
-    if (gameStatus.taoResStages.length > 0) {
-        return gameStatus.taoResStages[0]?.originId == getMyUserId();
+    if (gameStatus.scrollResStages?.length > 0) {
+        return gameStatus.scrollResStages[0].originId == getMyUserId();
     }
     if (gameStatus.shanResStages.length > 0) {
         return gameStatus.shanResStages[0]?.originId == getMyUserId();
@@ -78,6 +81,12 @@ const getMyResponseInfo = (gameStatus: GameStatus): {
         return {
             targetId: gameStatus.taoResStages[0].targetId,
             cardName: BASIC_CARDS_CONFIG.TAO.CN,
+        }
+    }
+    if (gameStatus.scrollResStages.length > 0) {
+        return {
+            targetId: gameStatus.scrollResStages[0].targetId,
+            cardName: gameStatus.scrollResStages[0].actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN ? BASIC_CARDS_CONFIG.SHAN.CN : BASIC_CARDS_CONFIG.SHA.CN,
         }
     }
     if (gameStatus.shanResStages.length > 0) {
