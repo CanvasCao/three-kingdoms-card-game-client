@@ -1,9 +1,9 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {
-    getCanSelectMeAsTargetCardNamesClosure,
+    getCanSelectMeAsFirstTargetCardNamesClosure, getCanSelectMeAsSecondTargetCardNamesClosure,
     getDistanceFromAToB,
-    getIfUserHasAnyCards,
+    getIfUserHasAnyCards, getIfUserHasWeapon,
     getMyUserId,
     uuidv4
 } from "../utils/gameStatusUtils";
@@ -309,9 +309,16 @@ export class Player {
                 return;
             }
 
-            // validate不能以自己为目标的卡
-            if (!getCanSelectMeAsTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
-                return;
+            // 因为mePlayer_disable永远是false 所以在这里validate 这张卡能否以自己为目标的卡
+            if (curGameFEStatus.selectedTargetUsers.length == 0) {
+                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
+                    return;
+                }
+            }
+            if (curGameFEStatus.selectedTargetUsers.length == 1) {
+                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
+                    return;
+                }
             }
 
             // validate是否选择了足够目标
@@ -442,16 +449,12 @@ export class Player {
         }
     }
 
-
-    setPlayerDisable() {
-        this.playerImage!.setTint(colorConfigJson.disablePlayer);
-        this._disable = true;
-    }
-
     onPlayerDisableChange(gameFEStatus: GameFEStatus) {
+        // TODO 借刀
         if (this.user.userId == getMyUserId()) {
             return;
         }
+
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
 
 
@@ -470,13 +473,38 @@ export class Player {
             const targetUser = gameStatus.users[this.user.userId];
             // 计算杀的距离
             if (actualCardName == BASIC_CARDS_CONFIG.SHA.CN) {
-                const attackDistance = meUser?.weaponCard?.distance || 1;
-                const distanceBetweenMeAndTarget = getDistanceFromAToB(meUser, targetUser, Object.keys(gameStatus.users).length)
+                let attackDistance, distanceBetweenAAndB;
 
-                if (attackDistance >= distanceBetweenMeAndTarget) {
+                const curScrollResStage = gameStatus.scrollResStages[0];
+                if (curScrollResStage) { // 响应锦囊的杀 setPlayerAble
                     setPlayerAble()
                 } else {
-                    this.setPlayerDisable();
+                    attackDistance = meUser?.weaponCard?.distance || 1;
+                    distanceBetweenAAndB = getDistanceFromAToB(meUser, targetUser, Object.keys(gameStatus.users).length)
+                    if (attackDistance >= distanceBetweenAAndB) {
+                        setPlayerAble()
+                    } else {
+                        setPlayerDisable();
+                    }
+                }
+
+            } else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
+                if (gameFEStatus.selectedTargetUsers.length == 0) {
+                    if (getIfUserHasWeapon(targetUser)) {
+                        setPlayerAble()
+                    } else {
+                        setPlayerDisable();
+                    }
+                } else if (gameFEStatus.selectedTargetUsers.length == 1) {
+                    let attackDistance, distanceBetweenAAndB;
+                    const daoOwnerUser = gameFEStatus.selectedTargetUsers[0];
+                    attackDistance = daoOwnerUser?.weaponCard?.distance || 1;
+                    distanceBetweenAAndB = getDistanceFromAToB(daoOwnerUser, targetUser, Object.keys(gameStatus.users).length)
+                    if (attackDistance >= distanceBetweenAAndB) {
+                        setPlayerAble()
+                    } else {
+                        setPlayerDisable();
+                    }
                 }
             } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
                 if (targetUser.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
@@ -491,7 +519,7 @@ export class Player {
                 if (1 >= distanceBetweenMeAndTarget) {
                     setPlayerAble()
                 } else {
-                    this.setPlayerDisable();
+                    setPlayerDisable();
                 }
             } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
                 actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {

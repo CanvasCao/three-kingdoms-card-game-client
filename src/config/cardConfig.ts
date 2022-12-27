@@ -120,6 +120,12 @@ const IMMEDIATE_SCROLL_CARDS_CONFIG = {
         "EN": "Fire Attack",
         type: CARD_TYPE.SCROLL,
     },
+    "TIE_SUO_LIAN_HUAN": {
+        KEY: "TIE_SUO_LIAN_HUAN",
+        "CN": "铁索连环",
+        "EN": "Chain",
+        type: CARD_TYPE.SCROLL,
+    },
 }
 
 const DELAY_SCROLL_CARDS_CONFIG = { // 延时锦囊

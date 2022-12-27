@@ -1,6 +1,7 @@
 import {Card, GameStatus, User} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {CARD_CONFIG_WITH_FE_INFO} from "../config/cardConfigWithFEInfo";
+import {isNil} from "lodash";
 
 // const getRelativePositionToCanvas = (gameObject, camera) => {
 //     return {
@@ -48,7 +49,7 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
         return gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyUserId())
     }
     if (gameStatus.scrollResStages?.length > 0) {
-        return gameStatus.scrollResStages[0].originId == getMyUserId();
+        return gameStatus.scrollResStages[0].originId == getMyUserId() // 不需要判断isEffect 如果没有人想出无懈可击肯定生效了 && gameStatus.scrollResStages[0].isEffect;
     }
     if (gameStatus.shanResStages.length > 0) {
         return gameStatus.shanResStages[0]?.originId == getMyUserId();
@@ -65,46 +66,62 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
 }
 
 // targetId wuxieTargetCardId cardName
-const getMyResponseInfo = (gameStatus: GameStatus): {
-    targetId: string,
-    cardName: string,
-    wuxieTargetCardId?: string
-} | undefined => {
+const getMyResponseInfo = (gameStatus: GameStatus):
+    {
+        targetId: string,
+        cardNames: string[],
+        wuxieTargetCardId?: string
+    } | undefined => {
     if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
         const chainItem = gameStatus.wuxieSimultaneousResStage.wuxieChain[gameStatus.wuxieSimultaneousResStage.wuxieChain.length - 1]
         return {
             targetId: chainItem.originId, // 我无懈可击的目标人
             wuxieTargetCardId: chainItem.actualCard.cardId,// 我无懈可击的目标卡
-            cardName: SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN,
+            cardNames: [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN],
         }
-    }
-    if (gameStatus.taoResStages.length > 0) {
+    } else if (gameStatus.taoResStages.length > 0) {
         return {
             targetId: gameStatus.taoResStages[0].targetId,
-            cardName: BASIC_CARDS_CONFIG.TAO.CN,
+            cardNames: [BASIC_CARDS_CONFIG.TAO.CN],
         }
-    }
-    if (gameStatus.scrollResStages.length > 0) {
-        let needResponseCardName = '';
-        switch (gameStatus.scrollResStages[0].actualCard.CN) {
-            case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
-                needResponseCardName = BASIC_CARDS_CONFIG.SHAN.CN;
-                break;
-            case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN:
-            case SCROLL_CARDS_CONFIG.JUE_DOU.CN:
-                needResponseCardName = BASIC_CARDS_CONFIG.SHA.CN;
-                break;
-        }
-
-        return {
-            targetId: gameStatus.scrollResStages[0].targetId,
-            cardName: needResponseCardName,
-        }
-    }
-    if (gameStatus.shanResStages.length > 0) {
+    } else if (gameStatus.shanResStages.length > 0) {
         return {
             targetId: gameStatus.shanResStages[0].targetId,
-            cardName: BASIC_CARDS_CONFIG.SHAN.CN,
+            cardNames: [BASIC_CARDS_CONFIG.SHAN.CN],
+        }
+    } else if (gameStatus.scrollResStages.length > 0) {
+        const curScrollResStage = gameStatus.scrollResStages[0]
+        if (!curScrollResStage.isEffect) {
+            throw new Error(curScrollResStage.actualCard.CN + "未生效")
+        }
+
+        // 借刀杀人已经生效 需要我出杀
+        if (curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
+            if (isNil(curScrollResStage.agreeJieDao)) {
+                return {
+                    targetId: curScrollResStage.targetId,
+                    cardNames: [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,],
+                }
+            } else if (!curScrollResStage.agreeJieDao) { // 不同意借刀 已经出杀 需要出闪
+                throw new Error("不同意借刀 已经出杀 需要响应闪")
+            } else if (curScrollResStage.agreeJieDao) {
+                throw new Error("同意借刀以后 不需要响应")
+            }
+        } else {
+            let needResponseCardNames: string[] = [];
+            switch (curScrollResStage.actualCard.CN) {
+                case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
+                    needResponseCardNames = [BASIC_CARDS_CONFIG.SHAN.CN];
+                    break;
+                case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN:
+                case SCROLL_CARDS_CONFIG.JUE_DOU.CN:
+                    needResponseCardNames = [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,];
+                    break;
+            }
+            return {
+                targetId: curScrollResStage.targetId,
+                cardNames: needResponseCardNames,
+            }
         }
     }
 }
@@ -147,11 +164,21 @@ const getDistanceFromAToB = (AUser: User, BUser: User, userNumber: number) => {
 //     return CARD_TYPE.EQUIPMENT == card.type
 // }
 
-const getCanSelectMeAsTargetCardNamesClosure = () => {
+const getCanSelectMeAsFirstTargetCardNamesClosure = () => {
     let names: string[];
     return () => {
         if (!names) {
-            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsTarget).map((c) => c.CN!)
+            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsFirstTarget).map((c) => c.CN!)
+        }
+        return names
+    }
+}
+
+const getCanSelectMeAsSecondTargetCardNamesClosure = () => {
+    let names: string[];
+    return () => {
+        if (!names) {
+            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsSecondTarget).map((c) => c.CN!)
         }
         return names
     }
@@ -168,6 +195,10 @@ const getIfUserHasAnyCards = (user: User) => {
         user.minusHorseCard ||
         user.shieldCard ||
         user.weaponCard
+}
+
+const getIfUserHasWeapon = (user: User) => {
+    return user.weaponCard
 }
 
 const getIfUserHasAnyHandCards = (user: User) => {
@@ -198,7 +229,8 @@ export {
     // getIsEquipmentCard,
 
     // Player validate
-    getCanSelectMeAsTargetCardNamesClosure,
+    getCanSelectMeAsFirstTargetCardNamesClosure,
+    getCanSelectMeAsSecondTargetCardNamesClosure,
 
     // play card validate
     getInMyPlayTurnCanPlayCardNamesClourse,
@@ -209,6 +241,7 @@ export {
     // validate scroll target
     getIfUserHasAnyCards,
     getIfUserHasAnyHandCards,
+    getIfUserHasWeapon,
 
     uuidv4,
     verticalRotationSting

@@ -61,13 +61,17 @@ export type Card = {
     distance?: number,
     distanceDesc?: string,
 
-    canClickMySelfAsTarget?: boolean,
+    canClickMySelfAsFirstTarget?: boolean,
+    canClickMySelfAsSecondTarget?: boolean,
     canPlayInMyTurn: boolean,
     targetMinMax: { min: number, max: number },
     noNeedSetTargetDueToImDefaultTarget?: boolean,
     noNeedSetTargetIndeed?: boolean,
     couldHaveMultiTarget?: boolean,
     canOnlyHaveOneTarget?: boolean,
+
+    // 只有借刀杀人
+    needAActionToB?: boolean,
 }
 
 export type PandingSign = {
@@ -116,7 +120,14 @@ export type ScrollResStage = {
     cards: Card[],
     actualCard: Card,
     isEffect: boolean,
-    stageId: string, // 前端刷新Board的依据
+
+    // 顺拆 前端刷新Board的依据
+    stageId?: string,
+
+    // undefined 用户未决定
+    // true 用户同意
+    // false 用户不同意 就是出杀了
+    agreeJieDao?: undefined,
 }
 
 export type WuxieSimultaneousResStage = {

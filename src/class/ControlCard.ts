@@ -255,8 +255,8 @@ export class ControlCard {
         }
 
         if (isMyResponseCardTurn) {
-            const canPlayCardName = getMyResponseInfo(gameStatus)!.cardName
-            if (canPlayCardName != this.card.CN) {
+            const needResponseCardNames = getMyResponseInfo(gameStatus)!.cardNames
+            if (!needResponseCardNames.includes(this.card.CN)) {
                 // @ts-ignore
                 this.cardImgObj!.setTint(this.disableTint)
                 this._cardDisable = true

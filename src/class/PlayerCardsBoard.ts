@@ -289,8 +289,8 @@ export class PlayerCardsBoard {
         this.titleText!.setText(`${scrollResStage?.actualCard.CN} 选择一张 ${gameStatus.users[targetUser.userId].name} 的卡牌`)
 
         this.drawTargetUserCards(targetUser, scrollResStage);
-        this.drawTargetEquipmentCards(targetUser,scrollResStage);
-        this.drawTargetScrollCards(targetUser,scrollResStage);
+        this.drawTargetEquipmentCards(targetUser, scrollResStage);
+        this.drawTargetScrollCards(targetUser, scrollResStage);
     }
 
     destoryTargetCards() {
@@ -339,7 +339,7 @@ export class PlayerCardsBoard {
         this.showBoard(true);
         this.updateTargetCards(gameStatus)
 
-        this._stageId = curScrollResStage.stageId
+        this._stageId = curScrollResStage.stageId!
     }
 
 }

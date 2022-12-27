@@ -201,7 +201,7 @@ export class ControlButtons {
         const actualCard = attachFEInfoToCard(JSON.parse(JSON.stringify(gameFEStatus.actualCard)));
         actualCard.cardId = uuidv4(); // TODO 作为前端判断要不要重新计算和刷新disable的依据
 
-        if (actualCard.couldHaveMultiTarget) {
+        if (actualCard.couldHaveMultiTarget || actualCard.needAActionToB) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
@@ -236,6 +236,7 @@ export class ControlButtons {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
         const info = getMyResponseInfo(gameStatus)!
+
         return {
             cards: gameFEStatus.selectedCards,
             actualCard: gameFEStatus.selectedCards[0],
@@ -289,8 +290,11 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseCardStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const needResponseCardName = getMyResponseInfo(gameStatus)!.cardName
-        return gameFEStatus?.actualCard?.CN == needResponseCardName
+        if (!gameFEStatus?.actualCard) {
+            return
+        }
+        const {cardNames: needResponseCardNames} = getMyResponseInfo(gameStatus)!
+        return needResponseCardNames.includes(gameFEStatus.actualCard.CN)
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
