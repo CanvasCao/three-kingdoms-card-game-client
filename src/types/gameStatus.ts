@@ -66,7 +66,7 @@ export type Card = {
     canPlayInMyTurn: boolean,
     targetMinMax: { min: number, max: number },
     noNeedSetTargetDueToImDefaultTarget?: boolean,
-    noNeedSetTargetIndeed?: boolean,
+    noNeedSetTargetDueToTargetAll?: boolean,
     couldHaveMultiTarget?: boolean,
     canOnlyHaveOneTarget?: boolean,
 

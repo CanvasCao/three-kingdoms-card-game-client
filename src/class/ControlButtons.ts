@@ -222,7 +222,7 @@ export class ControlButtons {
                 originId: getMyUserId(),
                 targetId: gameFEStatus.selectedTargetUsers[0].userId,
             }
-        } else if (actualCard.noNeedSetTargetIndeed) {
+        } else if (actualCard.noNeedSetTargetDueToTargetAll) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,

@@ -28,9 +28,9 @@ export const attachFEInfoToCard = (card: Card) => {
 
 
     // 暂时 只需要我的回合可以出的牌 因为我的响应阶段目前不需要指定目标
-    // 1.可以多目标 2.前端无目标 因为以自己为目标 3.单目标 4.所有人都是目标(无需标记)
+    // 1.可以多目标 2.前端无目标 因为以自己为目标 3.单目标 4.所有人都是目标
     // 5.双目标
-    // 6.我的回合不能出的牌
+    // 6.我的回合不能出的牌(无需标记)
     if (card.type == CARD_TYPE.EQUIPMENT) {
         card.targetMinMax = {min: 0, max: 0}
         card.noNeedSetTargetDueToImDefaultTarget = true
@@ -59,8 +59,15 @@ export const attachFEInfoToCard = (card: Card) => {
             SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
         ].includes(card.CN)) {
             card.noNeedSetTargetDueToImDefaultTarget = true
-        } else {
-            card.noNeedSetTargetIndeed = true
+        }
+
+        if ([
+            SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN,
+            SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN,
+            SCROLL_CARDS_CONFIG.TAO_YUAN_JIE_YI.CN,
+            SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN,
+        ].includes(card.CN)) {
+            card.noNeedSetTargetDueToTargetAll = true
         }
 
     } else if ([

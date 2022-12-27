@@ -1,7 +1,7 @@
 import {Card, MultiTargetsAction, NoTargetAction, OneTargetAction} from "./gameStatus";
 
 export type EmitPlayPublicCardData = {
-    cards: Card[];
+    behaviour: EmitActionData | EmitResponseData;
     message: string;
 }
 
