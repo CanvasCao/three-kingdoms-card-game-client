@@ -157,7 +157,7 @@ export class ControlButtons {
             const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
             if (this._isMyResponseCardTurn) {
-                if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus)) {
+                if (!this.canClickOkBtnInMyResponseCardStage(gameStatus, gameFEStatus)) {
                     return
                 }
 
@@ -288,19 +288,9 @@ export class ControlButtons {
         return false
     }
 
-    canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length) {
-            return gameFEStatus?.actualCard?.CN == SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN
-        } else if (gameStatus.taoResStages.length > 0) {
-            return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.TAO.CN
-        } else if (gameStatus.shanResStages.length > 0) {
-            return gameFEStatus?.actualCard?.CN == BASIC_CARDS_CONFIG.SHAN.CN
-        } else if (gameStatus.scrollResStages.length > 0) {
-            return gameFEStatus?.actualCard?.CN ==
-                (gameStatus.scrollResStages[0].actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN ?
-                    BASIC_CARDS_CONFIG.SHAN.CN :
-                    BASIC_CARDS_CONFIG.SHA.CN)
-        }
+    canClickOkBtnInMyResponseCardStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
+        const needResponseCardName = getMyResponseInfo(gameStatus)!.cardName
+        return gameFEStatus?.actualCard?.CN == needResponseCardName
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
@@ -351,7 +341,7 @@ export class ControlButtons {
                 this.showBtn(this.endBtnGroup)
             }
         } else if (this._isMyResponseCardTurn) {
-            this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+            this.canClickOkBtnInMyResponseCardStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
             this.showBtn(this.cancelBtnGroup)
             this.hideBtn(this.endBtnGroup)
         } else if (this._isMyThrowTurn) {

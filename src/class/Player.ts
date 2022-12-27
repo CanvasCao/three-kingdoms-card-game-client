@@ -3,7 +3,7 @@ import colorConfig from "../config/colorConfig.json";
 import {
     getCanSelectMeAsTargetCardNamesClosure,
     getDistanceFromAToB,
-    getIfUserHasAnyCard,
+    getIfUserHasAnyCards,
     getMyUserId,
     uuidv4
 } from "../utils/gameStatusUtils";
@@ -495,7 +495,7 @@ export class Player {
                 }
             } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
                 actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
-                if (getIfUserHasAnyCard(targetUser)) {
+                if (getIfUserHasAnyCards(targetUser)) {
                     setPlayerAble()
                 } else {
                     setPlayerDisable()

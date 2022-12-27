@@ -64,6 +64,7 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
         getIsMyPlayTurn(gameStatus);
 }
 
+// targetId wuxieTargetCardId cardName
 const getMyResponseInfo = (gameStatus: GameStatus): {
     targetId: string,
     cardName: string,
@@ -84,9 +85,20 @@ const getMyResponseInfo = (gameStatus: GameStatus): {
         }
     }
     if (gameStatus.scrollResStages.length > 0) {
+        let needResponseCardName = '';
+        switch (gameStatus.scrollResStages[0].actualCard.CN) {
+            case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
+                needResponseCardName = BASIC_CARDS_CONFIG.SHAN.CN;
+                break;
+            case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN:
+            case SCROLL_CARDS_CONFIG.JUE_DOU.CN:
+                needResponseCardName = BASIC_CARDS_CONFIG.SHA.CN;
+                break;
+        }
+
         return {
             targetId: gameStatus.scrollResStages[0].targetId,
-            cardName: gameStatus.scrollResStages[0].actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN ? BASIC_CARDS_CONFIG.SHAN.CN : BASIC_CARDS_CONFIG.SHA.CN,
+            cardName: needResponseCardName,
         }
     }
     if (gameStatus.shanResStages.length > 0) {
@@ -131,9 +143,9 @@ const getDistanceFromAToB = (AUser: User, BUser: User, userNumber: number) => {
     return tableDistance + (AUser?.minusHorseCard?.horseDistance || 0) + (BUser?.plusHorseCard?.horseDistance || 0)
 }
 
-const getIsEquipmentCard = (card: Card) => {
-    return CARD_TYPE.EQUIPMENT == card.type
-}
+// const getIsEquipmentCard = (card: Card) => {
+//     return CARD_TYPE.EQUIPMENT == card.type
+// }
 
 const getCanSelectMeAsTargetCardNamesClosure = () => {
     let names: string[];
@@ -149,13 +161,17 @@ const getNeedThrowCardNumber = (user: User) => {
     return user.cards.length - user.currentBlood
 }
 
-const getIfUserHasAnyCard = (user: User) => {
+const getIfUserHasAnyCards = (user: User) => {
     return user.cards.length ||
         user.pandingSigns.length ||
         user.plusHorseCard ||
         user.minusHorseCard ||
         user.shieldCard ||
         user.weaponCard
+}
+
+const getIfUserHasAnyHandCards = (user: User) => {
+    return user.cards.length > 0
 }
 
 export {
@@ -179,7 +195,7 @@ export {
     getDistanceFromAToB,
 
     // card type
-    getIsEquipmentCard,
+    // getIsEquipmentCard,
 
     // Player validate
     getCanSelectMeAsTargetCardNamesClosure,
@@ -190,8 +206,9 @@ export {
     // 弃牌
     getNeedThrowCardNumber,
 
-    // validate shun chai target
-    getIfUserHasAnyCard,
+    // validate scroll target
+    getIfUserHasAnyCards,
+    getIfUserHasAnyHandCards,
 
     uuidv4,
     verticalRotationSting
