@@ -123,11 +123,6 @@ export type ScrollResStage = {
 
     // 顺拆 前端刷新Board的依据
     stageId?: string,
-
-    // undefined 用户未决定
-    // true 用户同意
-    // false 用户不同意 就是出杀了
-    agreeJieDao?: undefined,
 }
 
 export type WuxieSimultaneousResStage = {

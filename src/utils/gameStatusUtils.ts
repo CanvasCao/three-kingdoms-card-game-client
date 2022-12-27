@@ -97,15 +97,9 @@ const getMyResponseInfo = (gameStatus: GameStatus):
 
         // 借刀杀人已经生效 需要我出杀
         if (curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
-            if (isNil(curScrollResStage.agreeJieDao)) {
-                return {
-                    targetId: curScrollResStage.targetId,
-                    cardNames: [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,],
-                }
-            } else if (!curScrollResStage.agreeJieDao) { // 不同意借刀 已经出杀 需要出闪
-                throw new Error("不同意借刀 已经出杀 需要响应闪")
-            } else if (curScrollResStage.agreeJieDao) {
-                throw new Error("同意借刀以后 不需要响应")
+            return {
+                targetId: curScrollResStage.targetId,
+                cardNames: [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,],
             }
         } else {
             let needResponseCardNames: string[] = [];
