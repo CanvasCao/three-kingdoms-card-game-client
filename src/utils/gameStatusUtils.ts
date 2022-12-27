@@ -95,27 +95,20 @@ const getMyResponseInfo = (gameStatus: GameStatus):
             throw new Error(curScrollResStage.actualCard.CN + "未生效")
         }
 
-        // 借刀杀人已经生效 需要我出杀
-        if (curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
-            return {
-                targetId: curScrollResStage.targetId,
-                cardNames: [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,],
-            }
-        } else {
-            let needResponseCardNames: string[] = [];
-            switch (curScrollResStage.actualCard.CN) {
-                case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
-                    needResponseCardNames = [BASIC_CARDS_CONFIG.SHAN.CN];
-                    break;
-                case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN:
-                case SCROLL_CARDS_CONFIG.JUE_DOU.CN:
-                    needResponseCardNames = [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,];
-                    break;
-            }
-            return {
-                targetId: curScrollResStage.targetId,
-                cardNames: needResponseCardNames,
-            }
+        let needResponseCardNames: string[] = [];
+        switch (curScrollResStage.actualCard.CN) {
+            case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
+                needResponseCardNames = [BASIC_CARDS_CONFIG.SHAN.CN];
+                break;
+            case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN:
+            case SCROLL_CARDS_CONFIG.JUE_DOU.CN:
+            case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN:
+                needResponseCardNames = [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,];
+                break;
+        }
+        return {
+            targetId: curScrollResStage.targetId,
+            cardNames: needResponseCardNames,
         }
     }
 }
