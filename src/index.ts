@@ -19,7 +19,7 @@ import {PublicControlCardsManager} from "./class/PublicCardsManager";
 import {Socket} from "./socket/socket.io.esm.min";
 import {Card, GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
-import {EmitPlayPublicCardData} from './types/emit';
+import {EmitPlayBehaviorPublicCardData, EmitPlayNonBehaviorPublicCardData} from './types/emit';
 import {PlayerCardsBoard} from './class/PlayerCardsBoard';
 import {getPlayersWithPosition} from './utils/locationUtils';
 
@@ -118,8 +118,13 @@ class Gaming extends Phaser.Scene {
             this.gameStatusObserved.setGameStatus(data);
         });
 
-        socket.on(emitMap.PLAY_PUBLIC_CARD, (data: EmitPlayPublicCardData) => {
-            this.publicControlCardsManager!.add(data)
+        socket.on(emitMap.PLAY_BEHAVIOR_PUBLIC_CARD, (data: EmitPlayBehaviorPublicCardData) => {
+            this.publicControlCardsManager!.addPublicCard(data)
+            this.publicControlCardsManager!.addLines(data)
+        });
+
+        socket.on(emitMap.PLAY_NON_BEHAVIOR_PUBLIC_CARD, (data: EmitPlayNonBehaviorPublicCardData) => {
+            this.publicControlCardsManager!.addPublicCard(data)
         });
     }
 

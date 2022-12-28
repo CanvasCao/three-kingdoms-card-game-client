@@ -151,14 +151,14 @@ export class Player {
     }
 
     drawPandingCards() {
-        const stepX = sizeConfig.player.width / 10;
+        const stepX = sizeConfig.player.width / 4.5;
         for (let i = 0; i < this.maxPandingCardsNumber; i++) {
             const pandingCardImage = this.gamingScene.add.image(
-                this.positionX + sizeConfig.player.width / 2 - 10 - stepX * i,
-                this.positionY + sizeConfig.player.height / 2 + 2,
+                this.positionX + sizeConfig.player.width / 2 - 15 - stepX * i,
+                this.positionY + sizeConfig.player.height / 2 + 5,
                 "white");
-            pandingCardImage.displayHeight = sizeConfig.player.width / 10;
-            pandingCardImage.displayWidth = sizeConfig.player.width / 10;
+            pandingCardImage.displayHeight = sizeConfig.player.width / 8;
+            pandingCardImage.displayWidth = sizeConfig.player.width / 8;
             pandingCardImage.setRotation(Math.PI / 4)
             pandingCardImage.setTint(colorConfigJson.card)
             pandingCardImage.setAlpha(0)
@@ -166,14 +166,14 @@ export class Player {
             this.pandingCardImages!.push(pandingCardImage);
 
             const pandingCardText = this.gamingScene.add.text(
-                this.positionX + sizeConfig.player.width / 2 - 10 - stepX * i,
-                this.positionY + sizeConfig.player.height / 2 + 2,
+                this.positionX + sizeConfig.player.width / 2 - 15 - stepX * i,
+                this.positionY + sizeConfig.player.height / 2 + 5,
                 "",
                 // @ts-ignore
                 {fill: "#000", align: "center"}
             );
             pandingCardText.setOrigin(0.5, 0.5)
-            pandingCardText.setFontSize(sizeConfig.player.width / 12)
+            pandingCardText.setFontSize(sizeConfig.player.width / 11)
             pandingCardText.setAlpha(0)
             this.pandingCardTexts!.push(pandingCardText);
         }
@@ -304,7 +304,7 @@ export class Player {
         this.playerImage!.on('pointerdown', () => {
             const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
             const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus;
-            if (curGameFEStatus.selectedCards.length <= 0) {
+            if (!curGameFEStatus.actualCard) {
                 return;
             }
 
@@ -330,7 +330,7 @@ export class Player {
             }
 
             // validate是否选择了足够目标
-            const targetMinMax = attachFEInfoToCard(curGameFEStatus.actualCard!).targetMinMax;
+            const targetMinMax = attachFEInfoToCard(curGameFEStatus.actualCard)!.targetMinMax;
             if (curGameFEStatus.selectedTargetUsers.length >= targetMinMax.max) {
                 return;
             }

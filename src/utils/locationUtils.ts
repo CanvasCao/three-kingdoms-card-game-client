@@ -2,48 +2,48 @@ import {GameStatusUsers, User} from "../types/gameStatus"
 import sizeConfig from "../config/sizeConfig.json";
 import {getMyUserId} from "./gameStatusUtils";
 
-const playerAreaW = sizeConfig.background.width * 0.8;
-const playerAreaH = sizeConfig.background.height - sizeConfig.controlPlayer.height;
+const playersAreaW = sizeConfig.playersArea.width;
+const playersAreaH = sizeConfig.playersArea.height;
 const topMargin = sizeConfig.player.height / 2 + 10
 const leftMargin = sizeConfig.player.width / 2 + 3
 const rightMargin = sizeConfig.player.width / 2
 const topLeft = {
-    x: playerAreaW * 0.3,
+    x: playersAreaW * 0.3,
     y: topMargin
 }
 const topMiddle = {
-    x: playerAreaW * 0.5,
+    x: playersAreaW * 0.5,
     y: topMargin
 }
 const topRight = {
-    x: playerAreaW * 0.7,
+    x: playersAreaW * 0.7,
     y: topMargin
 }
 
 const leftTop = {
     x: leftMargin,
-    y: playerAreaH * 0.3
+    y: playersAreaH * 0.3
 }
 const leftMiddle = {
     x: leftMargin,
-    y: playerAreaH * 0.5
+    y: playersAreaH * 0.5
 }
 const leftBottom = {
     x: leftMargin,
-    y: playerAreaH * 0.7
+    y: playersAreaH * 0.7
 }
 
 const rightTop = {
-    x: playerAreaW - rightMargin,
-    y: playerAreaH * 0.3
+    x: playersAreaW - rightMargin,
+    y: playersAreaH * 0.3
 }
 const rightMiddle = {
-    x: playerAreaW - rightMargin,
-    y: playerAreaH * 0.5
+    x: playersAreaW - rightMargin,
+    y: playersAreaH * 0.5
 }
 const rightBottom = {
-    x: playerAreaW - rightMargin,
-    y: playerAreaH * 0.7
+    x: playersAreaW - rightMargin,
+    y: playersAreaH * 0.7
 }
 
 const getPotisions = (number: number) => {
@@ -76,23 +76,22 @@ const getPotisions = (number: number) => {
 }
 
 export const getPlayersWithPosition = (gameStatusUsers: GameStatusUsers): User[] => {
-    const usersNumber = Object.keys(gameStatusUsers).length
-    const positions = getPotisions(usersNumber - 1);
     const myUser = gameStatusUsers[getMyUserId()]
+
+    const usersNumber = Object.keys(gameStatusUsers).length
+    const otherUsersNumber = usersNumber - 1
+    const otherPositions = getPotisions(otherUsersNumber);
     const firstLocation = myUser.location;
 
-    const users: User[] = []
-    for (let i = firstLocation; i < firstLocation + usersNumber; i++) {
-        const modLocation = i % usersNumber;
-        const user = Object.values(gameStatusUsers).find((u) => u.location == modLocation)!;
-        if (myUser.userId !== user!.userId) {
-            user.position = positions[i - 1];// 第一个人是自己 所以不push
-        } else {
-            user.position = {x: playerAreaW / 2, y: playerAreaH}
-        }
-        users.push(user)
+    const usersWithPosition: User[] = []
+    for (let i = 0; i < otherUsersNumber; i++) {
+        const otherModLocation = (firstLocation + 1 + i) % usersNumber;
+        const user = Object.values(gameStatusUsers).find((u) => u.location == otherModLocation)!;
+        user.position = otherPositions[i];
+        usersWithPosition.push(user)
     }
 
-    return users
-
+    myUser.position = {x: playersAreaW / 2, y: playersAreaH}
+    usersWithPosition.push(myUser)
+    return usersWithPosition
 }

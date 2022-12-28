@@ -198,7 +198,7 @@ export class ControlButtons {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
 
-        const actualCard = attachFEInfoToCard(JSON.parse(JSON.stringify(gameFEStatus.actualCard)));
+        const actualCard = attachFEInfoToCard(JSON.parse(JSON.stringify(gameFEStatus.actualCard)))!;
         actualCard.cardId = uuidv4(); // TODO 作为前端判断要不要重新计算和刷新disable的依据
 
         if (actualCard.couldHaveMultiTarget || actualCard.needAActionToB) {
@@ -281,7 +281,7 @@ export class ControlButtons {
 
     canClickOkBtnInMyPlayStage(gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
-            const targetMinMaxNumber = attachFEInfoToCard(gameFEStatus.actualCard).targetMinMax;
+            const targetMinMaxNumber = attachFEInfoToCard(gameFEStatus.actualCard)!.targetMinMax;
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.min
                 && gameFEStatus.selectedTargetUsers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;

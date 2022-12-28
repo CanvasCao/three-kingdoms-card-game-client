@@ -1,7 +1,7 @@
 import {uuidv4} from "../utils/gameStatusUtils";
 import {PublicCard} from "./PublicCard";
 import {GamingScene} from "../types/phaser";
-import {EmitPlayPublicCardData} from "../types/emit";
+import {EmitPlayBehaviorPublicCardData, EmitPlayNonBehaviorPublicCardData} from "../types/emit";
 import {attachFEInfoToCard} from "../utils/cardUtils";
 import {PublicLine} from "./PublicLine";
 
@@ -14,11 +14,10 @@ export class PublicControlCardsManager {
         this.gamingScene = gamingScene;
     }
 
-    add(data: EmitPlayPublicCardData) {
+    addLines(data: EmitPlayBehaviorPublicCardData) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
 
-        const card = attachFEInfoToCard(data.behaviour.actualCard);
         const behaviour = data.behaviour as any
         const originId = data.behaviour.originId;
         const originCanvasPlayer = this.gamingScene.players.find((p) => p.user.userId == originId)!;
@@ -27,7 +26,7 @@ export class PublicControlCardsManager {
             targetIds = behaviour.targetIds
         } else if (behaviour.targetId) {
             targetIds = [behaviour?.targetId]
-        } else if (card.noNeedSetTargetDueToTargetAll) {
+        } else if (attachFEInfoToCard(data.behaviour?.actualCard)?.noNeedSetTargetDueToTargetAll) {
             targetIds = Object.values(gameStatus.users).filter(u => !u.isDead).map(u => u.userId)
         }
 
@@ -39,8 +38,14 @@ export class PublicControlCardsManager {
             });
         })
 
+    }
 
-        data.behaviour.cards.forEach((card) => {
+    addPublicCard(data: EmitPlayBehaviorPublicCardData | EmitPlayNonBehaviorPublicCardData) {
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+
+        // @ts-ignore
+        const cards: Card[] = data.behaviour ? data.behaviour.cards : data.cards;
+        cards.forEach((card) => {
             gameFEStatus.publicCards.push(card);
             new PublicCard(this.gamingScene, card, data.message, gameFEStatus.publicCards);
         })

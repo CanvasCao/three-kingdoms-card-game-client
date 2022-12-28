@@ -1,6 +1,6 @@
 import {Card, MultiTargetsAction, NoTargetAction, OneTargetAction} from "./gameStatus";
 
-export type EmitPlayPublicCardData = {
+export type EmitPlayBehaviorPublicCardData = {
     behaviour: EmitActionData | EmitResponseData;
     message: string;
 }
@@ -13,6 +13,11 @@ export type EmitResponseData = {
     originId: string,
     targetId: string,
     wuxieTargetCardId?: string,
+}
+
+export type EmitPlayNonBehaviorPublicCardData = {
+    cards: Card[];
+    message: string;
 }
 
 export type EmitCardBoardData = {

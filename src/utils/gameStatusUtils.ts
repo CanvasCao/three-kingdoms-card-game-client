@@ -44,7 +44,7 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
     if (gameStatus.scrollResStages?.length > 0) {
         // 不需要判断isEffect 如果没有人想出无懈可击 锦囊肯定生效了
         return gameStatus.scrollResStages[0].originId == getMyUserId() &&
-            ([SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN, SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,].includes(gameStatus.scrollResStages[0].actualCard.CN))
+            (![SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN, SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,].includes(gameStatus.scrollResStages[0].actualCard.CN))
     }
     if (gameStatus.shanResStages.length > 0) {
         return gameStatus.shanResStages[0]?.originId == getMyUserId();

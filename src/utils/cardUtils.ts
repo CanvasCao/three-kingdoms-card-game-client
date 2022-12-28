@@ -2,6 +2,10 @@ import {Card} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 
 export const attachFEInfoToCard = (card: Card) => {
+    if (!card) {
+        return
+    }
+
     if (card.CN == SCROLL_CARDS_CONFIG.HUO_GONG.CN || card.CN == SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.CN) {
         card.canClickMySelfAsFirstTarget = true
     } else {

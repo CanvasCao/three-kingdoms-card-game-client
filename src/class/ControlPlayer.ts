@@ -8,24 +8,27 @@ export class ControlPlayer {
     gamingScene: GamingScene;
     player: User;
     maxBlood: number;
+    _currentBlood: number;
     name: string;
     positionX: number;
     positionY: number;
 
-    imageStroke?: Phaser.GameObjects.Graphics;
     playerImage?: Phaser.GameObjects.Image;
     graphics?: Phaser.GameObjects.Graphics;
-    bloodImages?: Phaser.GameObjects.Image[];
+    bloodImages: Phaser.GameObjects.Image[];
 
     constructor(gamingScene: GamingScene, player: User) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
         this.player = player;
-        this.maxBlood = player.maxBlood || 4;
+        this.maxBlood = player.maxBlood;
+        this._currentBlood = player.maxBlood;
         this.name = player.name;
         this.positionX = (sizeConfig.background.width - sizeConfig.controlPlayer.width / 2)
         this.positionY = (sizeConfig.background.height - sizeConfig.controlPlayer.height / 2)
+
+        this.bloodImages = [];
 
         this.drawPlayer();
         this.drawBloodBg();
@@ -57,18 +60,41 @@ export class ControlPlayer {
     }
 
     drawBloods() {
-        this.bloodImages = [];
-        for (let i = 0; i < this.maxBlood; i++) {
+        const bloodHeight = sizeConfig.controlPlayer.height * 0.15;
+        const bloodWidth = bloodHeight * 1.5333;
+        for (let i = 0; i < this.player.maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
-                sizeConfig.background.width - sizeConfig.blood.width / 2 + 10,
-                sizeConfig.background.height - 10 - (sizeConfig.blood.height * 0.8 * i),
+                this.positionX + sizeConfig.controlPlayer.width / 2 * 0.86,
+                this.positionY + sizeConfig.controlPlayer.height / 2 * 0.86 - (bloodHeight * 0.81 * i),
                 "greenGouyu");
-            bloodImage.displayHeight = sizeConfig.blood.height;
-            bloodImage.displayWidth = sizeConfig.blood.width;
+            bloodImage.displayHeight = bloodHeight;
+            bloodImage.displayWidth = bloodWidth;
             this.bloodImages.push(bloodImage);
         }
     }
 
+    setBloods(number: number) {
+        for (let i = 0; i < this.bloodImages!.length; i++) {
+            const bloodNumber = i + 1;
+            const alpha = (bloodNumber > number) ? 0 : 1
+
+            this.gamingScene.tweens.add({
+                targets: this.bloodImages![i],
+                alpha: {
+                    value: alpha,
+                    duration: 500,
+                    ease: "Bounce.easeInOut"
+                }
+            });
+        }
+    }
+
     gameStatusNotify(gameStatus: GameStatus) {
+        const user = gameStatus.users[this.player.userId]
+
+        if (this._currentBlood != user.currentBlood) {
+            this.setBloods(user.currentBlood)
+            this._currentBlood = user.currentBlood
+        }
     }
 }
