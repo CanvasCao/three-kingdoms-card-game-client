@@ -44,7 +44,7 @@ export class PublicCard {
         this.publicCards = publicCards;
 
         const initDiffDistance = this.getInitDiffDistance(this.publicCards);
-        this.cardInitStartX = initDiffDistance + sizeConfig.background.width / 2;
+        this.cardInitStartX = initDiffDistance + sizeConfig.playersArea.width / 2;
         this.cardInitStartY = sizeConfig.background.height / 2;
 
         // tint
@@ -111,7 +111,7 @@ export class PublicCard {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
-                    value: sizeConfig.background.width / 2 + diffDis + offsetX,
+                    value: sizeConfig.playersArea.width / 2 + diffDis + offsetX,
                     duration: 500,
                 },
             });

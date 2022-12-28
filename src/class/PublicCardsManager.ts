@@ -1,4 +1,4 @@
-import {getMyUserId, uuidv4} from "../utils/gameStatusUtils";
+import {uuidv4} from "../utils/gameStatusUtils";
 import {PublicCard} from "./PublicCard";
 import {GamingScene} from "../types/phaser";
 import {EmitPlayPublicCardData} from "../types/emit";
@@ -33,12 +33,9 @@ export class PublicControlCardsManager {
 
         targetIds.forEach((targetId: string) => {
             const targetCanvasPlayer = this.gamingScene.players.find((p) => p.user.userId == targetId)!;
-
             new PublicLine(this.gamingScene, {
-                startX: originCanvasPlayer.playerX,
-                startY: originCanvasPlayer.playerY,
-                endX: targetCanvasPlayer.playerX,
-                endY: targetCanvasPlayer.playerY,
+                startPosition: originCanvasPlayer.position,
+                endPosition: targetCanvasPlayer.position,
             });
         })
 

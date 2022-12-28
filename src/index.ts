@@ -21,6 +21,7 @@ import {Card, GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
 import {EmitPlayPublicCardData} from './types/emit';
 import {PlayerCardsBoard} from './class/PlayerCardsBoard';
+import {getPlayersWithPosition} from './utils/locationUtils';
 
 // create the editor
 const container = document.getElementById('jsoneditor')
@@ -93,12 +94,15 @@ class Gaming extends Phaser.Scene {
             if (this.inited) {
                 return
             }
+
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
             this.publicControlCardsManager = new PublicControlCardsManager(this);
             this.controlPlayer = new ControlPlayer(this, data.users[getMyUserId()]);
-            this.players = Object.values(data.users).map((user) => new Player(this, user));
+
+            const players = getPlayersWithPosition(data.users);
+            this.players = players.map((user) => new Player(this, user));
 
             this.gameStatusObserved.setGameStatus(data);
 
@@ -128,6 +132,31 @@ const config = {
     width: sizeConfig.background.width,
     height: sizeConfig.background.height,
     scene: [Gaming],
+    scale: {
+        // https://rexrainbow.github.io/phaser3-rex-notes/docs/site/scalemanager/
+        // Or set parent divId here
+        // parent: divId,
+
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+
+        // Or put game size here
+        // width: 1024,
+        // height: 768,
+
+        // Minimum size
+        min: {
+            width: 800,
+            height: 600
+        },
+        max: {
+            width: 1200,
+            height: 675
+        },
+        zoom: 1,  // Size of game canvas = game size * zoom
+    },
+    autoRound: false,
+    transparent: true
 };
 const game = new Phaser.Game(config);
 

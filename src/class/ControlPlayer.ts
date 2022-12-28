@@ -9,8 +9,8 @@ export class ControlPlayer {
     player: User;
     maxBlood: number;
     name: string;
-    playerX: number;
-    playerY: number;
+    positionX: number;
+    positionY: number;
 
     imageStroke?: Phaser.GameObjects.Graphics;
     playerImage?: Phaser.GameObjects.Image;
@@ -24,32 +24,19 @@ export class ControlPlayer {
         this.player = player;
         this.maxBlood = player.maxBlood || 4;
         this.name = player.name;
-        this.playerX = (sizeConfig.background.width - sizeConfig.controlPlayer.width / 2)
-        this.playerY = (sizeConfig.background.height - sizeConfig.controlPlayer.height / 2)
+        this.positionX = (sizeConfig.background.width - sizeConfig.controlPlayer.width / 2)
+        this.positionY = (sizeConfig.background.height - sizeConfig.controlPlayer.height / 2)
 
         this.drawPlayer();
         this.drawBloodBg();
         this.drawBloods();
-        this.drawGreenBorder();
-
         this.gamingScene.gameStatusObserved.addObserver(this);
-    }
-
-    drawGreenBorder() {
-        this.imageStroke = this.gamingScene.add.graphics();
-        this.imageStroke.lineStyle(4, 0x00ff00, 1);
-        this.imageStroke.strokeRect(
-            this.playerX - sizeConfig.controlPlayer.width / 2,
-            this.playerY - sizeConfig.controlPlayer.height / 2,
-            sizeConfig.controlPlayer.width,
-            sizeConfig.controlPlayer.height);
-        this.imageStroke.setAlpha(0);
     }
 
     drawPlayer() {
         this.playerImage = this.gamingScene.add.image(
-            this.playerX,
-            this.playerY,
+            this.positionX,
+            this.positionY,
             this.player.cardId);
         this.playerImage.displayHeight = sizeConfig.controlPlayer.height;
         this.playerImage.displayWidth = sizeConfig.controlPlayer.width;
@@ -83,10 +70,5 @@ export class ControlPlayer {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        if (gameStatus.stage.userId === getMyUserId()) {
-            this.imageStroke!.setAlpha(1);
-        } else {
-            this.imageStroke!.setAlpha(0);
-        }
     }
 }

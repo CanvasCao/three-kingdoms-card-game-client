@@ -3,13 +3,6 @@ import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/card
 import {CARD_CONFIG_WITH_FE_INFO} from "../config/cardConfigWithFEInfo";
 import {isNil} from "lodash";
 
-// const getRelativePositionToCanvas = (gameObject, camera) => {
-//     return {
-//         x: (gameObject.x - camera.worldView.x) * camera.zoom,
-//         y: (gameObject.y - camera.worldView.y) * camera.zoom
-//     }
-// }
-
 function uuidv4() {
     // @ts-ignore
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -49,7 +42,9 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
         return gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyUserId())
     }
     if (gameStatus.scrollResStages?.length > 0) {
-        return gameStatus.scrollResStages[0].originId == getMyUserId() // 不需要判断isEffect 如果没有人想出无懈可击肯定生效了 && gameStatus.scrollResStages[0].isEffect;
+        // 不需要判断isEffect 如果没有人想出无懈可击 锦囊肯定生效了
+        return gameStatus.scrollResStages[0].originId == getMyUserId() &&
+            ([SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN, SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,].includes(gameStatus.scrollResStages[0].actualCard.CN))
     }
     if (gameStatus.shanResStages.length > 0) {
         return gameStatus.shanResStages[0]?.originId == getMyUserId();
@@ -113,12 +108,6 @@ const getMyResponseInfo = (gameStatus: GameStatus):
     }
 }
 
-const getIsMyScrollEffectTurn = (gameStatus: GameStatus) => {
-    if (gameStatus.scrollResStages.length > 0) {
-        return gameStatus.scrollResStages[0].isEffect && gameStatus.scrollResStages[0]?.originId == getMyUserId();
-    }
-}
-
 const getInMyPlayTurnCanPlayCardNamesClourse = (user: User) => {
     let canPlayInMyTurnCardNames: string[];
     return () => {
@@ -146,10 +135,6 @@ const getDistanceFromAToB = (AUser: User, BUser: User, userNumber: number) => {
     )
     return tableDistance + (AUser?.minusHorseCard?.horseDistance || 0) + (BUser?.plusHorseCard?.horseDistance || 0)
 }
-
-// const getIsEquipmentCard = (card: Card) => {
-//     return CARD_TYPE.EQUIPMENT == card.type
-// }
 
 const getCanSelectMeAsFirstTargetCardNamesClosure = () => {
     let names: string[];
@@ -203,17 +188,11 @@ export {
     getIsMyThrowTurn,
     getCanPlayInMyTurn,
 
-    // 我需要响应锦囊 但是不出牌的状态
-    getIsMyScrollEffectTurn,
-
     // other
     getMyResponseInfo,
 
     // cal distance
     getDistanceFromAToB,
-
-    // card type
-    // getIsEquipmentCard,
 
     // Player validate
     getCanSelectMeAsFirstTargetCardNamesClosure,

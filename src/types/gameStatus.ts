@@ -33,17 +33,19 @@ export type User = {
     // ui tags
     isTieSuo: boolean,
 
-    // tags
+    // resetWhenMyTurnEnds
     judgedShandian: boolean,
-
-    // delay scroll
     skipDraw: boolean,
     skipPlay: boolean,
 
     // skills
     skills: any[],
 
+    // Dead
     isDead: boolean,
+
+    // FE
+    position: { x: number, y: number }
 }
 
 export type Card = {

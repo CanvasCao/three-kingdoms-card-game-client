@@ -20,10 +20,11 @@ export class Player {
     obId: string;
     gamingScene: GamingScene;
     user: User;
+    position: { x: number, y: number };
     _disable: boolean;
     _pandingCardsLength: number;
-    playerX: number;
-    playerY: number;
+    positionX: number;
+    positionY: number;
 
     bloodImages?: Phaser.GameObjects.Image[];
     pandingCardImages?: Phaser.GameObjects.Image[];
@@ -55,18 +56,14 @@ export class Player {
         // init
         this.gamingScene = gamingScene;
         this.user = user;
-
+        this.position = user.position;
         // init inner state
         this._disable = false;
         this._pandingCardsLength = 0
 
-        // location
-        // this.playerX = (sizeConfig.background.width / 2);
-        // this.playerY = this.user.userId == getMyUserId() ? sizeConfig.player.height + 280 : sizeConfig.player.height - 60;
-        const xmap = {0: -200, 1: 0, 2: 200};
-        // @ts-ignore
-        this.playerX = (sizeConfig.background.width / 2) + xmap[this.user.location];
-        this.playerY = sizeConfig.player.height;
+        // position
+        this.positionX = this?.position?.x || 0;
+        this.positionY = this?.position?.y || 0;
 
         // phaser objects
         this.bloodImages = []; //从下往上
@@ -82,17 +79,22 @@ export class Player {
         this._isTieSuo = this.user.isTieSuo;
         this._actualCardId = '';
 
+        // myplayer不draw 但是player 需要set position
+        if (this.user.userId == getMyUserId()) {
+            return
+        }
+
         this.drawMyTurnStroke();
         this.drawSelectedStroke();
         this.drawPlayer();
         this.drawBloodsBg();
         this.drawBloods();
         this.setBloods(this.user.currentBlood);
-        this.drawCardNumber();
         this.drawStageText();
         this.drawEquipments();
         this.drawPandingCards();
         this.drawTieSuo();
+        this.drawCardNumber();
         if (this.user.isDead) {
             this.drawIsDead();
             this._isDead = true;
@@ -106,8 +108,8 @@ export class Player {
     drawMyTurnStroke() {
         this.myTurnStroke = this.gamingScene.add.graphics();
         this.myTurnStroke.lineStyle(10, colorConfigJson.myTurnStroke, 1);
-        this.myTurnStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
-            this.playerY - sizeConfig.player.height / 2,
+        this.myTurnStroke.strokeRect(this.positionX - sizeConfig.player.width / 2,
+            this.positionY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
             sizeConfig.player.height);
         this.myTurnStroke.setAlpha(0);
@@ -116,17 +118,17 @@ export class Player {
     drawSelectedStroke() {
         this.selectedStroke = this.gamingScene.add.graphics();
         this.selectedStroke.lineStyle(10, colorConfigJson.selectedPlayerStroke, 1);
-        this.selectedStroke.strokeRect(this.playerX - sizeConfig.player.width / 2,
-            this.playerY - sizeConfig.player.height / 2,
+        this.selectedStroke.strokeRect(this.positionX - sizeConfig.player.width / 2,
+            this.positionY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
             sizeConfig.player.height);
         this.selectedStroke.setAlpha(0);
     }
 
     drawCardNumber() {
-        this.cardNumObj = this.gamingScene.add.text((
-            this.playerX - sizeConfig.player.width / 2),
-            this.playerY - 5,
+        this.cardNumObj = this.gamingScene.add.text(
+            this.positionX - sizeConfig.player.width / 2,
+            this.positionY - sizeConfig.player.height * 0.08,
             this._cardNumber.toString(),
             // @ts-ignore
             {fill: "#000", align: "center"}
@@ -135,28 +137,28 @@ export class Player {
         const padding = 2;
         this.cardNumObj.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         this.cardNumObj.setBackgroundColor("#fff");
-        this.cardNumObj.setFontSize(10)
+        this.cardNumObj.setFontSize(sizeConfig.player.width / 8)
     }
 
     drawTieSuo() {
         this.tieSuoImage = this.gamingScene.add.image(
-            this.playerX,
-            this.playerY,
+            this.positionX,
+            this.positionY,
             "tiesuo");
-        this.tieSuoImage.displayHeight = sizeConfig.tiesuo.height;
-        this.tieSuoImage.displayWidth = sizeConfig.tiesuo.width;
+        this.tieSuoImage.displayHeight = sizeConfig.player.height * 0.3;
+        this.tieSuoImage.displayWidth = sizeConfig.player.width;
         this.tieSuoImage.setAlpha(this._isTieSuo ? 1 : 0);
     }
 
     drawPandingCards() {
-        const stepX = 20
+        const stepX = sizeConfig.player.width / 10;
         for (let i = 0; i < this.maxPandingCardsNumber; i++) {
             const pandingCardImage = this.gamingScene.add.image(
-                this.playerX + sizeConfig.player.width / 2 - 10 - stepX * i,
-                this.playerY + sizeConfig.player.height / 2 + 2,
+                this.positionX + sizeConfig.player.width / 2 - 10 - stepX * i,
+                this.positionY + sizeConfig.player.height / 2 + 2,
                 "white");
-            pandingCardImage.displayHeight = 12;
-            pandingCardImage.displayWidth = 12;
+            pandingCardImage.displayHeight = sizeConfig.player.width / 10;
+            pandingCardImage.displayWidth = sizeConfig.player.width / 10;
             pandingCardImage.setRotation(Math.PI / 4)
             pandingCardImage.setTint(colorConfigJson.card)
             pandingCardImage.setAlpha(0)
@@ -164,35 +166,37 @@ export class Player {
             this.pandingCardImages!.push(pandingCardImage);
 
             const pandingCardText = this.gamingScene.add.text(
-                this.playerX + sizeConfig.player.width / 2 - 10 - stepX * i,
-                this.playerY + sizeConfig.player.height / 2 + 2,
+                this.positionX + sizeConfig.player.width / 2 - 10 - stepX * i,
+                this.positionY + sizeConfig.player.height / 2 + 2,
                 "",
                 // @ts-ignore
                 {fill: "#000", align: "center"}
             );
             pandingCardText.setOrigin(0.5, 0.5)
-            pandingCardText.setFontSize(10)
+            pandingCardText.setFontSize(sizeConfig.player.width / 12)
             pandingCardText.setAlpha(0)
             this.pandingCardTexts!.push(pandingCardText);
         }
     }
 
     drawBloods() {
+        const bloodHeight = sizeConfig.player.height * 0.15;
+        const bloodWidth = bloodHeight * 1.5333;
         for (let i = 0; i < this.user.maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
-                this.playerX + sizeConfig.player.width / 2 - 7,
-                this.playerY + sizeConfig.player.height / 2 - 10 - (sizeConfig.blood.height * 0.8 * 0.8 * i),
+                this.positionX + sizeConfig.player.width / 2 * 0.86,
+                this.positionY + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.81 * i),
                 "greenGouyu");
-            bloodImage.displayHeight = sizeConfig.blood.height * 0.8;
-            bloodImage.displayWidth = sizeConfig.blood.width * 0.8;
+            bloodImage.displayHeight = bloodHeight;
+            bloodImage.displayWidth = bloodWidth;
             this.bloodImages!.push(bloodImage);
         }
     }
 
     drawStageText() {
         this.stageText = this.gamingScene.add.text(
-            this.playerX,
-            this.playerY + sizeConfig.player.height / 2 + 10,
+            this.positionX,
+            this.positionY + sizeConfig.player.height / 2 + 10,
             "",
             // @ts-ignore
             {fill: "#fff", align: "center", stroke: '#ff0000', strokeThickness: 6}
@@ -214,57 +218,61 @@ export class Player {
 
     drawEquipment(index: number) {
         const padding = 1;
-        const offsetY = 12;
-        const offsetYStep = 14;
+        const offsetY = sizeConfig.player.height / 11;
+        const offsetYStep = sizeConfig.player.height / 10;
+        const fontSize = sizeConfig.player.height / 15;
         const groupMap: { [key: number]: 'weaponGroup' | 'shieldGroup' | 'plusHorseGroup' | 'minusHorseGroup' } = {
             0: 'weaponGroup',
             1: 'shieldGroup',
             2: 'plusHorseGroup',
             3: 'minusHorseGroup'
         };
+
+        // distanceText 包含背景设置
         const groupName = groupMap[index];
         this[groupName] = {};
         this[groupName]!.distanceText = this.gamingScene.add.text(
-            this.playerX - sizeConfig.player.width / 2,
-            this.playerY + offsetY + offsetYStep * index,
+            this.positionX - sizeConfig.player.width / 2,
+            this.positionY + offsetY + offsetYStep * index,
             "",
             // @ts-ignore
-            {fill: "#000", align: "left", fixedWidth: 84}
+            {fill: "#000", align: "left", fixedWidth: sizeConfig.player.width * 0.8}
         );
-        this[groupName]!.distanceText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
+
+        this[groupName]!.distanceText!.setPadding(padding + 5, padding + 1, padding + 0, padding + 0);
         this[groupName]!.distanceText!.setBackgroundColor("#ccc")
-        this[groupName]!.distanceText!.setFontSize(9)
+        this[groupName]!.distanceText!.setFontSize(fontSize)
         this[groupName]!.distanceText!.setAlpha(0)
 
         this[groupName]!.nameText = this.gamingScene.add.text(
-            this.playerX - sizeConfig.player.width / 2 + 14,
-            this.playerY + offsetY + offsetYStep * index,
+            this.positionX - sizeConfig.player.width / 2 + sizeConfig.player.width * 0.19,
+            this.positionY + offsetY + offsetYStep * index,
             "",
             // @ts-ignore
-            {fill: "#000", align: "justify", fixedWidth: 80}
+            {fill: "#000", align: "justify"}
         );
         this[groupName]!.nameText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
-        this[groupName]!.nameText!.setFontSize(9)
+        this[groupName]!.nameText!.setFontSize(fontSize)
         this[groupName]!.nameText!.setAlpha(0)
 
 
         this[groupName]!.huaseNumText = this.gamingScene.add.text(
-            this.playerX - sizeConfig.player.width / 2 + 56,
-            this.playerY + offsetY + offsetYStep * index,
+            this.positionX - sizeConfig.player.width / 2 + sizeConfig.player.width * 0.6,
+            this.positionY + offsetY + offsetYStep * index,
             "",
             // @ts-ignore
-            {fill: "#000", align: "center", fixedWidth: 28}
+            {fill: "#000", align: "center"}
         );
         this[groupName]!.huaseNumText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
-        this[groupName]!.huaseNumText!.setFontSize(9)
+        this[groupName]!.huaseNumText!.setFontSize(fontSize)
         this[groupName]!.huaseNumText!.setAlpha(0)
     }
 
     drawIsDead() {
         this.playerImage!.setTint(colorConfigJson.disablePlayer);
         this.isDeadText = this.gamingScene.add.text(
-            this.playerX,
-            this.playerY,
+            this.positionX,
+            this.positionY,
             "阵亡",
             // @ts-ignore
             {fill: "#000", align: "center"}
@@ -333,13 +341,13 @@ export class Player {
     }
 
     drawBloodsBg() {
-        const graphicsW = 18 * 0.8
-        const graphicsH = 100 * 0.8
+        const graphicsW = sizeConfig.player.width * 0.16
+        const graphicsH = sizeConfig.player.height * 0.52
         this.bloodsBgGraphics = this.gamingScene.add.graphics();
         this.bloodsBgGraphics.fillStyle(0x000, 1);
         this.bloodsBgGraphics.fillRoundedRect(
-            this.playerX + sizeConfig.player.width / 2 - graphicsW,
-            this.playerY + sizeConfig.player.height / 2 - graphicsH,
+            this.positionX + sizeConfig.player.width / 2 - graphicsW,
+            this.positionY + sizeConfig.player.height / 2 - graphicsH,
             graphicsW,
             graphicsH, {
                 tl: 4,
@@ -351,8 +359,8 @@ export class Player {
 
     drawPlayer() {
         this.playerImage = this.gamingScene.add.image(
-            this.playerX,
-            this.playerY,
+            this.positionX,
+            this.positionY,
             this.user.cardId).setInteractive({cursor: 'pointer'});
         this.playerImage.displayHeight = sizeConfig.player.height;
         this.playerImage.displayWidth = sizeConfig.player.width;

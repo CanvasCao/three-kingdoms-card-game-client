@@ -5,24 +5,20 @@ export class PublicLine {
     obId: string;
     gamingScene: GamingScene;
     locations: {
-        startX: number,
-        startY: number,
-        endX: number,
-        endY: number,
+        startPosition: { x: number, y: number },
+        endPosition: { x: number, y: number },
     };
-    graphics: any;
+    graphics: Phaser.GameObjects.Graphics | null;
 
     constructor(gamingScene: GamingScene, locations: {
-        startX: number,
-        startY: number,
-        endX: number,
-        endY: number,
+        startPosition: { x: number, y: number },
+        endPosition: { x: number, y: number },
     }) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
         this.locations = locations
-
+        this.graphics = null;
 
         this.drawLine();
 
@@ -33,15 +29,19 @@ export class PublicLine {
     }
 
     drawLine() {
-        const {startX, startY, endX, endY} = this.locations;
+        const {
+            startPosition: {x: startX, y: startY},
+            endPosition: {x: endX, y: endY}
+        } = this.locations;
+
         this.graphics = this.gamingScene.add.graphics();
         let line;
         let percent: number = 0;
         const timer = setInterval(() => {
             line = new Phaser.Geom.Line(startX, startY, startX + (endX - startX) * percent, startY + (endY - startY) * percent);
             percent += 0.1;
-            this.graphics.lineStyle(2, 0xffff00);
-            this.graphics.strokeLineShape(line);
+            this.graphics!.lineStyle(2, 0xffff00);
+            this.graphics!.strokeLineShape(line);
 
             if (percent >= 1) {
                 clearInterval(timer)
@@ -50,7 +50,7 @@ export class PublicLine {
     }
 
     destoryAll() {
-        this.graphics.destroy()
+        this.graphics!.destroy()
     }
 
 }
