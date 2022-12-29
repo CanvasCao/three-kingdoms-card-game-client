@@ -1,7 +1,7 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {
-    getMyUserId,
+    getMyPlayerId,
     uuidv4,
     getIsMyResponseCardTurn,
     getInMyPlayTurnCanPlayCardNamesClourse,
@@ -52,7 +52,7 @@ export class ControlCard {
         this.card = card;
 
         // 初始化index
-        this._index = this.gamingScene.controlCardsManager!._userCards.findIndex((c: Card) => c.cardId == this.card.cardId);
+        this._index = this.gamingScene.controlCardsManager!._playerCards.findIndex((c: Card) => c.cardId == this.card.cardId);
         this.cardInitStartX = sizeConfig.background.width / 2
         this.cardInitStartY = sizeConfig.background.height / 2
         this.cardInitEndX = this._index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
@@ -120,18 +120,18 @@ export class ControlCard {
                     if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
                         curFEStatus.selectedCards = [];
                         curFEStatus.actualCard = null;
-                        curFEStatus.selectedTargetUsers = [];
+                        curFEStatus.selectedTargetPlayers = [];
                     } else { // 选中
                         curFEStatus.selectedCards = [this.card];
                         curFEStatus.actualCard = this.card;
-                        curFEStatus.selectedTargetUsers = [];
+                        curFEStatus.selectedTargetPlayers = [];
                     }
                 } else if (isMyThrowTurn) {
                     if (curFEStatus.selectedCards.map((c: Card) => c.cardId).includes(this.card.cardId)) {
                         curFEStatus.selectedCards = differenceBy(curFEStatus.selectedCards, [this.card], 'cardId');
                     } else {
-                        const myUser = curStatus.users[getMyUserId()];
-                        const needThrowCardNumber = getNeedThrowCardNumber(myUser);
+                        const myPlayer = curStatus.players[getMyPlayerId()];
+                        const needThrowCardNumber = getNeedThrowCardNumber(myPlayer);
                         const haveSelectedEnoughThrowCard = curFEStatus.selectedCards.length >= needThrowCardNumber;
                         if (!haveSelectedEnoughThrowCard) {
                             curFEStatus.selectedCards.push(this.card);
@@ -245,7 +245,7 @@ export class ControlCard {
         }
 
         if (canPlayInMyTurn) {
-            const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.users[getMyUserId()])()
+            const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
             if (!canPlayCardNames.includes(this.card.CN)) {
                 // @ts-ignore
                 this.cardImgObj!.setTint(this.disableTint)
@@ -284,7 +284,7 @@ export class ControlCard {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const currentIndex = gameStatus.users[getMyUserId()].cards.findIndex((c) => c.cardId == this.card.cardId);
+        const currentIndex = gameStatus.players[getMyPlayerId()].cards.findIndex((c) => c.cardId == this.card.cardId);
 
         // 这张牌重新查询自己在手牌的新位置 没有就destory自己
         if (currentIndex == -1) {

@@ -20,21 +20,21 @@ export class PublicControlCardsManager {
 
         const behaviour = data.behaviour as any
         const originId = data.behaviour.originId;
-        const originCanvasPlayer = this.gamingScene.players.find((p) => p.user.userId == originId)!;
+        const originCanvasPlayer = this.gamingScene.players.find((p) => p.player.playerId == originId)!;
         let targetIds
         if (behaviour?.targetIds) {
             targetIds = behaviour.targetIds
         } else if (behaviour.targetId) {
             targetIds = [behaviour?.targetId]
         } else if (attachFEInfoToCard(data.behaviour?.actualCard)?.noNeedSetTargetDueToTargetAll) {
-            targetIds = Object.values(gameStatus.users).filter(u => !u.isDead).map(u => u.userId)
+            targetIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
         }
 
         targetIds.forEach((targetId: string) => {
-            const targetCanvasPlayer = this.gamingScene.players.find((p) => p.user.userId == targetId)!;
+            const targetCanvasPlayer = this.gamingScene.players.find((p) => p.player.playerId == targetId)!;
             new PublicLine(this.gamingScene, {
-                startPosition: originCanvasPlayer.position,
-                endPosition: targetCanvasPlayer.position,
+                startPosition: originCanvasPlayer.linePosition,
+                endPosition: targetCanvasPlayer.linePosition,
             });
         })
 

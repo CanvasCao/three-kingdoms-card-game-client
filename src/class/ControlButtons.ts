@@ -3,7 +3,7 @@ import textConfig from "../config/textConfig.json";
 import {
     getIsMyResponseCardTurn,
     getCanPlayInMyTurn,
-    getMyUserId,
+    getMyPlayerId,
     uuidv4,
     getMyResponseInfo,
     getIsMyThrowTurn,
@@ -14,7 +14,7 @@ import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {BtnGroup, GamingScene} from "../types/phaser";
 import Phaser from "phaser";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {GameStatus, User} from "../types/gameStatus";
+import {GameStatus, Player} from "../types/gameStatus";
 import {EmitActionData, EmitResponseData, EmitThrowData} from "../types/emit";
 import {attachFEInfoToCard} from "../utils/cardUtils";
 
@@ -143,7 +143,7 @@ export class ControlButtons {
                 this.gamingScene.socket.emit(
                     emitMap.RESPONSE,
                     {
-                        originId: getMyUserId(),
+                        originId: getMyPlayerId(),
                     }
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
@@ -205,28 +205,28 @@ export class ControlButtons {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
-                originId: getMyUserId(),
-                targetIds: gameFEStatus.selectedTargetUsers.map((targetUser: User) => targetUser.userId)
+                originId: getMyPlayerId(),
+                targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
             }
         } else if (actualCard.noNeedSetTargetDueToImDefaultTarget) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
-                originId: getMyUserId(),
-                targetId: getMyUserId(),
+                originId: getMyPlayerId(),
+                targetId: getMyPlayerId(),
             }
         } else if (actualCard.canOnlyHaveOneTarget) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
-                originId: getMyUserId(),
-                targetId: gameFEStatus.selectedTargetUsers[0].userId,
+                originId: getMyPlayerId(),
+                targetId: gameFEStatus.selectedTargetPlayers[0].playerId,
             }
         } else if (actualCard.noNeedSetTargetDueToTargetAll) {
             return {
                 cards: gameFEStatus.selectedCards,
                 actualCard,
-                originId: getMyUserId(),
+                originId: getMyPlayerId(),
             }
         }
     }
@@ -240,7 +240,7 @@ export class ControlButtons {
         return {
             cards: gameFEStatus.selectedCards,
             actualCard: gameFEStatus.selectedCards[0],
-            originId: getMyUserId(),
+            originId: getMyPlayerId(),
             targetId: info.targetId,
             wuxieTargetCardId: info.wuxieTargetCardId
         }
@@ -282,8 +282,8 @@ export class ControlButtons {
     canClickOkBtnInMyPlayStage(gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
             const targetMinMaxNumber = attachFEInfoToCard(gameFEStatus.actualCard)!.targetMinMax;
-            const ifSelectedTargetsQualified = gameFEStatus.selectedTargetUsers.length >= targetMinMaxNumber.min
-                && gameFEStatus.selectedTargetUsers.length <= targetMinMaxNumber.max;
+            const ifSelectedTargetsQualified = gameFEStatus.selectedTargetPlayers.length >= targetMinMaxNumber.min
+                && gameFEStatus.selectedTargetPlayers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;
         }
         return false
@@ -298,8 +298,8 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const myUser = gameStatus.users[getMyUserId()];
-        const needThrowCardNumber = getNeedThrowCardNumber(myUser);
+        const myPlayer = gameStatus.players[getMyPlayerId()];
+        const needThrowCardNumber = getNeedThrowCardNumber(myPlayer);
         return gameFEStatus.selectedCards.length == needThrowCardNumber
     }
 

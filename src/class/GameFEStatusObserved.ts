@@ -9,7 +9,7 @@ export class GameFEStatusObserved {
         actualCard: GameFEStatus['actualCard'],
     }
     originTargetState: {
-        selectedTargetUsers: GameFEStatus['selectedTargetUsers'],
+        selectedTargetPlayers: GameFEStatus['selectedTargetPlayers'],
     }
 
     originSkillState: {
@@ -31,7 +31,7 @@ export class GameFEStatusObserved {
             actualCard: null,
         }
         this.originTargetState = {
-            selectedTargetUsers: [],
+            selectedTargetPlayers: [],
         }
         this.originSkillState = {
             selectedSkill: []

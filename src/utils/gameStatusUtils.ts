@@ -1,4 +1,4 @@
-import {Card, GameStatus, User} from "../types/gameStatus";
+import {Card, GameStatus, Player} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {CARD_CONFIG_WITH_FE_INFO} from "../config/cardConfigWithFEInfo";
 import {isNil} from "lodash";
@@ -14,11 +14,11 @@ function verticalRotationSting(s: string) {
     return s.split('').join('\r\n')
 }
 
-const getMyUserId = () => {
-    const key = 'three-kingdom-user-id';
-    const userid = localStorage.getItem(key);
-    if (userid) {
-        return userid
+const getMyPlayerId = () => {
+    const key = 'three-kingdom-player-id';
+    const playerid = localStorage.getItem(key);
+    if (playerid) {
+        return playerid
     } else {
         const newUUID = uuidv4()
         localStorage.setItem(key, newUUID);
@@ -27,27 +27,27 @@ const getMyUserId = () => {
 }
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {
-    return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'play';
+    return gameStatus.stage.playerId == getMyPlayerId() && gameStatus.stage.stageName == 'play';
 }
 
 const getIsMyThrowTurn = (gameStatus: GameStatus) => {
-    return gameStatus.stage.userId == getMyUserId() && gameStatus.stage.stageName == 'throw';
+    return gameStatus.stage.playerId == getMyPlayerId() && gameStatus.stage.stageName == 'throw';
 }
 
 const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
     if (gameStatus.taoResStages.length > 0) {
-        return gameStatus.taoResStages[0]?.originId == getMyUserId();
+        return gameStatus.taoResStages[0]?.originId == getMyPlayerId();
     }
     if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length) {
-        return gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyUserId())
+        return gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyPlayerId())
     }
     if (gameStatus.scrollResStages?.length > 0) {
         // 不需要判断isEffect 如果没有人想出无懈可击 锦囊肯定生效了
-        return gameStatus.scrollResStages[0].originId == getMyUserId() &&
+        return gameStatus.scrollResStages[0].originId == getMyPlayerId() &&
             (![SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN, SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,].includes(gameStatus.scrollResStages[0].actualCard.CN))
     }
     if (gameStatus.shanResStages.length > 0) {
-        return gameStatus.shanResStages[0]?.originId == getMyUserId();
+        return gameStatus.shanResStages[0]?.originId == getMyPlayerId();
     }
     return false;
 }
@@ -108,7 +108,7 @@ const getMyResponseInfo = (gameStatus: GameStatus):
     }
 }
 
-const getInMyPlayTurnCanPlayCardNamesClourse = (user: User) => {
+const getInMyPlayTurnCanPlayCardNamesClourse = (player: Player) => {
     let canPlayInMyTurnCardNames: string[];
     return () => {
         if (!canPlayInMyTurnCardNames) {
@@ -116,24 +116,24 @@ const getInMyPlayTurnCanPlayCardNamesClourse = (user: User) => {
         }
 
         let amendCanPlayInMyTurnCardNames: string[] = canPlayInMyTurnCardNames;
-        if (user.maxBlood <= user.currentBlood) {
+        if (player.maxBlood <= player.currentBlood) {
             amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != BASIC_CARDS_CONFIG.TAO.CN)
         }
 
-        if (user.pandingSigns.find((sign) => sign.actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
+        if (player.pandingSigns.find((sign) => sign.actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
             amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)
         }
         return amendCanPlayInMyTurnCardNames
     }
 }
 
-const getDistanceFromAToB = (AUser: User, BUser: User, userNumber: number) => {
+const getDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
     const tableDistance = Math.min(
-        Math.abs(AUser.location - BUser.location),
-        Math.abs((AUser.location + userNumber) - BUser.location),
-        Math.abs(AUser.location - (BUser.location + userNumber))
+        Math.abs(APlayer.location - BPlayer.location),
+        Math.abs((APlayer.location + playerNumber) - BPlayer.location),
+        Math.abs(APlayer.location - (BPlayer.location + playerNumber))
     )
-    return tableDistance + (AUser?.minusHorseCard?.horseDistance || 0) + (BUser?.plusHorseCard?.horseDistance || 0)
+    return tableDistance + (APlayer?.minusHorseCard?.horseDistance || 0) + (BPlayer?.plusHorseCard?.horseDistance || 0)
 }
 
 const getCanSelectMeAsFirstTargetCardNamesClosure = () => {
@@ -156,29 +156,29 @@ const getCanSelectMeAsSecondTargetCardNamesClosure = () => {
     }
 }
 
-const getNeedThrowCardNumber = (user: User) => {
-    return user.cards.length - user.currentBlood
+const getNeedThrowCardNumber = (player: Player) => {
+    return player.cards.length - player.currentBlood
 }
 
-const getIfUserHasAnyCards = (user: User) => {
-    return user.cards.length ||
-        user.pandingSigns.length ||
-        user.plusHorseCard ||
-        user.minusHorseCard ||
-        user.shieldCard ||
-        user.weaponCard
+const getIfPlayerHasAnyCards = (player: Player) => {
+    return player.cards.length ||
+        player.pandingSigns.length ||
+        player.plusHorseCard ||
+        player.minusHorseCard ||
+        player.shieldCard ||
+        player.weaponCard
 }
 
-const getIfUserHasWeapon = (user: User) => {
-    return user.weaponCard
+const getIfPlayerHasWeapon = (player: Player) => {
+    return player.weaponCard
 }
 
-const getIfUserHasAnyHandCards = (user: User) => {
-    return user.cards.length > 0
+const getIfPlayerHasAnyHandCards = (player: Player) => {
+    return player.cards.length > 0
 }
 
 export {
-    getMyUserId,
+    getMyPlayerId,
 
     // my turn for UI and getCanPlayInMyTurn
     getIsMyPlayTurn,
@@ -205,9 +205,9 @@ export {
     getNeedThrowCardNumber,
 
     // validate scroll target
-    getIfUserHasAnyCards,
-    getIfUserHasAnyHandCards,
-    getIfUserHasWeapon,
+    getIfPlayerHasAnyCards,
+    getIfPlayerHasAnyHandCards,
+    getIfPlayerHasWeapon,
 
     uuidv4,
     verticalRotationSting

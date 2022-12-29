@@ -1,6 +1,6 @@
-import {GameStatusUsers, User} from "../types/gameStatus"
+import {GameStatusPlayers, Player} from "../types/gameStatus"
 import sizeConfig from "../config/sizeConfig.json";
-import {getMyUserId} from "./gameStatusUtils";
+import {getMyPlayerId} from "./gameStatusUtils";
 
 const playersAreaW = sizeConfig.playersArea.width;
 const playersAreaH = sizeConfig.playersArea.height;
@@ -75,23 +75,32 @@ const getPotisions = (number: number) => {
     return positions
 }
 
-export const getPlayersWithPosition = (gameStatusUsers: GameStatusUsers): User[] => {
-    const myUser = gameStatusUsers[getMyUserId()]
+export const getPlayersWithPosition = (gameStatusPlayers: GameStatusPlayers): Player[] => {
+    const myPlayer = gameStatusPlayers[getMyPlayerId()]
 
-    const usersNumber = Object.keys(gameStatusUsers).length
-    const otherUsersNumber = usersNumber - 1
-    const otherPositions = getPotisions(otherUsersNumber);
-    const firstLocation = myUser.location;
+    const playersNumber = Object.keys(gameStatusPlayers).length
+    const otherPlayersNumber = playersNumber - 1
+    const otherPositions = getPotisions(otherPlayersNumber);
+    const firstLocation = myPlayer.location;
 
-    const usersWithPosition: User[] = []
-    for (let i = 0; i < otherUsersNumber; i++) {
-        const otherModLocation = (firstLocation + 1 + i) % usersNumber;
-        const user = Object.values(gameStatusUsers).find((u) => u.location == otherModLocation)!;
-        user.position = otherPositions[i];
-        usersWithPosition.push(user)
+    const playersWithPosition: Player[] = []
+    for (let i = 0; i < otherPlayersNumber; i++) {
+        const otherModLocation = (firstLocation + 1 + i) % playersNumber;
+        const player = Object.values(gameStatusPlayers).find((u) => u.location == otherModLocation)!;
+        player.linePosition = otherPositions[i];
+        player.playerPosition = otherPositions[i];
+        playersWithPosition.push(player)
     }
 
-    myUser.position = {x: sizeConfig.background.width / 2, y: playersAreaH + sizeConfig.controlPlayer.height/2}
-    usersWithPosition.push(myUser)
-    return usersWithPosition
+    myPlayer.linePosition = {
+        x: sizeConfig.background.width / 2,
+        y: playersAreaH + sizeConfig.player.height / 2
+    }
+    myPlayer.playerPosition = {
+        x: (sizeConfig.background.width - sizeConfig.player.width / 2),
+        y: (sizeConfig.background.height - sizeConfig.player.height / 2)
+    }
+
+    playersWithPosition.push(myPlayer)
+    return playersWithPosition;
 }

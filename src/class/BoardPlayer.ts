@@ -3,24 +3,25 @@ import colorConfig from "../config/colorConfig.json";
 import {
     getCanSelectMeAsFirstTargetCardNamesClosure, getCanSelectMeAsSecondTargetCardNamesClosure,
     getDistanceFromAToB,
-    getIfUserHasAnyCards, getIfUserHasWeapon,
-    getMyUserId,
+    getIfPlayerHasAnyCards, getIfPlayerHasWeapon,
+    getMyPlayerId,
     uuidv4
 } from "../utils/gameStatusUtils";
 import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../types/phaser";
-import {Card, GameStatus, PandingSign, User} from "../types/gameStatus";
+import {Card, GameStatus, PandingSign, Player} from "../types/gameStatus";
 import {ColorConfigJson} from "../types/config";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {attachFEInfoToCard} from "../utils/cardUtils";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
-export class Player {
+export class BoardPlayer {
     obId: string;
     gamingScene: GamingScene;
-    user: User;
-    position: { x: number, y: number };
+    player: Player;
+    linePosition: { x: number, y: number };
+    playerPosition: { x: number, y: number };
     _disable: boolean;
     _pandingCardsLength: number;
     positionX: number;
@@ -50,20 +51,22 @@ export class Player {
     isDeadText?: Phaser.GameObjects.Text;
     bloodsBgGraphics?: Phaser.GameObjects.Graphics;
 
-    constructor(gamingScene: GamingScene, user: User) {
+    constructor(gamingScene: GamingScene, player: Player) {
         this.obId = uuidv4();
 
         // init
         this.gamingScene = gamingScene;
-        this.user = user;
-        this.position = user.position;
+        this.player = player;
+        this.linePosition = player.linePosition;
+        this.playerPosition = player.playerPosition;
+
         // init inner state
         this._disable = false;
         this._pandingCardsLength = 0
 
         // position
-        this.positionX = this?.position?.x || 0;
-        this.positionY = this?.position?.y || 0;
+        this.positionX = this?.playerPosition?.x || 0;
+        this.positionY = this?.playerPosition?.y || 0;
 
         // phaser objects
         this.bloodImages = []; //从下往上
@@ -74,13 +77,13 @@ export class Player {
         this.maxPandingCardsNumber = Object.keys(DELAY_SCROLL_CARDS_CONFIG).length;
 
         // last state cache
-        this._currentBlood = this.user.currentBlood;
-        this._cardNumber = this.user.cards.length;
-        this._isTieSuo = this.user.isTieSuo;
+        this._currentBlood = this.player.currentBlood;
+        this._cardNumber = this.player.cards.length;
+        this._isTieSuo = this.player.isTieSuo;
         this._actualCardId = '';
 
         // myplayer不draw 但是player 需要set position
-        if (this.user.userId == getMyUserId()) {
+        if (this.player.playerId == getMyPlayerId()) {
             return
         }
 
@@ -89,13 +92,13 @@ export class Player {
         this.drawPlayer();
         this.drawBloodsBg();
         this.drawBloods();
-        this.setBloods(this.user.currentBlood);
+        this.setBloods(this.player.currentBlood);
         this.drawStageText();
         this.drawEquipments();
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
-        if (this.user.isDead) {
+        if (this.player.isDead) {
             this.drawIsDead();
             this._isDead = true;
         }
@@ -182,7 +185,7 @@ export class Player {
     drawBloods() {
         const bloodHeight = sizeConfig.player.height * 0.15;
         const bloodWidth = bloodHeight * 1.5333;
-        for (let i = 0; i < this.user.maxBlood; i++) {
+        for (let i = 0; i < this.player.maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
                 this.positionX + sizeConfig.player.width / 2 * 0.86,
                 this.positionY + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.81 * i),
@@ -313,29 +316,29 @@ export class Player {
             }
 
             // 自己已经选中过
-            if (curGameFEStatus.selectedTargetUsers.find((u: User) => u.userId == this.user.userId)) {
+            if (curGameFEStatus.selectedTargetPlayers.find((u: Player) => u.playerId == this.player.playerId)) {
                 return;
             }
 
             // 因为mePlayer_disable永远是false 所以在这里validate 这张卡能否以自己为目标的卡
-            if (curGameFEStatus.selectedTargetUsers.length == 0) {
-                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
+            if (curGameFEStatus.selectedTargetPlayers.length == 0) {
+                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.player.playerId == getMyPlayerId()) {
                     return;
                 }
             }
-            if (curGameFEStatus.selectedTargetUsers.length == 1) {
-                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.user.userId == getMyUserId()) {
+            if (curGameFEStatus.selectedTargetPlayers.length == 1) {
+                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.player.playerId == getMyPlayerId()) {
                     return;
                 }
             }
 
             // validate是否选择了足够目标
             const targetMinMax = attachFEInfoToCard(curGameFEStatus.actualCard)!.targetMinMax;
-            if (curGameFEStatus.selectedTargetUsers.length >= targetMinMax.max) {
+            if (curGameFEStatus.selectedTargetPlayers.length >= targetMinMax.max) {
                 return;
             }
 
-            curGameFEStatus.selectedTargetUsers.push(this.user);
+            curGameFEStatus.selectedTargetPlayers.push(this.player);
             this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
         });
     }
@@ -361,20 +364,20 @@ export class Player {
         this.playerImage = this.gamingScene.add.image(
             this.positionX,
             this.positionY,
-            this.user.cardId).setInteractive({cursor: 'pointer'});
+            this.player.cardId).setInteractive({cursor: 'pointer'});
         this.playerImage.displayHeight = sizeConfig.player.height;
         this.playerImage.displayWidth = sizeConfig.player.width;
     }
 
     onEquipmentsChange(gameStatus: GameStatus) {
-        const user = gameStatus.users[this.user.userId];
+        const player = gameStatus.players[this.player.playerId];
         [
             {card: "weaponCard", group: "weaponGroup"},
             {card: "shieldCard", group: "shieldGroup"},
             {card: "plusHorseCard", group: "plusHorseGroup"},
             {card: "minusHorseCard", group: "minusHorseGroup"},
         ].forEach((ele, index) => {
-            const card = user[ele.card as keyof User] as Card
+            const card = player[ele.card as keyof Player] as Card
             // @ts-ignore
             const group = this[ele.group]
             if (card) {
@@ -401,53 +404,53 @@ export class Player {
     }
 
     onPandingCardsChange(gameStatus: GameStatus) {
-        const user = gameStatus.users[this.user.userId];
+        const player = gameStatus.players[this.player.playerId];
 
-        if (this._pandingCardsLength != user.pandingSigns.length) {
+        if (this._pandingCardsLength != player.pandingSigns.length) {
             for (let i = 0; i < this.maxPandingCardsNumber; i++) {
-                if (user.pandingSigns[i]) {
+                if (player.pandingSigns[i]) {
                     this.pandingCardImages![i].setAlpha(1)
                     this.pandingCardTexts![i].setAlpha(1)
-                    this.pandingCardTexts![i].setText(user.pandingSigns[i].actualCard.CN.slice(0, 1))
+                    this.pandingCardTexts![i].setText(player.pandingSigns[i].actualCard.CN.slice(0, 1))
                 } else {
                     this.pandingCardImages![i].setAlpha(0)
                     this.pandingCardTexts![i].setAlpha(0)
                 }
             }
-            this._pandingCardsLength = user.pandingSigns.length
+            this._pandingCardsLength = player.pandingSigns.length
         }
     }
 
     onPlayerBloodChange(gameStatus: GameStatus) {
-        const user = gameStatus.users[this.user.userId]
+        const player = gameStatus.players[this.player.playerId]
 
-        if (this._currentBlood != user.currentBlood) {
-            this.setBloods(user.currentBlood)
-            this._currentBlood = user.currentBlood
+        if (this._currentBlood != player.currentBlood) {
+            this.setBloods(player.currentBlood)
+            this._currentBlood = player.currentBlood
         }
     }
 
     onCardNumberChange(gameStatus: GameStatus) {
-        const user = gameStatus.users[this.user.userId]
+        const player = gameStatus.players[this.player.playerId]
 
-        if (this._cardNumber != user.cards.length) {
-            this.cardNumObj!.setText(user.cards.length.toString())
-            this._cardNumber = user.cards.length
+        if (this._cardNumber != player.cards.length) {
+            this.cardNumObj!.setText(player.cards.length.toString())
+            this._cardNumber = player.cards.length
         }
     }
 
     onTieSuoChange(gameStatus: GameStatus) {
-        const user = gameStatus.users[this.user.userId]
+        const player = gameStatus.players[this.player.playerId]
 
-        if (this._isTieSuo != user.isTieSuo) {
-            this.tieSuoImage!.setAlpha(user.isTieSuo ? 1 : 0)
+        if (this._isTieSuo != player.isTieSuo) {
+            this.tieSuoImage!.setAlpha(player.isTieSuo ? 1 : 0)
             // this.tieSuoImage.setAlpha(1)
-            this._isTieSuo = user.isTieSuo
+            this._isTieSuo = player.isTieSuo
         }
     }
 
     onPlayerTurnAndStageChange(gameStatus: GameStatus) {
-        if (gameStatus.stage.userId === this.user.userId) {
+        if (gameStatus.stage.playerId === this.player.playerId) {
             this.myTurnStroke!.setAlpha(1);
             this.stageText!.setAlpha(1);
             this.stageText!.setText(gameStatus.stage.stageNameCN + '阶段...')
@@ -459,7 +462,7 @@ export class Player {
 
     onPlayerDisableChange(gameFEStatus: GameFEStatus) {
         // TODO 借刀
-        if (this.user.userId == getMyUserId()) {
+        if (this.player.playerId == getMyPlayerId()) {
             return;
         }
 
@@ -477,8 +480,8 @@ export class Player {
 
         if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
             const actualCardName = gameFEStatus?.actualCard?.CN
-            const meUser = gameStatus.users[getMyUserId()];
-            const targetUser = gameStatus.users[this.user.userId];
+            const mePlayer = gameStatus.players[getMyPlayerId()];
+            const targetPlayer = gameStatus.players[this.player.playerId];
             // 计算杀的距离
             if (actualCardName == BASIC_CARDS_CONFIG.SHA.CN) {
                 let attackDistance, distanceBetweenAAndB;
@@ -487,8 +490,8 @@ export class Player {
                 if (curScrollResStage) { // 响应锦囊的杀 setPlayerAble
                     setPlayerAble()
                 } else {
-                    attackDistance = meUser?.weaponCard?.distance || 1;
-                    distanceBetweenAAndB = getDistanceFromAToB(meUser, targetUser, Object.keys(gameStatus.users).length)
+                    attackDistance = mePlayer?.weaponCard?.distance || 1;
+                    distanceBetweenAAndB = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
                     if (attackDistance >= distanceBetweenAAndB) {
                         setPlayerAble()
                     } else {
@@ -497,17 +500,17 @@ export class Player {
                 }
 
             } else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
-                if (gameFEStatus.selectedTargetUsers.length == 0) {
-                    if (getIfUserHasWeapon(targetUser)) {
+                if (gameFEStatus.selectedTargetPlayers.length == 0) {
+                    if (getIfPlayerHasWeapon(targetPlayer)) {
                         setPlayerAble()
                     } else {
                         setPlayerDisable();
                     }
-                } else if (gameFEStatus.selectedTargetUsers.length == 1) {
+                } else if (gameFEStatus.selectedTargetPlayers.length == 1) {
                     let attackDistance, distanceBetweenAAndB;
-                    const daoOwnerUser = gameFEStatus.selectedTargetUsers[0];
-                    attackDistance = daoOwnerUser?.weaponCard?.distance || 1;
-                    distanceBetweenAAndB = getDistanceFromAToB(daoOwnerUser, targetUser, Object.keys(gameStatus.users).length)
+                    const daoOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
+                    attackDistance = daoOwnerPlayer?.weaponCard?.distance || 1;
+                    distanceBetweenAAndB = getDistanceFromAToB(daoOwnerPlayer, targetPlayer, Object.keys(gameStatus.players).length)
                     if (attackDistance >= distanceBetweenAAndB) {
                         setPlayerAble()
                     } else {
@@ -515,7 +518,7 @@ export class Player {
                     }
                 }
             } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
-                if (targetUser.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
+                if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
                     setPlayerDisable()
                 } else {
                     setPlayerAble()
@@ -523,7 +526,7 @@ export class Player {
             } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN ||
                 actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN
             ) {
-                const distanceBetweenMeAndTarget = getDistanceFromAToB(meUser, targetUser, Object.keys(gameStatus.users).length)
+                const distanceBetweenMeAndTarget = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
                 if (1 >= distanceBetweenMeAndTarget) {
                     setPlayerAble()
                 } else {
@@ -531,7 +534,7 @@ export class Player {
                 }
             } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
                 actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
-                if (getIfUserHasAnyCards(targetUser)) {
+                if (getIfPlayerHasAnyCards(targetPlayer)) {
                     setPlayerAble()
                 } else {
                     setPlayerDisable()
@@ -544,13 +547,13 @@ export class Player {
     }
 
     onPlayerSelectedChange(gameFEStatus: GameFEStatus) {
-        const isSelected = !!gameFEStatus.selectedTargetUsers.find((u) => u.userId == this.user.userId)
+        const isSelected = !!gameFEStatus.selectedTargetPlayers.find((u) => u.playerId == this.player.playerId)
         this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
     }
 
     onPlayerDieChange(gameStatus: GameStatus) {
-        const user = gameStatus.users[this.user.userId]
-        if (user.isDead) {
+        const player = gameStatus.players[this.player.playerId]
+        if (player.isDead) {
             this.drawIsDead();
             this._isDead = true;
         }

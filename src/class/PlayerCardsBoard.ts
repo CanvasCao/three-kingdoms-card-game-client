@@ -1,8 +1,8 @@
-import {Card, GameStatus, ScrollResStage, User} from "../types/gameStatus";
+import {Card, GameStatus, ScrollResStage, Player} from "../types/gameStatus";
 import {GamingScene} from "../types/phaser";
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
-import {getMyUserId, uuidv4, verticalRotationSting} from "../utils/gameStatusUtils";
+import {getMyPlayerId, uuidv4, verticalRotationSting} from "../utils/gameStatusUtils";
 import {SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {sharedDrawCard} from "../utils/drawCardUtils";
 import {sample, shuffle} from "lodash";
@@ -202,8 +202,8 @@ export class PlayerCardsBoard {
         })
     }
 
-    drawTargetUserCards(targetUser: User, scrollResStage: ScrollResStage) {
-        const cards = shuffle(targetUser.cards).slice(0, 8);
+    drawTargetPlayerCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
+        const cards = shuffle(targetPlayer.cards).slice(0, 8);
         cards.forEach((card, index) => {
             const cardImg = this.gamingScene.add.image(
                 this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
@@ -214,14 +214,14 @@ export class PlayerCardsBoard {
             cardImg.displayWidth = sizeConfig.controlCard.width;
             cardImg.setDepth(boardDepth)
             cardImg.setInteractive();
-            cardImg.on('pointerdown', this.getCardClickHandler(targetUser, card, scrollResStage))
+            cardImg.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
             this.destoryObjects.push(cardImg);
         })
     }
 
-    drawTargetEquipmentCards(targetUser: User, scrollResStage: ScrollResStage) {
+    drawTargetEquipmentCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
         ['weaponCard', 'shieldCard', 'plusHorseCard', 'minusHorseCard'].forEach((key, index) => {
-            const card = targetUser[key as keyof User] as Card;
+            const card = targetPlayer[key as keyof Player] as Card;
             if (!card) {
                 return
             }
@@ -231,7 +231,7 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetUser, card, scrollResStage))
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -240,15 +240,15 @@ export class PlayerCardsBoard {
 
     }
 
-    drawTargetScrollCards(targetUser: User, scrollResStage: ScrollResStage) {
-        targetUser.pandingSigns.forEach((sign, index) => {
+    drawTargetScrollCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
+        targetPlayer.pandingSigns.forEach((sign, index) => {
             const card = sign.card
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetUser, card, scrollResStage))
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -256,11 +256,11 @@ export class PlayerCardsBoard {
         })
     }
 
-    getCardClickHandler(targetUser: User, card: Card, scrollResStage: ScrollResStage) {
+    getCardClickHandler(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage) {
         return () => {
             this.gamingScene.socket.emit(
                 emitMap.CARD_BOARD_ACTION,
-                this.getEmitCardBoardActionData(targetUser, card, scrollResStage)
+                this.getEmitCardBoardActionData(targetPlayer, card, scrollResStage)
             )
         }
     }
@@ -284,23 +284,23 @@ export class PlayerCardsBoard {
 
     updateTargetCards(gameStatus: GameStatus) {
         const scrollResStage = gameStatus.scrollResStages?.[0];
-        const targetUser = gameStatus.users[scrollResStage.targetId]
+        const targetPlayer = gameStatus.players[scrollResStage.targetId]
         this.titleText!.setAlpha(1)
-        this.titleText!.setText(`${scrollResStage?.actualCard.CN} 选择一张 ${gameStatus.users[targetUser.userId].name} 的卡牌`)
+        this.titleText!.setText(`${scrollResStage?.actualCard.CN} 选择一张 ${gameStatus.players[targetPlayer.playerId].name} 的卡牌`)
 
-        this.drawTargetUserCards(targetUser, scrollResStage);
-        this.drawTargetEquipmentCards(targetUser, scrollResStage);
-        this.drawTargetScrollCards(targetUser, scrollResStage);
+        this.drawTargetPlayerCards(targetPlayer, scrollResStage);
+        this.drawTargetEquipmentCards(targetPlayer, scrollResStage);
+        this.drawTargetScrollCards(targetPlayer, scrollResStage);
     }
 
     destoryTargetCards() {
         this.destoryObjects.forEach((o) => o.destroy());
     }
 
-    getEmitCardBoardActionData(targetUser: User, card: Card, scrollResStage: ScrollResStage): EmitCardBoardData {
+    getEmitCardBoardActionData(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage): EmitCardBoardData {
         return {
-            originId: getMyUserId(),
-            targetId: targetUser.userId,
+            originId: getMyPlayerId(),
+            targetId: targetPlayer.playerId,
             card: card,
             type: this.getEmitType(scrollResStage)!,
         }
@@ -326,7 +326,7 @@ export class PlayerCardsBoard {
             return;
         }
 
-        const showBoard = curScrollResStage.originId == getMyUserId() &&
+        const showBoard = curScrollResStage.originId == getMyPlayerId() &&
             curScrollResStage.isEffect &&
             (curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
                 curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN)

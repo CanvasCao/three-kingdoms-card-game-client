@@ -1,12 +1,12 @@
 import sizeConfig from "../config/sizeConfig.json";
-import {getMyUserId, uuidv4} from "../utils/gameStatusUtils";
+import {getMyPlayerId, uuidv4} from "../utils/gameStatusUtils";
 import {GamingScene} from "../types/phaser";
-import {Card, GameStatus, User} from "../types/gameStatus";
+import {Card, GameStatus, Player} from "../types/gameStatus";
 
 export class ControlPlayer {
     obId: string;
     gamingScene: GamingScene;
-    player: User;
+    player: Player;
     maxBlood: number;
     _currentBlood: number;
     name: string;
@@ -17,7 +17,7 @@ export class ControlPlayer {
     bloodsBgGraphics?: Phaser.GameObjects.Graphics;
     bloodImages: Phaser.GameObjects.Image[];
 
-    constructor(gamingScene: GamingScene, player: User) {
+    constructor(gamingScene: GamingScene, player: Player) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
@@ -25,8 +25,8 @@ export class ControlPlayer {
         this.maxBlood = player.maxBlood;
         this._currentBlood = player.maxBlood;
         this.name = player.name;
-        this.positionX = (sizeConfig.background.width - sizeConfig.controlPlayer.width / 2)
-        this.positionY = (sizeConfig.background.height - sizeConfig.controlPlayer.height / 2)
+        this.positionX = (sizeConfig.background.width - sizeConfig.player.width / 2)
+        this.positionY = (sizeConfig.background.height - sizeConfig.player.height / 2)
 
         this.bloodImages = [];
 
@@ -41,18 +41,18 @@ export class ControlPlayer {
             this.positionX,
             this.positionY,
             this.player.cardId);
-        this.playerImage.displayHeight = sizeConfig.controlPlayer.height;
-        this.playerImage.displayWidth = sizeConfig.controlPlayer.width;
+        this.playerImage.displayHeight = sizeConfig.player.height;
+        this.playerImage.displayWidth = sizeConfig.player.width;
     }
 
     drawBloodsBg() {
-        const graphicsW = sizeConfig.controlPlayer.width * 0.16
-        const graphicsH = sizeConfig.controlPlayer.height * 0.52
+        const graphicsW = sizeConfig.player.width * 0.16
+        const graphicsH = sizeConfig.player.height * 0.52
         this.bloodsBgGraphics = this.gamingScene.add.graphics();
         this.bloodsBgGraphics.fillStyle(0x000, 1);
         this.bloodsBgGraphics.fillRoundedRect(
-            this.positionX + sizeConfig.controlPlayer.width / 2 - graphicsW,
-            this.positionY + sizeConfig.controlPlayer.height / 2 - graphicsH,
+            this.positionX + sizeConfig.player.width / 2 - graphicsW,
+            this.positionY + sizeConfig.player.height / 2 - graphicsH,
             graphicsW,
             graphicsH, {
                 tl: 4,
@@ -63,12 +63,12 @@ export class ControlPlayer {
     }
 
     drawBloods() {
-        const bloodHeight = sizeConfig.controlPlayer.height * 0.15;
+        const bloodHeight = sizeConfig.player.height * 0.15;
         const bloodWidth = bloodHeight * 1.5333;
         for (let i = 0; i < this.player.maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
-                this.positionX + sizeConfig.controlPlayer.width / 2 * 0.86,
-                this.positionY + sizeConfig.controlPlayer.height / 2 * 0.86 - (bloodHeight * 0.81 * i),
+                this.positionX + sizeConfig.player.width / 2 * 0.86,
+                this.positionY + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.81 * i),
                 "greenGouyu");
             bloodImage.displayHeight = bloodHeight;
             bloodImage.displayWidth = bloodWidth;
@@ -93,11 +93,11 @@ export class ControlPlayer {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const user = gameStatus.users[this.player.userId]
+        const player = gameStatus.players[this.player.playerId]
 
-        if (this._currentBlood != user.currentBlood) {
-            this.setBloods(user.currentBlood)
-            this._currentBlood = user.currentBlood
+        if (this._currentBlood != player.currentBlood) {
+            this.setBloods(player.currentBlood)
+            this._currentBlood = player.currentBlood
         }
     }
 }

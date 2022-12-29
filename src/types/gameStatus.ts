@@ -1,5 +1,5 @@
 export type GameStatus = {
-    users: GameStatusUsers,
+    players: GameStatusPlayers,
     stage: Stage,
     action: NoTargetAction | OneTargetAction | MultiTargetsAction,
     shanResStages: ShanStage[],
@@ -11,13 +11,13 @@ export type GameStatus = {
 };
 
 
-export type GameStatusUsers = { [key: string]: User }
-export type Users = User[]
-export type User = {
+export type GameStatusPlayers = { [key: string]: Player }
+export type Players = Player[]
+export type Player = {
     maxBlood: number,
     currentBlood: number,
     cardId: string,
-    userId: string,
+    playerId: string,
     name: string,
     location: number,
 
@@ -45,7 +45,8 @@ export type User = {
     isDead: boolean,
 
     // FE
-    position: { x: number, y: number }
+    linePosition: { x: number, y: number },
+    playerPosition: { x: number, y: number },
 }
 
 export type Card = {
@@ -83,7 +84,7 @@ export type PandingSign = {
 }
 
 export type Stage = {
-    userId: string,
+    playerId: string,
     stageName: string,
     stageNameCN: string,
 }

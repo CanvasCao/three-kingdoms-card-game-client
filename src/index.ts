@@ -10,8 +10,8 @@ import {ControlPlayer} from "./class/ControlPlayer";
 import {ControlButtons} from "./class/ControlButtons";
 import {GameStatusObserved} from "./class/GameStatusObserved";
 import {GameFEStatusObserved} from "./class/GameFEStatusObserved";
-import {getMyUserId} from "./utils/gameStatusUtils";
-import {Player} from "./class/Player";
+import {getMyPlayerId} from "./utils/gameStatusUtils";
+import {BoardPlayer} from "./class/BoardPlayer";
 import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
 import "./jsoneditor/jsoneditor.min.css";
@@ -21,7 +21,7 @@ import {Card, GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
 import {EmitPlayBehaviorPublicCardData, EmitPlayNonBehaviorPublicCardData} from './types/emit';
 import {PlayerCardsBoard} from './class/PlayerCardsBoard';
-import {getPlayersWithPosition} from './utils/locationUtils';
+import {getPlayersWithPosition} from './utils/playerPositionUtils';
 
 // create the editor
 const container = document.getElementById('jsoneditor')
@@ -38,7 +38,7 @@ class Gaming extends Phaser.Scene {
     inited: boolean;
     controlCards: Card[];
     controlPlayer: ControlPlayer | undefined;
-    players: Player[];
+    players: BoardPlayer[];
     gameStatusObserved: GameStatusObserved;
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
@@ -86,7 +86,7 @@ class Gaming extends Phaser.Scene {
         // 选将完成开始游戏
         socket.emit(
             emitMap.INIT,
-            {userId: getMyUserId()}
+            {playerId: getMyPlayerId()}
         );
 
         // 监听只可能有一次
@@ -99,10 +99,10 @@ class Gaming extends Phaser.Scene {
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
             this.publicControlCardsManager = new PublicControlCardsManager(this);
-            this.controlPlayer = new ControlPlayer(this, data.users[getMyUserId()]);
+            this.controlPlayer = new ControlPlayer(this, data.players[getMyPlayerId()]);
 
-            const players = getPlayersWithPosition(data.users);
-            this.players = players.map((user) => new Player(this, user));
+            const players = getPlayersWithPosition(data.players);
+            this.players = players.map((player) => new BoardPlayer(this, player));
 
             this.gameStatusObserved.setGameStatus(data);
 

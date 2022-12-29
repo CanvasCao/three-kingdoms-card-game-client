@@ -1,10 +1,10 @@
-import {Card, Users} from "./gameStatus";
+import {Card, Players} from "./gameStatus";
 
 export type GameFEStatus = {
     selectedCards: Card[],
     actualCard: Card|null,
 
-    selectedTargetUsers: Users,
+    selectedTargetPlayers: Players,
     selectedSkill: any[],
     publicCards: Card[],
 };

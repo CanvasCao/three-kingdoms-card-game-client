@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import {Socket} from "../socket/socket.io.esm.min";
 import {Card} from "./gameStatus";
 import {ControlPlayer} from "../class/ControlPlayer";
-import {Player} from "../class/Player";
+import {BoardPlayer} from "../class/BoardPlayer";
 import {GameStatusObserved} from "../class/GameStatusObserved";
 import {GameFEStatusObserved} from "../class/GameFEStatusObserved";
 import {ControlButtons} from "../class/ControlButtons";
@@ -26,7 +26,7 @@ export type GamingScene = Phaser.Scene &
         inited: boolean;
         controlCards: Card[];
         controlPlayer: ControlPlayer | undefined;
-        players: Player[];
+        players: BoardPlayer[];
         gameStatusObserved: GameStatusObserved;
         gameFEStatusObserved: GameFEStatusObserved;
         controlButtons: ControlButtons | undefined;
