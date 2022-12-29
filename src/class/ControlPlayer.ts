@@ -14,7 +14,7 @@ export class ControlPlayer {
     positionY: number;
 
     playerImage?: Phaser.GameObjects.Image;
-    graphics?: Phaser.GameObjects.Graphics;
+    bloodsBgGraphics?: Phaser.GameObjects.Graphics;
     bloodImages: Phaser.GameObjects.Image[];
 
     constructor(gamingScene: GamingScene, player: User) {
@@ -31,7 +31,7 @@ export class ControlPlayer {
         this.bloodImages = [];
 
         this.drawPlayer();
-        this.drawBloodBg();
+        this.drawBloodsBg();
         this.drawBloods();
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
@@ -45,13 +45,16 @@ export class ControlPlayer {
         this.playerImage.displayWidth = sizeConfig.controlPlayer.width;
     }
 
-    drawBloodBg() {
-        this.graphics = this.gamingScene.add.graphics();
-        this.graphics.fillStyle(0x000, 1);
-        this.graphics.fillRoundedRect(sizeConfig.background.width - 18,
-            sizeConfig.background.height - 100,
-            18,
-            100, {
+    drawBloodsBg() {
+        const graphicsW = sizeConfig.controlPlayer.width * 0.16
+        const graphicsH = sizeConfig.controlPlayer.height * 0.52
+        this.bloodsBgGraphics = this.gamingScene.add.graphics();
+        this.bloodsBgGraphics.fillStyle(0x000, 1);
+        this.bloodsBgGraphics.fillRoundedRect(
+            this.positionX + sizeConfig.controlPlayer.width / 2 - graphicsW,
+            this.positionY + sizeConfig.controlPlayer.height / 2 - graphicsH,
+            graphicsW,
+            graphicsH, {
                 tl: 4,
                 tr: 0,
                 bl: 0,

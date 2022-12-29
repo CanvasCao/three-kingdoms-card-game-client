@@ -22,10 +22,6 @@ export class PublicLine {
 
         this.drawLine();
 
-
-        setTimeout(() => {
-            this.destoryAll();
-        }, 900)
     }
 
     drawLine() {
@@ -36,14 +32,30 @@ export class PublicLine {
 
         this.graphics = this.gamingScene.add.graphics();
         let line;
-        let percent: number = 0;
+        let startPointPercent: number = 0;
+        let endPointPercent: number = 0;
+        let loopIndex = 0;
         const timer = setInterval(() => {
-            line = new Phaser.Geom.Line(startX, startY, startX + (endX - startX) * percent, startY + (endY - startY) * percent);
-            percent += 0.1;
-            this.graphics!.lineStyle(2, 0xffff00);
+            line = new Phaser.Geom.Line(
+                startX + (endX - startX) * startPointPercent,
+                startY + (endY - startY) * startPointPercent,
+                startX + (endX - startX) * endPointPercent,
+                startY + (endY - startY) * endPointPercent);
+
+            if (endPointPercent < 1) {
+                endPointPercent += 0.1;
+            } else if (loopIndex < 20) {
+                loopIndex++
+            } else {
+                startPointPercent += 0.1;
+            }
+
+            this.graphics!.clear();
+            this.graphics!.lineStyle(2, 0xF8D781);
             this.graphics!.strokeLineShape(line);
 
-            if (percent >= 1) {
+            if (endPointPercent >= 1 && startPointPercent >= 1 && loopIndex >= 20) {
+                this.destoryAll();
                 clearInterval(timer)
             }
         }, 10)

@@ -91,7 +91,7 @@ export const getPlayersWithPosition = (gameStatusUsers: GameStatusUsers): User[]
         usersWithPosition.push(user)
     }
 
-    myUser.position = {x: playersAreaW / 2, y: playersAreaH}
+    myUser.position = {x: sizeConfig.background.width / 2, y: playersAreaH + sizeConfig.controlPlayer.height/2}
     usersWithPosition.push(myUser)
     return usersWithPosition
 }
