@@ -20,7 +20,7 @@ export class PublicControlCardsManager {
 
         const behaviour = data.behaviour as any
         const originId = data.behaviour.originId;
-        const originCanvasPlayer = this.gamingScene.players.find((p) => p.player.playerId == originId)!;
+        const originCanvasPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == originId)!;
         let targetIds
         if (behaviour?.targetIds) {
             targetIds = behaviour.targetIds
@@ -31,7 +31,7 @@ export class PublicControlCardsManager {
         }
 
         targetIds.forEach((targetId: string) => {
-            const targetCanvasPlayer = this.gamingScene.players.find((p) => p.player.playerId == targetId)!;
+            const targetCanvasPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == targetId)!;
             new PublicLine(this.gamingScene, {
                 startPosition: originCanvasPlayer.linePosition,
                 endPosition: targetCanvasPlayer.linePosition,

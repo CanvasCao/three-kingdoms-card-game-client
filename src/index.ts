@@ -6,7 +6,6 @@ import elementsUrl from './config/elementsUrl.json'
 import sizeConfig from './config/sizeConfig.json'
 import {socket} from "./socket";
 import {ControlCardsManager} from "./class/ControlCardsManager";
-import {ControlPlayer} from "./class/ControlPlayer";
 import {ControlButtons} from "./class/ControlButtons";
 import {GameStatusObserved} from "./class/GameStatusObserved";
 import {GameFEStatusObserved} from "./class/GameFEStatusObserved";
@@ -37,8 +36,7 @@ class Gaming extends Phaser.Scene {
     socket: Socket;
     inited: boolean;
     controlCards: Card[];
-    controlPlayer: ControlPlayer | undefined;
-    players: BoardPlayer[];
+    boardPlayers: BoardPlayer[];
     gameStatusObserved: GameStatusObserved;
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
@@ -54,7 +52,7 @@ class Gaming extends Phaser.Scene {
         this.inited = false;
 
         this.controlCards = [];
-        this.players = [];
+        this.boardPlayers = [];
 
         this.gameStatusObserved = new GameStatusObserved();
         this.gameFEStatusObserved = new GameFEStatusObserved();
@@ -99,10 +97,9 @@ class Gaming extends Phaser.Scene {
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
             this.publicControlCardsManager = new PublicControlCardsManager(this);
-            this.controlPlayer = new ControlPlayer(this, data.players[getMyPlayerId()]);
 
             const players = getPlayersWithPosition(data.players);
-            this.players = players.map((player) => new BoardPlayer(this, player));
+            this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
 
             this.gameStatusObserved.setGameStatus(data);
 

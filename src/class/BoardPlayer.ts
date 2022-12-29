@@ -22,6 +22,8 @@ export class BoardPlayer {
     player: Player;
     linePosition: { x: number, y: number };
     playerPosition: { x: number, y: number };
+    isMe: boolean;
+
     _disable: boolean;
     _pandingCardsLength: number;
     positionX: number;
@@ -59,14 +61,16 @@ export class BoardPlayer {
         this.player = player;
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
+        this.isMe = this.player.playerId === getMyPlayerId();
+
 
         // init inner state
         this._disable = false;
         this._pandingCardsLength = 0
 
         // position
-        this.positionX = this?.playerPosition?.x || 0;
-        this.positionY = this?.playerPosition?.y || 0;
+        this.positionX = this?.playerPosition?.x;
+        this.positionY = this?.playerPosition?.y;
 
         // phaser objects
         this.bloodImages = []; //从下往上
@@ -82,9 +86,9 @@ export class BoardPlayer {
         this._isTieSuo = this.player.isTieSuo;
         this._actualCardId = '';
 
-        // myplayer不draw 但是player 需要set position
-        if (this.player.playerId == getMyPlayerId()) {
-            return
+        if (!this.isMe) {
+            this.drawMyTurnStroke();
+            this.drawStageText();
         }
 
         this.drawMyTurnStroke();
@@ -94,7 +98,9 @@ export class BoardPlayer {
         this.drawBloods();
         this.setBloods(this.player.currentBlood);
         this.drawStageText();
-        this.drawEquipments();
+        if (!this.isMe) {
+            this.drawEquipments();
+        }
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
@@ -183,8 +189,9 @@ export class BoardPlayer {
     }
 
     drawBloods() {
-        const bloodHeight = sizeConfig.player.height * 0.15;
+        const bloodHeight = this.isMe ? sizeConfig.player.height * 0.15 : sizeConfig.player.height * 0.15 * 0.8;
         const bloodWidth = bloodHeight * 1.5333;
+
         for (let i = 0; i < this.player.maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
                 this.positionX + sizeConfig.player.width / 2 * 0.86,
@@ -344,8 +351,8 @@ export class BoardPlayer {
     }
 
     drawBloodsBg() {
-        const graphicsW = sizeConfig.player.width * 0.16
-        const graphicsH = sizeConfig.player.height * 0.52
+        const graphicsW = this.isMe ? sizeConfig.player.width * 0.16 : sizeConfig.player.width * 0.16 * 0.8
+        const graphicsH = this.isMe ? sizeConfig.player.height * 0.52 : sizeConfig.player.height * 0.52 * 0.8
         this.bloodsBgGraphics = this.gamingScene.add.graphics();
         this.bloodsBgGraphics.fillStyle(0x000, 1);
         this.bloodsBgGraphics.fillRoundedRect(
@@ -364,9 +371,12 @@ export class BoardPlayer {
         this.playerImage = this.gamingScene.add.image(
             this.positionX,
             this.positionY,
-            this.player.cardId).setInteractive({cursor: 'pointer'});
-        this.playerImage.displayHeight = sizeConfig.player.height;
-        this.playerImage.displayWidth = sizeConfig.player.width;
+            this.player.cardId).setInteractive({cursor: 'pointer'}).setScale(140 / 536);
+        this.playerImage.setOrigin(0.5, 0.45) // 竖长图片被crop了下面 所以setOriginY 稍微让图片往下挪一点
+
+        var cropRect = new Phaser.Geom.Rectangle(0, 0, 536, 536 * (sizeConfig.player.height / sizeConfig.player.width));
+
+        this.playerImage.setCrop(cropRect);
     }
 
     onEquipmentsChange(gameStatus: GameStatus) {
@@ -461,11 +471,6 @@ export class BoardPlayer {
     }
 
     onPlayerDisableChange(gameFEStatus: GameFEStatus) {
-        // TODO 借刀
-        if (this.player.playerId == getMyPlayerId()) {
-            return;
-        }
-
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
 
 
@@ -563,11 +568,13 @@ export class BoardPlayer {
         if (this._isDead)
             return
 
-        this.onPlayerTurnAndStageChange(gameStatus);
+        if (!this.isMe) {
+            this.onPlayerTurnAndStageChange(gameStatus);
+            this.onEquipmentsChange(gameStatus);
+        }
         this.onCardNumberChange(gameStatus);
         this.onTieSuoChange(gameStatus);
         this.onPlayerBloodChange(gameStatus);
-        this.onEquipmentsChange(gameStatus);
         this.onPandingCardsChange(gameStatus);
         this.onPlayerDieChange(gameStatus)
     }
