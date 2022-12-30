@@ -14,13 +14,13 @@ import {BoardPlayer} from "./class/BoardPlayer";
 import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
 import "./jsoneditor/jsoneditor.min.css";
-import {PublicControlCardsManager} from "./class/PublicCardsManager";
+import {LostCardsManager} from "./class/LostCardsManager";
 import {Socket} from "./socket/socket.io.esm.min";
 import {Card, GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
-import {EmitPlayBehaviorPublicCardData, EmitPlayNonBehaviorPublicCardData} from './types/emit';
 import {PlayerCardsBoard} from './class/PlayerCardsBoard';
 import {getPlayersWithPosition} from './utils/playerPositionUtils';
+import {EmitNotifyAddPublicCardData, EmitNotifyOwnerChangeCardData} from "./types/emit";
 
 // create the editor
 const container = document.getElementById('jsoneditor')
@@ -42,7 +42,7 @@ class Gaming extends Phaser.Scene {
     playerCardsBoard: PlayerCardsBoard | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
-    publicControlCardsManager: PublicControlCardsManager | undefined;
+    lostControlCardsManager: LostCardsManager | undefined;
 
     constructor() {
         // @ts-ignore
@@ -96,7 +96,7 @@ class Gaming extends Phaser.Scene {
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
-            this.publicControlCardsManager = new PublicControlCardsManager(this);
+            this.lostControlCardsManager = new LostCardsManager(this);
 
             const players = getPlayersWithPosition(data.players);
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
@@ -115,13 +115,12 @@ class Gaming extends Phaser.Scene {
             this.gameStatusObserved.setGameStatus(data);
         });
 
-        socket.on(emitMap.PLAY_BEHAVIOR_PUBLIC_CARD, (data: EmitPlayBehaviorPublicCardData) => {
-            this.publicControlCardsManager!.addPublicCard(data)
-            this.publicControlCardsManager!.addLines(data)
+        socket.on(emitMap.NOTIFY_ADD_PUBLIC_CARD, (data: EmitNotifyAddPublicCardData) => {
+            this.lostControlCardsManager!.addPublicCard(data)
         });
 
-        socket.on(emitMap.PLAY_NON_BEHAVIOR_PUBLIC_CARD, (data: EmitPlayNonBehaviorPublicCardData) => {
-            this.publicControlCardsManager!.addPublicCard(data)
+        socket.on(emitMap.NOTIFY_ADD_OWNER_CHANGE_CARD, (data: EmitNotifyOwnerChangeCardData) => {
+            this.lostControlCardsManager!.addOwnerChangeCard(data)
         });
     }
 

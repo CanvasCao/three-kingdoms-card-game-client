@@ -101,7 +101,7 @@ export class ControlCard {
 
     bindEvent() {
         this.cardImgObj!.on('pointerdown', () => {
-                if (this._cardDisable) { // 弃牌阶段做数量判断 不判断_cardDisable
+                if (this._cardDisable) { // 弃牌阶段做数量判断 不set _cardDisable
                     return
                 }
 
@@ -119,10 +119,12 @@ export class ControlCard {
                     // 选中再点击就是反选
                     if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
                         curFEStatus.selectedCards = [];
+                        curFEStatus.selectedIndexes = [];
                         curFEStatus.actualCard = null;
                         curFEStatus.selectedTargetPlayers = [];
                     } else { // 选中
                         curFEStatus.selectedCards = [this.card];
+                        curFEStatus.selectedIndexes = [this._index];
                         curFEStatus.actualCard = this.card;
                         curFEStatus.selectedTargetPlayers = [];
                     }
@@ -135,6 +137,7 @@ export class ControlCard {
                         const haveSelectedEnoughThrowCard = curFEStatus.selectedCards.length >= needThrowCardNumber;
                         if (!haveSelectedEnoughThrowCard) {
                             curFEStatus.selectedCards.push(this.card);
+                            curFEStatus.selectedIndexes.push(this._index);
                         }
                     }
                 }
@@ -201,32 +204,6 @@ export class ControlCard {
                     this.isMoving = false;
                 }
             });
-        })
-
-    }
-
-    fadeOut() {
-        this.isMoving = true;
-        [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj].forEach((obj, index) => {
-            // const offsetX = (index == 2) ? cardHuaseNumberObjOffsetX : 0;
-            // const offsetY = (index == 2) ? cardHuaseNumberObjOffsetY : 0;
-            // this.gamingScene.tweens.add({
-            //     targets: obj,
-            //     x: {
-            //         value: sizeConfig.background.width / 2 + offsetX,
-            //         duration: 100,
-            //     },
-            //     y: {
-            //         value: sizeConfig.background.height / 2 + offsetY,
-            //         duration: 100,
-            //     },
-            //     onComplete: () => {
-            //         this.isMoving = false;
-            //         setTimeout(() => {
-            //             this.destoryAll();
-            //         }, 2000)
-            //     }
-            // });
         })
 
     }

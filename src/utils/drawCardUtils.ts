@@ -65,7 +65,7 @@ const sharedDrawCard = (
     // meaasge
     let cardMessageObj
     if (message) {
-        cardMessageObj = gamingScene.add.text(x, y + 20, message,
+        cardMessageObj = gamingScene.add.text(x, y, message,
             {
                 // @ts-ignore
                 fill: "#000",

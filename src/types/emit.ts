@@ -1,11 +1,7 @@
-import {Card, MultiTargetsAction, NoTargetAction, OneTargetAction} from "./gameStatus";
+import {Card, MultiTargetsAction, OneTargetAction} from "./gameStatus";
 
-export type EmitPlayBehaviorPublicCardData = {
-    behaviour: EmitActionData | EmitResponseData;
-    message: string;
-}
-
-export type EmitActionData = NoTargetAction | OneTargetAction | MultiTargetsAction
+// 前端=>后端
+export type EmitActionData = OneTargetAction | MultiTargetsAction
 
 export type EmitResponseData = {
     cards: Card[],
@@ -13,11 +9,8 @@ export type EmitResponseData = {
     originId: string,
     targetId: string,
     wuxieTargetCardId?: string,
-}
 
-export type EmitPlayNonBehaviorPublicCardData = {
-    cards: Card[];
-    message: string;
+    selectedIndexes: number[],
 }
 
 export type EmitCardBoardData = {
@@ -25,8 +18,29 @@ export type EmitCardBoardData = {
     targetId: string,
     card: Card,
     type: "REMOVE" | "MOVE",
+
+    selectedIndex: number,
 }
 
 export type EmitThrowData = {
     cards: Card[]
+
+    selectedIndexes: number[],
+}
+
+
+// 后端=>前端
+// 前端根据originId targetId决定是否画箭头
+export type EmitNotifyAddPublicCardData = {
+    behaviour: EmitActionData | EmitResponseData;
+    originIndexes: number[],
+    message: string;
+}
+
+export type EmitNotifyOwnerChangeCardData = {
+    fromId: string,
+    toId: string,
+    cards: Card[],
+    originIndexes: number[],
+    message: never;
 }

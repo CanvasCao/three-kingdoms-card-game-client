@@ -1,7 +1,7 @@
 export type GameStatus = {
     players: GameStatusPlayers,
     stage: Stage,
-    action: NoTargetAction | OneTargetAction | MultiTargetsAction,
+    action: OneTargetAction | MultiTargetsAction,
     shanResStages: ShanStage[],
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
@@ -89,24 +89,24 @@ export type Stage = {
     stageNameCN: string,
 }
 
-export type NoTargetAction = {
-    cards: Card[],
-    actualCard: Card,
-    originId: string,
-}
-
 export type OneTargetAction = {
     cards: Card[],
     actualCard: Card,
     originId: string,
-    targetId: string,
+    targetId?: string,
+
+    selectedIndexes: number[],
+
 }
 
 export type MultiTargetsAction = {
     cards: Card[],
     actualCard: Card,
     originId: string,
+    targetId?: string,
     targetIds: string[],
+
+    selectedIndexes: number[],
 }
 
 export type ShanStage = {

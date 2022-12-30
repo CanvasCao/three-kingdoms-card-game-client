@@ -183,7 +183,7 @@ export class ControlButtons {
 
                 this.gamingScene.socket.emit(
                     emitMap.THROW,
-                    {cards: gameFEStatus.selectedCards} as EmitThrowData
+                    this.generateThrowData()
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             }
@@ -204,6 +204,7 @@ export class ControlButtons {
         if (actualCard.couldHaveMultiTarget || actualCard.needAActionToB) {
             return {
                 cards: gameFEStatus.selectedCards,
+                selectedIndexes: gameFEStatus.selectedIndexes,
                 actualCard,
                 originId: getMyPlayerId(),
                 targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
@@ -211,6 +212,7 @@ export class ControlButtons {
         } else if (actualCard.noNeedSetTargetDueToImDefaultTarget) {
             return {
                 cards: gameFEStatus.selectedCards,
+                selectedIndexes: gameFEStatus.selectedIndexes,
                 actualCard,
                 originId: getMyPlayerId(),
                 targetId: getMyPlayerId(),
@@ -218,6 +220,7 @@ export class ControlButtons {
         } else if (actualCard.canOnlyHaveOneTarget) {
             return {
                 cards: gameFEStatus.selectedCards,
+                selectedIndexes: gameFEStatus.selectedIndexes,
                 actualCard,
                 originId: getMyPlayerId(),
                 targetId: gameFEStatus.selectedTargetPlayers[0].playerId,
@@ -225,6 +228,7 @@ export class ControlButtons {
         } else if (actualCard.noNeedSetTargetDueToTargetAll) {
             return {
                 cards: gameFEStatus.selectedCards,
+                selectedIndexes: gameFEStatus.selectedIndexes,
                 actualCard,
                 originId: getMyPlayerId(),
             }
@@ -239,11 +243,17 @@ export class ControlButtons {
 
         return {
             cards: gameFEStatus.selectedCards,
+            selectedIndexes: gameFEStatus.selectedIndexes,
             actualCard: gameFEStatus.selectedCards[0],
             originId: getMyPlayerId(),
             targetId: info.targetId,
             wuxieTargetCardId: info.wuxieTargetCardId
         }
+    }
+
+    generateThrowData(): EmitThrowData {
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+        return {cards: gameFEStatus.selectedCards, selectedIndexes: gameFEStatus.selectedIndexes}
     }
 
     // show 包含 able

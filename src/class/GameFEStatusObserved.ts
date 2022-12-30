@@ -6,6 +6,7 @@ import {FEObserver} from "../types/observer";
 export class GameFEStatusObserved {
     originCardState: {
         selectedCards: GameFEStatus['selectedCards'],
+        selectedIndexes: GameFEStatus['selectedIndexes'],
         actualCard: GameFEStatus['actualCard'],
     }
     originTargetState: {
@@ -28,6 +29,7 @@ export class GameFEStatusObserved {
     constructor() {
         this.originCardState = {
             selectedCards: [],
+            selectedIndexes: [],
             actualCard: null,
         }
         this.originTargetState = {
@@ -37,7 +39,7 @@ export class GameFEStatusObserved {
             selectedSkill: []
         }
         this.publicCardsState = {
-            publicCards: [] // 存储后端card对象 前端PublicCard不维护数组
+            publicCards: [] // 所有人打出的牌+(刘备仁德/张辽突袭)=失去的牌
         }
 
         this.gameFEStatus = {

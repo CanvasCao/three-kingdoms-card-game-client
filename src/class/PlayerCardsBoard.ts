@@ -298,10 +298,13 @@ export class PlayerCardsBoard {
     }
 
     getEmitCardBoardActionData(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage): EmitCardBoardData {
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+
         return {
             originId: getMyPlayerId(),
             targetId: targetPlayer.playerId,
             card: card,
+            selectedIndex: gameFEStatus.selectedIndexes[0],
             type: this.getEmitType(scrollResStage)!,
         }
     }
