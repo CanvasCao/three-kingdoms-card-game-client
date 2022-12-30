@@ -1,5 +1,7 @@
 import {Card} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {CardAreaType} from "../types/emit";
+import {getMyPlayerId} from "./gameStatusUtils";
 
 export const attachFEInfoToCard = (card: Card) => {
     if (!card) {
@@ -109,7 +111,16 @@ export const attachFEInfoToCard = (card: Card) => {
         card.targetMinMax = {min: 2, max: 2}
         card.needAActionToB = true;
     } else {
-        throw new Error(card.CN + "未在cardConfig设置")
+        throw new Error(card.CN + "未在attachFEInfoToCard设置")
     }
     return card
+}
+
+
+export const getIsCardFaceFrontByCardAreaType = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
+    if (getMyPlayerId() == fromPlayerId || getMyPlayerId() == toPlayerId) {
+        return true
+    }
+
+    return (cardAreaType !== 'hand')
 }

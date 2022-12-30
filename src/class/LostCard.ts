@@ -1,17 +1,11 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {getMyPlayerId, uuidv4} from "../utils/gameStatusUtils";
-import {sharedDrawFrontCard} from "../utils/drawCardUtils";
+import {sharedDrawBackCard, sharedDrawFrontCard} from "../utils/drawCardUtils";
 import {differenceBy} from "lodash";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {GamingScene} from "../types/phaser";
 import {Card} from "../types/gameStatus";
-import {
-    cardHuaseNumberObjOffsetX,
-    cardHuaseNumberObjOffsetY,
-    cardNameObjOffsetX,
-    cardNameObjOffsetY
-} from "../config/offsetConfig";
 import {BoardPlayer} from "./BoardPlayer";
 
 export class LostCard {
@@ -21,9 +15,6 @@ export class LostCard {
 
     message: string;
     publicCards: Card[];
-
-    fromBoardPlayer: BoardPlayer | undefined;
-    toBoardPlayer: BoardPlayer | undefined;
 
     toPublic: boolean;
 
@@ -37,16 +28,13 @@ export class LostCard {
 
     isMoving: boolean;
 
-    group: Phaser.GameObjects.Group;
-    cardNameObj: Phaser.GameObjects.Text | null;
-    cardImgObj: Phaser.GameObjects.Image | null;
-    cardHuaseNumberObj: Phaser.GameObjects.Text | null;
-    cardMessageObj: Phaser.GameObjects.Text | null;
+    cardObjgroup: Phaser.GameObjects.GameObject[];
 
     constructor(gamingScene: GamingScene,
                 card: Card,
-                originIndex: number | undefined,
+                isFaceFront: boolean,
                 message: string,
+                originIndex: number | undefined, // 来源 我打出的牌
                 publicCards: Card[],
                 fromBoardPlayer: BoardPlayer | undefined,
                 toBoardPlayer: BoardPlayer | undefined,
@@ -57,8 +45,6 @@ export class LostCard {
         this.card = card;
         this.message = message;
         this.publicCards = publicCards;
-        this.fromBoardPlayer = fromBoardPlayer;
-        this.toBoardPlayer = toBoardPlayer;
         this.toPublic = !toBoardPlayer;
 
         this.fadeInStartX = 0;
@@ -76,16 +62,16 @@ export class LostCard {
         }
 
         // fadeInStart
-        if (!this.fromBoardPlayer) { // 牌堆打出的牌
+        if (!fromBoardPlayer) { // 牌堆打出的牌
             this.fadeInStartX = this.fadeInEndX + 50;
             this.fadeInStartY = this.fadeInEndY
-        } else if (this.fromBoardPlayer.player.playerId == getMyPlayerId()) { // 我打出的牌
+        } else if (fromBoardPlayer.player.playerId == getMyPlayerId()) { // 我打出的牌
             // LostCard的fadeInStartX 就是controlCard的cardInitEndY
             this.fadeInStartX = originIndex! * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
             this.fadeInStartY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
         } else { // 别人打出的牌
-            this.fadeInStartX = this.fromBoardPlayer.playerPosition.x
-            this.fadeInStartY = this.fromBoardPlayer.playerPosition.y
+            this.fadeInStartX = fromBoardPlayer.playerPosition.x
+            this.fadeInStartY = fromBoardPlayer.playerPosition.y
         }
 
 
@@ -97,13 +83,9 @@ export class LostCard {
         this.isMoving = false;
 
         // phaser obj
-        this.group = this.gamingScene.add.group();
-        this.cardNameObj = null;
-        this.cardImgObj = null;
-        this.cardHuaseNumberObj = null;
-        this.cardMessageObj = null;
+        this.cardObjgroup = [];
 
-        this.drawCard();
+        this.drawCard(isFaceFront);
         this.fadeIn();
 
         this.gamingScene.gameFEStatusObserved.addPublicCardsObserver(this);
@@ -115,30 +97,41 @@ export class LostCard {
         }
     }
 
+    drawCard(isFaceFront: boolean) {
+        if (isFaceFront) {
+            const {
+                cardImgObj,
+                cardNameObj,
+                cardHuaseNumberObj,
+                cardMessageObj,
+            } = sharedDrawFrontCard(this.gamingScene,
+                this.card,
+                {x: this.fadeInStartX, y: this.fadeInStartY, message: this.message})
+            this.cardObjgroup.push(cardImgObj);
+            this.cardObjgroup.push(cardNameObj);
+            this.cardObjgroup.push(cardHuaseNumberObj);
+            this.cardObjgroup.push(cardMessageObj);
+        } else {
+            const {
+                cardImgObj,
+            } = sharedDrawBackCard(this.gamingScene,
+                this.card,
+                {x: this.fadeInStartX, y: this.fadeInStartY})
+            this.cardObjgroup.push(cardImgObj);
+        }
+    }
+
     fadeIn() {
         this.isMoving = true;
-        [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj, this.cardMessageObj].forEach((obj, index) => {
-            if (!obj) {
-                return
-            }
-
-            let offsetX = 0, offsetY = 0;
-            if (index == 1) {
-                offsetX = cardNameObjOffsetX
-                offsetY = cardNameObjOffsetY
-            } else if (index == 2) {
-                offsetX = cardHuaseNumberObjOffsetX
-                offsetY = cardHuaseNumberObjOffsetY
-            }
-
+        this.cardObjgroup.forEach((obj, index) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
-                    value: this.fadeInEndX + offsetX,
+                    value: this.fadeInEndX + (obj?.getData("offsetX") || 0),
                     duration: 500,
                 },
                 y: {
-                    value: this.fadeInEndY + offsetY,
+                    value: this.fadeInEndY + (obj?.getData("offsetY") || 0),
                     duration: 500,
                 },
                 alpha: {
@@ -156,28 +149,6 @@ export class LostCard {
         })
     }
 
-    drawCard() {
-        const {
-            cardImgObj,
-            cardNameObj,
-            cardHuaseNumberObj,
-            cardMessageObj,
-        } = sharedDrawFrontCard(this.gamingScene,
-            this.card,
-            {x: this.fadeInStartX, y: this.fadeInStartY, message: this.message})
-        this.cardImgObj = cardImgObj
-        this.cardNameObj = cardNameObj
-        this.cardHuaseNumberObj = cardHuaseNumberObj
-        this.cardMessageObj = cardMessageObj!
-        this.group.add(cardImgObj);
-        this.group.add(cardNameObj);
-        this.group.add(cardHuaseNumberObj);
-
-        if (cardMessageObj) {
-            this.group.add(cardMessageObj);
-        }
-    }
-
     adjustLocation(gameFEStatus: GameFEStatus) {
         // TODO isMoving有bug 第二张牌打出以后第一张牌isMoving依然是true 导致无法移动
         // if (this.isMoving) {
@@ -188,19 +159,11 @@ export class LostCard {
         const diffDis = this.getDiffDistance(publicCards);
 
         // this.isMoving = true;
-        [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj, this.cardMessageObj].forEach((obj, index) => {
-            let offsetX = 0, offsetY = 0;
-            if (index == 1) {
-                offsetX = cardNameObjOffsetX
-                offsetY = cardNameObjOffsetY
-            } else if (index == 2) {
-                offsetX = cardHuaseNumberObjOffsetX
-                offsetY = cardHuaseNumberObjOffsetY
-            }
+        this.cardObjgroup.forEach((obj, index) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
-                    value: sizeConfig.playersArea.width / 2 + diffDis + offsetX,
+                    value: sizeConfig.playersArea.width / 2 + diffDis + (obj?.getData("offsetX") || 0),
                     duration: 500,
                 },
             });
@@ -223,19 +186,9 @@ export class LostCard {
     }
 
     destoryAll() {
-        // TODO 好像是Phaser的bug 只能遍历到两个child
-        // this.group.getChildren().forEach((child,i) => {
-        //     console.log(child,i)
-        //     child.destroy()
-        // })
-
-        this.cardNameObj!.destroy();
-        this.cardImgObj!.destroy();
-        this.cardHuaseNumberObj!.destroy();
-
-        if (this.cardMessageObj) {
-            this.cardMessageObj!.destroy();
-        }
+        this.cardObjgroup.forEach((obj, index) => {
+            obj?.destroy();
+        })
         this.removePublicCardsfromGameFEStatus()
         this.gamingScene.gameFEStatusObserved.removePublicCardsObserver(this);
     }

@@ -17,7 +17,7 @@ const ableTint = colorConfig.card;
 const sharedDrawFrontCard = (
     gamingScene: GamingScene,
     card: Card,
-    {x, y, message, depth = 0, alpha = 1}: {
+    {x, y, message = '', depth = 0, alpha = 1}: {
         x: number,
         y: number,
         message?: string,
@@ -47,6 +47,8 @@ const sharedDrawFrontCard = (
     cardNameObj.setAlpha(alpha)
     cardNameObj.setFontSize(14)
     cardNameObj.setDepth(depth)
+    cardNameObj.setData("offsetX", cardNameObjOffsetX)
+    cardNameObj.setData("offsetY", cardNameObjOffsetY)
 
 
     // huase + number
@@ -62,24 +64,25 @@ const sharedDrawFrontCard = (
     cardHuaseNumberObj.setAlpha(alpha);
     cardHuaseNumberObj.setFontSize(12)
     cardHuaseNumberObj.setDepth(depth)
+    cardHuaseNumberObj.setData("offsetX", cardHuaseNumberObjOffsetX)
+    cardHuaseNumberObj.setData("offsetY", cardHuaseNumberObjOffsetY)
 
     // meaasge
     let cardMessageObj
-    if (message) {
-        cardMessageObj = gamingScene.add.text(x, y, message,
-            {
-                // @ts-ignore
-                fill: "#000",
-                align: "center",
-                wordWrap: {width: sizeConfig.controlCard.width * 1.1, useAdvancedWrap: true}
-            }
-        )
-        cardMessageObj.setPadding(0, 5, 0, 0);
-        cardMessageObj.setOrigin(0.5, 0.5);
-        cardMessageObj.setFontSize(12);
-        cardMessageObj.setAlpha(1)
-        cardMessageObj.setDepth(depth)
-    }
+    cardMessageObj = gamingScene.add.text(x, y, message,
+        {
+            // @ts-ignore
+            fill: "#000",
+            align: "center",
+            wordWrap: {width: sizeConfig.controlCard.width * 1.1, useAdvancedWrap: true}
+        }
+    )
+    cardMessageObj.setPadding(0, 5, 0, 0);
+    cardMessageObj.setOrigin(0.5, 0.5);
+    cardMessageObj.setFontSize(12);
+    cardMessageObj.setAlpha(1)
+    cardMessageObj.setDepth(depth)
+
 
     return {
         cardImgObj,

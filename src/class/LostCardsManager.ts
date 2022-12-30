@@ -5,7 +5,7 @@ import {
     EmitNotifyAddPublicCardData,
     EmitNotifyOwnerChangeCardData,
 } from "../types/emit";
-import {attachFEInfoToCard} from "../utils/cardUtils";
+import {attachFEInfoToCard, getIsCardFaceFrontByCardAreaType} from "../utils/cardUtils";
 import {PublicLine} from "./PublicLine";
 import {Card} from "../types/gameStatus";
 
@@ -50,20 +50,19 @@ export class LostCardsManager {
         data.cards.forEach((card, index) => {
             const originIndex = data.originIndexes ? data.originIndexes[index] : undefined;
             const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
-
             // toBoardPlayer undefined 就是toPublic Card
-            gameFEStatus.publicCards.push(card);
             new LostCard(this.gamingScene,
                 card,
-                originIndex,
+                true,
                 data.message,
+                originIndex,
                 gameFEStatus.publicCards,
                 fromBoardPlayer,
-                undefined
+                undefined,
             )
         })
 
-        // setGameEFStatus 是为了adjust location
+        // setGameEFStatus 是为了LostCard adjustLocation
         this.gamingScene.gameFEStatusObserved.setPublicCardsGameEFStatus(gameFEStatus)
     }
 
@@ -75,16 +74,21 @@ export class LostCardsManager {
             const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)!
             const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)!
 
+            // 到myPlayer的逻辑在ControlCard
             if (toBoardPlayer.player.playerId == getMyPlayerId()) {
                 return
             }
+
+            let isFaceFront = getIsCardFaceFrontByCardAreaType(data.cardAreaType, data.fromId, data.toId)
+
             new LostCard(this.gamingScene,
                 card,
-                originIndex,
+                isFaceFront,
                 data.message,
+                originIndex,
                 gameFEStatus.publicCards,
                 fromBoardPlayer,
-                toBoardPlayer
+                toBoardPlayer,
             )
         })
     }

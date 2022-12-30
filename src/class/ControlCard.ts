@@ -15,12 +15,6 @@ import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../types/phaser";
 import {Card, GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {
-    cardHuaseNumberObjOffsetX,
-    cardHuaseNumberObjOffsetY,
-    cardNameObjOffsetX,
-    cardNameObjOffsetY
-} from "../config/offsetConfig";
 
 export class ControlCard {
     obId: string;
@@ -39,10 +33,8 @@ export class ControlCard {
     isMoving: boolean;
     isDestoryed: boolean;
 
-    group: Phaser.GameObjects.Group;
-    cardNameObj: Phaser.GameObjects.Text | null;
+    cardObjgroup: Phaser.GameObjects.GameObject[];
     cardImgObj: Phaser.GameObjects.Image | null;
-    cardHuaseNumberObj: Phaser.GameObjects.Text | null;
 
     _selected: boolean;
 
@@ -71,10 +63,8 @@ export class ControlCard {
         this.isDestoryed = false;
 
         // phaser obj
-        this.group = this.gamingScene.add.group();
-        this.cardNameObj = null;
+        this.cardObjgroup = [];
         this.cardImgObj = null;
-        this.cardHuaseNumberObj = null;
 
         // prev state
         this._selected = false;
@@ -101,12 +91,10 @@ export class ControlCard {
                 alpha: 0
             }
         )
-        this.cardImgObj = cardImgObj
-        this.cardNameObj = cardNameObj
-        this.cardHuaseNumberObj = cardHuaseNumberObj
-        this.group.add(cardImgObj);
-        this.group.add(cardNameObj);
-        this.group.add(cardHuaseNumberObj);
+        this.cardImgObj = cardImgObj;
+        this.cardObjgroup.push(cardImgObj);
+        this.cardObjgroup.push(cardNameObj);
+        this.cardObjgroup.push(cardHuaseNumberObj);
         this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus!, true)
     }
 
@@ -169,12 +157,12 @@ export class ControlCard {
         }
 
         this.isMoving = true;
-        this.group.getChildren().forEach((child) => {
+        this.cardObjgroup.forEach((obj) => {
             this.gamingScene.tweens.add({
-                targets: child,
+                targets: obj,
                 x: {
                     // @ts-ignore
-                    value: child.x + diff * sizeConfig.controlCard.width,
+                    value: obj.x + diff * sizeConfig.controlCard.width,
                     duration: 100,
                 },
                 onComplete: () => {
@@ -187,24 +175,15 @@ export class ControlCard {
 
     fadeIn() {
         this.isMoving = true;
-        [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj].forEach((obj, index) => {
-            let offsetX = 0, offsetY = 0;
-            if (index == 1) {
-                offsetX = cardNameObjOffsetX
-                offsetY = cardNameObjOffsetY
-            } else if (index == 2) {
-                offsetX = cardHuaseNumberObjOffsetX
-                offsetY = cardHuaseNumberObjOffsetY
-            }
-
+        this.cardObjgroup.forEach((obj, index) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
-                    value: this.cardInitEndX + offsetX,
+                    value: this.cardInitEndX + (obj?.getData("offsetX") || 0),
                     duration: 500,
                 },
                 y: {
-                    value: this.cardInitEndY + offsetY,
+                    value: this.cardInitEndY + (obj?.getData("offsetY") || 0),
                     duration: 500,
                 },
                 alpha: {
@@ -264,9 +243,10 @@ export class ControlCard {
         //     child.destroy()
         // })
         this.isDestoryed = true;
-        this.cardNameObj!.destroy()
-        this.cardImgObj!.destroy()
-        this.cardHuaseNumberObj!.destroy()
+
+        this.cardObjgroup.forEach((obj) => {
+            obj?.destroy();
+        })
         this.gamingScene.gameStatusObserved.removeObserver(this);
         this.gamingScene.gameFEStatusObserved.removeSelectedStatusObserver(this);
     }
@@ -299,13 +279,13 @@ export class ControlCard {
         if (this.isMoving) return;
         const whenSelectedMoveDistance = 30;
 
-        this.group.getChildren().forEach((child) => {
-            this.isMoving = true;
+        this.isMoving = true;
+        this.cardObjgroup.forEach((obj) => {
             this.gamingScene.tweens.add({
-                targets: child,
+                targets: obj,
                 y: {
                     // @ts-ignore
-                    value: isSelected ? (child.y - whenSelectedMoveDistance) : (child.y + whenSelectedMoveDistance),
+                    value: isSelected ? (obj.y - whenSelectedMoveDistance) : (obj.y + whenSelectedMoveDistance),
                     duration: 100,
                 },
                 onComplete: () => {

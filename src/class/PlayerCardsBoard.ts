@@ -7,7 +7,7 @@ import {SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../utils/drawCardUtils";
 import {shuffle} from "lodash";
 import emitMap from "../config/emitMap.json";
-import {EmitCardBoardData} from "../types/emit";
+import {CardAreaType, EmitCardBoardData} from "../types/emit";
 
 const gridOffset = {
     line1: {y: -55},
@@ -210,7 +210,9 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line1.y,
                 depth: boardDepth,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
+            cardImgObj.on('pointerdown',
+                this.getCardClickHandler(targetPlayer, card, scrollResStage, 'hand')
+            )
             this.destoryObjects.push(cardImgObj);
         })
     }
@@ -227,7 +229,8 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
+            cardImgObj.on('pointerdown',
+                this.getCardClickHandler(targetPlayer, card, scrollResStage, "equipment"))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -236,7 +239,7 @@ export class PlayerCardsBoard {
 
     }
 
-    drawTargetScrollCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
+    drawTargetPandingCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
         targetPlayer.pandingSigns.forEach((sign, index) => {
             const card = sign.card
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
@@ -244,7 +247,7 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage, 'panding'))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -252,11 +255,11 @@ export class PlayerCardsBoard {
         })
     }
 
-    getCardClickHandler(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage) {
+    getCardClickHandler(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage, cardAreaType: CardAreaType) {
         return () => {
             this.gamingScene.socket.emit(
                 emitMap.CARD_BOARD_ACTION,
-                this.getEmitCardBoardActionData(targetPlayer, card, scrollResStage)
+                this.getEmitCardBoardActionData(targetPlayer, card, scrollResStage, cardAreaType)
             )
         }
     }
@@ -286,14 +289,14 @@ export class PlayerCardsBoard {
 
         this.drawTargetPlayerCards(targetPlayer, scrollResStage);
         this.drawTargetEquipmentCards(targetPlayer, scrollResStage);
-        this.drawTargetScrollCards(targetPlayer, scrollResStage);
+        this.drawTargetPandingCards(targetPlayer, scrollResStage);
     }
 
     destoryTargetCards() {
         this.destoryObjects.forEach((o) => o.destroy());
     }
 
-    getEmitCardBoardActionData(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage): EmitCardBoardData {
+    getEmitCardBoardActionData(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage, cardAreaType: CardAreaType): EmitCardBoardData {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
         return {
@@ -302,6 +305,7 @@ export class PlayerCardsBoard {
             card: card,
             selectedIndex: gameFEStatus.selectedIndexes[0],
             type: this.getEmitType(scrollResStage)!,
+            cardAreaType,
         }
     }
 

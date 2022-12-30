@@ -13,10 +13,13 @@ export type EmitResponseData = {
     selectedIndexes: number[],
 }
 
+export type CardAreaType = "hand" | 'equipment' | 'panding'
+
 export type EmitCardBoardData = {
     originId: string,
     targetId: string,
     card: Card,
+    cardAreaType: CardAreaType
     type: "REMOVE" | "MOVE",
 
     selectedIndex: number,
@@ -37,7 +40,7 @@ export type EmitNotifyAddPublicCardData = {
     cards: Card[],
     actualCard: Card,
     originIndexes: number[],
-    message: string;
+    message: string
 }
 
 export type EmitNotifyOwnerChangeCardData = {
@@ -45,5 +48,7 @@ export type EmitNotifyOwnerChangeCardData = {
     toId: string,
     cards: Card[],
     originIndexes: number[],
-    message: never;
+    message: never,
+
+    cardAreaType: CardAreaType,
 }
