@@ -32,7 +32,10 @@ export type EmitThrowData = {
 // 后端=>前端
 // 前端根据originId targetId决定是否画箭头
 export type EmitNotifyAddPublicCardData = {
-    behaviour: EmitActionData | EmitResponseData;
+    fromId: string,
+    toId: never,
+    cards: Card[],
+    actualCard: Card,
     originIndexes: number[],
     message: string;
 }

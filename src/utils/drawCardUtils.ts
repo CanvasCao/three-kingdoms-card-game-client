@@ -14,20 +14,21 @@ import {
 const disableTint = colorConfig.disableCard;
 const ableTint = colorConfig.card;
 
-const sharedDrawCard = (
+const sharedDrawFrontCard = (
     gamingScene: GamingScene,
     card: Card,
-    {x, y, message, depth = 0}: {
+    {x, y, message, depth = 0, alpha = 1}: {
         x: number,
         y: number,
         message?: string,
-        depth?: number
+        depth?: number,
+        alpha?: number
     }) => {
     // background
     const cardImgObj = gamingScene.add.image(x, y, 'white').setInteractive({cursor: 'pointer'});
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
-    cardImgObj.setAlpha(1)
+    cardImgObj.setAlpha(alpha)
     // @ts-ignore
     cardImgObj.setTint(ableTint);
     cardImgObj.setDepth(depth)
@@ -43,7 +44,7 @@ const sharedDrawCard = (
     )
     cardNameObj.setPadding(0, 5, 0, 0);
     cardNameObj.setOrigin(0.5, 0.5);
-    cardNameObj.setAlpha(1)
+    cardNameObj.setAlpha(alpha)
     cardNameObj.setFontSize(14)
     cardNameObj.setDepth(depth)
 
@@ -58,7 +59,7 @@ const sharedDrawCard = (
     )
     cardHuaseNumberObj.setPadding(0, 5, 0, 0);
     cardHuaseNumberObj.setOrigin(0, 0);
-    cardHuaseNumberObj.setAlpha(1);
+    cardHuaseNumberObj.setAlpha(alpha);
     cardHuaseNumberObj.setFontSize(12)
     cardHuaseNumberObj.setDepth(depth)
 
@@ -88,6 +89,28 @@ const sharedDrawCard = (
     }
 }
 
+
+const sharedDrawBackCard = (
+    gamingScene: GamingScene,
+    card: Card,
+    {x, y, depth = 0}: {
+        x: number,
+        y: number,
+        depth?: number,
+    }) => {
+
+    const cardImgObj = gamingScene.add.image(x, y, 'cardBg').setInteractive({cursor: 'pointer'})
+    cardImgObj.displayHeight = sizeConfig.controlCard.height;
+    cardImgObj.displayWidth = sizeConfig.controlCard.width;
+    cardImgObj.setDepth(depth)
+    cardImgObj.setAlpha(1)
+
+    return {
+        cardImgObj,
+    }
+}
+
 export {
-    sharedDrawCard
+    sharedDrawFrontCard,
+    sharedDrawBackCard
 }

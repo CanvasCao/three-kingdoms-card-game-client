@@ -1,7 +1,7 @@
 import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {getMyPlayerId, uuidv4} from "../utils/gameStatusUtils";
-import {sharedDrawCard} from "../utils/drawCardUtils";
+import {sharedDrawFrontCard} from "../utils/drawCardUtils";
 import {differenceBy} from "lodash";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {GamingScene} from "../types/phaser";
@@ -21,8 +21,11 @@ export class LostCard {
 
     message: string;
     publicCards: Card[];
-    originOwnerPlayer: BoardPlayer;
-    targetPlayer: BoardPlayer | null;
+
+    fromBoardPlayer: BoardPlayer | undefined;
+    toBoardPlayer: BoardPlayer | undefined;
+
+    toPublic: boolean;
 
     fadeInStartX: number;
     fadeInStartY: number;
@@ -45,8 +48,8 @@ export class LostCard {
                 originIndex: number | undefined,
                 message: string,
                 publicCards: Card[],
-                originOwnerPlayer: BoardPlayer,
-                targetPlayer: BoardPlayer | null,
+                fromBoardPlayer: BoardPlayer | undefined,
+                toBoardPlayer: BoardPlayer | undefined,
     ) {
         this.obId = uuidv4();
 
@@ -54,35 +57,35 @@ export class LostCard {
         this.card = card;
         this.message = message;
         this.publicCards = publicCards;
-        this.originOwnerPlayer = originOwnerPlayer;
-        this.targetPlayer = targetPlayer;
-
-        const initDiffDistance = this.getInitDiffDistance(this.publicCards);
+        this.fromBoardPlayer = fromBoardPlayer;
+        this.toBoardPlayer = toBoardPlayer;
+        this.toPublic = !toBoardPlayer;
 
         this.fadeInStartX = 0;
         this.fadeInStartY = 0;
 
         // fadeInEnd
-        if (!targetPlayer) { // to Public
+        // fadeIn到我手里 逻辑在ControlCard
+        if (this.toPublic) { // 到public区域
+            const initDiffDistance = this.getInitDiffDistance(this.publicCards);
             this.fadeInEndX = initDiffDistance + sizeConfig.playersArea.width / 2;
             this.fadeInEndY = sizeConfig.background.height / 2;
-        } else { // player之间移动
-            // TODO 牌的移动
-            this.fadeInEndX = initDiffDistance + sizeConfig.playersArea.width / 2;
-            this.fadeInEndY = sizeConfig.background.height / 2;
+        } else { // 到其他player
+            this.fadeInEndX = toBoardPlayer!.playerPosition.x
+            this.fadeInEndY = toBoardPlayer!.playerPosition.y
         }
 
         // fadeInStart
-        if (!this.originOwnerPlayer) { // 牌堆打出的牌
+        if (!this.fromBoardPlayer) { // 牌堆打出的牌
             this.fadeInStartX = this.fadeInEndX + 50;
             this.fadeInStartY = this.fadeInEndY
-        } else if (this.originOwnerPlayer.player.playerId == getMyPlayerId()) { // 我打出的牌
+        } else if (this.fromBoardPlayer.player.playerId == getMyPlayerId()) { // 我打出的牌
             // LostCard的fadeInStartX 就是controlCard的cardInitEndY
             this.fadeInStartX = originIndex! * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
             this.fadeInStartY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
         } else { // 别人打出的牌
-            this.fadeInStartX = originOwnerPlayer.playerPosition.x
-            this.fadeInStartY = originOwnerPlayer.playerPosition.y
+            this.fadeInStartX = this.fromBoardPlayer.playerPosition.x
+            this.fadeInStartY = this.fromBoardPlayer.playerPosition.y
         }
 
 
@@ -105,14 +108,20 @@ export class LostCard {
 
         this.gamingScene.gameFEStatusObserved.addPublicCardsObserver(this);
 
-        setTimeout(() => {
-            this.destoryAll();
-        }, 15000)
+        if (this.toPublic) {
+            setTimeout(() => {
+                this.destoryAll();
+            }, 15000)
+        }
     }
 
     fadeIn() {
         this.isMoving = true;
         [this.cardImgObj, this.cardNameObj, this.cardHuaseNumberObj, this.cardMessageObj].forEach((obj, index) => {
+            if (!obj) {
+                return
+            }
+
             let offsetX = 0, offsetY = 0;
             if (index == 1) {
                 offsetX = cardNameObjOffsetX
@@ -134,10 +143,14 @@ export class LostCard {
                 },
                 alpha: {
                     value: 1,
-                    duration: 50,
+                    duration: 500,
                 },
                 onComplete: () => {
                     this.isMoving = false;
+
+                    if (!this.toPublic) {
+                        this.destoryAll()
+                    }
                 }
             });
         })
@@ -149,7 +162,7 @@ export class LostCard {
             cardNameObj,
             cardHuaseNumberObj,
             cardMessageObj,
-        } = sharedDrawCard(this.gamingScene,
+        } = sharedDrawFrontCard(this.gamingScene,
             this.card,
             {x: this.fadeInStartX, y: this.fadeInStartY, message: this.message})
         this.cardImgObj = cardImgObj
@@ -159,7 +172,10 @@ export class LostCard {
         this.group.add(cardImgObj);
         this.group.add(cardNameObj);
         this.group.add(cardHuaseNumberObj);
-        this.group.add(cardMessageObj!);
+
+        if (cardMessageObj) {
+            this.group.add(cardMessageObj);
+        }
     }
 
     adjustLocation(gameFEStatus: GameFEStatus) {
@@ -216,12 +232,19 @@ export class LostCard {
         this.cardNameObj!.destroy();
         this.cardImgObj!.destroy();
         this.cardHuaseNumberObj!.destroy();
-        this.cardMessageObj!.destroy();
-        this.removeCardsfromGameFEStatus()
+
+        if (this.cardMessageObj) {
+            this.cardMessageObj!.destroy();
+        }
+        this.removePublicCardsfromGameFEStatus()
         this.gamingScene.gameFEStatusObserved.removePublicCardsObserver(this);
     }
 
-    removeCardsfromGameFEStatus() {
+    removePublicCardsfromGameFEStatus() {
+        if (!this.toPublic) {
+            return
+        }
+
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
 
         const leftCards = differenceBy(gameFEStatus.publicCards, [this.card], 'cardId');
@@ -230,6 +253,10 @@ export class LostCard {
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
+        if (!this.toPublic) {
+            return
+        }
+
         this.adjustLocation(gameFEStatus);
     }
 }

@@ -10,7 +10,7 @@ import {
     getMyResponseInfo,
     getCanPlayInMyTurn
 } from "../utils/gameStatusUtils";
-import {sharedDrawCard} from "../utils/drawCardUtils";
+import {sharedDrawFrontCard} from "../utils/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../types/phaser";
 import {Card, GameStatus} from "../types/gameStatus";
@@ -37,6 +37,7 @@ export class ControlCard {
 
     _cardDisable: boolean;
     isMoving: boolean;
+    isDestoryed: boolean;
 
     group: Phaser.GameObjects.Group;
     cardNameObj: Phaser.GameObjects.Text | null;
@@ -53,11 +54,12 @@ export class ControlCard {
 
         // 初始化index
         this._index = this.gamingScene.controlCardsManager!._playerCards.findIndex((c: Card) => c.cardId == this.card.cardId);
-        this.cardInitStartX = sizeConfig.background.width / 2
-        this.cardInitStartY = sizeConfig.background.height / 2
+
         this.cardInitEndX = this._index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
         this.cardInitEndY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
 
+        this.cardInitStartX = this.cardInitEndX + 200
+        this.cardInitStartY = this.cardInitEndY
 
         // tint
         this.disableTint = colorConfig.disableCard;
@@ -66,6 +68,7 @@ export class ControlCard {
         // inner state
         this._cardDisable = false;
         this.isMoving = false;
+        this.isDestoryed = false;
 
         // phaser obj
         this.group = this.gamingScene.add.group();
@@ -89,7 +92,15 @@ export class ControlCard {
             cardImgObj,
             cardNameObj,
             cardHuaseNumberObj
-        } = sharedDrawCard(this.gamingScene, this.card, {x: this.cardInitStartX, y: this.cardInitStartY})
+        } = sharedDrawFrontCard(
+            this.gamingScene,
+            this.card,
+            {
+                x: this.cardInitStartX,
+                y: this.cardInitStartY,
+                alpha: 0
+            }
+        )
         this.cardImgObj = cardImgObj
         this.cardNameObj = cardNameObj
         this.cardHuaseNumberObj = cardHuaseNumberObj
@@ -252,7 +263,7 @@ export class ControlCard {
         //     console.log(child,i)
         //     child.destroy()
         // })
-
+        this.isDestoryed = true;
         this.cardNameObj!.destroy()
         this.cardImgObj!.destroy()
         this.cardHuaseNumberObj!.destroy()
@@ -279,6 +290,10 @@ export class ControlCard {
     }
 
     setCardSelected(gameFEStatus: GameFEStatus) {
+        if (this.isDestoryed) {
+            return;
+        }
+
         const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
         if (this._selected == isSelected) return;
         if (this.isMoving) return;

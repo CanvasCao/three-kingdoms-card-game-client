@@ -4,8 +4,8 @@ import sizeConfig from "../config/sizeConfig.json";
 import colorConfig from "../config/colorConfig.json";
 import {getMyPlayerId, uuidv4, verticalRotationSting} from "../utils/gameStatusUtils";
 import {SCROLL_CARDS_CONFIG} from "../config/cardConfig";
-import {sharedDrawCard} from "../utils/drawCardUtils";
-import {sample, shuffle} from "lodash";
+import {sharedDrawBackCard, sharedDrawFrontCard} from "../utils/drawCardUtils";
+import {shuffle} from "lodash";
 import emitMap from "../config/emitMap.json";
 import {EmitCardBoardData} from "../types/emit";
 
@@ -205,17 +205,13 @@ export class PlayerCardsBoard {
     drawTargetPlayerCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
         const cards = shuffle(targetPlayer.cards).slice(0, 8);
         cards.forEach((card, index) => {
-            const cardImg = this.gamingScene.add.image(
-                this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
-                this.initY + gridOffset.line1.y,
-                'cardBg')
-            cardImg.setInteractive({cursor: 'pointer'})
-            cardImg.displayHeight = sizeConfig.controlCard.height;
-            cardImg.displayWidth = sizeConfig.controlCard.width;
-            cardImg.setDepth(boardDepth)
-            cardImg.setInteractive();
-            cardImg.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
-            this.destoryObjects.push(cardImg);
+            const {cardImgObj} = sharedDrawBackCard(this.gamingScene, card, {
+                x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
+                y: this.initY + gridOffset.line1.y,
+                depth: boardDepth,
+            })
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage))
+            this.destoryObjects.push(cardImgObj);
         })
     }
 
@@ -226,7 +222,7 @@ export class PlayerCardsBoard {
                 return
             }
 
-            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawCard(this.gamingScene, card, {
+            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
@@ -243,7 +239,7 @@ export class PlayerCardsBoard {
     drawTargetScrollCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
         targetPlayer.pandingSigns.forEach((sign, index) => {
             const card = sign.card
-            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawCard(this.gamingScene, card, {
+            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
