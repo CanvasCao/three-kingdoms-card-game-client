@@ -50,8 +50,11 @@ export class LostCardsManager {
         data.cards.forEach((card, index) => {
             const originIndex = data.originIndexes ? data.originIndexes[index] : undefined;
             const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
+            gameFEStatus.publicCards.push(card)
+
             // toBoardPlayer undefined 就是toPublic Card
-            new LostCard(this.gamingScene,
+            new LostCard(
+                this.gamingScene,
                 card,
                 true,
                 data.message,
@@ -81,7 +84,8 @@ export class LostCardsManager {
 
             let isFaceFront = getIsCardFaceFrontByCardAreaType(data.cardAreaType, data.fromId, data.toId)
 
-            new LostCard(this.gamingScene,
+            new LostCard(
+                this.gamingScene,
                 card,
                 isFaceFront,
                 data.message,

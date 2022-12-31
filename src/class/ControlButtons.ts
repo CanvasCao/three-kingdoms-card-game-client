@@ -10,13 +10,12 @@ import {
     getNeedThrowCardNumber
 } from "../utils/gameStatusUtils";
 import emitMap from "../config/emitMap.json";
-import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {BtnGroup, GamingScene} from "../types/phaser";
 import Phaser from "phaser";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {GameStatus, Player} from "../types/gameStatus";
-import {EmitActionData, EmitResponseData, EmitThrowData} from "../types/emit";
+import {GameStatus} from "../types/gameStatus";
 import {attachFEInfoToCard} from "../utils/cardUtils";
+import {generateAction, generateResponse, generateThrowData} from "../utils/emitDataGenerator";
 
 export class ControlButtons {
     obId: string;
@@ -163,7 +162,7 @@ export class ControlButtons {
 
                 this.gamingScene.socket.emit(
                     emitMap.RESPONSE,
-                    this.generateResponse(),
+                    generateResponse(gameStatus, gameFEStatus),
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._canPlayInMyTurn) {
@@ -173,7 +172,7 @@ export class ControlButtons {
 
                 this.gamingScene.socket.emit(
                     emitMap.ACTION,
-                    this.generateAction()
+                    generateAction(gameStatus, gameFEStatus)
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._isMyThrowTurn) {
@@ -183,7 +182,7 @@ export class ControlButtons {
 
                 this.gamingScene.socket.emit(
                     emitMap.THROW,
-                    this.generateThrowData()
+                    generateThrowData(gameStatus, gameFEStatus)
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             }
@@ -192,68 +191,6 @@ export class ControlButtons {
         this.endBtnImg!.on('pointerdown', () => {
             this.gamingScene.socket.emit(emitMap.GO_NEXT_STAGE)
         });
-    }
-
-    generateAction(): (EmitActionData | undefined) {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus;
-
-        const actualCard = attachFEInfoToCard(JSON.parse(JSON.stringify(gameFEStatus.actualCard)))!;
-        actualCard.cardId = uuidv4(); // TODO 作为前端判断要不要重新计算和刷新disable的依据
-
-        if (actualCard.couldHaveMultiTarget || actualCard.needAActionToB) {
-            return {
-                cards: gameFEStatus.selectedCards,
-                selectedIndexes: gameFEStatus.selectedIndexes,
-                actualCard,
-                originId: getMyPlayerId(),
-                targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
-            }
-        } else if (actualCard.noNeedSetTargetDueToImDefaultTarget) {
-            return {
-                cards: gameFEStatus.selectedCards,
-                selectedIndexes: gameFEStatus.selectedIndexes,
-                actualCard,
-                originId: getMyPlayerId(),
-                targetId: getMyPlayerId(),
-            }
-        } else if (actualCard.canOnlyHaveOneTarget) {
-            return {
-                cards: gameFEStatus.selectedCards,
-                selectedIndexes: gameFEStatus.selectedIndexes,
-                actualCard,
-                originId: getMyPlayerId(),
-                targetId: gameFEStatus.selectedTargetPlayers[0].playerId,
-            }
-        } else if (actualCard.noNeedSetTargetDueToTargetAll) {
-            return {
-                cards: gameFEStatus.selectedCards,
-                selectedIndexes: gameFEStatus.selectedIndexes,
-                actualCard,
-                originId: getMyPlayerId(),
-            }
-        }
-    }
-
-    generateResponse(): EmitResponseData {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
-        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-
-        const info = getMyResponseInfo(gameStatus)!
-
-        return {
-            cards: gameFEStatus.selectedCards,
-            selectedIndexes: gameFEStatus.selectedIndexes,
-            actualCard: gameFEStatus.selectedCards[0],
-            originId: getMyPlayerId(),
-            targetId: info.targetId,
-            wuxieTargetCardId: info.wuxieTargetCardId
-        }
-    }
-
-    generateThrowData(): EmitThrowData {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
-        return {cards: gameFEStatus.selectedCards, selectedIndexes: gameFEStatus.selectedIndexes}
     }
 
     // show 包含 able
