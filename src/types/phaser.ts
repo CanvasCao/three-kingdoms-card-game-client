@@ -6,7 +6,7 @@ import {GameStatusObserved} from "../class/GameStatusObserved";
 import {GameFEStatusObserved} from "../class/GameFEStatusObserved";
 import {ControlButtons} from "../class/ControlButtons";
 import {ControlCardsManager} from "../class/ControlCardsManager";
-import {LostCardsManager} from "../class/LostCardsManager";
+import {NofityAnimationManager} from "../class/NofityAnimationManager";
 
 export type BtnGroup = {
     img?: Phaser.GameObjects.Image,
@@ -29,5 +29,5 @@ export type GamingScene = Phaser.Scene &
         gameFEStatusObserved: GameFEStatusObserved;
         controlButtons: ControlButtons | undefined;
         controlCardsManager: ControlCardsManager | undefined;
-        lostControlCardsManager: LostCardsManager | undefined;
+        notifyAnimationManager: NofityAnimationManager | undefined;
     }

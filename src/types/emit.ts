@@ -52,3 +52,10 @@ export type EmitNotifyOwnerChangeCardData = {
 
     cardAreaType: CardAreaType,
 }
+
+export type EmitNotifyAddLinesData = {
+    fromId: string,
+    toIds?: string[],
+    cards: Card[],
+    actualCard: Card,
+}

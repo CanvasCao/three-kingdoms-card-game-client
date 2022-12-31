@@ -1,15 +1,15 @@
-import {getMyPlayerId, uuidv4} from "../utils/gameStatusUtils";
+import {getMyPlayerId} from "../utils/gameStatusUtils";
 import {LostCard} from "./LostCard";
 import {GamingScene} from "../types/phaser";
 import {
+    EmitNotifyAddLinesData,
     EmitNotifyAddPublicCardData,
     EmitNotifyOwnerChangeCardData,
 } from "../types/emit";
 import {attachFEInfoToCard, getIsCardFaceFrontByCardAreaType} from "../utils/cardUtils";
 import {PublicLine} from "./PublicLine";
-import {Card} from "../types/gameStatus";
 
-export class LostCardsManager {
+export class NofityAnimationManager {
     // obId: string;
     gamingScene: GamingScene;
 
@@ -19,30 +19,26 @@ export class LostCardsManager {
 
     }
 
-    addLines(data: EmitNotifyAddPublicCardData) {
+    addLines(data: EmitNotifyAddLinesData) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
 
-
         const fromId = data.fromId;
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == fromId)!;
-        // let targetIds
-        // if (behaviour?.targetIds) {
-        //     targetIds = behaviour.targetIds
-        // } else if (behaviour.targetId) {
-        //     targetIds = [behaviour?.targetId]
-        // } else if (attachFEInfoToCard(data?.actualCard)?.noNeedSetTargetDueToTargetAll) {
-        //     targetIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
-        // }
-        //
-        // targetIds.forEach((targetId: string) => {
-        //     const targetBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == targetId)!;
-        //     new PublicLine(this.gamingScene, {
-        //         startPosition: fromBoardPlayer.linePosition,
-        //         endPosition: targetBoardPlayer.linePosition,
-        //     });
-        // })
-
+        let toIds = data.toIds;
+        if (toIds) {
+        } else if (!toIds && attachFEInfoToCard(data?.actualCard)?.noNeedSetTargetDueToTargetAll) {
+            toIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
+        } else {
+            toIds = []
+        }
+        toIds.forEach((toId: string) => {
+            const targetBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == toId)!;
+            new PublicLine(this.gamingScene, {
+                startPosition: fromBoardPlayer.linePosition,
+                endPosition: targetBoardPlayer.linePosition,
+            });
+        })
     }
 
     addPublicCard(data: EmitNotifyAddPublicCardData) {

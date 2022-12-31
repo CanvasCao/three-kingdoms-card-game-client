@@ -14,13 +14,17 @@ import {BoardPlayer} from "./class/BoardPlayer";
 import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
 import "./jsoneditor/jsoneditor.min.css";
-import {LostCardsManager} from "./class/LostCardsManager";
+import {NofityAnimationManager} from "./class/NofityAnimationManager";
 import {Socket} from "./socket/socket.io.esm.min";
 import {Card, GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
 import {PlayerCardsBoard} from './class/PlayerCardsBoard';
 import {getPlayersWithPosition} from './utils/playerPositionUtils';
-import {EmitNotifyAddPublicCardData, EmitNotifyOwnerChangeCardData} from "./types/emit";
+import {
+    EmitNotifyAddLinesData,
+    EmitNotifyAddPublicCardData,
+    EmitNotifyOwnerChangeCardData
+} from "./types/emit";
 
 // create the editor
 const container = document.getElementById('jsoneditor')
@@ -42,7 +46,7 @@ class Gaming extends Phaser.Scene {
     playerCardsBoard: PlayerCardsBoard | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
-    lostControlCardsManager: LostCardsManager | undefined;
+    notifyAnimationManager: NofityAnimationManager | undefined;
 
     constructor() {
         // @ts-ignore
@@ -96,7 +100,7 @@ class Gaming extends Phaser.Scene {
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
-            this.lostControlCardsManager = new LostCardsManager(this);
+            this.notifyAnimationManager = new NofityAnimationManager(this);
 
             const players = getPlayersWithPosition(data.players);
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
@@ -107,7 +111,6 @@ class Gaming extends Phaser.Scene {
         });
 
         socket.on(emitMap.REFRESH_STATUS, (data: GameStatus) => {
-            // console.log("REFRESH_STATUS", data)
             this.gameStatusObserved.setGameStatus(data);
         });
 
@@ -115,12 +118,17 @@ class Gaming extends Phaser.Scene {
             this.gameStatusObserved.setGameStatus(data);
         });
 
+        // Notify FE
         socket.on(emitMap.NOTIFY_ADD_PUBLIC_CARD, (data: EmitNotifyAddPublicCardData) => {
-            this.lostControlCardsManager!.addPublicCard(data)
+            this.notifyAnimationManager!.addPublicCard(data)
         });
 
         socket.on(emitMap.NOTIFY_ADD_OWNER_CHANGE_CARD, (data: EmitNotifyOwnerChangeCardData) => {
-            this.lostControlCardsManager!.addOwnerChangeCard(data)
+            this.notifyAnimationManager!.addOwnerChangeCard(data)
+        });
+
+        socket.on(emitMap.NOTIFY_ADD_LINES, (data: EmitNotifyAddLinesData) => {
+            this.notifyAnimationManager!.addLines(data)
         });
     }
 
