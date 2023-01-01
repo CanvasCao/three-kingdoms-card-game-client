@@ -6,6 +6,7 @@ export type GameStatus = {
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
     wuxieSimultaneousResStage: WuxieSimultaneousResStage,
+    wugufengdengCards: WugufengdengCard[]
     tieSuoTempStorage: TieSuoTempStorageItem[],
     throwedCards?: Card[],
 };
@@ -78,6 +79,8 @@ export type Card = {
     // 只有借刀杀人
     needAActionToB?: boolean,
 }
+
+export type WugufengdengCard = Card & { wugefengdengSelectedPlayerId: string }
 
 export type PandingSign = {
     card: Card,

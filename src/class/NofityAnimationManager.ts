@@ -69,12 +69,12 @@ export class NofityAnimationManager {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
 
         data.cards.forEach((card, index) => {
-            const originIndex = data.originIndexes[index];
-            const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)!
-            const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)!
+            const originIndex = data.originIndexes?.[index] || 0;
+            const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
+            const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)
 
             // 到myPlayer的逻辑在ControlCard
-            if (toBoardPlayer.player.playerId == getMyPlayerId()) {
+            if (toBoardPlayer?.player.playerId == getMyPlayerId()) {
                 return
             }
 

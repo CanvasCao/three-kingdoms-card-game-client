@@ -118,6 +118,9 @@ export const attachFEInfoToCard = (card: Card) => {
 
 
 export const getIsCardFaceFrontByCardAreaType = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
+    if (fromPlayerId == '牌堆') {
+        return false
+    }
     if (getMyPlayerId() == fromPlayerId || getMyPlayerId() == toPlayerId) {
         return true
     }

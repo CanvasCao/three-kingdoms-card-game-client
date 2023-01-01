@@ -33,6 +33,11 @@ export type EmitThrowData = {
     selectedIndexes: number[],
 }
 
+export type EmitWugufengdengData = {
+    card: Card,
+    playerId: string,
+}
+
 
 // 后端=>前端
 // 前端根据originId targetId决定是否画箭头

@@ -48,9 +48,9 @@ export class PlayerCardsBoard {
     pandingCardsPlaceholderTexts: Phaser.GameObjects.Text[];
 
     destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[];
+
     // innerState
     _stageId: string;
-    _selectedCardId: string;
 
 
     constructor(gamingScene: GamingScene) {
@@ -76,7 +76,6 @@ export class PlayerCardsBoard {
         this.destoryObjects = [];
 
         this._stageId = '';
-        this._selectedCardId = '';
 
         this.drawBackground();
         this.drawTitle();
@@ -319,17 +318,12 @@ export class PlayerCardsBoard {
 
     gameStatusNotify(gameStatus: GameStatus) {
         const curScrollResStage = gameStatus.scrollResStages?.[0];
-        if (!curScrollResStage) {
-            this.showBoard(false);
-            this.destoryTargetCards();
-            return
-        }
-
-        if (this._stageId == curScrollResStage.stageId) {
+        const stageId = curScrollResStage?.stageId || '';
+        if (this._stageId == stageId) {
             return;
         }
 
-        const showBoard = curScrollResStage.originId == getMyPlayerId() &&
+        const showBoard = curScrollResStage && curScrollResStage.originId == getMyPlayerId() &&
             curScrollResStage.isEffect &&
             (curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
                 curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN)
@@ -342,7 +336,7 @@ export class PlayerCardsBoard {
         this.showBoard(true);
         this.updateTargetCards(gameStatus)
 
-        this._stageId = curScrollResStage.stageId!
+        this._stageId = stageId;
     }
 
 }

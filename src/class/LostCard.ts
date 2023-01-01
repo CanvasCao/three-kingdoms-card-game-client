@@ -62,16 +62,19 @@ export class LostCard {
         }
 
         // fadeInStart
-        if (!fromBoardPlayer) { // 牌堆打出的牌
+        if (!fromBoardPlayer && this.toPublic) { // 牌堆出的牌 到弃牌堆（判定牌）
             this.fadeInStartX = this.fadeInEndX + 50;
             this.fadeInStartY = this.fadeInEndY
-        } else if (fromBoardPlayer.player.playerId == getMyPlayerId()) { // 我打出的牌
+        } else if (!fromBoardPlayer && !this.toPublic) { // 牌堆出的牌 到player（摸牌 五谷丰登）
+            this.fadeInStartX = sizeConfig.playersArea.width / 2;
+            this.fadeInStartY = sizeConfig.background.height / 2;
+        } else if (fromBoardPlayer!.player.playerId == getMyPlayerId()) { // 我打出的牌
             // LostCard的fadeInStartX 就是controlCard的cardInitEndY
             this.fadeInStartX = originIndex! * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
             this.fadeInStartY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
         } else { // 别人打出的牌
-            this.fadeInStartX = fromBoardPlayer.playerPosition.x
-            this.fadeInStartY = fromBoardPlayer.playerPosition.y
+            this.fadeInStartX = fromBoardPlayer!.playerPosition.x
+            this.fadeInStartY = fromBoardPlayer!.playerPosition.y
         }
 
 

@@ -25,6 +25,7 @@ import {
     EmitNotifyAddPublicCardData,
     EmitNotifyOwnerChangeCardData
 } from "./types/emit";
+import { WuGuFengDengBoard } from './class/WuGuFengDengBoard';
 
 // create the editor
 const container = document.getElementById('jsoneditor')
@@ -44,6 +45,7 @@ class Gaming extends Phaser.Scene {
     gameStatusObserved: GameStatusObserved;
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
+    wuGuFengDengBoard: WuGuFengDengBoard | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
     notifyAnimationManager: NofityAnimationManager | undefined;
@@ -98,6 +100,7 @@ class Gaming extends Phaser.Scene {
             }
 
             this.playerCardsBoard = new PlayerCardsBoard(this);
+            this.wuGuFengDengBoard = new WuGuFengDengBoard(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
             this.notifyAnimationManager = new NofityAnimationManager(this);
