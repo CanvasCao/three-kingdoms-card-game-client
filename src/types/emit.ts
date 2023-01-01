@@ -8,6 +8,8 @@ export type EmitResponseData = {
     actualCard: Card,
     originId: string,
     targetId: string,
+
+    // 为了校验无懈可击是否冲突
     wuxieTargetCardId?: string,
 
     selectedIndexes: number[],

@@ -59,6 +59,8 @@ export type Card = {
     CN: string,
     EN: string,
     type: string,
+    attribute: string,
+
     equipmentType?: string,
     horseDistance?: number,
     distance?: number,
@@ -133,11 +135,15 @@ export type WuxieSimultaneousResStage = {
     wuxieChain: WuxieChain,
 }
 
+//  [
+//  {nextWuXieTargetId:第一张锦囊即将生效的目标/也是第一张无懈的目标},
+//  {nextWuXieTargetId:第一张无懈的目标/也是第二张无懈的目标}
+//  ]
 export type WuxieChain = {
     cards: Card[],
     actualCard: Card,
-    originId: string, // 延迟锦囊的WuxieChain[0]来源是自己
-    targetId: string,
+    nextWuXieTargetId: string, // 无懈的目标是锦囊即将生效的目标
+    // WuxieChain不需要wuxieTargetCardId 只用来后端校验
 }[];
 
 export type TieSuoTempStorageItem = {
