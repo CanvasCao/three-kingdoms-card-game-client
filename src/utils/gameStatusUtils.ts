@@ -1,7 +1,10 @@
 import {Card, GameStatus, Player} from "../types/gameStatus";
-import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {
+    BASIC_CARDS_CONFIG,
+    EQUIPMENT_CARDS_CONFIG,
+    SCROLL_CARDS_CONFIG
+} from "../config/cardConfig";
 import {CARD_CONFIG_WITH_FE_INFO} from "../config/cardConfigWithFEInfo";
-import {isNil} from "lodash";
 
 function uuidv4() {
     // @ts-ignore
@@ -129,6 +132,14 @@ const getInMyPlayTurnCanPlayCardNamesClourse = (player: Player) => {
     }
 }
 
+const getMyShaLimitTimes = (player: Player) => {
+    if (player.weaponCard && (player.weaponCard.CN == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.CN)) {
+        return Number.POSITIVE_INFINITY
+    } else {
+        return player.shaLimitTimes
+    }
+}
+
 const getDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
     const tableDistance = Math.min(
         Math.abs(APlayer.location - BPlayer.location),
@@ -190,7 +201,7 @@ export {
     getIsMyThrowTurn,
     getCanPlayInMyTurn,
 
-    // other
+    // response
     getMyResponseInfo,
 
     // cal distance
@@ -202,6 +213,7 @@ export {
 
     // play card validate
     getInMyPlayTurnCanPlayCardNamesClourse,
+    getMyShaLimitTimes,
 
     // 弃牌
     getNeedThrowCardNumber,

@@ -8,7 +8,8 @@ import {
     getIsMyThrowTurn,
     getNeedThrowCardNumber,
     getMyResponseInfo,
-    getCanPlayInMyTurn
+    getCanPlayInMyTurn,
+    getMyShaLimitTimes
 } from "../../utils/gameStatusUtils";
 import {sharedDrawFrontCard} from "../../utils/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
@@ -16,6 +17,7 @@ import {GamingScene} from "../../types/phaser";
 import {Card, GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getControlCardPosition} from "../../utils/cardUtils";
+import {CARD_CONFIG} from "../../config/cardConfig";
 
 export class ControlCard {
     obId: string;
@@ -204,8 +206,17 @@ export class ControlCard {
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
-
+        const mePlayer = gameStatus.players[getMyPlayerId()];
         if (canPlayInMyTurn) {
+            if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN].includes(this.card.CN)) {
+                if (mePlayer.shaTimes >= getMyShaLimitTimes(mePlayer)!) {
+                    // @ts-ignore
+                    this.cardImgObj!.setTint(this.disableTint)
+                    this._cardDisable = true
+                    return
+                }
+            }
+
             const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
             if (!canPlayCardNames.includes(this.card.CN)) {
                 // @ts-ignore

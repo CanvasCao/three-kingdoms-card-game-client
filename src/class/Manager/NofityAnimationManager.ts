@@ -48,7 +48,7 @@ export class NofityAnimationManager {
         }
 
         // AOE
-        if (!toIds && attachFEInfoToCard(data?.actualCard)?.noNeedSetTargetDueToTargetAll) {
+        if (attachFEInfoToCard(data?.actualCard)?.noNeedSetTargetDueToTargetAll) {
             toIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
         }
         // 其他正确指定目标的情况

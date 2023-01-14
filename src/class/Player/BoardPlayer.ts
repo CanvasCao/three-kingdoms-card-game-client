@@ -375,7 +375,7 @@ export class BoardPlayer {
         this.playerImage = this.gamingScene.add.image(
             this.positionX,
             this.positionY,
-            this.player.cardId).setInteractive({cursor: 'pointer'}).setScale(140 / 536);
+            this.player.imageName).setInteractive({cursor: 'pointer'}).setScale(140 / 536);
         this.playerImage.setOrigin(0.5, 0.45) // 竖长图片被crop了下面 所以setOriginY 稍微让图片往下挪一点
 
         var cropRect = new Phaser.Geom.Rectangle(0, 0, 536, 536 * (sizeConfig.player.height / sizeConfig.player.width));

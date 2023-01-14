@@ -17,7 +17,8 @@ export type Players = Player[]
 export type Player = {
     maxBlood: number,
     currentBlood: number,
-    cardId: string,
+    imageName: string,
+    shaLimitTimes: number,
     playerId: string,
     name: string,
     location: number,
@@ -38,6 +39,7 @@ export type Player = {
     judgedShandian: boolean,
     skipDraw: boolean,
     skipPlay: boolean,
+    shaTimes: number,
 
     // skills
     skills: any[],
