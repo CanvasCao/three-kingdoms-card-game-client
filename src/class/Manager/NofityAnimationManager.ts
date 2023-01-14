@@ -26,13 +26,31 @@ export class NofityAnimationManager {
 
         const fromId = data.fromId;
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == fromId)!;
-        let toIds = data.toIds;
-        if (toIds) {
-        } else if (!toIds && attachFEInfoToCard(data?.actualCard)?.noNeedSetTargetDueToTargetAll) {
-            toIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
-        } else {
-            toIds = []
+        let toIds = data.toIds || [];
+
+        //借刀杀人 貂蝉决斗
+        if (toIds && attachFEInfoToCard(data?.actualCard)?.needAActionToB) {
+            const targetBoardPlayer1 = this.gamingScene.boardPlayers.find((p) => p.player.playerId == toIds[0])!;
+            const targetBoardPlayer2 = this.gamingScene.boardPlayers.find((p) => p.player.playerId == toIds[1])!;
+
+            new PublicLine(this.gamingScene, {
+                startPosition: fromBoardPlayer.linePosition,
+                endPosition: targetBoardPlayer1.linePosition,
+            });
+            setTimeout(() => {
+                new PublicLine(this.gamingScene, {
+                    startPosition: targetBoardPlayer1.linePosition,
+                    endPosition: targetBoardPlayer2.linePosition,
+                });
+            }, 400)
+            return
         }
+
+        // AOE
+        if (!toIds && attachFEInfoToCard(data?.actualCard)?.noNeedSetTargetDueToTargetAll) {
+            toIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
+        }
+        // 其他正确指定目标的情况
         toIds.forEach((toId: string) => {
             const targetBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == toId)!;
             new PublicLine(this.gamingScene, {
