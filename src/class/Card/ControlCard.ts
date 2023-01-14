@@ -181,12 +181,12 @@ export class ControlCard {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
-                    value: this.cardInitEndX + (obj?.getData("offsetX") || 0),
-                    duration: 500,
+                    value: this.cardInitEndX + (obj?.getData("offsetX")),
+                    duration: 300,
                 },
                 y: {
-                    value: this.cardInitEndY + (obj?.getData("offsetY") || 0),
-                    duration: 500,
+                    value: this.cardInitEndY + (obj?.getData("offsetY")),
+                    duration: 300,
                 },
                 alpha: {
                     value: 1,

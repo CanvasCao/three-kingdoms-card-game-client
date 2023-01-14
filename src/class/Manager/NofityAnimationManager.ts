@@ -8,6 +8,7 @@ import {
 } from "../../types/emit";
 import {attachFEInfoToCard, getIfToPlayerCardFaceFront} from "../../utils/cardUtils";
 import {PublicLine} from "../Line/PublicLine";
+import {ToPlayerCard} from "../Card/ToPlayerCard";
 
 export class NofityAnimationManager {
     // obId: string;
@@ -63,30 +64,41 @@ export class NofityAnimationManager {
     }
 
     addToPlayerCard(data: EmitNotifyAddToPlayerCardData) {
-    //     const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-    //
-    //     data.cards.forEach((card, index) => {
-    //         const originIndex = data.originIndexes?.[index] || 0;
-    //         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
-    //         const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)
-    //
-    //         // 到myPlayer的逻辑在ControlCard
-    //         if (toBoardPlayer?.player.playerId == getMyPlayerId()) {
-    //             return
-    //         }
-    //
-    //         let isFaceFront = getIfToPlayerCardFaceFront(data.cardAreaType, data.fromId, data.toId)
-    //
-    //         new ToPublicCard(
-    //             this.gamingScene,
-    //             card,
-    //             isFaceFront,
-    //             data.message,
-    //             originIndex,
-    //             gameFEStatus.publicCards,
-    //             fromBoardPlayer,
-    //             toBoardPlayer,
-    //         )
-    //     })
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+
+        // 到别人手里 需要叠起来移动
+        // 到自己手里需要一张一张移动
+        const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)
+        // 但是到自己手里的逻辑在ControlCard
+        if (toBoardPlayer?.player?.playerId == getMyPlayerId()) {
+            return
+        }
+
+        // 从自己手里给出去需要一张一张给
+        const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
+        if (fromBoardPlayer?.player?.playerId == getMyPlayerId()) {
+            data.cards.forEach((card, index) => {
+                const originIndex = data.originIndexes?.[index] || 0;
+                new ToPlayerCard(
+                    this.gamingScene,
+                    card,
+                    true,
+                    originIndex,
+                    fromBoardPlayer,
+                    toBoardPlayer,
+                )
+            })
+        } else {
+            let isFaceFront = getIfToPlayerCardFaceFront(data.cardAreaType, data.fromId, data.toId)
+            new ToPlayerCard(
+                this.gamingScene,
+                data.cards[0],
+                isFaceFront,
+                undefined,
+                fromBoardPlayer,
+                toBoardPlayer,
+                data.cards.length
+            )
+        }
     }
 }

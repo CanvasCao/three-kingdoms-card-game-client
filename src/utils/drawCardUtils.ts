@@ -32,7 +32,8 @@ const sharedDrawFrontCard = (
     // @ts-ignore
     cardImgObj.setTint(ableTint);
     cardImgObj.setDepth(depth)
-
+    cardImgObj.setData("offsetX", 0)
+    cardImgObj.setData("offsetY", 0)
 
     // cardName
     const cardNameObj = gamingScene.add.text(
@@ -82,6 +83,8 @@ const sharedDrawFrontCard = (
     cardMessageObj.setFontSize(12);
     cardMessageObj.setAlpha(1)
     cardMessageObj.setDepth(depth)
+    cardMessageObj.setData("offsetX", 0)
+    cardMessageObj.setData("offsetY", 0)
 
 
     return {
@@ -96,10 +99,18 @@ const sharedDrawFrontCard = (
 const sharedDrawBackCard = (
     gamingScene: GamingScene,
     card: Card,
-    {x, y, depth = 0}: {
+    {
+        x,
+        y,
+        depth = 0,
+        offsetX = 0,
+        offsetY = 0,
+    }: {
         x: number,
         y: number,
         depth?: number,
+        offsetX?: number,
+        offsetY?: number,
     }) => {
 
     const cardImgObj = gamingScene.add.image(x, y, 'cardBg').setInteractive({cursor: 'pointer'})
@@ -107,6 +118,8 @@ const sharedDrawBackCard = (
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setDepth(depth)
     cardImgObj.setAlpha(1)
+    cardImgObj.setData("offsetX", offsetX)
+    cardImgObj.setData("offsetY", offsetY)
 
     return {
         cardImgObj,

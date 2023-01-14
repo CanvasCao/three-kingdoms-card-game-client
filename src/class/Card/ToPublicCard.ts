@@ -140,7 +140,7 @@ export class ToPublicCard {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
-                    value: sizeConfig.playersArea.width / 2 + diffDis + (obj?.getData("offsetX") || 0),
+                    value: sizeConfig.playersArea.width / 2 + diffDis + (obj?.getData("offsetX")),
                     duration: 300,
                 },
             });
