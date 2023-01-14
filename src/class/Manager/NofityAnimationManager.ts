@@ -9,6 +9,7 @@ import {
 import {attachFEInfoToCard, getIfToPlayerCardFaceFront} from "../../utils/cardUtils";
 import {PublicLine} from "../Line/PublicLine";
 import {ToPlayerCard} from "../Card/ToPlayerCard";
+import {Card} from "../../types/gameStatus";
 
 export class NofityAnimationManager {
     // obId: string;
@@ -62,11 +63,19 @@ export class NofityAnimationManager {
 
     addToPublicCard(data: EmitNotifyAddToPublicCardData) {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+        const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
+        let cardsWithOrder: { card: Card, originIndex: number }[] = []
         data.cards.forEach((card, index) => {
-            const originIndex = data.originIndexes ? data.originIndexes[index] : undefined;
-            const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
-            gameFEStatus.publicCards.push(card)
+            const originIndex = data.originIndexes ? data.originIndexes[index] : 0;
+            cardsWithOrder.push({card, originIndex})
+        })
 
+        cardsWithOrder = cardsWithOrder.sort((a, b) => {
+            return a.originIndex - b.originIndex
+        })
+
+        cardsWithOrder.forEach(({card, originIndex}) => {
+            gameFEStatus.publicCards.push(card)
             new ToPublicCard(
                 this.gamingScene,
                 card,
@@ -76,6 +85,7 @@ export class NofityAnimationManager {
                 originIndex,
             )
         })
+
 
         // setGameEFStatus 是为了ToPublicCard adjustLocation
         this.gamingScene.gameFEStatusObserved.setPublicCardsGameEFStatus(gameFEStatus)

@@ -99,7 +99,6 @@ export class ToPublicCard {
         this.cardObjgroup.push(cardNameObj);
         this.cardObjgroup.push(cardHuaseNumberObj);
         this.cardObjgroup.push(cardMessageObj);
-
     }
 
     fadeIn() {
