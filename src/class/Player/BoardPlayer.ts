@@ -1,6 +1,7 @@
 import sizeConfig from "../../config/sizeConfig.json";
 import colorConfig from "../../config/colorConfig.json";
 import {
+    getAmendTargetMinMax,
     getCanSelectMeAsFirstTargetCardNamesClosure, getCanSelectMeAsSecondTargetCardNamesClosure,
     getDistanceFromAToB,
     getIfPlayerHasAnyCards, getIfPlayerHasWeapon,
@@ -12,7 +13,6 @@ import {GamingScene, PlayerEquipmentGroup} from "../../types/phaser";
 import {Card, GameStatus, PandingSign, Player} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import {attachFEInfoToCard} from "../../utils/cardUtils";
 import differenceBy from "lodash/differenceBy";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
@@ -313,8 +313,8 @@ export class BoardPlayer {
 
     bindEvent() {
         this.playerImage!.on('pointerdown', () => {
-            const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-            const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+            const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+            const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
             if (!curGameFEStatus.actualCard) {
                 return;
@@ -344,7 +344,7 @@ export class BoardPlayer {
             }
 
             // validate是否选择了足够目标
-            const targetMinMax = attachFEInfoToCard(curGameFEStatus.actualCard)!.targetMinMax;
+            const targetMinMax = getAmendTargetMinMax(curGameStatus, curGameFEStatus)
             if (curGameFEStatus.selectedTargetPlayers.length >= targetMinMax.max) {
                 return;
             }

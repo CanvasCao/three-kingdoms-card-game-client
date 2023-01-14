@@ -5,6 +5,8 @@ import {
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
 import {CARD_CONFIG_WITH_FE_INFO} from "../config/cardConfigWithFEInfo";
+import {attachFEInfoToCard} from "./cardUtils";
+import {GameFEStatus} from "../types/gameFEStatus";
 
 function uuidv4() {
     // @ts-ignore
@@ -169,6 +171,14 @@ const getCanSelectMeAsSecondTargetCardNamesClosure = () => {
     }
 }
 
+const getAmendTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+    const mePlayer = gameStatus.players[getMyPlayerId()]
+    if (mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN && mePlayer.cards.length == 1) {
+        return {min: 1, max: 3}
+    }
+    return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+}
+
 const getNeedThrowCardNumber = (player: Player) => {
     return player.cards.length - player.currentBlood
 }
@@ -210,6 +220,7 @@ export {
     // Player validate
     getCanSelectMeAsFirstTargetCardNamesClosure,
     getCanSelectMeAsSecondTargetCardNamesClosure,
+    getAmendTargetMinMax,
 
     // play card validate
     getInMyPlayTurnCanPlayCardNamesClourse,

@@ -7,7 +7,8 @@ import {
     uuidv4,
     getMyResponseInfo,
     getIsMyThrowTurn,
-    getNeedThrowCardNumber
+    getNeedThrowCardNumber,
+    getAmendTargetMinMax
 } from "../../utils/gameStatusUtils";
 import emitMap from "../../config/emitMap.json";
 import {BtnGroup, GamingScene} from "../../types/phaser";
@@ -166,7 +167,7 @@ export class ControlButtons {
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._canPlayInMyTurn) {
-                if (!this.canClickOkBtnInMyPlayStage(gameFEStatus)) {
+                if (!this.canClickOkBtnInMyPlayStage(gameStatus,gameFEStatus)) {
                     return
                 }
 
@@ -226,9 +227,9 @@ export class ControlButtons {
         group.img!.setTint(0xcccccc)
     }
 
-    canClickOkBtnInMyPlayStage(gameFEStatus: GameFEStatus) {
+    canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
-            const targetMinMaxNumber = attachFEInfoToCard(gameFEStatus.actualCard)!.targetMinMax;
+            const targetMinMaxNumber = getAmendTargetMinMax(gameStatus, gameFEStatus);
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetPlayers.length >= targetMinMaxNumber.min
                 && gameFEStatus.selectedTargetPlayers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;
@@ -282,7 +283,7 @@ export class ControlButtons {
     setButtonStatusByGameFEStatus(gameFEStatus: GameFEStatus) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
         if (this._canPlayInMyTurn) {
-            this.canClickOkBtnInMyPlayStage(gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+            this.canClickOkBtnInMyPlayStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
 
             if (gameFEStatus.selectedCards.length > 0) {
                 this.showBtn(this.cancelBtnGroup)
