@@ -29,7 +29,7 @@ export class ControlCard {
     disableTint: string;
     ableTint: string;
 
-    _cardDisable: boolean;
+    _cardDisable: boolean; // 只有出牌和相应阶段会set _cardDisable true
     isMoving: boolean;
     isDestoryed: boolean;
 
@@ -100,7 +100,7 @@ export class ControlCard {
 
     bindEvent() {
         this.cardImgObj!.on('pointerdown', () => {
-                if (this._cardDisable) { // 弃牌阶段做数量判断 不set _cardDisable
+                if (this._cardDisable) { // 弃牌阶段 ControlCard 不set _cardDisable 只在点击时做数量判断
                     return
                 }
 
@@ -202,14 +202,6 @@ export class ControlCard {
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
-
-
-        if (!canPlayInMyTurn && !isMyResponseCardTurn && !isMyThrowTurn) {
-            // @ts-ignore
-            this.cardImgObj!.setTint(this.disableTint)
-            this._cardDisable = true
-            return
-        }
 
         if (canPlayInMyTurn) {
             const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
