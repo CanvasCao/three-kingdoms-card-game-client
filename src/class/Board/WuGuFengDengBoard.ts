@@ -1,12 +1,12 @@
-import {Card, GameStatus} from "../types/gameStatus";
-import {GamingScene} from "../types/phaser";
-import sizeConfig from "../config/sizeConfig.json";
-import colorConfig from "../config/colorConfig.json";
-import {getMyPlayerId, uuidv4} from "../utils/gameStatusUtils";
-import {SCROLL_CARDS_CONFIG} from "../config/cardConfig";
-import {sharedDrawFrontCard} from "../utils/drawCardUtils";
-import emitMap from "../config/emitMap.json";
-import {EmitWugufengdengData} from "../types/emit";
+import {Card, GameStatus} from "../../types/gameStatus";
+import {GamingScene} from "../../types/phaser";
+import sizeConfig from "../../config/sizeConfig.json";
+import colorConfig from "../../config/colorConfig.json";
+import {getMyPlayerId, uuidv4} from "../../utils/gameStatusUtils";
+import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {sharedDrawFrontCard} from "../../utils/drawCardUtils";
+import emitMap from "../../config/emitMap.json";
+import {EmitWugufengdengData} from "../../types/emit";
 
 const boardSize = {
     height: 320,

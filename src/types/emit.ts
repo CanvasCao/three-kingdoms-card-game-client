@@ -40,8 +40,7 @@ export type EmitWugufengdengData = {
 
 
 // 后端=>前端
-// 前端根据originId targetId决定是否画箭头
-export type EmitNotifyAddPublicCardData = {
+export type EmitNotifyAddToPublicCardData = {
     fromId: string,
     toId: never,
     cards: Card[],
@@ -50,7 +49,7 @@ export type EmitNotifyAddPublicCardData = {
     message: string
 }
 
-export type EmitNotifyOwnerChangeCardData = {
+export type EmitNotifyAddToPlayerCardData = {
     fromId: string,
     toId: string,
     cards: Card[],

@@ -1,5 +1,5 @@
-import sizeConfig from "../config/sizeConfig.json";
-import colorConfig from "../config/colorConfig.json";
+import sizeConfig from "../../config/sizeConfig.json";
+import colorConfig from "../../config/colorConfig.json";
 import {
     getMyPlayerId,
     uuidv4,
@@ -9,12 +9,13 @@ import {
     getNeedThrowCardNumber,
     getMyResponseInfo,
     getCanPlayInMyTurn
-} from "../utils/gameStatusUtils";
-import {sharedDrawFrontCard} from "../utils/drawCardUtils";
+} from "../../utils/gameStatusUtils";
+import {sharedDrawFrontCard} from "../../utils/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
-import {GamingScene} from "../types/phaser";
-import {Card, GameStatus} from "../types/gameStatus";
-import {GameFEStatus} from "../types/gameFEStatus";
+import {GamingScene} from "../../types/phaser";
+import {Card, GameStatus} from "../../types/gameStatus";
+import {GameFEStatus} from "../../types/gameFEStatus";
+import {getControlCardPosition} from "../../utils/cardUtils";
 
 export class ControlCard {
     obId: string;
@@ -45,10 +46,11 @@ export class ControlCard {
         this.card = card;
 
         // 初始化index
-        this._index = this.gamingScene.controlCardsManager!._playerCards.findIndex((c: Card) => c.cardId == this.card.cardId);
+        this._index = this.gamingScene.controlCardsManager!._playerCards.findIndex(c => c.cardId == this.card.cardId);
 
-        this.cardInitEndX = this._index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
-        this.cardInitEndY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
+        const position = getControlCardPosition(this._index);
+        this.cardInitEndX = position.x;
+        this.cardInitEndY = position.y;
 
         this.cardInitStartX = this.cardInitEndX + 200
         this.cardInitStartY = this.cardInitEndY

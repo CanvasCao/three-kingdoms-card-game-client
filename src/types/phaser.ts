@@ -1,12 +1,12 @@
 import Phaser from "phaser";
 import {Socket} from "../socket/socket.io.esm.min";
 import {Card} from "./gameStatus";
-import {BoardPlayer} from "../class/BoardPlayer";
-import {GameStatusObserved} from "../class/GameStatusObserved";
-import {GameFEStatusObserved} from "../class/GameFEStatusObserved";
-import {ControlButtons} from "../class/ControlButtons";
-import {ControlCardsManager} from "../class/ControlCardsManager";
-import {NofityAnimationManager} from "../class/NofityAnimationManager";
+import {BoardPlayer} from "../class/Player/BoardPlayer";
+import {GameStatusObserved} from "../class/Observed/GameStatusObserved";
+import {GameFEStatusObserved} from "../class/Observed/GameFEStatusObserved";
+import {ControlButtons} from "../class/Button/ControlButtons";
+import {ControlCardsManager} from "../class/Manager/ControlCardsManager";
+import {NofityAnimationManager} from "../class/Manager/NofityAnimationManager";
 
 export type BtnGroup = {
     img?: Phaser.GameObjects.Image,

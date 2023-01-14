@@ -5,27 +5,27 @@ import 'normalize.css'
 import elementsUrl from './config/elementsUrl.json'
 import sizeConfig from './config/sizeConfig.json'
 import {socket} from "./socket";
-import {ControlCardsManager} from "./class/ControlCardsManager";
-import {ControlButtons} from "./class/ControlButtons";
-import {GameStatusObserved} from "./class/GameStatusObserved";
-import {GameFEStatusObserved} from "./class/GameFEStatusObserved";
+import {ControlCardsManager} from "./class/Manager/ControlCardsManager";
+import {ControlButtons} from "./class/Button/ControlButtons";
+import {GameStatusObserved} from "./class/Observed/GameStatusObserved";
+import {GameFEStatusObserved} from "./class/Observed/GameFEStatusObserved";
 import {getMyPlayerId} from "./utils/gameStatusUtils";
-import {BoardPlayer} from "./class/BoardPlayer";
+import {BoardPlayer} from "./class/Player/BoardPlayer";
 import emitMap from "./config/emitMap.json";
 import JSONEditor from "./jsoneditor/jsoneditor.min.js";
 import "./jsoneditor/jsoneditor.min.css";
-import {NofityAnimationManager} from "./class/NofityAnimationManager";
+import {NofityAnimationManager} from "./class/Manager/NofityAnimationManager";
 import {Socket} from "./socket/socket.io.esm.min";
 import {Card, GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
-import {PlayerCardsBoard} from './class/PlayerCardsBoard';
+import {PlayerCardsBoard} from './class/Board/PlayerCardsBoard';
 import {getPlayersWithPosition} from './utils/playerPositionUtils';
 import {
     EmitNotifyAddLinesData,
-    EmitNotifyAddPublicCardData,
-    EmitNotifyOwnerChangeCardData
+    EmitNotifyAddToPublicCardData,
+    EmitNotifyAddToPlayerCardData
 } from "./types/emit";
-import { WuGuFengDengBoard } from './class/WuGuFengDengBoard';
+import { WuGuFengDengBoard } from './class/Board/WuGuFengDengBoard';
 
 // create the editor
 const container = document.getElementById('jsoneditor')
@@ -122,12 +122,12 @@ class Gaming extends Phaser.Scene {
         });
 
         // Notify FE
-        socket.on(emitMap.NOTIFY_ADD_PUBLIC_CARD, (data: EmitNotifyAddPublicCardData) => {
-            this.notifyAnimationManager!.addPublicCard(data)
+        socket.on(emitMap.NOTIFY_ADD_TO_PUBLIC_CARD, (data: EmitNotifyAddToPublicCardData) => {
+            this.notifyAnimationManager!.addToPublicCard(data)
         });
 
-        socket.on(emitMap.NOTIFY_ADD_OWNER_CHANGE_CARD, (data: EmitNotifyOwnerChangeCardData) => {
-            this.notifyAnimationManager!.addOwnerChangeCard(data)
+        socket.on(emitMap.NOTIFY_ADD_TO_PLAYER_CARD, (data: EmitNotifyAddToPlayerCardData) => {
+            this.notifyAnimationManager!.addToPlayerCard(data)
         });
 
         socket.on(emitMap.NOTIFY_ADD_LINES, (data: EmitNotifyAddLinesData) => {

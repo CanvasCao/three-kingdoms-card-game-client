@@ -2,6 +2,8 @@ import {Card} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {CardAreaType} from "../types/emit";
 import {getMyPlayerId} from "./gameStatusUtils";
+import {PAIDUI} from "../constants/constants";
+import sizeConfig from "../config/sizeConfig.json";
 
 export const attachFEInfoToCard = (card: Card) => {
     if (!card) {
@@ -117,13 +119,22 @@ export const attachFEInfoToCard = (card: Card) => {
 }
 
 
-export const getIsCardFaceFrontByCardAreaType = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
-    if (fromPlayerId == '牌堆') {
+export const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
+    if (fromPlayerId == PAIDUI) {
         return false
     }
+
     if (getMyPlayerId() == fromPlayerId || getMyPlayerId() == toPlayerId) {
         return true
     }
 
+    // 顺手牵羊
     return (cardAreaType !== 'hand')
+}
+
+export const getControlCardPosition = (index: number) => {
+    return {
+        x: index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
+        y: sizeConfig.background.height - sizeConfig.controlCard.height / 2
+    }
 }

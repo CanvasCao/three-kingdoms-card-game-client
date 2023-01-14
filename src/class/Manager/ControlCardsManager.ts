@@ -1,9 +1,9 @@
-import {getMyPlayerId, uuidv4} from "../utils/gameStatusUtils";
+import {getMyPlayerId, uuidv4} from "../../utils/gameStatusUtils";
 import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
-import {ControlCard} from "./ControlCard";
-import {GamingScene} from "../types/phaser";
-import {Card, GameStatus} from "../types/gameStatus";
+import {ControlCard} from "../Card/ControlCard";
+import {GamingScene} from "../../types/phaser";
+import {Card, GameStatus} from "../../types/gameStatus";
 
 export class ControlCardsManager {
     obId: string;

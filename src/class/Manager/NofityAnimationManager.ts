@@ -1,13 +1,13 @@
-import {getMyPlayerId} from "../utils/gameStatusUtils";
-import {LostCard} from "./LostCard";
-import {GamingScene} from "../types/phaser";
+import {getMyPlayerId} from "../../utils/gameStatusUtils";
+import {ToPublicCard} from "../Card/ToPublicCard";
+import {GamingScene} from "../../types/phaser";
 import {
     EmitNotifyAddLinesData,
-    EmitNotifyAddPublicCardData,
-    EmitNotifyOwnerChangeCardData,
-} from "../types/emit";
-import {attachFEInfoToCard, getIsCardFaceFrontByCardAreaType} from "../utils/cardUtils";
-import {PublicLine} from "./PublicLine";
+    EmitNotifyAddToPublicCardData,
+    EmitNotifyAddToPlayerCardData,
+} from "../../types/emit";
+import {attachFEInfoToCard, getIfToPlayerCardFaceFront} from "../../utils/cardUtils";
+import {PublicLine} from "../Line/PublicLine";
 
 export class NofityAnimationManager {
     // obId: string;
@@ -41,55 +41,52 @@ export class NofityAnimationManager {
         })
     }
 
-    addPublicCard(data: EmitNotifyAddPublicCardData) {
+    addToPublicCard(data: EmitNotifyAddToPublicCardData) {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
         data.cards.forEach((card, index) => {
             const originIndex = data.originIndexes ? data.originIndexes[index] : undefined;
             const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
             gameFEStatus.publicCards.push(card)
 
-            // toBoardPlayer undefined 就是toPublic Card
-            new LostCard(
+            new ToPublicCard(
                 this.gamingScene,
                 card,
-                true,
                 data.message,
-                originIndex,
                 gameFEStatus.publicCards,
                 fromBoardPlayer,
-                undefined,
+                originIndex,
             )
         })
 
-        // setGameEFStatus 是为了LostCard adjustLocation
+        // setGameEFStatus 是为了ToPublicCard adjustLocation
         this.gamingScene.gameFEStatusObserved.setPublicCardsGameEFStatus(gameFEStatus)
     }
 
-    addOwnerChangeCard(data: EmitNotifyOwnerChangeCardData) {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-
-        data.cards.forEach((card, index) => {
-            const originIndex = data.originIndexes?.[index] || 0;
-            const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
-            const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)
-
-            // 到myPlayer的逻辑在ControlCard
-            if (toBoardPlayer?.player.playerId == getMyPlayerId()) {
-                return
-            }
-
-            let isFaceFront = getIsCardFaceFrontByCardAreaType(data.cardAreaType, data.fromId, data.toId)
-
-            new LostCard(
-                this.gamingScene,
-                card,
-                isFaceFront,
-                data.message,
-                originIndex,
-                gameFEStatus.publicCards,
-                fromBoardPlayer,
-                toBoardPlayer,
-            )
-        })
+    addToPlayerCard(data: EmitNotifyAddToPlayerCardData) {
+    //     const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+    //
+    //     data.cards.forEach((card, index) => {
+    //         const originIndex = data.originIndexes?.[index] || 0;
+    //         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
+    //         const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)
+    //
+    //         // 到myPlayer的逻辑在ControlCard
+    //         if (toBoardPlayer?.player.playerId == getMyPlayerId()) {
+    //             return
+    //         }
+    //
+    //         let isFaceFront = getIfToPlayerCardFaceFront(data.cardAreaType, data.fromId, data.toId)
+    //
+    //         new ToPublicCard(
+    //             this.gamingScene,
+    //             card,
+    //             isFaceFront,
+    //             data.message,
+    //             originIndex,
+    //             gameFEStatus.publicCards,
+    //             fromBoardPlayer,
+    //             toBoardPlayer,
+    //         )
+    //     })
     }
 }

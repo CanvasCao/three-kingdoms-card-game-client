@@ -1,14 +1,15 @@
-import sizeConfig from "../config/sizeConfig.json";
-import colorConfig from "../config/colorConfig.json";
-import {getMyPlayerId, uuidv4} from "../utils/gameStatusUtils";
-import {sharedDrawBackCard, sharedDrawFrontCard} from "../utils/drawCardUtils";
+import sizeConfig from "../../config/sizeConfig.json";
+import colorConfig from "../../config/colorConfig.json";
+import {getMyPlayerId, uuidv4} from "../../utils/gameStatusUtils";
+import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/drawCardUtils";
 import {differenceBy} from "lodash";
-import {GameFEStatus} from "../types/gameFEStatus";
-import {GamingScene} from "../types/phaser";
-import {Card} from "../types/gameStatus";
-import {BoardPlayer} from "./BoardPlayer";
+import {GameFEStatus} from "../../types/gameFEStatus";
+import {GamingScene} from "../../types/phaser";
+import {Card} from "../../types/gameStatus";
+import {BoardPlayer} from "../Player/BoardPlayer";
+import {getControlCardPosition} from "../../utils/cardUtils";
 
-export class LostCard {
+export class ToPlayerCards {
     obId: string;
     gamingScene: GamingScene;
     card: Card;
@@ -70,13 +71,13 @@ export class LostCard {
             this.fadeInStartY = sizeConfig.background.height / 2;
         } else if (fromBoardPlayer!.player.playerId == getMyPlayerId()) { // 我打出的牌
             // LostCard的fadeInStartX 就是controlCard的cardInitEndY
-            this.fadeInStartX = originIndex! * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2;
-            this.fadeInStartY = sizeConfig.background.height - sizeConfig.controlCard.height / 2;
+            const position = getControlCardPosition(originIndex!);
+            this.fadeInStartX = position.x;
+            this.fadeInStartY = position.y;
         } else { // 别人打出的牌
             this.fadeInStartX = fromBoardPlayer!.playerPosition.x
             this.fadeInStartY = fromBoardPlayer!.playerPosition.y
         }
-
 
         // tint
         this.disableTint = colorConfig.disableCard;

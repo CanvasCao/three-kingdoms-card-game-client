@@ -1,18 +1,18 @@
-import sizeConfig from "../config/sizeConfig.json";
-import colorConfig from "../config/colorConfig.json";
+import sizeConfig from "../../config/sizeConfig.json";
+import colorConfig from "../../config/colorConfig.json";
 import {
     getCanSelectMeAsFirstTargetCardNamesClosure, getCanSelectMeAsSecondTargetCardNamesClosure,
     getDistanceFromAToB,
     getIfPlayerHasAnyCards, getIfPlayerHasWeapon,
     getMyPlayerId,
     uuidv4
-} from "../utils/gameStatusUtils";
-import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
-import {GamingScene, PlayerEquipmentGroup} from "../types/phaser";
-import {Card, GameStatus, PandingSign, Player} from "../types/gameStatus";
-import {ColorConfigJson} from "../types/config";
-import {GameFEStatus} from "../types/gameFEStatus";
-import {attachFEInfoToCard} from "../utils/cardUtils";
+} from "../../utils/gameStatusUtils";
+import {BASIC_CARDS_CONFIG, DELAY_SCROLL_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {GamingScene, PlayerEquipmentGroup} from "../../types/phaser";
+import {Card, GameStatus, PandingSign, Player} from "../../types/gameStatus";
+import {ColorConfigJson} from "../../types/config";
+import {GameFEStatus} from "../../types/gameFEStatus";
+import {attachFEInfoToCard} from "../../utils/cardUtils";
 import differenceBy from "lodash/differenceBy";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;

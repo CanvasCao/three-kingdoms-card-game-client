@@ -1,7 +1,7 @@
-import {editor2} from "../index";
+import {editor2} from "../../index";
 import {cloneDeep} from "lodash";
-import {GameFEStatus} from "../types/gameFEStatus";
-import {FEObserver} from "../types/observer";
+import {GameFEStatus} from "../../types/gameFEStatus";
+import {FEObserver} from "../../types/observer";
 
 export class GameFEStatusObserved {
     originCardState: {

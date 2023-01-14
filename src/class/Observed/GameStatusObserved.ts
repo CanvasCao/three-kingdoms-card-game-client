@@ -1,7 +1,6 @@
-import {editor} from "../index";
-import {GameFEStatus} from "../types/gameFEStatus";
-import {GameStatus} from "../types/gameStatus";
-import {Observer} from "../types/observer";
+import {editor} from "../../index";
+import {GameStatus} from "../../types/gameStatus";
+import {Observer} from "../../types/observer";
 
 export class GameStatusObserved {
     gameStatus?: GameStatus;

@@ -1,5 +1,5 @@
-import sizeConfig from "../config/sizeConfig.json";
-import textConfig from "../config/textConfig.json";
+import sizeConfig from "../../config/sizeConfig.json";
+import textConfig from "../../config/textConfig.json";
 import {
     getIsMyResponseCardTurn,
     getCanPlayInMyTurn,
@@ -8,14 +8,14 @@ import {
     getMyResponseInfo,
     getIsMyThrowTurn,
     getNeedThrowCardNumber
-} from "../utils/gameStatusUtils";
-import emitMap from "../config/emitMap.json";
-import {BtnGroup, GamingScene} from "../types/phaser";
+} from "../../utils/gameStatusUtils";
+import emitMap from "../../config/emitMap.json";
+import {BtnGroup, GamingScene} from "../../types/phaser";
 import Phaser from "phaser";
-import {GameFEStatus} from "../types/gameFEStatus";
-import {GameStatus} from "../types/gameStatus";
-import {attachFEInfoToCard} from "../utils/cardUtils";
-import {generateAction, generateResponse, generateThrowData} from "../utils/emitDataGenerator";
+import {GameFEStatus} from "../../types/gameFEStatus";
+import {GameStatus} from "../../types/gameStatus";
+import {attachFEInfoToCard} from "../../utils/cardUtils";
+import {generateAction, generateResponse, generateThrowData} from "../../utils/emitDataGenerator";
 
 export class ControlButtons {
     obId: string;
