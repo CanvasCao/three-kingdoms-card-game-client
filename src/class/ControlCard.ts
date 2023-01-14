@@ -116,7 +116,7 @@ export class ControlCard {
 
                 if (canPlayInMyTurn || isMyResponseCardTurn) {
                     // 选中再点击就是反选
-                    if (curFEStatus.selectedCards?.[0]?.cardId == this.card.cardId) {
+                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
                         curFEStatus.selectedCards = [];
                         curFEStatus.selectedIndexes = [];
                         curFEStatus.actualCard = null;
@@ -128,7 +128,7 @@ export class ControlCard {
                         curFEStatus.selectedTargetPlayers = [];
                     }
                 } else if (isMyThrowTurn) {
-                    if (curFEStatus.selectedCards.map((c: Card) => c.cardId).includes(this.card.cardId)) {
+                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
                         curFEStatus.selectedCards = differenceBy(curFEStatus.selectedCards, [this.card], 'cardId');
                     } else {
                         const myPlayer = curStatus.players[getMyPlayerId()];

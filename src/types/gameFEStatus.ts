@@ -9,5 +9,6 @@ export type GameFEStatus = {
 
     selectedTargetPlayers: Players,
     selectedSkill: any[],
+
     publicCards: Card[],
 };

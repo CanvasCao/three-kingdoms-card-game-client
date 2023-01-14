@@ -13,6 +13,7 @@ import {Card, GameStatus, PandingSign, Player} from "../types/gameStatus";
 import {ColorConfigJson} from "../types/config";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {attachFEInfoToCard} from "../utils/cardUtils";
+import differenceBy from "lodash/differenceBy";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
@@ -314,6 +315,7 @@ export class BoardPlayer {
         this.playerImage!.on('pointerdown', () => {
             const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
             const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus;
+
             if (!curGameFEStatus.actualCard) {
                 return;
             }
@@ -322,8 +324,10 @@ export class BoardPlayer {
                 return;
             }
 
-            // 自己已经选中过
+            // Player已经选中过 反选
             if (curGameFEStatus.selectedTargetPlayers.find((u: Player) => u.playerId == this.player.playerId)) {
+                curGameFEStatus.selectedTargetPlayers = differenceBy(curGameFEStatus.selectedTargetPlayers, [this.player], 'playerId');
+                this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
                 return;
             }
 
@@ -473,7 +477,6 @@ export class BoardPlayer {
     onPlayerDisableChange(gameFEStatus: GameFEStatus) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
 
-
         const setPlayerDisable = () => {
             this.playerImage!.setTint(colorConfigJson.disablePlayer);
             this._disable = true;
@@ -483,72 +486,82 @@ export class BoardPlayer {
             this._disable = false;
         }
 
-        if (this._actualCardId != gameFEStatus?.actualCard?.cardId) {
-            const actualCardName = gameFEStatus?.actualCard?.CN
-            const mePlayer = gameStatus.players[getMyPlayerId()];
-            const targetPlayer = gameStatus.players[this.player.playerId];
-            // 计算杀的距离
-            if (actualCardName == BASIC_CARDS_CONFIG.SHA.CN) {
-                let attackDistance, distanceBetweenAAndB;
+        if (this._actualCardId == gameFEStatus?.actualCard?.cardId) {
+            return
+        }
 
-                const curScrollResStage = gameStatus.scrollResStages[0];
-                if (curScrollResStage) { // 响应锦囊的杀 setPlayerAble
-                    setPlayerAble()
-                } else {
-                    attackDistance = mePlayer?.weaponCard?.distance || 1;
-                    distanceBetweenAAndB = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
-                    if (attackDistance >= distanceBetweenAAndB) {
-                        setPlayerAble()
-                    } else {
-                        setPlayerDisable();
-                    }
-                }
+        const actualCardName = gameFEStatus?.actualCard?.CN || '';
+        const mePlayer = gameStatus.players[getMyPlayerId()];
+        const targetPlayer = gameStatus.players[this.player.playerId];
 
-            } else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
-                if (gameFEStatus.selectedTargetPlayers.length == 0) {
-                    if (getIfPlayerHasWeapon(targetPlayer)) {
-                        setPlayerAble()
-                    } else {
-                        setPlayerDisable();
-                    }
-                } else if (gameFEStatus.selectedTargetPlayers.length == 1) {
-                    let attackDistance, distanceBetweenAAndB;
-                    const daoOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
-                    attackDistance = daoOwnerPlayer?.weaponCard?.distance || 1;
-                    distanceBetweenAAndB = getDistanceFromAToB(daoOwnerPlayer, targetPlayer, Object.keys(gameStatus.players).length)
-                    if (attackDistance >= distanceBetweenAAndB) {
-                        setPlayerAble()
-                    } else {
-                        setPlayerDisable();
-                    }
-                }
-            } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
-                if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
-                    setPlayerDisable()
-                } else {
-                    setPlayerAble()
-                }
-            } else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN ||
-                actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN
-            ) {
-                const distanceBetweenMeAndTarget = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
-                if (1 >= distanceBetweenMeAndTarget) {
+        // 计算杀的距离
+        if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCardName)) {
+            let attackDistance, distanceBetweenAAndB;
+
+            const curScrollResStage = gameStatus.scrollResStages[0];
+            if (curScrollResStage) { // 响应锦囊的杀 setPlayerAble
+                setPlayerAble()
+            } else {
+                attackDistance = mePlayer?.weaponCard?.distance || 1;
+                distanceBetweenAAndB = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
+                if (attackDistance >= distanceBetweenAAndB) {
                     setPlayerAble()
                 } else {
                     setPlayerDisable();
                 }
-            } else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
-                actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
-                if (getIfPlayerHasAnyCards(targetPlayer)) {
+            }
+        }
+        // 借刀杀人
+        else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
+            if (gameFEStatus.selectedTargetPlayers.length == 0) {
+                if (getIfPlayerHasWeapon(targetPlayer)) {
                     setPlayerAble()
                 } else {
-                    setPlayerDisable()
+                    setPlayerDisable();
                 }
+            } else if (gameFEStatus.selectedTargetPlayers.length == 1) {
+                let attackDistance, distanceBetweenAAndB;
+                const daoOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
+                attackDistance = daoOwnerPlayer?.weaponCard?.distance || 1;
+                distanceBetweenAAndB = getDistanceFromAToB(daoOwnerPlayer, targetPlayer, Object.keys(gameStatus.players).length)
+                if (attackDistance >= distanceBetweenAAndB) {
+                    setPlayerAble()
+                } else {
+                    setPlayerDisable();
+                }
+            }
+        }
+        // 乐不思蜀
+        else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
+            if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
+                setPlayerDisable()
             } else {
                 setPlayerAble()
             }
-            this._actualCardId = gameFEStatus?.actualCard?.cardId
         }
+        // 兵粮寸断
+        else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN ||
+            actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN
+        ) {
+            const distanceBetweenMeAndTarget = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
+            if (1 >= distanceBetweenMeAndTarget) {
+                setPlayerAble()
+            } else {
+                setPlayerDisable();
+            }
+        }
+        // 过河拆桥 顺手牵羊
+        else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
+            actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+            if (getIfPlayerHasAnyCards(targetPlayer)) {
+                setPlayerAble()
+            } else {
+                setPlayerDisable()
+            }
+        } else {
+            setPlayerAble()
+        }
+        this._actualCardId = gameFEStatus?.actualCard?.cardId
     }
 
     onPlayerSelectedChange(gameFEStatus: GameFEStatus) {
