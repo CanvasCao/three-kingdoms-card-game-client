@@ -99,7 +99,7 @@ export class ControlCard {
         this.cardObjgroup.push(cardImgObj);
         this.cardObjgroup.push(cardNameObj);
         this.cardObjgroup.push(cardHuaseNumberObj);
-        this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus!, true)
+        this.setCardDisableByGameStatus(this.gamingScene.gameStatusObserved.gameStatus!)
     }
 
     bindEvent() {
@@ -202,7 +202,7 @@ export class ControlCard {
 
     }
 
-    setCardDisableByGameStatus(gameStatus: GameStatus, force = false) {
+    setCardDisableByGameStatus(gameStatus: GameStatus) {
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);

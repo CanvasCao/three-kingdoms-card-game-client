@@ -5,6 +5,8 @@ import {ControlCard} from "../Card/ControlCard";
 import {GamingScene} from "../../types/phaser";
 import {Card, GameStatus} from "../../types/gameStatus";
 import {sizeConfig} from "../../config/sizeConfig";
+import {ControlEquipmentCard} from "../Card/ControlEquipmentCard";
+import {EQUIPMENT_TYPE} from "../../config/cardConfig";
 
 export class ControlCardsManager {
     obId: string;
@@ -16,15 +18,23 @@ export class ControlCardsManager {
 
         this.gamingScene = gamingScene;
         this._playerCards = [];
-        
+
         this.drawBackground();
+        this.drawEqupmentCards();
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
-    drawBackground(){
-        const bgHeight=sizeConfig.controlCard.height*1.3
-        const maskImg = this.gamingScene.add.image(0, sizeConfig.background.height-bgHeight, 'white')
-        maskImg.displayHeight =bgHeight;
+    drawEqupmentCards() {
+        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.WEAPON);
+        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.SHIELD);
+        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.PLUS_HORSE);
+        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.MINUS_HORSE);
+    }
+
+    drawBackground() {
+        const bgHeight = sizeConfig.controlCard.height + sizeConfig.controlCardBgMargin * 2
+        const maskImg = this.gamingScene.add.image(0, sizeConfig.background.height - bgHeight, 'white')
+        maskImg.displayHeight = bgHeight;
         maskImg.displayWidth = sizeConfig.background.width;
         // @ts-ignore
         maskImg.setTint("#000")

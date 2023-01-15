@@ -134,7 +134,7 @@ export const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlaye
 
 export const getControlCardPosition = (index: number) => {
     return {
-        x: sizeConfig.controlEquipment.width + index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
+        x: sizeConfig.controlEquipment.width + sizeConfig.controlCardBgMargin + index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
         y: sizeConfig.background.height - sizeConfig.controlCard.height / 2 - sizeConfig.controlCard.height * 0.15
     }
 }

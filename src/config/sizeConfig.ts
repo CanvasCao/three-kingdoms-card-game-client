@@ -4,6 +4,7 @@ const bgHeight = 675
 const cardWidth = 80;
 const cardHeight = 106;
 
+const controlCardBgMargin = 15
 const controlEquipmentWidth = 140;
 const controlEquipmentHeight = 30;
 
@@ -14,12 +15,13 @@ const sizeConfig = {
     },
     "playersArea": {
         "width": bgWidth * 0.8,
-        "height": bgHeight - cardHeight * 1.3
+        "height": bgHeight - cardHeight - controlCardBgMargin * 2
     },
     "controlCard": {
         "width": cardWidth,
         "height": cardHeight
     },
+    "controlCardBgMargin": controlCardBgMargin,
     "controlEquipment": {
         "width": controlEquipmentWidth,
         "height": controlEquipmentHeight
