@@ -2,7 +2,8 @@ import sizeConfig from "../../config/sizeConfig.json";
 import colorConfig from "../../config/colorConfig.json";
 import {
     getAmendTargetMinMax,
-    getCanSelectMeAsFirstTargetCardNamesClosure, getCanSelectMeAsSecondTargetCardNamesClosure,
+    getCanSelectMeAsFirstTargetCardNamesClosure,
+    getCanSelectMeAsSecondTargetCardNamesClosure,
     getDistanceFromAToB,
     getIfPlayerHasAnyCards, getIfPlayerHasWeapon,
     getMyPlayerId,
@@ -192,14 +193,17 @@ export class BoardPlayer {
     drawBloods() {
         const bloodHeight = this.isMe ? sizeConfig.player.height * 0.15 : sizeConfig.player.height * 0.15 * 0.8;
         const bloodWidth = bloodHeight * 1.5333;
+        const marginBottom = this.isMe ? 4 : 0;
 
         for (let i = 0; i < this.player.maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
                 this.positionX + sizeConfig.player.width / 2 * 0.86,
-                this.positionY + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.81 * i),
-                "greenGouyu");
+                this.positionY - marginBottom + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.9 * i),
+                "gouyu");
             bloodImage.displayHeight = bloodHeight;
             bloodImage.displayWidth = bloodWidth;
+            // @ts-ignore
+            bloodImage.setTint(colorConfig.bloodGreen);
             this.bloodImages!.push(bloodImage);
         }
     }
@@ -251,7 +255,7 @@ export class BoardPlayer {
         );
 
         this[groupName]!.distanceText!.setPadding(padding + 5, padding + 1, padding + 0, padding + 0);
-        this[groupName]!.distanceText!.setBackgroundColor("#ccc")
+        this[groupName]!.distanceText!.setBackgroundColor("#eee")
         this[groupName]!.distanceText!.setFontSize(fontSize)
         this[groupName]!.distanceText!.setAlpha(0)
 
@@ -296,6 +300,15 @@ export class BoardPlayer {
     }
 
     setBloods(number: number) {
+        let color;
+        if (number > 2) {
+            color = colorConfig.bloodGreen
+        } else if (number == 2) {
+            color = colorConfig.bloodYellow
+        } else {
+            color = colorConfig.bloodRed
+        }
+
         for (let i = 0; i < this.bloodImages!.length; i++) {
             const bloodNumber = i + 1;
             const alpha = (bloodNumber > number) ? 0 : 1
@@ -308,6 +321,11 @@ export class BoardPlayer {
                     ease: "Bounce.easeInOut"
                 }
             });
+
+            if(alpha){
+                // @ts-ignore
+                this.bloodImages![i].setTint(color)
+            }
         }
     }
 
@@ -356,7 +374,7 @@ export class BoardPlayer {
 
     drawBloodsBg() {
         const graphicsW = this.isMe ? sizeConfig.player.width * 0.16 : sizeConfig.player.width * 0.16 * 0.8
-        const graphicsH = this.isMe ? sizeConfig.player.height * 0.52 : sizeConfig.player.height * 0.52 * 0.8
+        const graphicsH = this.isMe ? sizeConfig.player.height * 0.6 : sizeConfig.player.height * 0.6 * 0.8
         this.bloodsBgGraphics = this.gamingScene.add.graphics();
         this.bloodsBgGraphics.fillStyle(0x000, 1);
         this.bloodsBgGraphics.fillRoundedRect(

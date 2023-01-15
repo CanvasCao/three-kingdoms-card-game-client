@@ -143,7 +143,7 @@ export class PlayerCardsBoard {
             this.initX + gridOffset.column1.x - sizeConfig.controlCard.width / 2,
             this.initY + gridOffset.line1.y, 'white')
         // @ts-ignore
-        this.handCardsPlaceholder.setTint(colorConfig.playerCardPlaceholder)
+        this.handCardsPlaceholder.setTint(colorConfig.boardCardPlaceholder)
         this.handCardsPlaceholder.displayHeight = sizeConfig.controlCard.height;
         this.handCardsPlaceholder.displayWidth = 675;
         this.handCardsPlaceholder.setOrigin(0, 0.5)
@@ -157,7 +157,7 @@ export class PlayerCardsBoard {
                 this.initY + gridOffset.line2.y,
                 'white')
             // @ts-ignore
-            img.setTint(colorConfig.playerCardPlaceholder)
+            img.setTint(colorConfig.boardCardPlaceholder)
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
@@ -182,7 +182,7 @@ export class PlayerCardsBoard {
                 this.initY + gridOffset.line2.y,
                 'white')
             // @ts-ignore
-            img.setTint(colorConfig.playerCardPlaceholder)
+            img.setTint(colorConfig.boardCardPlaceholder)
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
