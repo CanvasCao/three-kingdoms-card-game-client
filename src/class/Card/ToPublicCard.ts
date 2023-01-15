@@ -1,4 +1,4 @@
-import sizeConfig from "../../config/sizeConfig.json";
+import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {getMyPlayerId, uuidv4} from "../../utils/gameStatusUtils";
 import {sharedDrawFrontCard} from "../../utils/drawCardUtils";

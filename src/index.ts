@@ -3,7 +3,7 @@ import './socket'
 import Phaser from 'phaser';
 import 'normalize.css'
 import elementsUrl from './config/elementsUrl.json'
-import sizeConfig from './config/sizeConfig.json'
+import {sizeConfig} from './config/sizeConfig'
 import {socket} from "./socket";
 import {ControlCardsManager} from "./class/Manager/ControlCardsManager";
 import {ControlButtons} from "./class/Button/ControlButtons";

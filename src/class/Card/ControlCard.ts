@@ -1,4 +1,4 @@
-import sizeConfig from "../../config/sizeConfig.json";
+import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {
     getMyPlayerId,
@@ -282,7 +282,7 @@ export class ControlCard {
         const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
         if (this._selected == isSelected) return;
         if (this.isMoving) return;
-        const whenSelectedMoveDistance = 30;
+        const whenSelectedMoveDistance = 20;
 
         this.isMoving = true;
         this.cardObjgroup.forEach((obj) => {

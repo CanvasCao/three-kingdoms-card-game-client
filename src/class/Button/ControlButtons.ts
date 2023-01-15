@@ -1,4 +1,4 @@
-import sizeConfig from "../../config/sizeConfig.json";
+import {sizeConfig} from "../../config/sizeConfig";
 import textConfig from "../../config/textConfig.json";
 import {
     getIsMyResponseCardTurn,
@@ -46,8 +46,8 @@ export class ControlButtons {
 
         this.gamingScene = gamingScene;
 
-        this.cardBtnsX = sizeConfig.playersArea.width * 0.8 / 2;
-        this.cardBtnsY = sizeConfig.playersArea.height - sizeConfig.background.height * 0;
+        this.cardBtnsX = sizeConfig.playersArea.width / 2 - sizeConfig.okBtn.width;
+        this.cardBtnsY = sizeConfig.playersArea.height - sizeConfig.background.height * 0.04;
         this.btnRightOffset = 180;
 
         this._isMyResponseCardTurn;
@@ -167,7 +167,7 @@ export class ControlButtons {
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._canPlayInMyTurn) {
-                if (!this.canClickOkBtnInMyPlayStage(gameStatus,gameFEStatus)) {
+                if (!this.canClickOkBtnInMyPlayStage(gameStatus, gameFEStatus)) {
                     return
                 }
 

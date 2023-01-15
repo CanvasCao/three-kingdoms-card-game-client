@@ -1,4 +1,4 @@
-import sizeConfig from "./sizeConfig.json";
+import {sizeConfig} from "./sizeConfig";
 
 const cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width / 2
 const cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2.1

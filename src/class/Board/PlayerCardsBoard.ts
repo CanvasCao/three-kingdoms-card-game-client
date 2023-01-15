@@ -1,6 +1,6 @@
 import {Card, GameStatus, ScrollResStage, Player} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
-import sizeConfig from "../../config/sizeConfig.json";
+import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {getMyPlayerId, uuidv4, verticalRotationSting} from "../../utils/gameStatusUtils";
 import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";

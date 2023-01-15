@@ -1,4 +1,4 @@
-import sizeConfig from "../../config/sizeConfig.json";
+import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {
     getAmendTargetMinMax,
@@ -15,6 +15,7 @@ import {Card, GameStatus, PandingSign, Player} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
+import {sharedDrawEquipment} from "../../utils/drawEquipmentUtils";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
@@ -100,9 +101,6 @@ export class BoardPlayer {
         this.drawBloods();
         this.setBloods(this.player.currentBlood);
         this.drawStageText();
-        if (!this.isMe) {
-            this.drawEquipments();
-        }
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
@@ -225,64 +223,6 @@ export class BoardPlayer {
         this.stageText.setAlpha(0)
     }
 
-    drawEquipments() {
-        for (let i = 0; i < 4; i++) {
-            this.drawEquipment(i);
-        }
-    }
-
-    drawEquipment(index: number) {
-        const padding = 1;
-        const offsetY = sizeConfig.player.height / 11;
-        const offsetYStep = sizeConfig.player.height / 10;
-        const fontSize = sizeConfig.player.height / 15;
-        const groupMap: { [key: number]: 'weaponGroup' | 'shieldGroup' | 'plusHorseGroup' | 'minusHorseGroup' } = {
-            0: 'weaponGroup',
-            1: 'shieldGroup',
-            2: 'plusHorseGroup',
-            3: 'minusHorseGroup'
-        };
-
-        // distanceText 包含背景设置
-        const groupName = groupMap[index];
-        this[groupName] = {};
-        this[groupName]!.distanceText = this.gamingScene.add.text(
-            this.positionX - sizeConfig.player.width / 2,
-            this.positionY + offsetY + offsetYStep * index,
-            "",
-            // @ts-ignore
-            {fill: "#000", align: "left", fixedWidth: sizeConfig.player.width * 0.8}
-        );
-
-        this[groupName]!.distanceText!.setPadding(padding + 5, padding + 1, padding + 0, padding + 0);
-        this[groupName]!.distanceText!.setBackgroundColor("#eee")
-        this[groupName]!.distanceText!.setFontSize(fontSize)
-        this[groupName]!.distanceText!.setAlpha(0)
-
-        this[groupName]!.nameText = this.gamingScene.add.text(
-            this.positionX - sizeConfig.player.width / 2 + sizeConfig.player.width * 0.19,
-            this.positionY + offsetY + offsetYStep * index,
-            "",
-            // @ts-ignore
-            {fill: "#000", align: "justify"}
-        );
-        this[groupName]!.nameText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
-        this[groupName]!.nameText!.setFontSize(fontSize)
-        this[groupName]!.nameText!.setAlpha(0)
-
-
-        this[groupName]!.huaseNumText = this.gamingScene.add.text(
-            this.positionX - sizeConfig.player.width / 2 + sizeConfig.player.width * 0.6,
-            this.positionY + offsetY + offsetYStep * index,
-            "",
-            // @ts-ignore
-            {fill: "#000", align: "center"}
-        );
-        this[groupName]!.huaseNumText!.setPadding(padding + 0, padding + 1, padding + 0, padding + 0);
-        this[groupName]!.huaseNumText!.setFontSize(fontSize)
-        this[groupName]!.huaseNumText!.setAlpha(0)
-    }
-
     drawIsDead() {
         this.playerImage!.setTint(colorConfigJson.disablePlayer);
         this.isDeadText = this.gamingScene.add.text(
@@ -322,7 +262,7 @@ export class BoardPlayer {
                 }
             });
 
-            if(alpha){
+            if (alpha) {
                 // @ts-ignore
                 this.bloodImages![i].setTint(color)
             }
@@ -410,20 +350,39 @@ export class BoardPlayer {
             {card: "minusHorseCard", group: "minusHorseGroup"},
         ].forEach((ele, index) => {
             const card = player[ele.card as keyof Player] as Card
-            // @ts-ignore
-            const group = this[ele.group]
             if (card) {
-                group.distanceText.setText(card.distanceDesc)
-                group.nameText.setText(card.CN)
-                group.huaseNumText.setText(card.cardNumDesc + card.huase)
-                this.gamingScene.tweens.add({
-                    targets: [group.distanceText, group.nameText, group.huaseNumText],
-                    alpha: {
-                        value: 0.95,
-                        duration: 100,
-                    },
-                });
+                // @ts-ignore
+                if (this[ele.group]) {
+                    // @ts-ignore
+                    const group = this[ele.group]
+                    group.distanceText.setText(card.distanceDesc || '')
+                    group.nameText.setText(card.CN)
+                    group.huaseNumText.setText(card.cardNumDesc + card.huase)
+                } else {
+                    // @ts-ignore
+                    this[ele.group] = {};
+                    // @ts-ignore
+                    const group = this[ele.group]
+                    const offsetY = sizeConfig.player.height / 9;
+                    const offsetYStep = sizeConfig.player.height / 10;
+                    const positionX = this.positionX - sizeConfig.player.width / 2;
+                    const positionY = this.positionY + offsetY + offsetYStep * index;
+                    const {
+                        distanceText,
+                        nameText,
+                        huaseNumText
+                    } = sharedDrawEquipment(this.gamingScene, card, {x: positionX, y: positionY})
+                    group.distanceText = distanceText;
+                    group.nameText = nameText;
+                    group.huaseNumText = huaseNumText;
+                }
             } else {
+                // @ts-ignore
+                if (!this[ele.group]) {
+                    return
+                }
+                // @ts-ignore
+                const group = this[ele.group]
                 this.gamingScene.tweens.add({
                     targets: [group.distanceText, group.nameText, group.huaseNumText],
                     alpha: {

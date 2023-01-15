@@ -1,5 +1,5 @@
 import {GameStatusPlayers, Player} from "../types/gameStatus"
-import sizeConfig from "../config/sizeConfig.json";
+import {sizeConfig} from "../config/sizeConfig";
 import {getMyPlayerId} from "./gameStatusUtils";
 
 const playersAreaW = sizeConfig.playersArea.width;

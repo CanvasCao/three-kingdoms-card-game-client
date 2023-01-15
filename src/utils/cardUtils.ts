@@ -3,7 +3,7 @@ import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/card
 import {CardAreaType} from "../types/emit";
 import {getMyPlayerId} from "./gameStatusUtils";
 import {PAIDUI} from "../constants/constants";
-import sizeConfig from "../config/sizeConfig.json";
+import {sizeConfig} from "../config/sizeConfig";
 
 export const attachFEInfoToCard = (card: Card) => {
     if (!card) {
@@ -134,7 +134,7 @@ export const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlaye
 
 export const getControlCardPosition = (index: number) => {
     return {
-        x: index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
-        y: sizeConfig.background.height - sizeConfig.controlCard.height / 2
+        x: sizeConfig.controlEquipment.width + index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
+        y: sizeConfig.background.height - sizeConfig.controlCard.height / 2 - sizeConfig.controlCard.height * 0.15
     }
 }

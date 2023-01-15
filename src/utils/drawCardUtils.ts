@@ -1,4 +1,4 @@
-import sizeConfig from "../config/sizeConfig.json";
+import {sizeConfig} from "../config/sizeConfig";
 import colorConfig from "../config/colorConfig.json";
 import {GamingScene} from "../types/phaser";
 import {Card} from "../types/gameStatus";

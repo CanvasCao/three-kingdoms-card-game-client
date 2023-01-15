@@ -1,9 +1,8 @@
-import sizeConfig from "../../config/sizeConfig.json";
+import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {getMyPlayerId, uuidv4} from "../../utils/gameStatusUtils";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/drawCardUtils";
 import {differenceBy} from "lodash";
-import {GameFEStatus} from "../../types/gameFEStatus";
 import {GamingScene} from "../../types/phaser";
 import {Card} from "../../types/gameStatus";
 import {BoardPlayer} from "../Player/BoardPlayer";
