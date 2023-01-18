@@ -6,6 +6,7 @@ export type GameStatus = {
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
     wuxieSimultaneousResStage: WuxieSimultaneousResStage,
+    weaponResStages: weaponResStage[],
     wugufengdengCards: WugufengdengCard[]
     tieSuoTempStorage: TieSuoTempStorageItem[],
     throwedCards?: Card[],
@@ -138,6 +139,12 @@ export type ScrollResStage = {
 export type WuxieSimultaneousResStage = {
     hasWuxiePlayerIds: string[],
     wuxieChain: WuxieChain,
+}
+
+export type weaponResStage = {
+    originId: string,
+    targetId: string,
+    weaponCardName: string,
 }
 
 //  [

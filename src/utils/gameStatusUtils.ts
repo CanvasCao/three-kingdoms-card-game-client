@@ -58,6 +58,9 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
     if (gameStatus.shanResStages.length > 0) {
         return gameStatus.shanResStages[0]?.originId == getMyPlayerId();
     }
+    if (gameStatus.weaponResStages.length > 0) {
+        return gameStatus.weaponResStages[0]?.originId == getMyPlayerId();
+    }
     return false;
 }
 
@@ -66,6 +69,7 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
         gameStatus.taoResStages.length <= 0 &&
         gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length <= 0 &&
         gameStatus.scrollResStages.length <= 0 &&
+        gameStatus.weaponResStages.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 
@@ -76,17 +80,17 @@ const getMyResponseInfo = (gameStatus: GameStatus):
         cardNames: string[],
         wuxieTargetCardId?: string
     } | undefined => {
-    if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
+    if (gameStatus.taoResStages.length > 0) {
+        return {
+            targetId: gameStatus.taoResStages[0].targetId,
+            cardNames: [BASIC_CARDS_CONFIG.TAO.CN],
+        }
+    } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
         const chainItem = gameStatus.wuxieSimultaneousResStage.wuxieChain[gameStatus.wuxieSimultaneousResStage.wuxieChain.length - 1]
         return {
             targetId: chainItem.nextWuXieTargetId, // 我无懈可击的目标人
             cardNames: [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN],
             wuxieTargetCardId: chainItem.actualCard.cardId,// 为了校验无懈可击是否冲突
-        }
-    } else if (gameStatus.taoResStages.length > 0) {
-        return {
-            targetId: gameStatus.taoResStages[0].targetId,
-            cardNames: [BASIC_CARDS_CONFIG.TAO.CN],
         }
     } else if (gameStatus.shanResStages.length > 0) {
         return {
@@ -113,6 +117,13 @@ const getMyResponseInfo = (gameStatus: GameStatus):
         return {
             targetId: curScrollResStage.targetId,
             cardNames: needResponseCardNames,
+        }
+    } else if (gameStatus.weaponResStages.length > 0) {
+        if (gameStatus.weaponResStages[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
+            return {
+                targetId: gameStatus.weaponResStages[0].targetId,
+                cardNames: [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,],
+            }
         }
     }
 }
