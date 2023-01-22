@@ -1,32 +1,44 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {
+    getCanIPlaySha, getCanPlayInMyTurn,
     getMyPlayerId,
     uuidv4,
 } from "../../utils/gameStatusUtils";
 import {GamingScene} from "../../types/phaser";
 import {Card, GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import {EQUIPMENT_TYPE} from "../../config/cardConfig";
+import {EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {sharedDrawEquipment} from "../../utils/drawEquipmentUtils";
+
+const typeCardNameMap = {
+    [EQUIPMENT_TYPE.WEAPON]: 'weaponCard',
+    [EQUIPMENT_TYPE.SHIELD]: 'shieldCard',
+    [EQUIPMENT_TYPE.PLUS_HORSE]: 'plusHorseCard',
+    [EQUIPMENT_TYPE.MINUS_HORSE]: 'minusHorseCard',
+}
 
 export class ControlEquipmentCard {
     obId: string;
     gamingScene: GamingScene;
     equipmentType: string;
+    card: Card | null;
 
     _cardId: string;
     _selected: boolean;
 
+    selectedStroke: Phaser.GameObjects.Graphics | null;
+    background: Phaser.GameObjects.Image | null;
     distanceText: Phaser.GameObjects.Text | null;
     nameText: Phaser.GameObjects.Text | null;
     huaseNumText: Phaser.GameObjects.Text | null;
-
+    group: Phaser.GameObjects.GameObject[]
 
     constructor(gamingScene: GamingScene, equipmentType: string) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
         this.equipmentType = equipmentType;
+        this.card = null;
 
         // inner state
         this._cardId = '';
@@ -34,13 +46,14 @@ export class ControlEquipmentCard {
 
 
         // phaser obj
+        this.selectedStroke = null;
+        this.background = null;
         this.distanceText = null;
         this.nameText = null;
         this.huaseNumText = null;
-
+        this.group = [];
 
         this.drawEquipmentCard();
-
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
@@ -56,6 +69,8 @@ export class ControlEquipmentCard {
         }
         const offsetY = map[this.equipmentType] * sizeConfig.controlEquipment.height;
         const {
+            selectedStroke,
+            background,
             distanceText,
             nameText,
             huaseNumText,
@@ -65,49 +80,112 @@ export class ControlEquipmentCard {
             isMe: true
         })
 
+        this.selectedStroke = selectedStroke;
+        this.background = background;
         this.distanceText = distanceText;
         this.nameText = nameText;
         this.huaseNumText = huaseNumText;
+        this.group.push(background)
+        this.group.push(distanceText)
+        this.group.push(nameText)
+        this.group.push(huaseNumText)
     }
 
     bindEvent() {
-        this.distanceText!.on('pointerdown', () => {
-                // this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curFEStatus);
+        this.background!.on('pointerdown', () => {
+                if (!this.card) {
+                    return
+                }
+
+                if (this.card.CN !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
+                    return;
+                }
+
+                const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
+                if (!getCanIPlaySha(gameStatus)) {
+                    return;
+                }
+
+                const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+                if (gameFEStatus.selectedWeaponCard) {
+                    this.gamingScene.gameFEStatusObserved.resetSelectedStatus()
+                } else {
+                    gameFEStatus.selectedWeaponCard = this.card;
+                    this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(gameFEStatus)
+                }
             }
         );
     }
 
-    gameStatusNotify(gameStatus: GameStatus) {
-        const myPlayer = gameStatus.players[getMyPlayerId()];
-        const map = {
-            [EQUIPMENT_TYPE.WEAPON]: 'weaponCard',
-            [EQUIPMENT_TYPE.SHIELD]: 'shieldCard',
-            [EQUIPMENT_TYPE.PLUS_HORSE]: 'plusHorseCard',
-            [EQUIPMENT_TYPE.MINUS_HORSE]: 'minusHorseCard',
-        }
-        // @ts-ignore
-        const card = myPlayer[map[this.equipmentType]] as Card
+    hideCard() {
+        this.group.forEach((obj) => {
+            this.gamingScene.tweens.add({
+                targets: obj,
+                alpha: {
+                    value: this.card ? 1 : 0,
+                    duration: 0,
+                },
+            });
+        });
+    }
 
-        if (card?.cardId == this._cardId) {
+    showCard() {
+        if (!this.card) {
+            return
+        }
+        this.background?.setAlpha(1)
+        this.distanceText!.setText(this.card.distanceDesc || '')
+        this.nameText!.setText(this.card.CN)
+        this.huaseNumText!.setText(this.card.cardNumDesc + this.card.huase)
+    }
+
+    gameStatusNotify(gameStatus: GameStatus) {
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+        const myPlayer = gameStatus.players[getMyPlayerId()];
+        // @ts-ignore
+        this.card = myPlayer[typeCardNameMap[this.equipmentType]] as Card
+
+        this.onCardDisableChange(gameStatus);
+
+        if (this.card?.cardId == this._cardId) {
             return
         }
 
-        if (card) {
-            this.distanceText!.setText(card.distanceDesc || '')
-            this.nameText!.setText(card.CN)
-            this.huaseNumText!.setText(card.cardNumDesc + card.huase)
+        if (this.card) {
+            this.showCard();
+        } else {
+            this.hideCard();
         }
-        this.gamingScene.tweens.add({
-            targets: [this.distanceText, this.nameText, this.huaseNumText],
-            alpha: {
-                value: card ? 1 : 0,
-                duration: 0,
-            },
-        });
-        this._cardId = card?.cardId;
+
+        this._cardId = this.card?.cardId;
+    }
+
+    // 即使card不变 setInteractive也会根据出杀的次数变化
+    onCardDisableChange(gameStatus: GameStatus) {
+        if (this.card?.CN == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN && getCanIPlaySha(gameStatus) && getCanPlayInMyTurn(gameStatus)) {
+            this.background?.setInteractive({cursor: 'pointer'})
+        } else {
+            this.background?.removeInteractive()
+        }
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
+        const isSelected = !!gameFEStatus.selectedWeaponCard && (gameFEStatus.selectedWeaponCard?.cardId === this.card?.cardId);
+        if (this._selected == isSelected) return;
 
+        this.group.forEach((obj) => {
+            this.gamingScene.tweens.add({
+                targets: obj,
+                x: {
+                    // @ts-ignore
+                    value: isSelected ? (obj.x + sizeConfig.controlSelectedOffsetX) : (obj.x - sizeConfig.controlSelectedOffsetX),
+                    duration: 0,
+                },
+                onComplete: () => {
+                    this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
+                    this._selected = isSelected
+                }
+            });
+        });
     }
 }

@@ -7,15 +7,14 @@ import {
     uuidv4,
     getMyResponseInfo,
     getIsMyThrowTurn,
-    getNeedThrowCardNumber,
-    getAmendTargetMinMax
+    getAmendTargetMinMax,
+    getNeedSelectControlCardNumber
 } from "../../utils/gameStatusUtils";
 import emitMap from "../../config/emitMap.json";
 import {BtnGroup, GamingScene} from "../../types/phaser";
 import Phaser from "phaser";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {GameStatus} from "../../types/gameStatus";
-import {attachFEInfoToCard} from "../../utils/cardUtils";
 import {generateAction, generateResponse, generateThrowData} from "../../utils/emitDataGenerator";
 
 export class ControlButtons {
@@ -156,17 +155,7 @@ export class ControlButtons {
             const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
             const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
-            if (this._isMyResponseCardTurn) {
-                if (!this.canClickOkBtnInMyResponseCardStage(gameStatus, gameFEStatus)) {
-                    return
-                }
-
-                this.gamingScene.socket.emit(
-                    emitMap.RESPONSE,
-                    generateResponse(gameStatus, gameFEStatus),
-                )
-                this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
-            } else if (this._canPlayInMyTurn) {
+            if (this._canPlayInMyTurn) {
                 if (!this.canClickOkBtnInMyPlayStage(gameStatus, gameFEStatus)) {
                     return
                 }
@@ -174,6 +163,16 @@ export class ControlButtons {
                 this.gamingScene.socket.emit(
                     emitMap.ACTION,
                     generateAction(gameStatus, gameFEStatus)
+                )
+                this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
+            } else if (this._isMyResponseCardTurn) {
+                if (!this.canClickOkBtnInMyResponseCardStage(gameStatus, gameFEStatus)) {
+                    return
+                }
+
+                this.gamingScene.socket.emit(
+                    emitMap.RESPONSE,
+                    generateResponse(gameStatus, gameFEStatus),
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._isMyThrowTurn) {
@@ -246,8 +245,7 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const myPlayer = gameStatus.players[getMyPlayerId()];
-        const needThrowCardNumber = getNeedThrowCardNumber(myPlayer);
+        const needThrowCardNumber = getNeedSelectControlCardNumber(gameStatus, gameFEStatus);
         return gameFEStatus.selectedCards.length == needThrowCardNumber
     }
 

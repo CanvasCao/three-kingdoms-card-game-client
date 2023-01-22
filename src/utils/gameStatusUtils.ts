@@ -73,6 +73,27 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
         getIsMyPlayTurn(gameStatus);
 }
 
+const getIsZhangBaSheMaoSelected = (gameFEStatus: GameFEStatus) => {
+    return gameFEStatus.selectedWeaponCard?.CN === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN
+}
+
+const getNeedSelectControlCardNumber = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+    const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
+    const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
+    const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
+
+    if (canPlayInMyTurn || isMyResponseCardTurn) {
+        if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
+            return 2;
+        }
+        return 1;
+    } else if (isMyThrowTurn) {
+        const myPlayer = gameStatus.players[getMyPlayerId()];
+        return myPlayer.cards.length - myPlayer.currentBlood;
+    }
+
+    return 0
+}
 // targetId wuxieTargetCardId cardName
 const getMyResponseInfo = (gameStatus: GameStatus):
     {
@@ -147,11 +168,12 @@ const getInMyPlayTurnCanPlayCardNamesClourse = (player: Player) => {
     }
 }
 
-const getMyShaLimitTimes = (player: Player) => {
+const getCanIPlaySha = (gameStatus: GameStatus) => {
+    const player = gameStatus.players[getMyPlayerId()];
     if (player.weaponCard && (player.weaponCard.CN == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.CN)) {
-        return Number.POSITIVE_INFINITY
+        return true
     } else {
-        return player.shaLimitTimes
+        return player.shaTimes < player.shaLimitTimes
     }
 }
 
@@ -192,10 +214,6 @@ const getAmendTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
 }
 
-const getNeedThrowCardNumber = (player: Player) => {
-    return player.cards.length - player.currentBlood
-}
-
 const getIfPlayerHasAnyCards = (player: Player) => {
     return player.cards.length ||
         player.pandingSigns.length ||
@@ -213,6 +231,23 @@ const getIfPlayerHasAnyHandCards = (player: Player) => {
     return player.cards.length > 0
 }
 
+const generateActualCard = (gameFEStatus: GameFEStatus) => {
+    if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
+        return {
+            "huase": gameFEStatus.selectedCards[0].huase,
+            "huase2": gameFEStatus.selectedCards[1].huase,
+            "cardId": uuidv4(),
+            "CN": "杀",
+            "EN": "Strike",
+            "type": "BASIC",
+        }
+    } else {
+        const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]))
+        card.cardId = uuidv4()
+        return card
+    }
+}
+
 export {
     getMyPlayerId,
 
@@ -223,6 +258,10 @@ export {
     getIsMyResponseCardTurn, // response 包括闪桃无懈可击 不包括弃牌
     getIsMyThrowTurn,
     getCanPlayInMyTurn,
+    getIsZhangBaSheMaoSelected,
+
+    // 手牌number
+    getNeedSelectControlCardNumber,
 
     // response
     getMyResponseInfo,
@@ -237,15 +276,17 @@ export {
 
     // play card validate
     getInMyPlayTurnCanPlayCardNamesClourse,
-    getMyShaLimitTimes,
 
-    // 弃牌
-    getNeedThrowCardNumber,
+    // sha times validate
+    getCanIPlaySha,
 
-    // validate scroll target
+    // validate scroll/skill target
     getIfPlayerHasAnyCards,
     getIfPlayerHasAnyHandCards,
     getIfPlayerHasWeapon,
+
+    // actualCard
+    generateActualCard,
 
     uuidv4,
     verticalRotationSting

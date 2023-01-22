@@ -8,6 +8,7 @@ export class GameFEStatusObserved {
         selectedCards: GameFEStatus['selectedCards'],
         selectedIndexes: GameFEStatus['selectedIndexes'],
         actualCard: GameFEStatus['actualCard'],
+        selectedWeaponCard: GameFEStatus['selectedWeaponCard']
     }
     originTargetState: {
         selectedTargetPlayers: GameFEStatus['selectedTargetPlayers'],
@@ -29,8 +30,9 @@ export class GameFEStatusObserved {
     constructor() {
         this.originCardState = {
             selectedCards: [],
-            selectedIndexes: [],
             actualCard: null,
+            selectedWeaponCard:null,
+            selectedIndexes: [],
         }
         this.originTargetState = {
             selectedTargetPlayers: [],

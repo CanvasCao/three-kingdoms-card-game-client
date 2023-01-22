@@ -8,7 +8,7 @@ import {
     cardHuaseNumberObjOffsetY,
     cardNameObjOffsetX,
     cardNameObjOffsetY
-} from "../config/offsetConfig";
+} from "../config/cardContentOffsetConfig";
 
 // tint
 const disableTint = colorConfig.disableCard;
@@ -25,7 +25,7 @@ const sharedDrawFrontCard = (
         alpha?: number
     }) => {
     // background
-    const cardImgObj = gamingScene.add.image(x, y, 'white').setInteractive({cursor: 'pointer'});
+    const cardImgObj = gamingScene.add.image(x, y, 'white');
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setAlpha(alpha)
@@ -68,7 +68,7 @@ const sharedDrawFrontCard = (
     cardHuaseNumberObj.setData("offsetX", cardHuaseNumberObjOffsetX)
     cardHuaseNumberObj.setData("offsetY", cardHuaseNumberObjOffsetY)
 
-    // meaasge
+    // message
     let cardMessageObj
     cardMessageObj = gamingScene.add.text(x, y, message,
         {
@@ -85,7 +85,6 @@ const sharedDrawFrontCard = (
     cardMessageObj.setDepth(depth)
     cardMessageObj.setData("offsetX", 0)
     cardMessageObj.setData("offsetY", 0)
-
 
     return {
         cardImgObj,

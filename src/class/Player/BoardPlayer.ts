@@ -94,7 +94,6 @@ export class BoardPlayer {
             this.drawStageText();
         }
 
-        this.drawMyTurnStroke();
         this.drawSelectedStroke();
         this.drawPlayer();
         this.drawBloodsBg();
@@ -274,6 +273,10 @@ export class BoardPlayer {
             const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
             const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
+            if (this._isDead) {
+                return;
+            }
+
             if (!curGameFEStatus.actualCard) {
                 return;
             }
@@ -368,10 +371,12 @@ export class BoardPlayer {
                     const positionX = this.positionX - sizeConfig.player.width / 2;
                     const positionY = this.positionY + offsetY + offsetYStep * index;
                     const {
+                        background,
                         distanceText,
                         nameText,
                         huaseNumText
                     } = sharedDrawEquipment(this.gamingScene, card, {x: positionX, y: positionY})
+                    group.background = background;
                     group.distanceText = distanceText;
                     group.nameText = nameText;
                     group.huaseNumText = huaseNumText;
@@ -384,7 +389,7 @@ export class BoardPlayer {
                 // @ts-ignore
                 const group = this[ele.group]
                 this.gamingScene.tweens.add({
-                    targets: [group.distanceText, group.nameText, group.huaseNumText],
+                    targets: [group.background, group.distanceText, group.nameText, group.huaseNumText],
                     alpha: {
                         value: 0,
                         duration: 0,

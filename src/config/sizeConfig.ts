@@ -7,6 +7,7 @@ const cardHeight = 106;
 const controlCardBgMargin = 15
 const controlEquipmentWidth = 140;
 const controlEquipmentHeight = 30;
+const controlSelectedOffsetX = 10;
 
 const sizeConfig = {
     "background": {
@@ -26,6 +27,7 @@ const sizeConfig = {
         "width": controlEquipmentWidth,
         "height": controlEquipmentHeight
     },
+    "controlSelectedOffsetX":controlSelectedOffsetX,
     "player": {
         "width": 140,
         "height": 168

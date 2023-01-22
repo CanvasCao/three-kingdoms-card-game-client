@@ -5,10 +5,10 @@ import {getMyPlayerId, getMyResponseInfo, uuidv4} from "./gameStatusUtils";
 import {GameFEStatus} from "../types/gameFEStatus";
 
 const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (EmitActionData | undefined) => {
-    const actualCard = attachFEInfoToCard(JSON.parse(JSON.stringify(gameFEStatus.actualCard)))!;
-    actualCard.cardId = uuidv4(); // TODO 作为前端判断要不要重新计算和刷新disable的依据
+    const actualCard = JSON.parse(JSON.stringify(gameFEStatus.actualCard))
+    const actualCardWithFEInfo = attachFEInfoToCard(actualCard)!;
 
-    if (actualCard.couldHaveMultiTarget || actualCard.needAActionToB) {
+    if (actualCardWithFEInfo.couldHaveMultiTarget || actualCardWithFEInfo.needAActionToB) {
         return {
             cards: gameFEStatus.selectedCards,
             selectedIndexes: gameFEStatus.selectedIndexes,
@@ -16,7 +16,7 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
             originId: getMyPlayerId(),
             targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
         }
-    } else if (actualCard.noNeedSetTargetDueToImDefaultTarget) {
+    } else if (actualCardWithFEInfo.noNeedSetTargetDueToImDefaultTarget) {
         return {
             cards: gameFEStatus.selectedCards,
             selectedIndexes: gameFEStatus.selectedIndexes,
@@ -24,7 +24,7 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
             originId: getMyPlayerId(),
             targetId: getMyPlayerId(),
         }
-    } else if (actualCard.canOnlyHaveOneTarget) {
+    } else if (actualCardWithFEInfo.canOnlyHaveOneTarget) {
         return {
             cards: gameFEStatus.selectedCards,
             selectedIndexes: gameFEStatus.selectedIndexes,
@@ -32,7 +32,7 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
             originId: getMyPlayerId(),
             targetId: gameFEStatus.selectedTargetPlayers[0].playerId,
         }
-    } else if (actualCard.noNeedSetTargetDueToTargetAll) {
+    } else if (actualCardWithFEInfo.noNeedSetTargetDueToTargetAll) {
         return {
             cards: gameFEStatus.selectedCards,
             selectedIndexes: gameFEStatus.selectedIndexes,
@@ -42,14 +42,13 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
     }
 }
 
-
 const generateResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitResponseData => {
     const info = getMyResponseInfo(gameStatus)!
 
     return {
         cards: gameFEStatus.selectedCards,
         selectedIndexes: gameFEStatus.selectedIndexes,
-        actualCard: gameFEStatus.selectedCards[0],
+        actualCard: gameFEStatus.actualCard!,
         originId: getMyPlayerId(),
         targetId: info.targetId,
         wuxieTargetCardId: info.wuxieTargetCardId

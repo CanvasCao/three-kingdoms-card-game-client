@@ -16,15 +16,30 @@ const sharedDrawEquipment = (
     const padding = 1;
     const paddingHorizontal = padding + (isMe ? 4 : 1)
     const equipmentCardWidth = isMe ? sizeConfig.controlEquipment.width : sizeConfig.player.width * 0.8
+    const equipmentCardHeight = isMe ? sizeConfig.controlEquipment.height - 4 : 16
     const fontSize = isMe ? 14 : sizeConfig.player.height / 16;
+
+    const selectedStroke = gamingScene.add.graphics();
+    // @ts-ignore
+    selectedStroke.lineStyle(3, colorConfig.selectedCardStroke, 1);
+    selectedStroke.strokeRect(x + sizeConfig.controlSelectedOffsetX, y,
+        equipmentCardWidth,
+        equipmentCardHeight);
+    selectedStroke.setAlpha(0)
+
+    const background = gamingScene.add.image(x, y, 'white');
+    // @ts-ignore
+    background.setTint(colorConfig.card);
+    background.displayHeight = equipmentCardHeight;
+    background.displayWidth = equipmentCardWidth;
+    background.setAlpha(alpha)
+    background.setOrigin(0, 0)
+
     const distanceText = gamingScene.add.text(x, y, card?.distanceDesc || '',
         // @ts-ignore
-        {fill: "#000", align: "left", fixedWidth: equipmentCardWidth}
+        {fill: "#000"}
     );
-
     distanceText.setPadding(padding + 5, paddingHorizontal, padding + 1, paddingHorizontal);
-    // @ts-ignore
-    distanceText.setBackgroundColor(colorConfig.cardString)
     distanceText.setFontSize(fontSize)
     distanceText.setAlpha(alpha)
 
@@ -47,6 +62,8 @@ const sharedDrawEquipment = (
     huaseNumText.setAlpha(alpha)
 
     return {
+        selectedStroke,
+        background,
         distanceText,
         nameText,
         huaseNumText,
