@@ -112,7 +112,7 @@ const sharedDrawBackCard = (
         offsetY?: number,
     }) => {
 
-    const cardImgObj = gamingScene.add.image(x, y, 'cardBg').setInteractive({cursor: 'pointer'})
+    const cardImgObj = gamingScene.add.image(x, y, 'cardBg')
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setDepth(depth)

@@ -262,6 +262,12 @@ export class ControlCard {
             return
         }
 
+        if(isMyThrowTurn){
+            setCardAble()
+            this.cardImgObj?.setInteractive({cursor: 'pointer'})
+            return
+        }
+
         setCardAble()
         this.cardImgObj?.removeInteractive()
     }

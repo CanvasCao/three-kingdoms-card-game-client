@@ -118,6 +118,7 @@ export class WuGuFengDengBoard {
             this.destoryObjects.push(cardImgObj);
             this.destoryObjects.push(cardMessageObj);
 
+            cardImgObj.setInteractive({cursor: 'pointer'})
             cardImgObj.on('pointerdown', () => {
                     if (gameStatus.scrollResStages?.[0].originId !== getMyPlayerId()) {
                         return;
