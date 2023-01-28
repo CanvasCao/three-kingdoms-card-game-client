@@ -77,7 +77,8 @@ export class ControlEquipmentCard {
         } = sharedDrawEquipment(this.gamingScene, undefined, {
             x: 5,
             y: sizeConfig.playersArea.height + offsetY + 10,
-            isMe: true
+            isMe: true,
+            alpha: 0,
         })
 
         this.selectedStroke = selectedStroke;
@@ -122,7 +123,7 @@ export class ControlEquipmentCard {
             this.gamingScene.tweens.add({
                 targets: obj,
                 alpha: {
-                    value: this.card ? 1 : 0,
+                    value: 0,
                     duration: 0,
                 },
             });
@@ -137,6 +138,16 @@ export class ControlEquipmentCard {
         this.distanceText!.setText(this.card.distanceDesc || '')
         this.nameText!.setText(this.card.CN)
         this.huaseNumText!.setText(this.card.cardNumDesc + this.card.huase)
+
+        this.group.forEach((obj) => {
+            this.gamingScene.tweens.add({
+                targets: obj,
+                alpha: {
+                    value: 1,
+                    duration: 0,
+                },
+            });
+        });
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
