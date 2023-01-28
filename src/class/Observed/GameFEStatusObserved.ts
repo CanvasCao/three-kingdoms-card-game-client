@@ -1,4 +1,3 @@
-import {editor2} from "../../index";
 import {cloneDeep} from "lodash";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {FEObserver} from "../../types/observer";
@@ -31,7 +30,7 @@ export class GameFEStatusObserved {
         this.originCardState = {
             selectedCards: [],
             actualCard: null,
-            selectedWeaponCard:null,
+            selectedWeaponCard: null,
             selectedIndexes: [],
         }
         this.originTargetState = {
@@ -81,7 +80,8 @@ export class GameFEStatusObserved {
             ...cloneDeep(this.originTargetState),
             ...cloneDeep(this.originSkillState),
         };
-        editor2.set(this.gameFEStatus)
+        // @ts-ignore
+        window?.editor2 && window.editor2?.set(this.gameFEStatus)
         this.selectedStatusObservers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });
@@ -89,7 +89,8 @@ export class GameFEStatusObserved {
 
     setSelectedGameEFStatus(gameFEStatus: GameFEStatus) {
         this.gameFEStatus = gameFEStatus;
-        editor2.set(gameFEStatus)
+        // @ts-ignore
+        window?.editor2 && window.editor2?.set(this.gameFEStatus)
         this.selectedStatusObservers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });
@@ -97,7 +98,8 @@ export class GameFEStatusObserved {
 
     setPublicCardsGameEFStatus(gameFEStatus: GameFEStatus) {
         this.gameFEStatus = gameFEStatus;
-        editor2.set(gameFEStatus)
+        // @ts-ignore
+        window?.editor2 && window.editor2?.set(this.gameFEStatus)
         this.publicCardsObservers.forEach(observer => {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });

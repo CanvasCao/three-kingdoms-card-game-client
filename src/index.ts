@@ -25,17 +25,28 @@ import {
     EmitNotifyAddToPublicCardData,
     EmitNotifyAddToPlayerCardData
 } from "./types/emit";
-import { WuGuFengDengBoard } from './class/Board/WuGuFengDengBoard';
+import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
+import {getFeatureToggle} from "./toggle/toggle";
 
 // create the editor
-const container = document.getElementById('jsoneditor')
-export const editor = new JSONEditor(container, {})
-export const editor2 = new JSONEditor(container, {})
+const SHOW_JSON_EDITOR = getFeatureToggle().SHOW_JSON_EDITOR;
+if (SHOW_JSON_EDITOR) {
+    const container = document.getElementById('jsoneditor')
+    // @ts-ignore
+    window.editor = new JSONEditor(container, {})
+    // @ts-ignore
+    window.editor2 = new JSONEditor(container, {})
+}
 
-// UI点击触发事件
-$("#GoNextStage").click(() => {
-    socket.emit(emitMap.GO_NEXT_STAGE);
-})
+const SHOW_GO_TO_NEXT_STAGE = getFeatureToggle().SHOW_GO_TO_NEXT_STAGE;
+if (SHOW_GO_TO_NEXT_STAGE) {
+    $("#GoNextStage").click(() => {
+        socket.emit(emitMap.GO_NEXT_STAGE);
+    })
+} else {
+    $("#GoNextStage").hide()
+}
+
 
 class Gaming extends Phaser.Scene {
     socket: Socket;
