@@ -9,6 +9,7 @@ import {Card, GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {sharedDrawEquipment} from "../../utils/drawEquipmentUtils";
+import {getCardColor} from "../../utils/cardUtils";
 
 const typeCardNameMap = {
     [EQUIPMENT_TYPE.WEAPON]: 'weaponCard',
@@ -142,6 +143,7 @@ export class ControlEquipmentCard {
         this.distanceText!.setText(this.card.distanceDesc || '')
         this.nameText!.setText(this.card.CN)
         this.huaseNumText!.setText(this.card.cardNumDesc + this.card.huase)
+        this.huaseNumText!.setColor(getCardColor(this.card.huase))
 
         this.group.forEach((obj) => {
             this.gamingScene.tweens.add({

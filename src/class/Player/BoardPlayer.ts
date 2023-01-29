@@ -16,6 +16,7 @@ import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
 import {sharedDrawEquipment} from "../../utils/drawEquipmentUtils";
+import {getCardColor} from "../../utils/cardUtils";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
@@ -361,6 +362,7 @@ export class BoardPlayer {
                     group.distanceText.setText(card.distanceDesc || '')
                     group.nameText.setText(card.CN)
                     group.huaseNumText.setText(card.cardNumDesc + card.huase)
+                    group.huaseNumText.setColor(getCardColor(card.huase))
                 } else {
                     // @ts-ignore
                     this[ele.group] = {};

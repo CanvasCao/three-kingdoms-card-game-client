@@ -1,5 +1,5 @@
 import {Card} from "../types/gameStatus";
-import {BASIC_CARDS_CONFIG, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {BASIC_CARDS_CONFIG, CARD_HUASE, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {CardAreaType} from "../types/emit";
 import {getMyPlayerId} from "./gameStatusUtils";
 import {PAIDUI} from "../constants/constants";
@@ -137,4 +137,8 @@ export const getControlCardPosition = (index: number) => {
         x: sizeConfig.controlEquipment.width + sizeConfig.controlCardBgMargin + index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
         y: sizeConfig.background.height - sizeConfig.controlCard.height / 2 - sizeConfig.controlCard.height * 0.15
     }
+}
+
+export const getCardColor = (huase: string) => {
+    return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? '#f00' : '#000'
 }
