@@ -58,7 +58,7 @@ const sharedDrawFrontCard = (
     const cardHuaseNumberObj = gamingScene.add.text(
         x + cardHuaseNumberObjOffsetX,
         y + cardHuaseNumberObjOffsetY,
-        verticalRotationSting(card.cardNumDesc + card.huase),
+        (card.cardNumDesc + '\r\n' + card.huase),
         // @ts-ignore
         {fontFamily: 'CustomFont', fill: getCardColor(card.huase), align: "center"}
     )
