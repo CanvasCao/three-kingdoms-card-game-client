@@ -107,6 +107,10 @@ export class ControlEquipmentCard {
                     return;
                 }
 
+                if (!getCanPlayInMyTurn(gameStatus)) {
+                    return;
+                }
+
                 const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
                 if (gameFEStatus.selectedWeaponCard) {
                     this.gamingScene.gameFEStatusObserved.resetSelectedStatus()
@@ -156,8 +160,6 @@ export class ControlEquipmentCard {
         // @ts-ignore
         this.card = myPlayer[typeCardNameMap[this.equipmentType]] as Card
 
-        this.onCardDisableChange(gameStatus);
-
         if (this.card?.cardId == this._cardId) {
             return
         }
@@ -169,15 +171,6 @@ export class ControlEquipmentCard {
         }
 
         this._cardId = this.card?.cardId;
-    }
-
-    // 即使card不变 setInteractive也会根据出杀的次数变化
-    onCardDisableChange(gameStatus: GameStatus) {
-        if (this.card?.CN == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN && getCanIPlaySha(gameStatus) && getCanPlayInMyTurn(gameStatus)) {
-            this.background?.setInteractive({cursor: 'pointer'})
-        } else {
-            this.background?.removeInteractive()
-        }
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {

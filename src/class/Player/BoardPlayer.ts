@@ -336,7 +336,7 @@ export class BoardPlayer {
         this.playerImage = this.gamingScene.add.image(
             this.positionX,
             this.positionY,
-            this.player.imageName).setInteractive({cursor: 'pointer'}).setScale(140 / 536);
+            this.player.imageName).setInteractive().setScale(140 / 536);
         this.playerImage.setOrigin(0.5, 0.45) // 竖长图片被crop了下面 所以setOriginY 稍微让图片往下挪一点
 
         var cropRect = new Phaser.Geom.Rectangle(0, 0, 536, 536 * (sizeConfig.player.height / sizeConfig.player.width));
@@ -475,18 +475,18 @@ export class BoardPlayer {
         const actualCardName = gameFEStatus?.actualCard?.CN || '';
         const mePlayer = gameStatus.players[getMyPlayerId()];
         const targetPlayer = gameStatus.players[this.player.playerId];
+        const distanceBetweenMeAndTarget = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
 
         // 计算杀的距离
         if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCardName)) {
-            let attackDistance, distanceBetweenAAndB;
+            let attackDistance;
 
             const curScrollResStage = gameStatus.scrollResStages[0];
             if (curScrollResStage) { // 响应锦囊的杀 setPlayerAble
                 setPlayerAble()
             } else {
                 attackDistance = mePlayer?.weaponCard?.distance || 1;
-                distanceBetweenAAndB = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
-                if (attackDistance >= distanceBetweenAAndB) {
+                if (attackDistance >= distanceBetweenMeAndTarget) {
                     setPlayerAble()
                 } else {
                     setPlayerDisable();
@@ -522,10 +522,7 @@ export class BoardPlayer {
             }
         }
         // 兵粮寸断
-        else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN ||
-            actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN
-        ) {
-            const distanceBetweenMeAndTarget = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
+        else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN) {
             if (1 >= distanceBetweenMeAndTarget) {
                 setPlayerAble()
             } else {
@@ -533,9 +530,14 @@ export class BoardPlayer {
             }
         }
         // 过河拆桥 顺手牵羊
-        else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
-            actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+        else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
             if (getIfPlayerHasAnyCards(targetPlayer)) {
+                setPlayerAble()
+            } else {
+                setPlayerDisable()
+            }
+        } else if (actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+            if (getIfPlayerHasAnyCards(targetPlayer) && 1 >= distanceBetweenMeAndTarget) {
                 setPlayerAble()
             } else {
                 setPlayerDisable()

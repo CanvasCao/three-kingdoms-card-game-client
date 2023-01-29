@@ -209,7 +209,6 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line1.y,
                 depth: boardDepth,
             })
-            cardImgObj.setInteractive({cursor: 'pointer'})
             cardImgObj.on('pointerdown',
                 this.getCardClickHandler(targetPlayer, card, scrollResStage, 'hand')
             )
@@ -229,7 +228,6 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.setInteractive({cursor: 'pointer'})
             cardImgObj.on('pointerdown',
                 this.getCardClickHandler(targetPlayer, card, scrollResStage, "equipment"))
 
@@ -248,7 +246,6 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.setInteractive({cursor: 'pointer'})
             cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage, 'panding'))
 
             this.destoryObjects.push(cardNameObj);

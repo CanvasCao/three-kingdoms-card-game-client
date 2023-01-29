@@ -225,14 +225,12 @@ export class ControlCard {
         if (canPlayInMyTurn) {
             if (gameFEStatus.selectedWeaponCard?.CN == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
                 setCardAble()
-                this.cardImgObj?.setInteractive({cursor: 'pointer'})
                 return
             }
 
             if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN].includes(this.card.CN)) {
                 if (!getCanIPlaySha(gameStatus)) {
                     setCardDisable()
-                    this.cardImgObj?.removeInteractive()
                     return
                 }
             }
@@ -240,36 +238,24 @@ export class ControlCard {
             const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
             if (!canPlayCardNames.includes(this.card.CN)) {
                 setCardDisable()
-                this.cardImgObj?.removeInteractive()
                 return
             }
-
-            setCardAble()
-            this.cardImgObj?.setInteractive({cursor: 'pointer'})
-            return
         }
 
         if (isMyResponseCardTurn) {
             const needResponseCardNames = getMyResponseInfo(gameStatus)!.cardNames
             if (!needResponseCardNames.includes(this.card.CN)) {
                 setCardDisable()
-                this.cardImgObj?.removeInteractive()
                 return
             }
-
-            setCardAble()
-            this.cardImgObj?.setInteractive({cursor: 'pointer'})
-            return
         }
 
         if(isMyThrowTurn){
             setCardAble()
-            this.cardImgObj?.setInteractive({cursor: 'pointer'})
             return
         }
 
         setCardAble()
-        this.cardImgObj?.removeInteractive()
     }
 
     destoryAll() {

@@ -25,7 +25,7 @@ const sharedDrawFrontCard = (
         alpha?: number
     }) => {
     // background
-    const cardImgObj = gamingScene.add.image(x, y, 'white');
+    const cardImgObj = gamingScene.add.image(x, y, 'white').setInteractive();
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setAlpha(alpha)
@@ -112,7 +112,7 @@ const sharedDrawBackCard = (
         offsetY?: number,
     }) => {
 
-    const cardImgObj = gamingScene.add.image(x, y, 'cardBg')
+    const cardImgObj = gamingScene.add.image(x, y, 'cardBg').setInteractive()
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setDepth(depth)

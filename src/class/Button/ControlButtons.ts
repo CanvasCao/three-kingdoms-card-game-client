@@ -71,7 +71,7 @@ export class ControlButtons {
         this.okBtnImg = this.gamingScene.add.image(
             this.cardBtnsX,
             this.cardBtnsY,
-            'white').setInteractive({cursor: 'pointer'});
+            'white').setInteractive();
         this.okBtnImg.displayHeight = sizeConfig.okBtn.height;
         this.okBtnImg.displayWidth = sizeConfig.okBtn.width;
         this.okBtnImg.setAlpha(0)
@@ -94,7 +94,7 @@ export class ControlButtons {
         this.cancelBtnImg = this.gamingScene.add.image(
             this.cardBtnsX + this.btnRightOffset,
             this.cardBtnsY,
-            'white').setInteractive({cursor: 'pointer'});
+            'white').setInteractive();
         this.cancelBtnImg.displayHeight = sizeConfig.cancelBtn.height;
         this.cancelBtnImg.displayWidth = sizeConfig.cancelBtn.width;
         this.cancelBtnImg.setAlpha(0)
@@ -117,7 +117,7 @@ export class ControlButtons {
         this.endBtnImg = this.gamingScene.add.image(
             this.cardBtnsX + this.btnRightOffset,
             this.cardBtnsY,
-            'white').setInteractive({cursor: 'pointer'});
+            'white').setInteractive();
         this.endBtnImg.displayHeight = sizeConfig.endRoundBtn.height;
         this.endBtnImg.displayWidth = sizeConfig.endRoundBtn.width;
         this.endBtnImg.setAlpha(0)
