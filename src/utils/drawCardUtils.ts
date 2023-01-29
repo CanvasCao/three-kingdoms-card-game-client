@@ -9,6 +9,7 @@ import {
     cardNameObjOffsetX,
     cardNameObjOffsetY
 } from "../config/cardContentOffsetConfig";
+import {CARD_HUASE} from "../config/cardConfig";
 
 // tint
 const disableTint = colorConfig.disableCard;
@@ -53,12 +54,13 @@ const sharedDrawFrontCard = (
 
 
     // huase + number
+    const huaseNumberColor = [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(card.huase) ? '#f00' : '#000'
     const cardHuaseNumberObj = gamingScene.add.text(
         x + cardHuaseNumberObjOffsetX,
         y + cardHuaseNumberObjOffsetY,
         verticalRotationSting(card.cardNumDesc + card.huase),
         // @ts-ignore
-        {fontFamily: 'CustomFont', fill: "#000", align: "center"}
+        {fontFamily: 'CustomFont', fill: huaseNumberColor, align: "center"}
     )
     cardHuaseNumberObj.setPadding(0, 5, 0, 0);
     cardHuaseNumberObj.setOrigin(0, 0);

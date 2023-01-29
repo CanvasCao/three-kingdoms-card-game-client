@@ -1,3 +1,10 @@
+const CARD_HUASE = {
+    HEITAO: "♠",
+    CAOHUA: '♣',
+    FANGKUAI: '♦',
+    HONGTAO: '♥',
+}
+
 const CARD_TYPE = {
     EQUIPMENT: "EQUIPMENT",
     SCROLL: "SCROLL",
@@ -341,6 +348,7 @@ const CARD_CONFIG = {
 }
 
 export {
+    CARD_HUASE,
     CARD_TYPE,
     EQUIPMENT_TYPE,
     CARD_CONFIG,
