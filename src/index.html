@@ -4,10 +4,30 @@
     <meta charset="UTF-8">
     <title>三国杀</title>
 </head>
-<body style="background-image:url('http://web.sanguosha.com/220/h5_2/res/assets/frameback.jpg');background-size: 100% 100%; ">
+<body style="background-image:url('http://web.sanguosha.com/220/h5_2/res/assets/frameback.jpg');background-size: 100% 100%; height: 100vh; ">
 <div id="jsoneditor" style="position: absolute;right: 0;top: 0;width: 400px;"></div>
 <div style="position: absolute;top: 0;left: 0;background: white">
     <btn id="GoNextStage">GoNextStage</btn>
+</div>
+<div id="joinPage" style="position: absolute;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;">
+    Input your name
+    <input id='nameInput' type="text">
+    <button id="joinButton">Join</button>
+</div>
+
+<div id="roomPlayersPage" style="position: absolute;
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    align-items: center;
+    justify-content: center;">
+    <div id="roomPlayers"></div>
+    <button style="display: none" id="startButton">Start</button>
 </div>
 
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

@@ -22,7 +22,6 @@ export type PlayerEquipmentGroup = {
 export type GamingScene = Phaser.Scene &
     {
         socket: Socket;
-        inited: boolean;
         controlCards: Card[];
         boardPlayers: BoardPlayer[];
         gameStatusObserved: GameStatusObserved;

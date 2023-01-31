@@ -47,10 +47,32 @@ if (SHOW_GO_TO_NEXT_STAGE) {
     $("#GoNextStage").hide()
 }
 
+$('#joinButton').click(() => {
+    const val = $("#nameInput").val()
+    if (val) {
+        socket.emit(emitMap.REFRESH_ROOM_PLAYERS, {playerId: getMyPlayerId(), playerName: val});
+        $('#joinPage').css('display', 'none');
+        $('#roomPlayersPage').css('display', 'flex');
+    }
+})
+
+socket.on(emitMap.REFRESH_ROOM_PLAYERS, (data: any) => {
+    $("#roomPlayers").html(data.map((e: any) => `<div>${e.playerName}</div>`))
+    if (data[0]?.playerId == getMyPlayerId()) {
+        $("#startButton").show();
+    }
+})
+
+$("#startButton").click(() => {
+    socket.emit(emitMap.INIT);
+})
+
+socket.on(emitMap.INIT, () => {
+    $("#roomPlayersPage").hide();
+})
 
 class Gaming extends Phaser.Scene {
     socket: Socket;
-    inited: boolean;
     controlCards: Card[];
     boardPlayers: BoardPlayer[];
     gameStatusObserved: GameStatusObserved;
@@ -66,7 +88,6 @@ class Gaming extends Phaser.Scene {
         super();
 
         this.socket = socket;
-        this.inited = false;
 
         this.controlCards = [];
         this.boardPlayers = [];
@@ -95,21 +116,8 @@ class Gaming extends Phaser.Scene {
         bg.displayWidth = sizeConfig.background.width;
         bg.displayHeight = sizeConfig.background.height;
 
-        // 人到齐 开始选将
-        // socket.emit();
-
-        // 选将完成开始游戏
-        socket.emit(
-            emitMap.INIT,
-            {playerId: getMyPlayerId()}
-        );
-
         // 监听只可能有一次
         socket.on(emitMap.INIT, (data: GameStatus) => {
-            if (this.inited) {
-                return
-            }
-
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.wuGuFengDengBoard = new WuGuFengDengBoard(this);
             this.controlButtons = new ControlButtons(this);
@@ -120,8 +128,6 @@ class Gaming extends Phaser.Scene {
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
 
             this.gameStatusObserved.setGameStatus(data);
-
-            this.inited = true;
         });
 
         socket.on(emitMap.REFRESH_STATUS, (data: GameStatus) => {

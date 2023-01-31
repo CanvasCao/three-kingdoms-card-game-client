@@ -1,4 +1,5 @@
 {
+  "REFRESH_ROOM_PLAYERS": "refresh_room_players",
   "INIT": "init",
   "GO_NEXT_STAGE": "go_next_stage",
   "REFRESH_STATUS": "refresh_status",

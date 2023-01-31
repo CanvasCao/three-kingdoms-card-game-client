@@ -100,7 +100,6 @@ export class BoardPlayer {
         this.drawBloodsBg();
         this.drawBloods();
         this.setBloods(this.player.currentBlood);
-        this.drawStageText();
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
