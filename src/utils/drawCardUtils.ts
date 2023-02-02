@@ -2,14 +2,12 @@ import {sizeConfig} from "../config/sizeConfig";
 import colorConfig from "../config/colorConfig.json";
 import {GamingScene} from "../types/phaser";
 import {Card} from "../types/gameStatus";
-import {verticalRotationSting} from "./gameStatusUtils";
 import {
     cardHuaseNumberObjOffsetX,
     cardHuaseNumberObjOffsetY,
     cardNameObjOffsetX,
     cardNameObjOffsetY
 } from "../config/cardContentOffsetConfig";
-import {CARD_HUASE} from "../config/cardConfig";
 import {getCardColor} from "./cardUtils";
 
 // tint

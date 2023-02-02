@@ -8,7 +8,6 @@ import {
     getIsMyThrowTurn,
     getMyResponseInfo,
     getCanPlayInMyTurn,
-    getCanIPlaySha,
     getNeedSelectControlCardNumber,
     generateActualCard
 } from "../../utils/gameStatusUtils";
@@ -18,7 +17,7 @@ import {GamingScene} from "../../types/phaser";
 import {Card, GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getControlCardPosition} from "../../utils/cardUtils";
-import {CARD_CONFIG, EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
+import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
 
 export class ControlCard {
     obId: string;
@@ -226,13 +225,6 @@ export class ControlCard {
             if (gameFEStatus.selectedWeaponCard?.CN == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
                 setCardAble()
                 return
-            }
-
-            if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN].includes(this.card.CN)) {
-                if (!getCanIPlaySha(gameStatus)) {
-                    setCardDisable()
-                    return
-                }
             }
 
             const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()

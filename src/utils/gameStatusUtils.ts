@@ -1,6 +1,7 @@
-import {Card, GameStatus, Player} from "../types/gameStatus";
+import {Card, GameStatus, PandingSign, Player} from "../types/gameStatus";
 import {
     BASIC_CARDS_CONFIG,
+    DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
@@ -164,12 +165,18 @@ const getInMyPlayTurnCanPlayCardNamesClourse = (player: Player) => {
         if (player.pandingSigns.find((sign) => sign.actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
             amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)
         }
+
+        if (!getCanPlayerPlaySha(player)) {
+            amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => {
+                return n != BASIC_CARDS_CONFIG.SHA.CN && n != BASIC_CARDS_CONFIG.LEI_SHA.CN && n != BASIC_CARDS_CONFIG.HUO_SHA.CN
+            })
+        }
+
         return amendCanPlayInMyTurnCardNames
     }
 }
 
-const getCanIPlaySha = (gameStatus: GameStatus) => {
-    const player = gameStatus.players[getMyPlayerId()];
+const getCanPlayerPlaySha = (player: Player) => {
     if (player.weaponCard && (player.weaponCard.CN == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.CN)) {
         return true
     } else {
@@ -212,6 +219,81 @@ const getAmendTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         return {min: 1, max: 3}
     }
     return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+}
+
+const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayer: Player) => {
+    const actualCardName = gameFEStatus?.actualCard?.CN || '';
+    const mePlayer = gameStatus.players[getMyPlayerId()];
+    const distanceBetweenMeAndTarget = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
+
+    // 计算杀的距离
+    if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCardName)) {
+        let attackDistance;
+
+        const curScrollResStage = gameStatus.scrollResStages[0];
+        if (curScrollResStage) { // 响应锦囊的杀 setPlayerAble
+            return true
+        } else {
+            attackDistance = mePlayer?.weaponCard?.distance || 1;
+            if (attackDistance >= distanceBetweenMeAndTarget) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    // 借刀杀人
+    else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
+        if (gameFEStatus.selectedTargetPlayers.length == 0) {
+            if (getIfPlayerHasWeapon(targetPlayer)) {
+                return true
+            } else {
+                return false
+            }
+        } else if (gameFEStatus.selectedTargetPlayers.length == 1) {
+            let attackDistance, distanceBetweenAAndB;
+            const daoOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
+            attackDistance = daoOwnerPlayer?.weaponCard?.distance || 1;
+            distanceBetweenAAndB = getDistanceFromAToB(daoOwnerPlayer, targetPlayer, Object.keys(gameStatus.players).length)
+            if (attackDistance >= distanceBetweenAAndB) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    // 乐不思蜀
+    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
+        if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
+            return false
+        } else {
+            return true
+        }
+    }
+    // 兵粮寸断
+    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN) {
+        if (1 >= distanceBetweenMeAndTarget) {
+            return true
+        } else {
+            return false
+        }
+    }
+    // 过河拆桥 顺手牵羊
+    else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+        if (getIfPlayerHasAnyCards(targetPlayer)) {
+            return true
+        } else {
+            return false
+        }
+    } else if (actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+        if (getIfPlayerHasAnyCards(targetPlayer) && 1 >= distanceBetweenMeAndTarget) {
+            return true
+        } else {
+            return false
+        }
+    } else {
+        return true
+    }
 }
 
 const getIfPlayerHasAnyCards = (player: Player) => {
@@ -278,9 +360,10 @@ export {
     getInMyPlayTurnCanPlayCardNamesClourse,
 
     // sha times validate
-    getCanIPlaySha,
+    getCanPlayerPlaySha,
 
     // validate scroll/skill target
+    getIfPlayerAble,
     getIfPlayerHasAnyCards,
     getIfPlayerHasAnyHandCards,
     getIfPlayerHasWeapon,

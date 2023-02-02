@@ -45,7 +45,7 @@ export class ControlButtons {
 
         this.gamingScene = gamingScene;
 
-        this.cardBtnsX = sizeConfig.playersArea.width / 2 - sizeConfig.okBtn.width;
+        this.cardBtnsX = sizeConfig.playersArea.width / 2;
         this.cardBtnsY = sizeConfig.playersArea.height - sizeConfig.background.height * 0.04;
         this.btnRightOffset = 180;
 

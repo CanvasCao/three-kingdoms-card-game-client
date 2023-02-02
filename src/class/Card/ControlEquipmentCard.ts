@@ -1,6 +1,7 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {
-    getCanIPlaySha, getCanPlayInMyTurn,
+    getCanPlayerPlaySha,
+    getCanPlayInMyTurn,
     getMyPlayerId,
     uuidv4,
 } from "../../utils/gameStatusUtils";
@@ -104,7 +105,7 @@ export class ControlEquipmentCard {
                 }
 
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-                if (!getCanIPlaySha(gameStatus)) {
+                if (!getCanPlayerPlaySha(gameStatus.players[getMyPlayerId()])) {
                     return;
                 }
 
