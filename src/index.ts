@@ -1,5 +1,3 @@
-import './style.css'
-import './socket'
 import Phaser from 'phaser';
 import 'normalize.css'
 import elementsUrl from './config/elementsUrl.json'
@@ -9,10 +7,8 @@ import {ControlCardsManager} from "./class/Manager/ControlCardsManager";
 import {ControlButtons} from "./class/Button/ControlButtons";
 import {GameStatusObserved} from "./class/Observed/GameStatusObserved";
 import {GameFEStatusObserved} from "./class/Observed/GameFEStatusObserved";
-import {getMyPlayerId} from "./utils/gameStatusUtils";
 import {BoardPlayer} from "./class/Player/BoardPlayer";
 import emitMap from "./config/emitMap.json";
-import JSONEditor from "./jsoneditor/jsoneditor.min.js";
 import "./jsoneditor/jsoneditor.min.css";
 import {NofityAnimationManager} from "./class/Manager/NofityAnimationManager";
 import {Socket} from "./socket/socket.io.esm.min";
@@ -26,50 +22,9 @@ import {
     EmitNotifyAddToPlayerCardData
 } from "./types/emit";
 import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
-import {getFeatureToggle} from "./toggle/toggle";
+import {bindPageEvent} from './bindPageEvent';
 
-// create the editor
-const SHOW_JSON_EDITOR = getFeatureToggle().SHOW_JSON_EDITOR;
-if (SHOW_JSON_EDITOR) {
-    const container = document.getElementById('jsoneditor')
-    // @ts-ignore
-    window.editor = new JSONEditor(container, {})
-    // @ts-ignore
-    window.editor2 = new JSONEditor(container, {})
-}
-
-const SHOW_GO_TO_NEXT_STAGE = getFeatureToggle().SHOW_GO_TO_NEXT_STAGE;
-if (SHOW_GO_TO_NEXT_STAGE) {
-    $("#GoNextStage").click(() => {
-        socket.emit(emitMap.GO_NEXT_STAGE);
-    })
-} else {
-    $("#GoNextStage").hide()
-}
-
-$('#joinButton').click(() => {
-    const val = $("#nameInput").val()
-    if (val) {
-        socket.emit(emitMap.REFRESH_ROOM_PLAYERS, {playerId: getMyPlayerId(), playerName: val});
-        $('#joinPage').css('display', 'none');
-        $('#roomPlayersPage').css('display', 'flex');
-    }
-})
-
-socket.on(emitMap.REFRESH_ROOM_PLAYERS, (data: any) => {
-    $("#roomPlayers").html(data.map((e: any) => `<div>${e.playerName}</div>`))
-    if (data[0]?.playerId == getMyPlayerId()) {
-        $("#startButton").show();
-    }
-})
-
-$("#startButton").click(() => {
-    socket.emit(emitMap.INIT);
-})
-
-socket.on(emitMap.INIT, () => {
-    $("#roomPlayersPage").hide();
-})
+bindPageEvent();
 
 class Gaming extends Phaser.Scene {
     socket: Socket;
@@ -160,6 +115,7 @@ const config = {
     type: Phaser.AUTO,
     width: sizeConfig.background.width,
     height: sizeConfig.background.height,
+    parent: 'canvas',
     scene: [Gaming],
     scale: {
         // https://rexrainbow.github.io/phaser3-rex-notes/docs/site/scalemanager/

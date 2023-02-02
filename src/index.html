@@ -4,32 +4,33 @@
     <meta charset="UTF-8">
     <title>三国杀</title>
 </head>
-<body style="background-image:url('http://web.sanguosha.com/220/h5_2/res/assets/frameback.jpg');background-size: 100% 100%; height: 100vh; ">
-<div id="jsoneditor" style="position: absolute;right: 0;top: 0;width: 400px;"></div>
-<div style="position: absolute;top: 0;left: 0;background: white">
+<body style="background-image:url('http://web.sanguosha.com/220/h5_2/res/assets/frameback.jpg');background-size: 100% 100%; height: 100vh;">
+<div class="absolute left-0 top-0 bg-white">
     <btn id="GoNextStage">GoNextStage</btn>
 </div>
-<div id="joinPage" style="position: absolute;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;">
-    Input your name
-    <input id='nameInput' type="text">
-    <button id="joinButton">Join</button>
+<div id="jsoneditor" class="absolute right-0 top-0 w-400"></div>
+
+<div id="joinPage" class="z-20 absolute left-0 top-0 flex h-full w-full items-center justify-center">
+    <div class="space-y-8">
+        <h2 class="mt-6 text-center text-3xl font-bold text-gray-100">Legends of the Three Kingdoms</h2>
+        <input id="nameInput"
+               class="block w-full rounded-md px-3 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-indigo-500"
+               placeholder="Your name">
+        <button id="joinButton"
+                class="w-full justify-center rounded-md py-2 px-4 text-white
+                bg-yellow-600 hover:bg-yellow-700">
+            Join Room
+        </button>
+    </div>
 </div>
 
-<div id="roomPlayersPage" style="position: absolute;
-    height: 100vh;
-    width: 100vw;
-    display: none;
-    align-items: center;
-    justify-content: center;">
+<div id="roomPlayersPage" class="z-10 absolute left-0 top-0 flex h-full w-full items-center justify-center">
     <div id="roomPlayers"></div>
     <button style="display: none" id="startButton">Start</button>
 </div>
+<div id="canvas" style="display: none" class="absolute left-0 top-0 flex h-full w-full"></div>
 
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 </body>
 </html>
