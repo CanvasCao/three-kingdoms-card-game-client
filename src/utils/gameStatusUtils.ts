@@ -20,14 +20,31 @@ function verticalRotationSting(s: string) {
     return s.split('').join('\r\n')
 }
 
+const playerIdKey = 'three-kingdom-player-id'
+const playerNameKey = 'three-kingdom-player-name'
+const setMyPlayerIdAndName = (name: string) => {
+    const newUUID = uuidv4()
+    localStorage.setItem(playerIdKey, newUUID);
+    localStorage.setItem(playerNameKey, name);
+}
+const getMyPlayerName = () => {
+    const name = localStorage.getItem(playerNameKey);
+    if (name) {
+        return name
+    } else {
+        const name = uuidv4()
+        localStorage.setItem(playerNameKey, name);
+        return name;
+    }
+}
+
 const getMyPlayerId = () => {
-    const key = 'three-kingdom-player-id';
-    const playerid = localStorage.getItem(key);
+    const playerid = localStorage.getItem(playerIdKey);
     if (playerid) {
         return playerid
     } else {
         const newUUID = uuidv4()
-        localStorage.setItem(key, newUUID);
+        localStorage.setItem(playerIdKey, newUUID);
         return newUUID;
     }
 }
@@ -331,7 +348,9 @@ const generateActualCard = (gameFEStatus: GameFEStatus) => {
 }
 
 export {
+    setMyPlayerIdAndName,
     getMyPlayerId,
+    getMyPlayerName,
 
     // my turn for UI and getCanPlayInMyTurn
     getIsMyPlayTurn,

@@ -1,3 +1,7 @@
+const CARD_LOCATION={
+    PAIDUI:"PAIDUI"
+}
+
 const CARD_HUASE = {
     HEITAO: "♠",
     CAOHUA: '♣',
@@ -348,6 +352,7 @@ const CARD_CONFIG = {
 }
 
 export {
+    CARD_LOCATION,
     CARD_HUASE,
     CARD_TYPE,
     EQUIPMENT_TYPE,

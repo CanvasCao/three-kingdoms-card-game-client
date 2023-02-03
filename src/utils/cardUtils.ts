@@ -1,8 +1,7 @@
 import {Card} from "../types/gameStatus";
-import {BASIC_CARDS_CONFIG, CARD_HUASE, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {BASIC_CARDS_CONFIG, CARD_HUASE, CARD_LOCATION, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {CardAreaType} from "../types/emit";
 import {getMyPlayerId} from "./gameStatusUtils";
-import {PAIDUI} from "../constants/constants";
 import {sizeConfig} from "../config/sizeConfig";
 
 export const attachFEInfoToCard = (card: Card) => {
@@ -120,7 +119,7 @@ export const attachFEInfoToCard = (card: Card) => {
 
 
 export const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
-    if (fromPlayerId == PAIDUI) {
+    if (fromPlayerId == CARD_LOCATION.PAIDUI) {
         return false
     }
 

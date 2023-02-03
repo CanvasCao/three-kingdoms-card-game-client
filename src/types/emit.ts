@@ -27,6 +27,12 @@ export type EmitCardBoardData = {
     selectedIndex: number,
 }
 
+export type EmitJoinRoomData = {
+    playerId: string,
+    playerName: string,
+    roomId: string
+}
+
 export type EmitThrowData = {
     cards: Card[]
 
@@ -40,6 +46,11 @@ export type EmitWugufengdengData = {
 
 
 // 后端=>前端
+export type EmitRefreshRooms = {
+    roomId: string | number,
+    players: { playerId: string, playerName: string }[],
+}[]
+
 export type EmitNotifyAddToPublicCardData = {
     fromId: string,
     toId: never,
