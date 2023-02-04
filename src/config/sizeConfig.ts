@@ -27,7 +27,7 @@ const sizeConfig = {
         "width": controlEquipmentWidth,
         "height": controlEquipmentHeight
     },
-    "controlSelectedOffsetX":controlSelectedOffsetX,
+    "controlSelectedOffsetX": controlSelectedOffsetX,
     "player": {
         "width": 140,
         "height": 168

@@ -51,6 +51,11 @@ export type EmitRefreshRooms = {
     players: { playerId: string, playerName: string }[],
 }[]
 
+export type EmitRefreshRoomPlayers = {
+    playerId: string,
+    playerName: string
+}[];
+
 export type EmitNotifyAddToPublicCardData = {
     fromId: string,
     toId: never,

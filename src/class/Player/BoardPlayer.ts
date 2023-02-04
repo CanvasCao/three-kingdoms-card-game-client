@@ -449,7 +449,7 @@ export class BoardPlayer {
         if (gameStatus.stage.playerId === this.player.playerId) {
             this.myTurnStroke!.setAlpha(1);
             this.stageText!.setAlpha(1);
-            this.stageText!.setText(gameStatus.stage.stageNameCN + '阶段...')
+            this.stageText!.setText(gameStatus.stage.stageName + '阶段...')
         } else {
             this.myTurnStroke!.setAlpha(0);
             this.stageText!.setAlpha(0)
