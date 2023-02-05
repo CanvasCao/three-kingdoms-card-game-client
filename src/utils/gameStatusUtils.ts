@@ -277,6 +277,8 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
             } else {
                 return false
             }
+        } else {
+            return true
         }
     }
     // 乐不思蜀

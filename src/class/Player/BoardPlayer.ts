@@ -41,6 +41,7 @@ export class BoardPlayer {
     _cardNumber: number;
     _isTieSuo: boolean;
     _actualCardId?: string;
+    _selectedTargetPlayersLength?: number;
     _isDead?: boolean;
 
     myTurnStroke?: Phaser.GameObjects.Graphics;
@@ -88,6 +89,7 @@ export class BoardPlayer {
         this._cardNumber = this.player.cards.length;
         this._isTieSuo = this.player.isTieSuo;
         this._actualCardId = '';
+        this._selectedTargetPlayersLength = 0;
 
         if (!this.isMe) {
             this.drawMyTurnStroke();
@@ -468,7 +470,8 @@ export class BoardPlayer {
             this._disable = false;
         }
 
-        if (this._actualCardId == gameFEStatus?.actualCard?.cardId) {
+        if (this._actualCardId == gameFEStatus?.actualCard?.cardId &&
+            this._selectedTargetPlayersLength == gameFEStatus?.selectedTargetPlayers?.length) {
             return
         }
 
@@ -481,6 +484,7 @@ export class BoardPlayer {
         }
 
         this._actualCardId = gameFEStatus?.actualCard?.cardId
+        this._selectedTargetPlayersLength = gameFEStatus?.selectedTargetPlayers?.length
     }
 
     onPlayerSelectedChange(gameFEStatus: GameFEStatus) {
