@@ -23,7 +23,9 @@ import {
 } from "./types/emit";
 import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
 import {bindPageEvent} from './bindPageEvent';
+import {initI18n} from './i18n/initi18n';
 
+initI18n();
 bindPageEvent();
 
 class Gaming extends Phaser.Scene {
