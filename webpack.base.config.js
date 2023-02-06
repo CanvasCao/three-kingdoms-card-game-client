@@ -4,15 +4,6 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const webpack = require('webpack')
 
 module.exports = {
-    mode: 'development',
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'public'),
-        },
-        compress: true,
-        port: 9000,
-        hot: true,
-    },
     resolve: {
         extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
     },
