@@ -37,7 +37,7 @@ const sizeConfig = {
         "width": 45.6
     },
     "okBtn": {
-        "width": 120,
+        "width": 100,
         "height": 40
     },
     "cancelBtn": {
@@ -45,7 +45,7 @@ const sizeConfig = {
         "height": 40
     },
     "endRoundBtn": {
-        "width": 100,
+        "width": 75,
         "height": 40
     }
 }

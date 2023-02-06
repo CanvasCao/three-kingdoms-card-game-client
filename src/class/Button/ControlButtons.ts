@@ -23,7 +23,8 @@ export class ControlButtons {
 
     cardBtnsX: number;
     cardBtnsY: number;
-    btnRightOffset: number;
+    btnOffset: number;
+    endBtnOffset: number;
 
     _isMyResponseCardTurn?: boolean;
     _canPlayInMyTurn?: boolean;
@@ -47,7 +48,8 @@ export class ControlButtons {
 
         this.cardBtnsX = sizeConfig.playersArea.width / 2;
         this.cardBtnsY = sizeConfig.playersArea.height - sizeConfig.background.height * 0.04;
-        this.btnRightOffset = 180;
+        this.btnOffset = 100;
+        this.endBtnOffset = 150;
 
         this._isMyResponseCardTurn;
         this._canPlayInMyTurn;
@@ -69,7 +71,7 @@ export class ControlButtons {
 
     drawOkButton() {
         this.okBtnImg = this.gamingScene.add.image(
-            this.cardBtnsX,
+            this.cardBtnsX- this.btnOffset,
             this.cardBtnsY,
             'white').setInteractive();
         this.okBtnImg.displayHeight = sizeConfig.okBtn.height;
@@ -78,7 +80,7 @@ export class ControlButtons {
         this.okBtnGroup.img = this.okBtnImg
 
         this.okText = this.gamingScene.add.text(
-            this.cardBtnsX,
+            this.cardBtnsX- this.btnOffset,
             this.cardBtnsY,
             textConfig.OK.CN,
             // @ts-ignore
@@ -92,7 +94,7 @@ export class ControlButtons {
 
     drawCancelButton() {
         this.cancelBtnImg = this.gamingScene.add.image(
-            this.cardBtnsX + this.btnRightOffset,
+            this.cardBtnsX + this.btnOffset,
             this.cardBtnsY,
             'white').setInteractive();
         this.cancelBtnImg.displayHeight = sizeConfig.cancelBtn.height;
@@ -101,7 +103,7 @@ export class ControlButtons {
         this.cancelBtnGroup.img = this.cancelBtnImg
 
         this.cancelText = this.gamingScene.add.text(
-            this.cardBtnsX + this.btnRightOffset,
+            this.cardBtnsX + this.btnOffset,
             this.cardBtnsY,
             textConfig.CANCEL.CN,
             // @ts-ignore
@@ -114,8 +116,9 @@ export class ControlButtons {
     }
 
     drawEndButton() {
+        const offsetX = this.btnOffset + this.endBtnOffset
         this.endBtnImg = this.gamingScene.add.image(
-            this.cardBtnsX + this.btnRightOffset,
+            this.cardBtnsX + offsetX,
             this.cardBtnsY,
             'white').setInteractive();
         this.endBtnImg.displayHeight = sizeConfig.endRoundBtn.height;
@@ -124,7 +127,7 @@ export class ControlButtons {
         this.endBtnGroup.img = this.endBtnImg
 
         this.endText = this.gamingScene.add.text(
-            this.cardBtnsX + this.btnRightOffset,
+            this.cardBtnsX + offsetX,
             this.cardBtnsY,
             textConfig.END.CN,
             // @ts-ignore
@@ -146,7 +149,7 @@ export class ControlButtons {
                     }
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
-            } else if (this._canPlayInMyTurn) {
+            } else if (this._canPlayInMyTurn || this._isMyThrowTurn) {
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             }
         });
@@ -260,18 +263,24 @@ export class ControlButtons {
         this._canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         this._isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
-        if (this._canPlayInMyTurn) {
+        if (this._canPlayInMyTurn || this._isMyResponseCardTurn || this._isMyThrowTurn) {
             this.showBtn(this.okBtnGroup)
             this.disableBtn(this.okBtnGroup)
+
+        }
+        if (this._canPlayInMyTurn) {
+            this.showBtn(this.cancelBtnGroup)
+            this.disableBtn(this.cancelBtnGroup)
+
             this.showBtn(this.endBtnGroup)
         } else if (this._isMyResponseCardTurn) {
-            this.showBtn(this.okBtnGroup)
-            this.disableBtn(this.okBtnGroup)
             this.showBtn(this.cancelBtnGroup)
+
+            this.hideBtn(this.endBtnGroup)
         } else if (this._isMyThrowTurn) {
-            this.showBtn(this.okBtnGroup)
-            this.disableBtn(this.okBtnGroup)
-            this.hideBtn(this.cancelBtnGroup)
+            this.showBtn(this.cancelBtnGroup)
+            this.disableBtn(this.cancelBtnGroup)
+
             this.hideBtn(this.endBtnGroup)
         } else {
             this.hideAllBtns();
@@ -282,20 +291,16 @@ export class ControlButtons {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
         if (this._canPlayInMyTurn) {
             this.canClickOkBtnInMyPlayStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
-
-            if (gameFEStatus.selectedCards.length > 0) {
-                this.showBtn(this.cancelBtnGroup)
-                this.hideBtn(this.endBtnGroup)
-            } else {
-                this.hideBtn(this.cancelBtnGroup)
-                this.showBtn(this.endBtnGroup)
-            }
         } else if (this._isMyResponseCardTurn) {
             this.canClickOkBtnInMyResponseCardStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
-            this.showBtn(this.cancelBtnGroup)
-            this.hideBtn(this.endBtnGroup)
         } else if (this._isMyThrowTurn) {
             this.canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+        }
+
+        if (gameFEStatus.selectedCards.length > 0) {
+            this.showBtn(this.cancelBtnGroup)
+        } else {
+            this.disableBtn(this.cancelBtnGroup)
         }
     }
 
