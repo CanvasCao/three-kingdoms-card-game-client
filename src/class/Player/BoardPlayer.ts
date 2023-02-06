@@ -19,6 +19,13 @@ import {getCardColor} from "../../utils/cardUtils";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
+const cardAndGroupMaps = [
+    {card: "weaponCard", group: "weaponGroup"},
+    {card: "shieldCard", group: "shieldGroup"},
+    {card: "plusHorseCard", group: "plusHorseGroup"},
+    {card: "minusHorseCard", group: "minusHorseGroup"},
+]
+
 export class BoardPlayer {
     obId: string;
     gamingScene: GamingScene;
@@ -104,6 +111,9 @@ export class BoardPlayer {
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
+        if (!this.isMe) {
+            this.drawEquipmentCards();
+        }
         if (this.player.isDead) {
             this.drawIsDead();
             this._isDead = true;
@@ -221,6 +231,29 @@ export class BoardPlayer {
         // this.stageText.setBackgroundColor("#fff")
         this.stageText.setFontSize(10)
         this.stageText.setAlpha(0)
+    }
+
+    drawEquipmentCards() {
+        cardAndGroupMaps.forEach((ele, index) => {
+            // @ts-ignore
+            this[ele.group] = {};
+            // @ts-ignore
+            const group = this[ele.group]
+            const offsetY = sizeConfig.player.height / 9;
+            const offsetYStep = sizeConfig.player.height / 10;
+            const positionX = this.positionX - sizeConfig.player.width / 2;
+            const positionY = this.positionY + offsetY + offsetYStep * index;
+            const {
+                background,
+                distanceText,
+                nameText,
+                huaseNumText
+            } = sharedDrawEquipment(this.gamingScene, undefined, {x: positionX, y: positionY, alpha: 0})
+            group.background = background;
+            group.distanceText = distanceText;
+            group.nameText = nameText;
+            group.huaseNumText = huaseNumText;
+        })
     }
 
     drawIsDead() {
@@ -347,57 +380,27 @@ export class BoardPlayer {
 
     onEquipmentsChange(gameStatus: GameStatus) {
         const player = gameStatus.players[this.player.playerId];
-        [
-            {card: "weaponCard", group: "weaponGroup"},
-            {card: "shieldCard", group: "shieldGroup"},
-            {card: "plusHorseCard", group: "plusHorseGroup"},
-            {card: "minusHorseCard", group: "minusHorseGroup"},
-        ].forEach((ele, index) => {
+        cardAndGroupMaps.forEach((ele, index) => {
             const card = player[ele.card as keyof Player] as Card
             if (card) {
                 // @ts-ignore
-                if (this[ele.group]) {
-                    // @ts-ignore
-                    const group = this[ele.group]
-                    group.distanceText.setText(card.distanceDesc || '')
-                    group.nameText.setText(card.CN)
-                    group.huaseNumText.setText(card.cardNumDesc + card.huase)
-                    group.huaseNumText.setColor(getCardColor(card.huase))
-                } else {
-                    // @ts-ignore
-                    this[ele.group] = {};
-                    // @ts-ignore
-                    const group = this[ele.group]
-                    const offsetY = sizeConfig.player.height / 9;
-                    const offsetYStep = sizeConfig.player.height / 10;
-                    const positionX = this.positionX - sizeConfig.player.width / 2;
-                    const positionY = this.positionY + offsetY + offsetYStep * index;
-                    const {
-                        background,
-                        distanceText,
-                        nameText,
-                        huaseNumText
-                    } = sharedDrawEquipment(this.gamingScene, card, {x: positionX, y: positionY})
-                    group.background = background;
-                    group.distanceText = distanceText;
-                    group.nameText = nameText;
-                    group.huaseNumText = huaseNumText;
-                }
-            } else {
-                // @ts-ignore
-                if (!this[ele.group]) {
-                    return
-                }
-                // @ts-ignore
                 const group = this[ele.group]
-                this.gamingScene.tweens.add({
-                    targets: [group.background, group.distanceText, group.nameText, group.huaseNumText],
-                    alpha: {
-                        value: 0,
-                        duration: 0,
-                    },
-                });
+                group.distanceText.setText(card.distanceDesc || '')
+                group.nameText.setText(card.CN)
+                group.huaseNumText.setText(card.cardNumDesc + card.huase)
+                group.huaseNumText.setColor(getCardColor(card.huase))
             }
+
+            // @ts-ignore
+            const group = this[ele.group]
+            this.gamingScene.tweens.add({
+                targets: [group.background, group.distanceText, group.nameText, group.huaseNumText],
+                alpha: {
+                    value: card ? 1 : 0,
+                    duration: 0,
+                },
+            });
+
         })
     }
 
