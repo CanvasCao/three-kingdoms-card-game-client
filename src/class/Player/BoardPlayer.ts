@@ -321,7 +321,7 @@ export class BoardPlayer {
 
             // Player已经选中过 反选
             if (curGameFEStatus.selectedTargetPlayers.find((u: Player) => u.playerId == this.player.playerId)) {
-                curGameFEStatus.selectedTargetPlayers = differenceBy(curGameFEStatus.selectedTargetPlayers, [this.player], 'playerId');
+                curGameFEStatus.selectedTargetPlayers = [];
                 this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
                 return;
             }
