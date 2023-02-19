@@ -6,20 +6,18 @@
 </head>
 <body style="background-image:url('http://web.sanguosha.com/220/h5_2/res/assets/frameback.jpg');background-size: 100% 100%; height: 100vh;">
 <div class="z-50 absolute left-0 top-0 bg-white">
-    <btn id="GoNextStage">GoNextStage</btn>
+    <btn style="display: none" id="GoNextStage">GoNextStage</btn>
 </div>
-<div id="jsoneditor" class="z-50 absolute right-0 top-0 w-400"></div>
+<div id="jsoneditor" style="display: none" class="z-50 absolute right-0 top-0 w-400"></div>
 
 <div id="joinPage" class="absolute left-0 top-0 flex h-full w-full items-center justify-center">
     <div style="width: 30rem" class="space-y-8">
-        <h2 class="mt-6 text-center text-3xl font-bold text-gray-100">Legends of the Three Kingdoms</h2>
+        <h2 class="mt-6 text-center text-3xl font-bold text-gray-100"></h2>
         <input id="nameInput"
-               class="block w-full rounded-md px-3 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-indigo-500"
-               placeholder="Your name">
+               class="block w-full rounded-md px-3 py-2 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-indigo-500">
         <button id="loginButton"
                 class="w-full justify-center rounded-md py-2 px-4 text-white
                 bg-yellow-600 hover:bg-yellow-700">
-            Login
         </button>
     </div>
 </div>

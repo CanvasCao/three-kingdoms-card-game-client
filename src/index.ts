@@ -24,8 +24,10 @@ import {
 import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
 import {bindPageEvent} from './bindPageEvent';
 import {initI18n} from './i18n/initi18n';
+import {setPageByFeatureToggle} from "./toggle/toggle";
 
 initI18n();
+setPageByFeatureToggle();
 bindPageEvent();
 
 class Gaming extends Phaser.Scene {

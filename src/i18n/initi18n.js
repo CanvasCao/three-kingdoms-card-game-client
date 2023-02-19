@@ -1,4 +1,8 @@
 export const i18WindowKey = 'three-kingdom-i18n';
+export const i18Lans={
+    'CN':'CN',
+    'EN':'EN',
+}
 export const initI18n = () => {
     var params = {};
     if (location.search) {

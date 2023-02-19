@@ -1,34 +1,17 @@
 import {socket} from "./socket";
 import {getMyPlayerId, getMyPlayerName, setMyPlayerIdAndName} from "./utils/gameStatusUtils";
 import emitMap from "./config/emitMap.json";
-import JSONEditor from "./jsoneditor/jsoneditor.min.js";
-import {getFeatureToggle} from "./toggle/toggle";
 import {GameStatus} from "./types/gameStatus";
 import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms} from "./types/emit";
+import {i18, i18Config} from "./i18n/i18Config";
 
 const bindPageEvent = () => {
-    // create the editor
-    const SHOW_JSON_EDITOR = getFeatureToggle().SHOW_JSON_EDITOR;
-    if (SHOW_JSON_EDITOR) {
-        const container = document.getElementById('jsoneditor')
-        // @ts-ignore
-        window.editor = new JSONEditor(container, {})
-        // @ts-ignore
-        window.editor2 = new JSONEditor(container, {})
-    }
-
-    const SHOW_GO_TO_NEXT_STAGE = getFeatureToggle().SHOW_GO_TO_NEXT_STAGE;
-    if (SHOW_GO_TO_NEXT_STAGE) {
-        $("#GoNextStage").click(() => {
-            socket.emit(emitMap.GO_NEXT_STAGE);
-        })
-    } else {
-        $("#GoNextStage").hide()
-    }
-
-
     // bind page event
     // loginPage
+    $('#joinPage h2').text(i18(i18Config.TITLE))
+    $('#joinPage input').attr("placeholder", i18(i18Config.NAME_PLACEHOLDER))
+    $('#joinPage button').text(i18(i18Config.LOGIN))
+
     $('#loginButton').click(() => {
         const val = $("#nameInput").val()
         if (val) {
@@ -52,9 +35,11 @@ const bindPageEvent = () => {
         <ul class="space-y-8 rounded-lg w-full text-gray-900">` +
             data.map(room => {
                 return `<li class="rounded-md flex items-center justify-between bg-white px-6 py-6 border-b border-gray-200 w-full">
-                        <span>room ${room.roomId} </span> 
-                        <span>${room.players.length} player(s)</span>
-                      <button data-roomid=${room.roomId} class="justify-center rounded-md py-2 px-4 text-white bg-yellow-600 hover:bg-yellow-700">Join</button>
+                        <span>${i18(i18Config.ROOM)} ${room.roomId} </span> 
+                        <span>${room.players.length} ${i18(i18Config.PLAYERS)}</span>
+                        <button data-roomid=${room.roomId} class="justify-center rounded-md py-2 px-4 text-white bg-yellow-600 hover:bg-yellow-700">
+                        ${i18(i18Config.JOIN)}
+                        </button>
                     </li>`
             }).join('')
             + `</ul></div>`
@@ -83,7 +68,7 @@ const bindPageEvent = () => {
                 </span> `
             }).join('') +
             `<button id="startButton" class="w-full justify-center rounded-md py-2 px-4 text-white
-                bg-yellow-600 hover:bg-yellow-700">START</button></div>`
+                bg-yellow-600 hover:bg-yellow-700">${i18(i18Config.START)}</button></div>`
         )
         $("#startButton").click(() => {
             socket.emit(emitMap.INIT);
