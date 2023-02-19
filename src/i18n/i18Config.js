@@ -17,6 +17,9 @@ export const i18Config = {
     WAIT_FOR_START: {KEY: "WAIT_FOR_START", EN: "Please wait for host to start the game", CN: "请等待房主开始游戏"},
     HOST: {KEY: "HOST", EN: "Host", CN: "房主"},
 
+    // play phase
+    PLEASE_PLAY_A_CARD: {KEY: "PLEASE_PLAY_A_CARD", EN: "Play phase, please play a card", CN: "出牌阶段，请选择一张卡牌"},
+
 }
 
 export const i18 = (obj) => {

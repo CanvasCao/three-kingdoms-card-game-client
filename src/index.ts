@@ -25,6 +25,7 @@ import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
 import {bindPageEvent} from './bindPageEvent';
 import {initI18n} from './i18n/initi18n';
 import {setPageByFeatureToggle} from "./toggle/toggle";
+import {OperateHint} from "./class/OperateHint/OperateHint";
 
 initI18n();
 setPageByFeatureToggle();
@@ -38,6 +39,7 @@ class Gaming extends Phaser.Scene {
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
     wuGuFengDengBoard: WuGuFengDengBoard | undefined;
+    operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
     notifyAnimationManager: NofityAnimationManager | undefined;
@@ -79,6 +81,7 @@ class Gaming extends Phaser.Scene {
         socket.on(emitMap.INIT, (data: GameStatus) => {
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.wuGuFengDengBoard = new WuGuFengDengBoard(this);
+            this.operateHint = new OperateHint(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
             this.notifyAnimationManager = new NofityAnimationManager(this);
