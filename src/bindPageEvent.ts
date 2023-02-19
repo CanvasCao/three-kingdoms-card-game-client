@@ -60,15 +60,21 @@ const bindPageEvent = () => {
         console.log("REFRESH_ROOM_PLAYERS", data)
         $('#roomsPage').css('display', 'none');
         $('#roomPlayersPage').css('display', 'flex');
+
+        const isHost = data?.[0]?.playerId == getMyPlayerId()
+        const btnString = isHost ?
+            `<button id="startButton" class="w-full justify-center rounded-md py-2 px-4 text-white
+                bg-yellow-600 hover:bg-yellow-700">${i18(i18Config.START)}</button></div>` :
+            `<button class="w-full justify-center rounded-md py-2 px-4 text-white
+                bg-gray-600">${i18(i18Config.WAIT_FOR_START)}</button></div>`
+
         $('#roomPlayersPage').html(
             `<div style="width: 40rem" class="space-y-8">` +
             data.map(player => {
                 return `<span class="rounded-md flex items-center justify-between bg-white px-6 py-6 border-b border-gray-200 w-full">
-                    ${player.playerName}
+                    <span>${player.playerName}</span><span>${player.playerId == data?.[0]?.playerId ? i18(i18Config.HOST) : ""}</span>
                 </span> `
-            }).join('') +
-            `<button id="startButton" class="w-full justify-center rounded-md py-2 px-4 text-white
-                bg-yellow-600 hover:bg-yellow-700">${i18(i18Config.START)}</button></div>`
+            }).join('') + btnString
         )
         $("#startButton").click(() => {
             socket.emit(emitMap.INIT);

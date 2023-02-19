@@ -14,6 +14,8 @@ export const i18Config = {
 
     // roomPlayersPage
     START: {KEY: "START", EN: "START", CN: "开始游戏"},
+    WAIT_FOR_START: {KEY: "WAIT_FOR_START", EN: "Please wait for host to start the game", CN: "请等待房主开始游戏"},
+    HOST: {KEY: "HOST", EN: "Host", CN: "房主"},
 
 }
 
