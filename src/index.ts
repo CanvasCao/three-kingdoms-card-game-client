@@ -142,8 +142,8 @@ const config = {
             height: 600
         },
         max: {
-            width: 1200,
-            height: 675
+            width: 1366,
+            height: 768
         },
         zoom: 1,  // Size of game canvas = game size * zoom
     },

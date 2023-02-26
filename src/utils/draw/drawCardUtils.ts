@@ -9,6 +9,7 @@ import {
     cardNameObjOffsetY
 } from "../../config/cardContentOffsetConfig";
 import {getCardColor} from "../cardUtils";
+import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
 
 // tint
 const disableTint = colorConfig.disableCard;
@@ -39,14 +40,19 @@ const sharedDrawFrontCard = (
     const cardNameObj = gamingScene.add.text(
         x + cardNameObjOffsetX,
         y + cardNameObjOffsetY,
-        card.CN,
-        // @ts-ignore
-        {fontFamily: 'CustomFont', fill: "#000", align: "center"}
+        (getI18Lan() == i18Lans.EN) ? card.EN : card.CN,
+        {
+            fontFamily: 'CustomFont',
+            // @ts-ignore
+            fill: "#000",
+            align: "center",
+            wordWrap: {width: sizeConfig.controlCard.width * 0.8}
+        }
     )
-    cardNameObj.setPadding(0, 5, 0, 0);
+    cardNameObj.setPadding(0, 6, 0, 1);
     cardNameObj.setOrigin(0.5, 0.5);
     cardNameObj.setAlpha(alpha)
-    cardNameObj.setFontSize(14)
+    cardNameObj.setFontSize((getI18Lan() == i18Lans.EN) ? 12 : 14)
     cardNameObj.setDepth(depth)
     cardNameObj.setData("offsetX", cardNameObjOffsetX)
     cardNameObj.setData("offsetY", cardNameObjOffsetY)
@@ -75,7 +81,7 @@ const sharedDrawFrontCard = (
             // @ts-ignore
             fill: "#000",
             align: "center",
-            wordWrap: {width: sizeConfig.controlCard.width * 1.1, useAdvancedWrap: true}
+            wordWrap: {width: sizeConfig.controlCard.width * 1.1, useAdvancedWrap: false}
         }
     )
     cardMessageObj.setPadding(0, 5, 0, 0);

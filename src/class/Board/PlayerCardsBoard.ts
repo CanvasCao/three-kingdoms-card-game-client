@@ -2,7 +2,7 @@ import {Card, GameStatus, ScrollResStage, Player} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import { verticalRotationSting} from "../../utils/stringUtils";
+import { verticalRotationString} from "../../utils/stringUtils";
 import {getMyPlayerId} from "../../utils/localStorageUtils";
 import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
@@ -117,19 +117,19 @@ export class PlayerCardsBoard {
         this.handCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column1.x + categoryDiffX,
             this.initY + gridOffset.line1.y,
-            verticalRotationSting("手牌"),
+            verticalRotationString("手牌"),
         );
 
         this.equipmentCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column1.x + categoryDiffX,
             this.initY + gridOffset.line2.y,
-            verticalRotationSting("装备牌"),
+            verticalRotationString("装备牌"),
         );
 
         this.pandingCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column2.x + categoryDiffX,
             this.initY + gridOffset.line2.y,
-            verticalRotationSting("延时锦囊牌"),
+            verticalRotationString("延时锦囊牌"),
         );
 
         [this.handCardsCategoryText, this.equipmentCardsCategoryText, this.pandingCardsCategoryText].forEach(text => {

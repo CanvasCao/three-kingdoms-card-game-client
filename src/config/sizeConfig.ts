@@ -1,8 +1,8 @@
-const bgWidth = 1200
-const bgHeight = 675
+const bgWidth = 1366
+const bgHeight = 768
 
-const cardWidth = 80;
-const cardHeight = 106;
+const cardWidth = 85;
+const cardHeight = 116;
 
 const controlCardBgMargin = 15
 const controlEquipmentWidth = 140;

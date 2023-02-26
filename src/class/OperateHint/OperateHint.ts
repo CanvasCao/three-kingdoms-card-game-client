@@ -93,6 +93,8 @@ export class OperateHint {
             } else if (actualCardCNName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
                 this.operateHint?.setText(i18(i18Config.SELECT_SHUN_SHOU_QIAN_YANG))
             }
+        }else{
+            this.operateHint?.setAlpha(0);
         }
     }
 

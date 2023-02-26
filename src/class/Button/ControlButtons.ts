@@ -1,5 +1,4 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import textConfig from "../../config/textConfig.json";
 import emitMap from "../../config/emitMap.json";
 import {BtnGroup, GamingScene} from "../../types/phaser";
 import Phaser from "phaser";
@@ -7,12 +6,14 @@ import {GameFEStatus} from "../../types/gameFEStatus";
 import {GameStatus} from "../../types/gameStatus";
 import {generateAction, generateResponse, generateThrowData} from "../../utils/emitDataGenerator";
 import {getMyPlayerId} from "../../utils/localStorageUtils";
-import {getMyResponseInfo,getCanPlayInMyTurn} from "../../utils/stageUtils";
+import {getMyResponseInfo, getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {getIsMyResponseCardTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
 import {getAmendTargetMinMax} from "../../utils/playerUtils";
+import {i18} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
 
 export class ControlButtons {
     obId: string;
@@ -68,7 +69,7 @@ export class ControlButtons {
 
     drawOkButton() {
         this.okBtnImg = this.gamingScene.add.image(
-            this.cardBtnsX- this.btnOffset,
+            this.cardBtnsX - this.btnOffset,
             this.cardBtnsY,
             'white').setInteractive();
         this.okBtnImg.displayHeight = sizeConfig.okBtn.height;
@@ -77,9 +78,9 @@ export class ControlButtons {
         this.okBtnGroup.img = this.okBtnImg
 
         this.okText = this.gamingScene.add.text(
-            this.cardBtnsX- this.btnOffset,
+            this.cardBtnsX - this.btnOffset,
             this.cardBtnsY,
-            textConfig.OK.CN,
+            i18(i18Config.OK),
             // @ts-ignore
             {fill: "#fff", align: "center"}
         )
@@ -102,7 +103,7 @@ export class ControlButtons {
         this.cancelText = this.gamingScene.add.text(
             this.cardBtnsX + this.btnOffset,
             this.cardBtnsY,
-            textConfig.CANCEL.CN,
+            i18(i18Config.CANCEL),
             // @ts-ignore
             {fill: "#fff", align: "center"}
         )
@@ -126,7 +127,7 @@ export class ControlButtons {
         this.endText = this.gamingScene.add.text(
             this.cardBtnsX + offsetX,
             this.cardBtnsY,
-            textConfig.END.CN,
+            i18(i18Config.END),
             // @ts-ignore
             {fill: "#fff", align: "center"}
         )

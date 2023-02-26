@@ -14,6 +14,11 @@ export const i18Config = {
     WAIT_FOR_START: {KEY: "WAIT_FOR_START", EN: "Please wait for host to start the game", CN: "请等待房主开始游戏"},
     HOST: {KEY: "HOST", EN: "Host", CN: "房主"},
 
+    // button
+    OK: {KEY: "OK", EN: "OK", CN: "确定"},
+    CANCEL: {KEY: "CANCEL", EN: "CANCEL", CN: "取消"},
+    END: {KEY: "END", EN: "END", CN: "结束"},
+
     // play phase
     PLEASE_SELECT_A_CARD: {KEY: "PLEASE_SELECT_A_CARD", EN: "Play phase, please play a card", CN: "出牌阶段，请选择一张卡牌"},
     SELECT_SHA: {
