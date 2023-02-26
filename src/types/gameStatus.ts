@@ -129,6 +129,7 @@ export type TaoStage = ShanStage
 export type ScrollResStage = {
     originId: string,
     targetId: string,
+    cardTakeEffectOnPlayerId: string,
     cards: Card[],
     actualCard: Card,
     isEffect: boolean,
@@ -148,15 +149,11 @@ export type weaponResStage = {
     weaponCardName: string,
 }
 
-//  [
-//  {nextWuXieTargetId:第一张锦囊即将生效的目标/也是第一张无懈的目标},
-//  {nextWuXieTargetId:第一张无懈的目标/也是第二张无懈的目标}
-//  ]
+
 export type WuxieChain = {
     cards: Card[],
     actualCard: Card,
-    nextWuXieTargetId: string, // 无懈的目标是锦囊即将生效的目标
-    // WuxieChain不需要wuxieTargetCardId 只用来后端校验
+    cardFromPlayerId: string, // 操作提示里 当有人出无懈可击后 显示是否无懈某人
 }[];
 
 export type TieSuoTempStorageItem = {

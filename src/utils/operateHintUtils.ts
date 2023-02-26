@@ -82,47 +82,47 @@ const getIsMyResponseCardTurnOperationHint = (gameStatus: GameStatus, gameFEStat
         const number = gameStatus.taoResStages[0].cardNumber;
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_TAO, {number, name})
+    } else if (gameStatus.shanResStages.length > 0) {
+        const targetId = gameStatus.shanResStages[0].targetId;
+        const name = getPlayerDisplayName(gameStatus, targetId);
+        return i18(i18Config.RESPONSE_SHAN, {name})
     } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
         if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
+            const wuxieChain = gameStatus.wuxieSimultaneousResStage.wuxieChain
             const stage = gameStatus.scrollResStages[0];
+            let name;
+            if (wuxieChain?.length == 1) {
+                name = getPlayerDisplayName(gameStatus, stage.cardTakeEffectOnPlayerId);
+            } else if (wuxieChain?.length > 1) {
+                const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
+                name = getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId);
+            }
+            return i18(i18Config.RESPONSE_WU_XIE, {name})
         } else {
             return i18(i18Config.WAIT_WU_XIE)
         }
+    } else if (gameStatus.scrollResStages.length > 0) {
+        const stage = gameStatus.scrollResStages[0]
+        if (!stage.isEffect) {
+            throw new Error(stage.actualCard.CN + "未生效")
+        }
+        if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN) {
+            return i18(i18Config.RESPONSE_WAN_JIAN_QI_FA)
+        } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN) {
+            return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN)
+        } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.JUE_DOU.CN) {
+            return i18(i18Config.RESPONSE_JUE_DOU)
+        } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
+            return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN)
+        }
+    } else if (gameStatus.weaponResStages.length > 0) {
+        if (gameStatus.weaponResStages[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
+            return i18(i18Config.RESPONSE_QING_LONG_YAN_YUE_DAO)
+        }
+    } else {
+        console.log(gameStatus)
+        throw Error(`响应牌时没有操作提示`)
     }
-    // else if (gameStatus.shanResStages.length > 0) {
-    //     return {
-    //         targetId: gameStatus.shanResStages[0].targetId,
-    //         cardNames: [BASIC_CARDS_CONFIG.SHAN.CN],
-    //     }
-    // } else if (gameStatus.scrollResStages.length > 0) {
-    //     const curScrollResStage = gameStatus.scrollResStages[0]
-    //     if (!curScrollResStage.isEffect) {
-    //         throw new Error(curScrollResStage.actualCard.CN + "未生效")
-    //     }
-    //
-    //     let needResponseCardNames: string[] = [];
-    //     switch (curScrollResStage.actualCard.CN) {
-    //         case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
-    //             needResponseCardNames = [BASIC_CARDS_CONFIG.SHAN.CN];
-    //             break;
-    //         case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN:
-    //         case SCROLL_CARDS_CONFIG.JUE_DOU.CN:
-    //         case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN:
-    //             needResponseCardNames = [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,];
-    //             break;
-    //     }
-    //     return {
-    //         targetId: curScrollResStage.targetId,
-    //         cardNames: needResponseCardNames,
-    //     }
-    // } else if (gameStatus.weaponResStages.length > 0) {
-    //     if (gameStatus.weaponResStages[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
-    //         return {
-    //             targetId: gameStatus.weaponResStages[0].targetId,
-    //             cardNames: [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN,],
-    //         }
-    //     }
-    // }
 }
 
 const getIsMyThrowTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {

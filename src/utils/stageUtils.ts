@@ -43,8 +43,8 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
 
 const getMyResponseInfo = (gameStatus: GameStatus):
     {
-        targetId: string,
         cardNames: string[],
+        targetId?: string,
         wuxieTargetCardId?: string
     } | undefined => {
     if (gameStatus.taoResStages.length > 0) {
@@ -55,7 +55,6 @@ const getMyResponseInfo = (gameStatus: GameStatus):
     } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
         const chainItem = gameStatus.wuxieSimultaneousResStage.wuxieChain[gameStatus.wuxieSimultaneousResStage.wuxieChain.length - 1]
         return {
-            targetId: chainItem.nextWuXieTargetId, // 我无懈可击的目标人
             cardNames: [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN],
             wuxieTargetCardId: chainItem.actualCard.cardId,// 为了校验无懈可击是否冲突
         }

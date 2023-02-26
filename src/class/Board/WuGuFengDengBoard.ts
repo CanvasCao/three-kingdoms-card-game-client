@@ -129,6 +129,9 @@ export class WuGuFengDengBoard {
                     if (card.wugefengdengSelectedPlayerId) {
                         return;
                     }
+                    if (!gameStatus.scrollResStages?.[0].isEffect) {
+                        return;
+                    }
                     this.gamingScene.socket.emit(
                         emitMap.WUGU_BOARD_ACTION,
                         this.getEmitWugufengdengData(card)

@@ -7,6 +7,7 @@ import {
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
 import {getMyPlayerId} from "./localStorageUtils";
+import {getI18Lan, i18Lans} from "../i18n/i18nUtils";
 
 const getPlayersDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
     const tableDistance = Math.min(
@@ -119,7 +120,9 @@ const getCanPlayerPlaySha = (player: Player) => {
 }
 
 const getPlayerDisplayName = (gameStatus: GameStatus, playerId: string) => {
-    return gameStatus.players[playerId].name
+    const isMe = playerId == getMyPlayerId();
+    const s = getI18Lan() == i18Lans.EN ? " (me)" : "（我）"
+    return gameStatus.players[playerId].name + (isMe ? s : "");
 }
 
 export {

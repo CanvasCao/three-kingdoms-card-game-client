@@ -7,7 +7,7 @@ export type EmitResponseData = {
     cards: Card[],
     actualCard: Card,
     originId: string,
-    targetId: string,
+    targetId?: string,
 
     // 为了校验无懈可击是否冲突
     wuxieTargetCardId?: string,

@@ -109,12 +109,42 @@ export const i18Config = {
     RESPONSE_TAO: {
         KEY: "RESPONSE_TAO",
         EN: "{name} is dying, needs {number} peach(es), do you play [Peach]?",
-        CN: "{name}濒死，需要{number}个桃，是否出桃?"
+        CN: "{name}濒死，需要{number}个桃，是否出桃？"
+    },
+    RESPONSE_SHAN: {
+        KEY: "RESPONSE_SHAN",
+        EN: "{name} players strike on you, please play 1 dodge",
+        CN: "{name}对你出杀，请打出1张闪"
+    },
+    RESPONSE_QING_LONG_YAN_YUE_DAO: {
+        KEY: "RESPONSE_QING_LONG_YAN_YUE_DAO",
+        EN: "Do you want to launch the special effects of the Green Dragon Sword and continue to strike",
+        CN: "是否发动青龙偃月刀，继续出杀"
     },
     RESPONSE_WU_XIE: {
         KEY: "RESPONSE_WU_XIE",
-        EN: "{originName}'s {scrollName} is going to take effect on {targetName}, do you play [Cancel]?",
-        CN: "{originName}的{scrollName}锦囊对{targetName}即将生效，是否出无懈可击"
+        EN: "Play [Cancel] on {name}?",
+        CN: "对{name}使用无懈可击？"
+    },
+    RESPONSE_WAN_JIAN_QI_FA: {
+        KEY: "RESPONSE_WAN_JIAN_QI_FA",
+        EN: "RESPONSE_WAN_JIAN_QI_FA",
+        CN: "RESPONSE_WAN_JIAN_QI_FA"
+    },
+    RESPONSE_NAN_MAN_RU_QIN: {
+        KEY: "RESPONSE_NAN_MAN_RU_QIN",
+        EN: "RESPONSE_NAN_MAN_RU_QIN",
+        CN: "RESPONSE_NAN_MAN_RU_QIN"
+    },
+    RESPONSE_JUE_DOU: {
+        KEY: "RESPONSE_JUE_DOU",
+        EN: "RESPONSE_JUE_DOU",
+        CN: "RESPONSE_JUE_DOU"
+    },
+    RESPONSE_JIE_DAO_SHA_REN: {
+        KEY: "RESPONSE_JIE_DAO_SHA_REN",
+        EN: "RESPONSE_JIE_DAO_SHA_REN",
+        CN: "RESPONSE_JIE_DAO_SHA_REN"
     },
     WAIT_WU_XIE: {
         KEY: "WAIT_WU_XIE",
