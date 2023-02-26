@@ -7,9 +7,8 @@ import {
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
 import {getMyPlayerId} from "./localStorageUtils";
-import {attachFEInfoToCard} from "./cardUtils";
 
-const getDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
+const getPlayersDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
     const tableDistance = Math.min(
         Math.abs(APlayer.location - BPlayer.location),
         Math.abs((APlayer.location + playerNumber) - BPlayer.location),
@@ -20,7 +19,7 @@ const getDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: num
 const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayer: Player) => {
     const actualCardName = gameFEStatus?.actualCard?.CN || '';
     const mePlayer = gameStatus.players[getMyPlayerId()];
-    const distanceBetweenMeAndTarget = getDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
+    const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
 
     // 计算杀的距离
     if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCardName)) {
@@ -50,7 +49,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
             let attackDistance, distanceBetweenAAndB;
             const daoOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
             attackDistance = daoOwnerPlayer?.weaponCard?.distance || 1;
-            distanceBetweenAAndB = getDistanceFromAToB(daoOwnerPlayer, targetPlayer, Object.keys(gameStatus.players).length)
+            distanceBetweenAAndB = getPlayersDistanceFromAToB(daoOwnerPlayer, targetPlayer, Object.keys(gameStatus.players).length)
             if (attackDistance >= distanceBetweenAAndB) {
                 return true
             } else {
@@ -119,12 +118,8 @@ const getCanPlayerPlaySha = (player: Player) => {
     }
 }
 
-const getAmendTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    const mePlayer = gameStatus.players[getMyPlayerId()]
-    if (mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN && mePlayer.cards.length == 1) {
-        return {min: 1, max: 3}
-    }
-    return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+const getPlayerDisplayName = (gameStatus: GameStatus, playerId: string) => {
+    return gameStatus.players[playerId].name
 }
 
 export {
@@ -134,7 +129,7 @@ export {
     getIfPlayerHasWeapon,
     getCanPlayerPlaySha,
 
-    getDistanceFromAToB,
-    getAmendTargetMinMax
+    getPlayersDistanceFromAToB,
+    getPlayerDisplayName,
 }
 

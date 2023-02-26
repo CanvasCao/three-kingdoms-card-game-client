@@ -1,8 +1,16 @@
-import {Card} from "../types/gameStatus";
-import {BASIC_CARDS_CONFIG, CARD_HUASE, CARD_LOCATION, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {Card, GameStatus} from "../types/gameStatus";
+import {
+    BASIC_CARDS_CONFIG,
+    CARD_HUASE,
+    CARD_LOCATION,
+    CARD_TYPE,
+    EQUIPMENT_CARDS_CONFIG,
+    SCROLL_CARDS_CONFIG
+} from "../config/cardConfig";
 import {CardAreaType} from "../types/emit";
 import {getMyPlayerId} from "./localStorageUtils";
 import {sizeConfig} from "../config/sizeConfig";
+import {GameFEStatus} from "../types/gameFEStatus";
 
 const attachFEInfoToCard = (card: Card) => {
     if (!card) {
@@ -144,9 +152,18 @@ const getCardColor = (huase: string) => {
     return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? '#f00' : '#000'
 }
 
+const getAmendCardTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+    const mePlayer = gameStatus.players[getMyPlayerId()]
+    if (mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN && mePlayer.cards.length == 1) {
+        return {min: 1, max: 3}
+    }
+    return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+}
+
 export {
     attachFEInfoToCard,
     getIfToPlayerCardFaceFront,
     getControlCardPosition,
-    getCardColor
+    getCardColor,
+    getAmendCardTargetMinMax
 }

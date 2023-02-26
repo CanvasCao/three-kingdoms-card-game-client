@@ -7,8 +7,8 @@ import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
-import {getCardColor} from "../../utils/cardUtils";
-import {getAmendTargetMinMax, getIfPlayerAble} from "../../utils/playerUtils";
+import {getAmendCardTargetMinMax, getCardColor} from "../../utils/cardUtils";
+import {getIfPlayerAble} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {
@@ -338,7 +338,7 @@ export class BoardPlayer {
             }
 
             // validate是否选择了足够目标
-            const targetMinMax = getAmendTargetMinMax(curGameStatus, curGameFEStatus)
+            const targetMinMax = getAmendCardTargetMinMax(curGameStatus, curGameFEStatus)
             if (curGameFEStatus.selectedTargetPlayers.length >= targetMinMax.max) {
                 return;
             }

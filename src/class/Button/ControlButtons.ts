@@ -11,9 +11,9 @@ import {getIsMyResponseCardTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
-import {getAmendTargetMinMax} from "../../utils/playerUtils";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
+import {getAmendCardTargetMinMax} from "../../utils/cardUtils";
 
 export class ControlButtons {
     obId: string;
@@ -229,7 +229,7 @@ export class ControlButtons {
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
-            const targetMinMaxNumber = getAmendTargetMinMax(gameStatus, gameFEStatus);
+            const targetMinMaxNumber = getAmendCardTargetMinMax(gameStatus, gameFEStatus);
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetPlayers.length >= targetMinMaxNumber.min
                 && gameFEStatus.selectedTargetPlayers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;
@@ -295,10 +295,12 @@ export class ControlButtons {
             this.canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
         }
 
-        if (gameFEStatus.selectedCards.length > 0) {
-            this.showBtn(this.cancelBtnGroup)
-        } else {
-            this.disableBtn(this.cancelBtnGroup)
+        if (this._canPlayInMyTurn || this._isMyThrowTurn) {
+            if (gameFEStatus.selectedCards.length > 0) {
+                this.showBtn(this.cancelBtnGroup)
+            } else {
+                this.disableBtn(this.cancelBtnGroup)
+            }
         }
     }
 

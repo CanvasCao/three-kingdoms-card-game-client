@@ -83,4 +83,49 @@ export const i18Config = {
         EN: "Choose a target and get one of their cards",
         CN: "请选择一个目标，获得其一张牌"
     },
+    SELECT_SHAN_DIAN: {
+        KEY: "SELECT_SHAN_DIAN",
+        EN: "Put Lightning in your judgment zone",
+        CN: "将闪电置入你的判定区"
+    },
+    SELECT_LE_BU_SI_SHU: {
+        KEY: "SELECT_LE_BU_SI_SHU",
+        EN: "Please select {number} character as the target of the Contentment",
+        CN: "请选择1名角色，作为乐不思蜀的目标"
+    },
+    SELECT_BING_LIANG_CUN_DUAN: {
+        KEY: "SELECT_BING_LIANG_CUN_DUAN",
+        EN: "Please select {number} character as the target of the Supply Outage",
+        CN: "请选择1名角色，作为兵粮寸断的目标"
+    },
+    SELECT_ZHANG_BA_SHE_MAO: {
+        KEY: "SELECT_ZHANG_BA_SHE_MAO",
+        EN: "Launching the special effect of the Snake Spear to use two hand cards as Strike",
+        CN: "发动丈八蛇矛将两张手牌当杀使用或打出"
+    },
+
+
+    // 响应
+    RESPONSE_TAO: {
+        KEY: "RESPONSE_TAO",
+        EN: "{name} is dying, needs {number} peach(es), do you play [Peach]?",
+        CN: "{name}濒死，需要{number}个桃，是否出桃?"
+    },
+    RESPONSE_WU_XIE: {
+        KEY: "RESPONSE_WU_XIE",
+        EN: "{originName}'s {scrollName} is going to take effect on {targetName}, do you play [Cancel]?",
+        CN: "{originName}的{scrollName}锦囊对{targetName}即将生效，是否出无懈可击"
+    },
+    WAIT_WU_XIE: {
+        KEY: "WAIT_WU_XIE",
+        EN: "Waiting for the user to play [Cancel]",
+        CN: "无懈可击询问中"
+    },
+
+    // 弃牌
+    SELECT_THROW_CARDS: {
+        KEY: "SELECT_THROW_CARDS",
+        EN: "You need to discard {number} hand card(s)",
+        CN: "您需要弃置{number}张手牌，请选牌"
+    }
 }
