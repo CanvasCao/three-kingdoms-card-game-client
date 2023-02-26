@@ -1,3 +1,5 @@
+import {EQUIPMENT_TYPE} from "../config/cardConfig";
+
 export type GameStatus = {
     players: GameStatusPlayers,
     stage: Stage,
@@ -65,7 +67,7 @@ export type Card = {
     type: string,
     attribute: string,
 
-    equipmentType?: string,
+    equipmentType?: keyof typeof EQUIPMENT_TYPE,
     horseDistance?: number,
     distance?: number,
     distanceDesc?: string,

@@ -1,9 +1,10 @@
 import {socket} from "./socket";
-import {getMyPlayerId, getMyPlayerName, setMyPlayerIdAndName} from "./utils/gameStatusUtils";
+import {getMyPlayerId, getMyPlayerName, setMyPlayerIdAndName} from "./utils/localStorageUtils";
 import emitMap from "./config/emitMap.json";
 import {GameStatus} from "./types/gameStatus";
 import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms} from "./types/emit";
-import {i18, i18Config} from "./i18n/i18Config";
+import {i18Config} from "./i18n/i18Config";
+import {i18} from "./i18n/i18nUtils";
 
 const bindPageEvent = () => {
     // bind page event

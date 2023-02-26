@@ -1,5 +1,5 @@
-import {uuidv4} from "../../utils/gameStatusUtils";
 import {GamingScene} from "../../types/phaser";
+import {uuidv4} from "../../utils/uuid";
 
 export class PublicLine {
     obId: string;

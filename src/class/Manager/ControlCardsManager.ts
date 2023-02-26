@@ -1,4 +1,4 @@
-import {getMyPlayerId, uuidv4} from "../../utils/gameStatusUtils";
+import { getMyPlayerId} from "../../utils/localStorageUtils";
 import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
 import {ControlCard} from "../Card/ControlCard";
@@ -7,6 +7,7 @@ import {Card, GameStatus} from "../../types/gameStatus";
 import {sizeConfig} from "../../config/sizeConfig";
 import {ControlEquipmentCard} from "../Card/ControlEquipmentCard";
 import {EQUIPMENT_TYPE} from "../../config/cardConfig";
+import {uuidv4} from "../../utils/uuid";
 
 export class ControlCardsManager {
     obId: string;

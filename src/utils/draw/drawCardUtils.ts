@@ -1,14 +1,14 @@
-import {sizeConfig} from "../config/sizeConfig";
-import colorConfig from "../config/colorConfig.json";
-import {GamingScene} from "../types/phaser";
-import {Card} from "../types/gameStatus";
+import {sizeConfig} from "../../config/sizeConfig";
+import colorConfig from "../../config/colorConfig.json";
+import {GamingScene} from "../../types/phaser";
+import {Card} from "../../types/gameStatus";
 import {
     cardHuaseNumberObjOffsetX,
     cardHuaseNumberObjOffsetY,
     cardNameObjOffsetX,
     cardNameObjOffsetY
-} from "../config/cardContentOffsetConfig";
-import {getCardColor} from "./cardUtils";
+} from "../../config/cardContentOffsetConfig";
+import {getCardColor} from "../cardUtils";
 
 // tint
 const disableTint = colorConfig.disableCard;

@@ -10,7 +10,7 @@ const addFEInfoToCardConfig = (cardConfig: { [key: string]: Partial<Card> }) => 
     return cardConfig
 }
 
-const CARD_CONFIG_WITH_FE_INFO = addFEInfoToCardConfig(CARD_CONFIG);
+const CARD_CONFIG_WITH_FE_INFO = addFEInfoToCardConfig(CARD_CONFIG as { [key: string]: Partial<Card> });
 
 export {
     CARD_CONFIG_WITH_FE_INFO,

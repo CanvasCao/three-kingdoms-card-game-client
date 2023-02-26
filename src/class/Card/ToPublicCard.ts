@@ -1,13 +1,14 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import {getMyPlayerId, uuidv4} from "../../utils/gameStatusUtils";
-import {sharedDrawFrontCard} from "../../utils/drawCardUtils";
+import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {differenceBy} from "lodash";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {GamingScene} from "../../types/phaser";
 import {Card} from "../../types/gameStatus";
 import {BoardPlayer} from "../Player/BoardPlayer";
 import {getControlCardPosition} from "../../utils/cardUtils";
+import {uuidv4} from "../../utils/uuid";
 
 export class ToPublicCard {
     obId: string;

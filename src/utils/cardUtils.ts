@@ -1,10 +1,10 @@
 import {Card} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, CARD_HUASE, CARD_LOCATION, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {CardAreaType} from "../types/emit";
-import {getMyPlayerId} from "./gameStatusUtils";
+import {getMyPlayerId} from "./localStorageUtils";
 import {sizeConfig} from "../config/sizeConfig";
 
-export const attachFEInfoToCard = (card: Card) => {
+const attachFEInfoToCard = (card: Card) => {
     if (!card) {
         return
     }
@@ -25,6 +25,7 @@ export const attachFEInfoToCard = (card: Card) => {
         card.CN == BASIC_CARDS_CONFIG.LEI_SHA.CN ||
         card.CN == BASIC_CARDS_CONFIG.HUO_SHA.CN ||
         card.CN == BASIC_CARDS_CONFIG.TAO.CN ||
+        card.CN == BASIC_CARDS_CONFIG.JIU.CN ||
         card.type == CARD_TYPE.EQUIPMENT ||
         (card.type == CARD_TYPE.SCROLL && card.CN !== SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN)
     ) {
@@ -44,6 +45,7 @@ export const attachFEInfoToCard = (card: Card) => {
     } else if ([
         // 2.
         BASIC_CARDS_CONFIG.TAO.CN,
+        BASIC_CARDS_CONFIG.JIU.CN,
         SCROLL_CARDS_CONFIG.SHAN_DIAN.CN,
         SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
 
@@ -62,6 +64,7 @@ export const attachFEInfoToCard = (card: Card) => {
         // 2.
         if ([
             BASIC_CARDS_CONFIG.TAO.CN,
+            BASIC_CARDS_CONFIG.JIU.CN,
             SCROLL_CARDS_CONFIG.SHAN_DIAN.CN,
             SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
         ].includes(card.CN)) {
@@ -117,8 +120,7 @@ export const attachFEInfoToCard = (card: Card) => {
     return card
 }
 
-
-export const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
+const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
     if (fromPlayerId == CARD_LOCATION.PAIDUI) {
         return false
     }
@@ -131,13 +133,20 @@ export const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlaye
     return (cardAreaType !== 'hand')
 }
 
-export const getControlCardPosition = (index: number) => {
+const getControlCardPosition = (index: number) => {
     return {
         x: sizeConfig.controlEquipment.width + sizeConfig.controlCardBgMargin + index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
         y: sizeConfig.background.height - sizeConfig.controlCard.height / 2 - sizeConfig.controlCard.height * 0.15
     }
 }
 
-export const getCardColor = (huase: string) => {
+const getCardColor = (huase: string) => {
     return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? '#f00' : '#000'
+}
+
+export {
+    attachFEInfoToCard,
+    getIfToPlayerCardFaceFront,
+    getControlCardPosition,
+    getCardColor
 }

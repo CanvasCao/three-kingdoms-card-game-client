@@ -23,11 +23,11 @@ import {
 } from "./types/emit";
 import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
 import {bindPageEvent} from './bindPageEvent';
-import {initI18n} from './i18n/initi18n';
+import {i18nUtils} from './i18n/i18nUtils';
 import {setPageByFeatureToggle} from "./toggle/toggle";
 import {OperateHint} from "./class/OperateHint/OperateHint";
 
-initI18n();
+i18nUtils();
 setPageByFeatureToggle();
 bindPageEvent();
 

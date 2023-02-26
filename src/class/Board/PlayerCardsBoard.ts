@@ -2,12 +2,14 @@ import {Card, GameStatus, ScrollResStage, Player} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import {getMyPlayerId, uuidv4, verticalRotationSting} from "../../utils/gameStatusUtils";
+import { verticalRotationSting} from "../../utils/stringUtils";
+import {getMyPlayerId} from "../../utils/localStorageUtils";
 import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
-import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/drawCardUtils";
+import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {shuffle} from "lodash";
 import emitMap from "../../config/emitMap.json";
 import {CardAreaType, EmitCardBoardData} from "../../types/emit";
+import {uuidv4} from "../../utils/uuid";
 
 const gridOffset = {
     line1: {y: -55},

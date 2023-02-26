@@ -1,21 +1,20 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import {
-    getAmendTargetMinMax,
-    getCanSelectMeAsFirstTargetCardNamesClosure,
-    getCanSelectMeAsSecondTargetCardNamesClosure,
-    getIfPlayerAble,
-    getMyPlayerId,
-    uuidv4
-} from "../../utils/gameStatusUtils";
 import {DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../../types/phaser";
 import {Card, GameStatus, Player} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
-import {sharedDrawEquipment} from "../../utils/drawEquipmentUtils";
+import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
 import {getCardColor} from "../../utils/cardUtils";
+import {getAmendTargetMinMax, getIfPlayerAble} from "../../utils/playerUtils";
+import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {uuidv4} from "../../utils/uuid";
+import {
+    getCanSelectMeAsFirstTargetCardNamesClosure,
+    getCanSelectMeAsSecondTargetCardNamesClosure
+} from "../../utils/cardNamesClourseUtils";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 

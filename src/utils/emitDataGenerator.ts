@@ -1,8 +1,11 @@
 import {GameStatus, Player} from "../types/gameStatus";
 import {EmitActionData, EmitResponseData, EmitThrowData} from "../types/emit";
 import {attachFEInfoToCard} from "./cardUtils";
-import {getMyPlayerId, getMyResponseInfo, uuidv4} from "./gameStatusUtils";
+import {getMyPlayerId} from "./localStorageUtils";
 import {GameFEStatus} from "../types/gameFEStatus";
+import {getMyResponseInfo} from "./stageUtils";
+import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
+import {uuidv4} from "./uuid";
 
 const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (EmitActionData | undefined) => {
     const actualCard = JSON.parse(JSON.stringify(gameFEStatus.actualCard))
@@ -59,8 +62,26 @@ const generateThrowData = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
     return {cards: gameFEStatus.selectedCards, selectedIndexes: gameFEStatus.selectedIndexes}
 }
 
+const generateActualCard = (gameFEStatus: GameFEStatus) => {
+    if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
+        return {
+            "huase": gameFEStatus.selectedCards[0].huase,
+            "huase2": gameFEStatus.selectedCards[1].huase,
+            "cardId": uuidv4(),
+            "CN": "杀",
+            "EN": "Strike",
+            "type": "BASIC",
+        }
+    } else {
+        const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]))
+        card.cardId = uuidv4()
+        return card
+    }
+}
+
 export {
     generateAction,
     generateResponse,
-    generateThrowData
+    generateThrowData,
+    generateActualCard
 }
