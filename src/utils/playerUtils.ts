@@ -121,8 +121,12 @@ const getCanPlayerPlaySha = (player: Player) => {
 
 const getPlayerDisplayName = (gameStatus: GameStatus, playerId: string) => {
     const isMe = playerId == getMyPlayerId();
-    const s = getI18Lan() == i18Lans.EN ? " (me)" : "（我）"
+    const s = getI18Lan() == i18Lans.EN ? " (you)" : "（你）"
     return gameStatus.players[playerId].name + (isMe ? s : "");
+}
+
+const getCurrentPlayer = (gameStatus: GameStatus) => {
+    return gameStatus.players[gameStatus.stage.playerId]
 }
 
 export {
@@ -134,5 +138,6 @@ export {
 
     getPlayersDistanceFromAToB,
     getPlayerDisplayName,
+    getCurrentPlayer,
 }
 

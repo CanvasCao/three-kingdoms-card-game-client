@@ -32,7 +32,7 @@ export const getI18Lan = () => {
     return window[i18WindowKey] || i18Lans.EN
 }
 
-export const i18 = (obj, replaceObj) => {
+export const i18 = (obj, replaceObj={}) => {
     const lan = window[i18WindowKey] || i18Lans.EN;
     const key = obj.KEY
     try {

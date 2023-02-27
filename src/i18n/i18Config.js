@@ -20,20 +20,24 @@ export const i18Config = {
     END: {KEY: "END", EN: "END", CN: "结束"},
 
     // play phase
-    PLEASE_SELECT_A_CARD: {KEY: "PLEASE_SELECT_A_CARD", EN: "Play phase, please play a card", CN: "出牌阶段，请选择一张卡牌"},
+    PLEASE_SELECT_A_CARD: {
+        KEY: "PLEASE_SELECT_A_CARD",
+        EN: "Play phase, please play a card",
+        CN: "出牌阶段，请选择一张卡牌"
+    },
     SELECT_SHA: {
         KEY: "SELECT_SHA",
-        EN: "Please select {number} character as the target of the strike",
+        EN: "Please select {number} character as the target of the [Strike]",
         CN: "请选择{number}名角色，作为杀的目标"
     },
     SELECT_TAO: {
         KEY: "SELECT_TAO",
-        EN: "Play Peach to recover 1 point of health",
+        EN: "Play [Peach] to recover 1 point of health",
         CN: "出桃回复1点体力"
     },
     SELECT_JIU: {
         KEY: "SELECT_JIU",
-        EN: "Use wine to cause your next used [Strike] to deal +1 damage",
+        EN: "Use wine to cause your next [Strike] to deal +1 damage",
         CN: "使用酒，令自己的下一张使用的【杀】造成的伤害+1"
     },
     // 装备
@@ -44,7 +48,7 @@ export const i18Config = {
     },
     SELECT_MINUS_HORSE: {
         KEY: "SELECT_MINUS_HORSE",
-        EN: "After equipment {name}, you calculate the distance to other characters will -1 distance",
+        EN: "After equipment {name}, when you calculate the distance to other characters will -1 distance",
         CN: "装备{name}后，你计算与其他角色的距离时-1"
     },
     SELECT_PLUS_HORSE: {
@@ -80,30 +84,29 @@ export const i18Config = {
     },
     SELECT_SHUN_SHOU_QIAN_YANG: {
         KEY: "SELECT_SHUN_SHOU_QIAN_YANG",
-        EN: "Choose a target and get one of their cards",
-        CN: "请选择一个目标，获得其一张牌"
+        EN: "Choose a target with a distance of 1 and get one of their cards",
+        CN: "选择一个距离为1的目标，获得其一张牌"
     },
     SELECT_SHAN_DIAN: {
         KEY: "SELECT_SHAN_DIAN",
-        EN: "Put Lightning in your judgment zone",
+        EN: "Put [Lightning] in your judgment zone",
         CN: "将闪电置入你的判定区"
     },
     SELECT_LE_BU_SI_SHU: {
         KEY: "SELECT_LE_BU_SI_SHU",
-        EN: "Please select {number} character as the target of the Contentment",
+        EN: "Please select 1 character as the target of the [Contentment]",
         CN: "请选择1名角色，作为乐不思蜀的目标"
     },
     SELECT_BING_LIANG_CUN_DUAN: {
         KEY: "SELECT_BING_LIANG_CUN_DUAN",
-        EN: "Please select {number} character as the target of the Supply Outage",
+        EN: "Please select 1 character as the target of the [Supply Outage]",
         CN: "请选择1名角色，作为兵粮寸断的目标"
     },
     SELECT_ZHANG_BA_SHE_MAO: {
         KEY: "SELECT_ZHANG_BA_SHE_MAO",
-        EN: "Launching the special effect of the Snake Spear to use two hand cards as Strike",
+        EN: "Launching the special effect of the Snake Spear to use two hand cards as [Strike]",
         CN: "发动丈八蛇矛将两张手牌当杀使用或打出"
     },
-
 
     // 响应
     RESPONSE_TAO: {
@@ -113,7 +116,7 @@ export const i18Config = {
     },
     RESPONSE_SHAN: {
         KEY: "RESPONSE_SHAN",
-        EN: "{name} players strike on you, please play 1 dodge",
+        EN: "{name} played [Strike] on you, please play 1 [Dodge]",
         CN: "{name}对你出杀，请打出1张闪"
     },
     RESPONSE_QING_LONG_YAN_YUE_DAO: {
@@ -128,23 +131,23 @@ export const i18Config = {
     },
     RESPONSE_WAN_JIAN_QI_FA: {
         KEY: "RESPONSE_WAN_JIAN_QI_FA",
-        EN: "RESPONSE_WAN_JIAN_QI_FA",
-        CN: "RESPONSE_WAN_JIAN_QI_FA"
+        EN: "{name} played [Arrow Barrage], please play a [Dodge]",
+        CN: "{name}使用了万箭齐发，请出一张闪"
     },
     RESPONSE_NAN_MAN_RU_QIN: {
         KEY: "RESPONSE_NAN_MAN_RU_QIN",
-        EN: "RESPONSE_NAN_MAN_RU_QIN",
-        CN: "RESPONSE_NAN_MAN_RU_QIN"
+        EN: "{name} played [Barbarian Invasion], please play a [Strike]",
+        CN: "{name}使用了南蛮入侵，请出一张杀"
     },
     RESPONSE_JUE_DOU: {
         KEY: "RESPONSE_JUE_DOU",
-        EN: "RESPONSE_JUE_DOU",
-        CN: "RESPONSE_JUE_DOU"
+        EN: "{name} duel with you, please play a [Strike]",
+        CN: "{name}与你决斗，请出一张杀"
     },
     RESPONSE_JIE_DAO_SHA_REN: {
         KEY: "RESPONSE_JIE_DAO_SHA_REN",
-        EN: "RESPONSE_JIE_DAO_SHA_REN",
-        CN: "RESPONSE_JIE_DAO_SHA_REN"
+        EN: "Play a [Strike] on {targetName} or give your weapon to {originName}",
+        CN: "对{targetName}出一张杀，否则将你的武器交给{originName}"
     },
     WAIT_WU_XIE: {
         KEY: "WAIT_WU_XIE",

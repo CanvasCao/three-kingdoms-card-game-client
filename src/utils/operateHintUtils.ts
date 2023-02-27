@@ -13,7 +13,7 @@ import {getNeedSelectControlCardNumber} from "./cardValidation";
 import {getMyResponseInfo} from "./stageUtils";
 import {getMyPlayerId} from "./localStorageUtils";
 import {getAmendCardTargetMinMax} from "./cardUtils";
-import {getPlayerDisplayName} from "./playerUtils";
+import {getCurrentPlayer, getPlayerDisplayName} from "./playerUtils";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
@@ -107,13 +107,18 @@ const getIsMyResponseCardTurnOperationHint = (gameStatus: GameStatus, gameFEStat
             throw new Error(stage.actualCard.CN + "未生效")
         }
         if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN) {
-            return i18(i18Config.RESPONSE_WAN_JIAN_QI_FA)
+            const name = getPlayerDisplayName(gameStatus, stage.targetId)
+            return i18(i18Config.RESPONSE_WAN_JIAN_QI_FA, {name})
         } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN) {
-            return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN)
+            const name = getPlayerDisplayName(gameStatus, stage.targetId)
+            return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN, {name})
         } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.JUE_DOU.CN) {
-            return i18(i18Config.RESPONSE_JUE_DOU)
+            const name = getPlayerDisplayName(gameStatus, stage.targetId)
+            return i18(i18Config.RESPONSE_JUE_DOU, {name})
         } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
-            return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN)
+            const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus).playerId)
+            const targetName = getPlayerDisplayName(gameStatus, stage.targetId)
+            return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN, {originName, targetName})
         }
     } else if (gameStatus.weaponResStages.length > 0) {
         if (gameStatus.weaponResStages[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
