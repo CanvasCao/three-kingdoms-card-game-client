@@ -2,6 +2,8 @@ import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {GamingScene} from "../../types/phaser";
 import {Card} from "../../types/gameStatus";
+import {CARD_NUM_DESC} from "../../config/cardConfig";
+import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
 
 const sharedDrawEquipment = (
     gamingScene: GamingScene,
@@ -44,16 +46,21 @@ const sharedDrawEquipment = (
     distanceText.setAlpha(alpha)
 
     const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.23, y,
-        card?.CN || '',
-        // @ts-ignore
-        {fill: "#000", align: "justify"}
+        (getI18Lan() == i18Lans.EN ? card?.EN : card?.CN) || '',
+        {
+            // @ts-ignore
+            fill: "#000",
+            align: "justify",
+            wordWrap: {width: equipmentCardWidth * 0.5, useAdvancedWrap: false}
+        }
     );
     nameText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
-    nameText.setFontSize(fontSize)
+    nameText.setFontSize(10)
     nameText.setAlpha(alpha)
 
     const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.75, y,
-        (card?.cardNumDesc || '') + (card?.huase || ''),
+        // @ts-ignore
+        (CARD_NUM_DESC[card?.number] || '') + (card?.huase || ''),
         // @ts-ignore
         {fill: "#000", align: "center"}
     );

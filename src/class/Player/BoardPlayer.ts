@@ -1,6 +1,6 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import {DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {CARD_NUM_DESC, DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../../types/phaser";
 import {Card, GameStatus, Player} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
@@ -15,6 +15,7 @@ import {
     getCanSelectMeAsFirstTargetCardNamesClosure,
     getCanSelectMeAsSecondTargetCardNamesClosure
 } from "../../utils/cardNamesClourseUtils";
+import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
@@ -385,8 +386,9 @@ export class BoardPlayer {
                 // @ts-ignore
                 const group = this[ele.group]
                 group.distanceText.setText(card.distanceDesc || '')
-                group.nameText.setText(card.CN)
-                group.huaseNumText.setText(card.cardNumDesc + card.huase)
+                group.nameText.setText((getI18Lan() == i18Lans.EN ? card?.EN : card?.CN))
+                // @ts-ignore
+                group.huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
                 group.huaseNumText.setColor(getCardColor(card.huase))
             }
 

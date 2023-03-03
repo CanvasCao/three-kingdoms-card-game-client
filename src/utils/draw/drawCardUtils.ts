@@ -10,6 +10,7 @@ import {
 } from "../../config/cardContentOffsetConfig";
 import {getCardColor} from "../cardUtils";
 import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
+import {CARD_NUM_DESC} from "../../config/cardConfig";
 
 // tint
 const disableTint = colorConfig.disableCard;
@@ -59,10 +60,12 @@ const sharedDrawFrontCard = (
 
 
     // huase + number
+    // @ts-ignore
     const cardHuaseNumberObj = gamingScene.add.text(
         x + cardHuaseNumberObjOffsetX,
         y + cardHuaseNumberObjOffsetY,
-        (card.cardNumDesc + '\r\n' + card.huase),
+        // @ts-ignore
+        (CARD_NUM_DESC[card?.number] + '\r\n' + card.huase),
         // @ts-ignore
         {fontFamily: 'CustomFont', fill: getCardColor(card.huase), align: "center"}
     )
@@ -81,7 +84,7 @@ const sharedDrawFrontCard = (
             // @ts-ignore
             fill: "#000",
             align: "center",
-            wordWrap: {width: sizeConfig.controlCard.width * 1.1, useAdvancedWrap: false}
+            wordWrap: {width: sizeConfig.controlCard.width * 0.9, useAdvancedWrap: false}
         }
     )
     cardMessageObj.setPadding(0, 5, 0, 0);

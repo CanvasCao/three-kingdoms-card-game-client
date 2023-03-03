@@ -2,13 +2,14 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {GamingScene} from "../../types/phaser";
 import {Card, GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import {EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
+import {CARD_NUM_DESC, EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
 import {getCardColor} from "../../utils/cardUtils";
-import { getCanPlayerPlaySha } from "../../utils/playerUtils";
-import { getMyPlayerId } from "../../utils/localStorageUtils";
+import {getCanPlayerPlaySha} from "../../utils/playerUtils";
+import {getMyPlayerId} from "../../utils/localStorageUtils";
 import {getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
+import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
 
 const typeCardNameMap = {
     [EQUIPMENT_TYPE.WEAPON]: 'weaponCard',
@@ -140,8 +141,10 @@ export class ControlEquipmentCard {
         }
         this.background?.setAlpha(1)
         this.distanceText!.setText(this.card.distanceDesc || '')
-        this.nameText!.setText(this.card.CN)
-        this.huaseNumText!.setText(this.card.cardNumDesc + this.card.huase)
+        this.nameText!.setText((getI18Lan() == i18Lans.EN ? this.card?.EN : this.card?.CN))
+
+        // @ts-ignore
+        this.huaseNumText!.setText(CARD_NUM_DESC[this.card.number] + this.card.huase)
         this.huaseNumText!.setColor(getCardColor(this.card.huase))
 
         this.group.forEach((obj) => {

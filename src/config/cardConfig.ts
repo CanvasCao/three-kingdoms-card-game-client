@@ -1,5 +1,23 @@
-const CARD_LOCATION={
-    PAIDUI:"PAIDUI"
+// FE
+const CARD_NUM_DESC = {
+    1: "A",
+    2: "2",
+    3: "3",
+    4: "4",
+    5: "5",
+    6: "6",
+    7: "7",
+    8: "8",
+    9: "9",
+    10: "10",
+    11: "J",
+    12: "Q",
+    13: "K",
+}
+
+// BE
+const CARD_LOCATION = {
+    PAIDUI: "PAIDUI"
 }
 
 const CARD_HUASE = {
@@ -14,6 +32,7 @@ const CARD_TYPE = {
     SCROLL: "SCROLL",
     BASIC: "BASIC",
 }
+
 const CARD_ATTRIBUTE = {
     LIGHTNING: "LIGHTNING",
     FIRE: "FIRE",
@@ -358,6 +377,7 @@ const CARD_CONFIG = {
 }
 
 export {
+    CARD_NUM_DESC,
     CARD_LOCATION,
     CARD_HUASE,
     CARD_TYPE,
