@@ -111,6 +111,7 @@ export class BoardPlayer {
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
+        this.drawPlayerName();
         if (!this.isMe) {
             this.drawEquipmentCards();
         }
@@ -157,6 +158,20 @@ export class BoardPlayer {
         this.cardNumObj.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         this.cardNumObj.setBackgroundColor("#fff");
         this.cardNumObj.setFontSize(sizeConfig.player.width / 8)
+    }
+
+    drawPlayerName() {
+        const nameText = this.gamingScene.add.text(
+            this.positionX - sizeConfig.player.width / 2,
+            this.positionY - sizeConfig.player.height / 2,
+            this.player.name,
+            // @ts-ignore
+            {fill: "#fff", align: "left", fixedWidth: sizeConfig.player.width}
+        );
+
+        const padding = 2;
+        nameText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
+        nameText.setBackgroundColor("#0000003D")
     }
 
     drawTieSuo() {
@@ -228,7 +243,6 @@ export class BoardPlayer {
         this.stageText.setOrigin(0.5, 0.5)
         const padding = 2;
         this.stageText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        // this.stageText.setBackgroundColor("#fff")
         this.stageText.setFontSize(10)
         this.stageText.setAlpha(0)
     }

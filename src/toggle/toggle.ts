@@ -19,12 +19,11 @@ export const getFeatureToggle = () => {
             return DEFAULT_FEATURE_TOGGLE
         }
     } else {
-        localStorage.setItem(key, JSON.stringify(DEFAULT_FEATURE_TOGGLE));
         return DEFAULT_FEATURE_TOGGLE;
     }
 }
 
-export const setPageByFeatureToggle=()=>{
+export const setPageByFeatureToggle = () => {
     // create the editor
     const SHOW_JSON_EDITOR = getFeatureToggle().SHOW_JSON_EDITOR;
     if (SHOW_JSON_EDITOR) {
