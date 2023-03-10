@@ -47,7 +47,7 @@ const sharedDrawFrontCard = (
             // @ts-ignore
             fill: "#000",
             align: "center",
-            wordWrap: {width: sizeConfig.controlCard.width * 0.8}
+            wordWrap: {width: sizeConfig.controlCard.width * 0.7, useAdvancedWrap: true}
         }
     )
     cardNameObj.setPadding(0, 6, 0, 1);
@@ -84,7 +84,7 @@ const sharedDrawFrontCard = (
             // @ts-ignore
             fill: "#000",
             align: "center",
-            wordWrap: {width: sizeConfig.controlCard.width * 0.9, useAdvancedWrap: false}
+            wordWrap: {width: sizeConfig.controlCard.width * 0.9, useAdvancedWrap: true}
         }
     )
     cardMessageObj.setPadding(0, 5, 0, 0);

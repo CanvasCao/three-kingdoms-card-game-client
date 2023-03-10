@@ -52,14 +52,14 @@ const sharedDrawEquipment = (
             // @ts-ignore
             fill: "#000",
             align: "justify",
-            wordWrap: {width: equipmentCardWidth * 0.5, useAdvancedWrap: false}
+            wordWrap: {width: equipmentCardWidth * 0.7}
         }
     );
     nameText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
-    nameText.setFontSize(10)
+    nameText.setFontSize(fontSize)
     nameText.setAlpha(alpha)
 
-    const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.75, y,
+    const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.85, y,
         // @ts-ignore
         (CARD_NUM_DESC[card?.number] || '') + (card?.huase || ''),
         // @ts-ignore

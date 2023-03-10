@@ -140,8 +140,13 @@ export class ControlEquipmentCard {
             return
         }
         this.background?.setAlpha(1)
-        this.distanceText!.setText(this.card.distanceDesc || '')
-        this.nameText!.setText((getI18Lan() == i18Lans.EN ? this.card?.EN : this.card?.CN))
+
+        if (this.card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || this.card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
+            this.distanceText!.setText(this.card?.distanceDesc!)
+        } else if (this.card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
+            this.distanceText!.setText((getI18Lan() == i18Lans.EN ? this.card?.distance?.toString() : this.card?.distanceDesc)!)
+        }
+        this.nameText!.setText((getI18Lan() == i18Lans.EN ? this.card?.EN?.substring(0, 7) + '...' : this.card?.CN))
 
         // @ts-ignore
         this.huaseNumText!.setText(CARD_NUM_DESC[this.card.number] + this.card.huase)

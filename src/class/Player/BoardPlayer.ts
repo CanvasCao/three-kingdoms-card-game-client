@@ -1,6 +1,6 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import {CARD_NUM_DESC, DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {CARD_NUM_DESC, DELAY_SCROLL_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../../types/phaser";
 import {Card, GameStatus, Player} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
@@ -399,8 +399,13 @@ export class BoardPlayer {
             if (card) {
                 // @ts-ignore
                 const group = this[ele.group]
-                group.distanceText.setText(card.distanceDesc || '')
-                group.nameText.setText((getI18Lan() == i18Lans.EN ? card?.EN : card?.CN))
+                if (card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
+                    group.distanceText!.setText(card?.distanceDesc!)
+                } else if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
+                    group.distanceText!.setText((getI18Lan() == i18Lans.EN ? card?.distance?.toString() : card?.distanceDesc)!)
+                }
+                group.nameText.setText((getI18Lan() == i18Lans.EN ? card?.EN?.substring(0,7)+'...' : card?.CN))
+
                 // @ts-ignore
                 group.huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
                 group.huaseNumText.setColor(getCardColor(card.huase))
