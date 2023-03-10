@@ -29,7 +29,8 @@ const sharedDrawEquipment = (
         equipmentCardHeight);
     selectedStroke.setAlpha(alpha)
 
-    const background = gamingScene.add.image(x, y, 'white').setInteractive();
+    const background = gamingScene.add.image(x, y, 'white')
+    isMe && background.setInteractive();
     // @ts-ignore
     background.setTint(colorConfig.card);
     background.displayHeight = equipmentCardHeight;
