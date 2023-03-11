@@ -8,6 +8,7 @@ export const i18Config = {
     ROOM: {KEY: "ROOM", EN: "Room", CN: "房间"},
     PLAYERS: {KEY: "PLAYERS", EN: "Player(s)", CN: "人"},
     JOIN: {KEY: "JOIN", EN: "Join", CN: "加入"},
+    PLAYING: {KEY: "PLAYING", EN: "Playing", CN: "游戏中"},
 
     // roomPlayersPage
     START: {KEY: "START", EN: "START", CN: "开始游戏"},
@@ -69,7 +70,7 @@ export const i18Config = {
     },
     SELECT_JIE_DAO_SHA_REN: {
         KEY: "SELECT_JIE_DAO_SHA_REN",
-        EN: "Choose a character with a weapon in the equipment area to strike another character, and if they don't, they must give their weapon to you",
+        EN: "Choose a character with a weapon to strike another character, if they don't they must give their weapon to you",
         CN: "选择一名装备区有武器的角色杀另一名角色，若其不杀，则其须将其武器交给你"
     },
     SELECT_AOE: {

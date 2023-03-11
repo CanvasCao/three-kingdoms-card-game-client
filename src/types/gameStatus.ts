@@ -1,6 +1,7 @@
 import {EQUIPMENT_TYPE} from "../config/cardConfig";
 
 export type GameStatus = {
+    roomId: string,
     players: GameStatusPlayers,
     stage: Stage,
     action: OneTargetAction | MultiTargetsAction,
@@ -13,7 +14,6 @@ export type GameStatus = {
     tieSuoTempStorage: TieSuoTempStorageItem[],
     throwedCards?: Card[],
 };
-
 
 export type GameStatusPlayers = { [key: string]: Player }
 export type Players = Player[]

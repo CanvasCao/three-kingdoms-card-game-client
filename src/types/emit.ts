@@ -16,13 +16,13 @@ export type EmitResponseData = {
 }
 
 export type CardAreaType = "hand" | 'equipment' | 'panding'
-
+export type CardBoardType = "REMOVE" | "MOVE"
 export type EmitCardBoardData = {
     originId: string,
     targetId: string,
     card: Card,
     cardAreaType: CardAreaType
-    type: "REMOVE" | "MOVE",
+    type: CardBoardType,
 
     selectedIndex: number,
 }
@@ -46,9 +46,11 @@ export type EmitWugufengdengData = {
 
 
 // 后端=>前端
+export type RoomStatus = "PLAYING" | "IDLE";
 export type EmitRefreshRooms = {
     roomId: string | number,
     players: { playerId: string, playerName: string }[],
+    status: RoomStatus,
 }[]
 
 export type EmitRefreshRoomPlayers = {
