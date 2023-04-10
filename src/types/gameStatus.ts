@@ -95,7 +95,7 @@ export type PandingSign = {
 
 export type Stage = {
     playerId: string,
-    stageName: string,
+    stageIndex: number,
 }
 
 export type OneTargetAction = {

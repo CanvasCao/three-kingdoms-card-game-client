@@ -7,7 +7,6 @@ import {
     setRoomIdAndTimestamp
 } from "./utils/localstorage/localStorageUtils";
 import emitMap from "./config/emitMap.json";
-import {GameStatus} from "./types/gameStatus";
 import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms, EmitRejoinRoomData} from "./types/emit";
 import {i18Config} from "./i18n/i18Config";
 import {i18} from "./i18n/i18nUtils";
@@ -23,7 +22,7 @@ const bindLoginPageEvent = () => {
         const val = $("#nameInput").val()
         if (val) {
             setMyPlayerIdAndName(val.toString())
-            $('#joinPage').css('display', 'none');
+            $('.page').hide();
             $('#roomsPage').css('display', 'flex');
             socket.emit(emitMap.REFRESH_ROOMS);
         }
@@ -85,7 +84,7 @@ const bindRoomsPageEvent = () => {
 const bindRoomPlayersPageEvent = () => {
     socket.on(emitMap.REFRESH_ROOM_PLAYERS, (data: EmitRefreshRoomPlayers) => {
         console.log("REFRESH_ROOM_PLAYERS", data)
-        $('#roomsPage').css('display', 'none');
+        $('.page').hide();
         $('#roomPlayersPage').css('display', 'flex');
 
         const isHost = data?.[0]?.playerId == getMyPlayerId()
@@ -136,7 +135,6 @@ const bindPageEvent = () => {
     bindLoginPageEvent();
     bindRoomsPageEvent();
     bindRoomPlayersPageEvent();
-
 }
 
 export {

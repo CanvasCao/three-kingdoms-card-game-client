@@ -1,12 +1,13 @@
 import {GameStatus} from "../types/gameStatus";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {BASIC_CARDS_CONFIG, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {GAME_STAGE, STAGE_NAMES} from "../config/gameConfig";
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {
-    return gameStatus.stage.playerId == getMyPlayerId() && gameStatus.stage.stageName == 'play';
+    return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == GAME_STAGE.PLAY;
 }
 const getIsMyThrowTurn = (gameStatus: GameStatus) => {
-    return gameStatus.stage.playerId == getMyPlayerId() && gameStatus.stage.stageName == 'throw';
+    return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == GAME_STAGE.THROW;
 }
 const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
     if (gameStatus.taoResStages.length > 0) {

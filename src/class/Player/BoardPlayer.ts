@@ -15,7 +15,9 @@ import {
     getCanSelectMeAsFirstTargetCardNamesClosure,
     getCanSelectMeAsSecondTargetCardNamesClosure
 } from "../../utils/cardNamesClourseUtils";
-import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
+import {getI18Lan, i18, i18Lans} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
+import {STAGE_NAMES, STAGE_NAMES_CN} from "../../config/gameConfig";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 
@@ -243,7 +245,7 @@ export class BoardPlayer {
         this.stageText.setOrigin(0.5, 0.5)
         const padding = 2;
         this.stageText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        this.stageText.setFontSize(10)
+        this.stageText.setFontSize(14)
         this.stageText.setAlpha(0)
     }
 
@@ -404,7 +406,7 @@ export class BoardPlayer {
                 } else if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
                     group.distanceText!.setText((getI18Lan() == i18Lans.EN ? card?.distance?.toString() : card?.distanceDesc)!)
                 }
-                group.nameText.setText((getI18Lan() == i18Lans.EN ? card?.EN?.substring(0,7)+'...' : card?.CN))
+                group.nameText.setText((getI18Lan() == i18Lans.EN ? card?.EN?.substring(0, 7) + '...' : card?.CN))
 
                 // @ts-ignore
                 group.huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
@@ -474,7 +476,13 @@ export class BoardPlayer {
         if (gameStatus.stage.playerId === this.player.playerId) {
             this.myTurnStroke!.setAlpha(1);
             this.stageText!.setAlpha(1);
-            this.stageText!.setText(gameStatus.stage.stageName + '阶段...')
+            this.stageText!.setText(i18(i18Config.STAGE_DESC,
+                {
+                    stage: (getI18Lan() == i18Lans.EN ?
+                        STAGE_NAMES[gameStatus.stage.stageIndex] :
+                        STAGE_NAMES_CN[gameStatus.stage.stageIndex])
+                })
+            )
         } else {
             this.myTurnStroke!.setAlpha(0);
             this.stageText!.setAlpha(0)

@@ -20,6 +20,11 @@ export const i18Config = {
     CANCEL: {KEY: "CANCEL", EN: "CANCEL", CN: "取消"},
     END: {KEY: "END", EN: "END", CN: "结束"},
 
+    // stage
+    STAGE_DESC: {KEY: "STAGE_DESC",
+        EN: "{stage} phase",
+        CN: "{stage}阶段"},
+
     // play phase
     PLEASE_SELECT_A_CARD: {
         KEY: "PLEASE_SELECT_A_CARD",
