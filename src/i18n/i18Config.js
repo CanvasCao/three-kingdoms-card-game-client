@@ -21,9 +21,11 @@ export const i18Config = {
     END: {KEY: "END", EN: "END", CN: "结束"},
 
     // stage
-    STAGE_DESC: {KEY: "STAGE_DESC",
+    STAGE_DESC: {
+        KEY: "STAGE_DESC",
         EN: "{stage} phase",
-        CN: "{stage}阶段"},
+        CN: "{stage}阶段"
+    },
 
     // play phase
     PLEASE_SELECT_A_CARD: {
@@ -54,12 +56,12 @@ export const i18Config = {
     },
     SELECT_MINUS_HORSE: {
         KEY: "SELECT_MINUS_HORSE",
-        EN: "After equipment {name}, when you calculate the distance to other characters will -1 distance",
+        EN: "After equipment {name},\r\nwhen you calculate the distance to other characters will -1 distance",
         CN: "装备{name}后，你计算与其他角色的距离时-1"
     },
     SELECT_PLUS_HORSE: {
         KEY: "SELECT_PLUS_HORSE",
-        EN: "After equipment {name}, when you are defending, other characters will have +1 distance from you",
+        EN: "After equipment {name},\r\nwhen you are defending, other characters will have +1 distance from you",
         CN: "装备{name}后，你防守时其他角色与你的距离会+1"
     },
     // 锦囊
@@ -75,7 +77,7 @@ export const i18Config = {
     },
     SELECT_JIE_DAO_SHA_REN: {
         KEY: "SELECT_JIE_DAO_SHA_REN",
-        EN: "Choose a character with a weapon to strike another character, if they don't they must give their weapon to you",
+        EN: "Choose a character with a weapon to strike another character,\r\nif they don't, they must give their weapon to you",
         CN: "选择一名装备区有武器的角色杀另一名角色，若其不杀，则其须将其武器交给你"
     },
     SELECT_AOE: {
@@ -166,5 +168,17 @@ export const i18Config = {
         KEY: "SELECT_THROW_CARDS",
         EN: "You need to discard {number} hand card(s)",
         CN: "您需要弃置{number}张手牌，请选牌"
-    }
+    },
+
+    // 五谷丰登
+    WU_GU_FENG_DENG_WAIT_WU_XIE: {
+        KEY: "WU_GU_FENG_DENG_WAIT_WU_XIE",
+        EN: "{name} is about to choose a card\r\nwaiting for [cancel]",
+        CN: "{name}即将选牌，正在询问无懈可击"
+    },
+    WU_GU_FENG_DENG_CHOOSING: {
+        KEY: "WU_GU_FENG_DENG_CHOOSING",
+        EN: "{name} is choosing",
+        CN: "{name}正在选牌"
+    },
 }

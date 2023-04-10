@@ -3,17 +3,20 @@ import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {CARD_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import emitMap from "../../config/emitMap.json";
 import {EmitWugufengdengData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
+import {getI18Lan, i18, i18Lans} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
+import {getPlayerDisplayName} from "../../utils/playerUtils";
 
 const boardSize = {
-    height: 320,
+    height: 380,
     width: 420,
 }
-const boardAlpha = 0.4;
+const boardAlpha = 0.8;
 const boardDepth = 100;
 const cardMargin = 5
 
@@ -46,8 +49,8 @@ export class WuGuFengDengBoard {
         this.gamingScene = gamingScene
         this.maskImg;
 
-        this.initX = sizeConfig.background.width / 2;
-        this.initY = sizeConfig.background.height / 2 - 50;
+        this.initX = sizeConfig.playersArea.width / 2;
+        this.initY = sizeConfig.playersArea.height / 2;
 
         this.maskImg;
         this.boardImg;
@@ -84,7 +87,9 @@ export class WuGuFengDengBoard {
     }
 
     drawTitle() {
-        this.titleText = this.gamingScene.add.text(this.initX, this.initY - 138, '五谷丰登')
+        this.titleText = this.gamingScene.add.text(this.initX, this.initY - 158,
+            getI18Lan() == i18Lans.EN ? CARD_CONFIG.WU_GU_FENG_DENG.EN : CARD_CONFIG.WU_GU_FENG_DENG.CN
+        )
         this.titleText.setOrigin(0.5, 0.5)
         this.titleText.setAlpha(0)
         this.titleText.setPadding(0, 2, 0, 0)
@@ -92,7 +97,7 @@ export class WuGuFengDengBoard {
     }
 
     drawBottomText() {
-        this.bottomText = this.gamingScene.add.text(this.initX, this.initY + 138, '')
+        this.bottomText = this.gamingScene.add.text(this.initX, this.initY + 158, '',{align: "center"})
         this.bottomText.setOrigin(0.5, 0.5)
         this.bottomText.setAlpha(0)
         this.bottomText.setPadding(0, 2, 0, 0)
@@ -157,8 +162,8 @@ export class WuGuFengDengBoard {
             const hasWuxiePlayer = gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.length > 0;
             const originId = gameStatus.scrollResStages?.[0]?.originId;
             const bottomText = hasWuxiePlayer ?
-                `${gameStatus.players[originId].name}即将选牌，正在询问无懈可击` :
-                `${gameStatus.players[originId].name}正在选牌`
+                i18(i18Config.WU_GU_FENG_DENG_WAIT_WU_XIE, {name: getPlayerDisplayName(gameStatus,originId)}) :
+                i18(i18Config.WU_GU_FENG_DENG_CHOOSING, {name: getPlayerDisplayName(gameStatus,originId)})
             this.bottomText?.setText(bottomText)
         }
     }
