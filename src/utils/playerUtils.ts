@@ -6,7 +6,7 @@ import {
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
-import {getMyPlayerId} from "./localStorageUtils";
+import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {getI18Lan, i18Lans} from "../i18n/i18nUtils";
 
 const getPlayersDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {

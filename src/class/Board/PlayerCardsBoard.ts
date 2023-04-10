@@ -3,7 +3,7 @@ import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import { verticalRotationString} from "../../utils/stringUtils";
-import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {shuffle} from "lodash";

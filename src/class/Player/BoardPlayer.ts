@@ -9,7 +9,7 @@ import differenceBy from "lodash/differenceBy";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
 import {getAmendCardTargetMinMax, getCardColor} from "../../utils/cardUtils";
 import {getIfPlayerAble} from "../../utils/playerUtils";
-import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {
     getCanSelectMeAsFirstTargetCardNamesClosure,

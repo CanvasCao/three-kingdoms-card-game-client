@@ -2,7 +2,7 @@ import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {getCanPlayInMyTurn, getIsMyResponseCardTurn, getIsMyThrowTurn} from "./stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
-import {getMyPlayerId} from "./localStorageUtils";
+import {getMyPlayerId} from "./localstorage/localStorageUtils";
 
 const getNeedSelectControlCardNumber = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);

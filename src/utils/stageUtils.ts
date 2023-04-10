@@ -1,5 +1,5 @@
 import {GameStatus} from "../types/gameStatus";
-import {getMyPlayerId} from "./localStorageUtils";
+import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {BASIC_CARDS_CONFIG, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {

@@ -1,10 +1,12 @@
 import {i18Config} from "./i18Config";
+
 export const i18WindowKey = 'three-kingdom-i18n';
-export const i18Lans={
-    'CN':'CN',
-    'EN':'EN',
+export const i18Lans = {
+    'CN': 'CN',
+    'EN': 'EN',
 }
-export const i18nUtils = () => {
+
+export const setI18nLan = () => {
     var params = {};
     if (location.search) {
         var parts = location.search.substring(1).split('&');
@@ -32,7 +34,7 @@ export const getI18Lan = () => {
     return window[i18WindowKey] || i18Lans.EN
 }
 
-export const i18 = (obj, replaceObj={}) => {
+export const i18 = (obj, replaceObj = {}) => {
     const lan = window[i18WindowKey] || i18Lans.EN;
     const key = obj.KEY
     try {

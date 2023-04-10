@@ -1,11 +1,18 @@
 import {socket} from "./socket";
-import {getMyPlayerId, getMyPlayerName, setMyPlayerIdAndName} from "./utils/localStorageUtils";
+import {
+    getMyPlayerId,
+    getMyPlayerName,
+    getRoomIdAndTimestamp,
+    setMyPlayerIdAndName,
+    setRoomIdAndTimestamp
+} from "./utils/localstorage/localStorageUtils";
 import emitMap from "./config/emitMap.json";
 import {GameStatus} from "./types/gameStatus";
-import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms} from "./types/emit";
+import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms, EmitRejoinRoomData} from "./types/emit";
 import {i18Config} from "./i18n/i18Config";
 import {i18} from "./i18n/i18nUtils";
 import {GAME_STATUS} from "./config/gameConfig";
+import {isWithin30Minutes} from "./utils/time/timeUtils";
 
 const bindLoginPageEvent = () => {
     $('#joinPage h2').text(i18(i18Config.TITLE))
@@ -65,6 +72,7 @@ const bindRoomsPageEvent = () => {
 
         $("#roomsPage button").click(function () {
             const roomId = $(this).attr('data-roomid');
+            setRoomIdAndTimestamp(roomId!)
             socket.emit(emitMap.JOIN_ROOM, {
                 playerId: getMyPlayerId(),
                 playerName: getMyPlayerName(),
@@ -108,19 +116,30 @@ const bindRoomPlayersPageEvent = () => {
             socket.emit(emitMap.INIT);
         })
     })
+}
 
-    // gamePage
-    socket.on(emitMap.INIT, (data: GameStatus) => {
-        console.log("INIT", data)
-        $("#roomPlayersPage").hide();
-        $("#canvas").css('display', 'flex');
-    })
+const tryRejoinRoom = () => {
+    const {roomId, timestamp} = getRoomIdAndTimestamp();
+    if (!roomId || !timestamp) {
+        return
+    }
+
+    if (isWithin30Minutes(timestamp)) {
+        socket.emit(emitMap.REJOIN_ROOM, {
+            playerId: getMyPlayerId(),
+            roomId
+        } as EmitRejoinRoomData);
+    }
 }
 
 const bindPageEvent = () => {
     bindLoginPageEvent();
     bindRoomsPageEvent();
     bindRoomPlayersPageEvent();
+
 }
 
-export {bindPageEvent}
+export {
+    bindPageEvent,
+    tryRejoinRoom
+}

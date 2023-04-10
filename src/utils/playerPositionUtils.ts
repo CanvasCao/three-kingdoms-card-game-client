@@ -1,6 +1,6 @@
 import {GameStatusPlayers, Player} from "../types/gameStatus"
 import {sizeConfig} from "../config/sizeConfig";
-import {getMyPlayerId} from "./localStorageUtils";
+import {getMyPlayerId} from "./localstorage/localStorageUtils";
 
 const playersAreaW = sizeConfig.playersArea.width;
 const playersAreaH = sizeConfig.playersArea.height;

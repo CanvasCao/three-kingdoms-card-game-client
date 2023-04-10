@@ -1,6 +1,6 @@
-import JSONEditor from "../jsoneditor/jsoneditor.min";
-import {socket} from "../socket";
-import emitMap from "../config/emitMap.json";
+import JSONEditor from "../../jsoneditor/jsoneditor.min";
+import {socket} from "../../socket";
+import emitMap from "../../config/emitMap.json";
 
 const DEFAULT_FEATURE_TOGGLE = {
     SHOW_GO_TO_NEXT_STAGE: false,

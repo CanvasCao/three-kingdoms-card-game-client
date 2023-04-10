@@ -6,7 +6,7 @@ import {CARD_NUM_DESC, EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../confi
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
 import {getCardColor} from "../../utils/cardUtils";
 import {getCanPlayerPlaySha} from "../../utils/playerUtils";
-import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";

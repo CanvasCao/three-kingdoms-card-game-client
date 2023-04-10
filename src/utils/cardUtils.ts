@@ -8,7 +8,7 @@ import {
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
 import {CardAreaType} from "../types/emit";
-import {getMyPlayerId} from "./localStorageUtils";
+import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {sizeConfig} from "../config/sizeConfig";
 import {GameFEStatus} from "../types/gameFEStatus";
 

@@ -6,7 +6,7 @@ import {GamingScene} from "../../types/phaser";
 import {Card, GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getControlCardPosition} from "../../utils/cardUtils";
-import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
 import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseCardTurn, getMyResponseInfo} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";

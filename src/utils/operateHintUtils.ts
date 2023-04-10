@@ -11,7 +11,7 @@ import {
 } from "../config/cardConfig";
 import {getNeedSelectControlCardNumber} from "./cardValidation";
 import {getMyResponseInfo} from "./stageUtils";
-import {getMyPlayerId} from "./localStorageUtils";
+import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {getAmendCardTargetMinMax} from "./cardUtils";
 import {getCurrentPlayer, getPlayerDisplayName} from "./playerUtils";
 

@@ -1,6 +1,19 @@
 import {Card, MultiTargetsAction, OneTargetAction} from "./gameStatus";
 
 // 前端=>后端
+// 游戏开始前
+export type EmitRejoinRoomData = {
+    playerId: string,
+    roomId:string,
+}
+
+export type EmitJoinRoomData = {
+    playerId: string,
+    playerName: string,
+    roomId: string
+}
+
+// 游戏开始中
 export type EmitActionData = OneTargetAction | MultiTargetsAction
 
 export type EmitResponseData = {
@@ -27,15 +40,9 @@ export type EmitCardBoardData = {
     selectedIndex: number,
 }
 
-export type EmitJoinRoomData = {
-    playerId: string,
-    playerName: string,
-    roomId: string
-}
 
 export type EmitThrowData = {
     cards: Card[]
-
     selectedIndexes: number[],
 }
 

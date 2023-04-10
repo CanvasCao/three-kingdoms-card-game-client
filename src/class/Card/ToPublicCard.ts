@@ -1,6 +1,6 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {differenceBy} from "lodash";
 import {GameFEStatus} from "../../types/gameFEStatus";

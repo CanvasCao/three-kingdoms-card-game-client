@@ -1,4 +1,4 @@
-import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {ToPublicCard} from "../Card/ToPublicCard";
 import {GamingScene} from "../../types/phaser";
 import {

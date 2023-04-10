@@ -22,17 +22,18 @@ import {
     EmitNotifyAddToPlayerCardData
 } from "./types/emit";
 import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
-import {bindPageEvent} from './bindPageEvent';
-import {i18nUtils} from './i18n/i18nUtils';
-import {setPageByFeatureToggle} from "./toggle/toggle";
+import {bindPageEvent, tryRejoinRoom} from './bindPageEvent';
+import {setI18nLan} from './i18n/i18nUtils';
+import {setPageByFeatureToggle} from "./utils/toggle/toggle";
 import {OperateHint} from "./class/OperateHint/OperateHint";
 
-i18nUtils();
+setI18nLan();
 setPageByFeatureToggle();
 bindPageEvent();
 
 class Gaming extends Phaser.Scene {
     socket: Socket;
+    init: boolean;
     controlCards: Card[];
     boardPlayers: BoardPlayer[];
     gameStatusObserved: GameStatusObserved;
@@ -49,6 +50,7 @@ class Gaming extends Phaser.Scene {
         super();
 
         this.socket = socket;
+        this.init = false;
 
         this.controlCards = [];
         this.boardPlayers = [];
@@ -79,6 +81,14 @@ class Gaming extends Phaser.Scene {
 
         // 监听只可能有一次
         socket.on(emitMap.INIT, (data: GameStatus) => {
+            if (this.init) {
+                return
+            }
+            this.init = true;
+
+            $(".page").hide();
+            $("#canvas").css('display', 'flex');
+
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.wuGuFengDengBoard = new WuGuFengDengBoard(this);
             this.operateHint = new OperateHint(this);
@@ -112,6 +122,8 @@ class Gaming extends Phaser.Scene {
         socket.on(emitMap.NOTIFY_ADD_LINES, (data: EmitNotifyAddLinesData) => {
             this.notifyAnimationManager!.addLines(data)
         });
+
+        tryRejoinRoom();
     }
 
     update() {

@@ -5,7 +5,7 @@ import Phaser from "phaser";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {GameStatus} from "../../types/gameStatus";
 import {generateAction, generateResponse, generateThrowData} from "../../utils/emitDataGenerator";
-import {getMyPlayerId} from "../../utils/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getMyResponseInfo, getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {getIsMyResponseCardTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
