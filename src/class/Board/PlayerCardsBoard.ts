@@ -2,7 +2,6 @@ import {Card, GameStatus, ScrollResStage, Player} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import { verticalRotationString} from "../../utils/stringUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
@@ -10,6 +9,8 @@ import {shuffle} from "lodash";
 import emitMap from "../../config/emitMap.json";
 import {CardAreaType, EmitCardBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
+import {getI18Lan, i18, i18Lans} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
 
 const gridOffset = {
     line1: {y: -55},
@@ -117,24 +118,24 @@ export class PlayerCardsBoard {
         this.handCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column1.x + categoryDiffX,
             this.initY + gridOffset.line1.y,
-            verticalRotationString("手牌"),
+            i18(i18Config.PLAYER_BOARD_HAND_CARD_CATEGORY),
         );
 
         this.equipmentCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column1.x + categoryDiffX,
             this.initY + gridOffset.line2.y,
-            verticalRotationString("装备牌"),
+            i18(i18Config.PLAYER_BOARD_EQUIPMENT_CARD_CATEGORY),
         );
 
         this.pandingCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column2.x + categoryDiffX,
             this.initY + gridOffset.line2.y,
-            verticalRotationString("延时锦囊牌"),
+            i18(i18Config.PLAYER_BOARD_PANDING_CARD_CATEGORY),
         );
 
         [this.handCardsCategoryText, this.equipmentCardsCategoryText, this.pandingCardsCategoryText].forEach(text => {
             text.setFontSize(fontSize)
-            text.setOrigin(0, 0.5)
+            text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
             text.setDepth(boardDepth)
         })
@@ -152,7 +153,11 @@ export class PlayerCardsBoard {
         this.handCardsPlaceholder.setAlpha(0)
         this.handCardsPlaceholder.setDepth(boardDepth)
 
-        const equipmentTexts = ["武器牌", "防具牌", "+1🐎", "-1🐎"] as string[];
+        const equipmentTexts = [
+            i18(i18Config.PLAYER_BOARD_WEAPON_CARD_PLACEHOLDER),
+            i18(i18Config.PLAYER_BOARD_SHEILD_CARD_PLACEHOLDER),
+            "+1🐎",
+            "-1🐎"] as string[];
         equipmentTexts.forEach((equipmentText: string, index) => {
             const img = this.gamingScene.add.image(
                 this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
@@ -177,7 +182,7 @@ export class PlayerCardsBoard {
             this.equipmentCardsPlaceholderTexts.push(text)
         })
 
-        const delayTexts = ["", "", ""].fill("延时锦囊") as string[];
+        const delayTexts = ["", "", ""].fill(i18(i18Config.PLAYER_BOARD_DELAY_SCROLL_CARD_PLACEHOLDER)) as string[];
         delayTexts.forEach((delayText: string, index) => {
             const img = this.gamingScene.add.image(
                 this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + cardMargin),
@@ -286,7 +291,12 @@ export class PlayerCardsBoard {
         const scrollResStage = gameStatus.scrollResStages?.[0];
         const targetPlayer = gameStatus.players[scrollResStage.targetId]
         this.titleText!.setAlpha(1)
-        this.titleText!.setText(`${scrollResStage?.actualCard.CN} 选择一张 ${gameStatus.players[targetPlayer.playerId].name} 的卡牌`)
+        this.titleText!.setText(
+            i18(i18Config.PLAYER_BOARD_TITLE, {
+                cardName: (getI18Lan() == i18Lans.EN) ? scrollResStage?.actualCard.EN : scrollResStage?.actualCard.CN,
+                playerName: gameStatus.players[targetPlayer.playerId].name
+            }),
+        )
 
         this.drawTargetPlayerCards(targetPlayer, scrollResStage);
         this.drawTargetEquipmentCards(targetPlayer, scrollResStage);

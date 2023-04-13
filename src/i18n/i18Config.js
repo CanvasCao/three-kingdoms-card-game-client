@@ -181,4 +181,41 @@ export const i18Config = {
         EN: "{name} is choosing",
         CN: "{name}正在选牌"
     },
+
+    // playerCardsBoard
+    PLAYER_BOARD_HAND_CARD_CATEGORY: {
+        KEY: "PLAYER_BOARD_HAND_CARD_CATEGORY",
+        EN: "hand\r\ncard",
+        CN: "手\r\n牌"
+    },
+    PLAYER_BOARD_EQUIPMENT_CARD_CATEGORY: {
+        KEY: "PLAYER_BOARD_EQUIPMENT_CARD_CATEGORY",
+        EN: "equip-\r\nment\r\ncard",
+        CN: "装\r\n备\r\n牌"
+    },
+    PLAYER_BOARD_PANDING_CARD_CATEGORY: {
+        KEY: "PLAYER_BOARD_PANDING_CARD_CATEGORY",
+        EN: "delayed\r\nscroll\r\ncard",
+        CN: "延\r\n时\r\n锦\r\n囊\r\n牌"
+    },
+    PLAYER_BOARD_WEAPON_CARD_PLACEHOLDER: {
+        KEY: "PLAYER_BOARD_WEAPON_CARD_PLACEHOLDER",
+        EN: "weapon\r\ncard",
+        CN: "武器牌"
+    },
+    PLAYER_BOARD_SHEILD_CARD_PLACEHOLDER: {
+        KEY: "PLAYER_BOARD_SHEILD_CARD_PLACEHOLDER",
+        EN: "sheild\r\ncard",
+        CN: "防具牌"
+    },
+    PLAYER_BOARD_DELAY_SCROLL_CARD_PLACEHOLDER: {
+        KEY: "PLAYER_BOARD_DELAY_SCROLL_CARD_PLACEHOLDER",
+        EN: "delayed\r\nscroll",
+        CN: "延时锦囊"
+    },
+    PLAYER_BOARD_TITLE: {
+        KEY: "PLAYER_BOARD_TITLE",
+        EN: "{cardName} Choose a card from {playerName}",
+        CN: "{cardName} 选择一张{playerName}的卡牌"
+    },
 }
