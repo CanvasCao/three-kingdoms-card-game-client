@@ -1,10 +1,11 @@
 import {Card, MultiTargetsAction, OneTargetAction} from "./gameStatus";
 
+export type CardAreaType = "hand" | 'equipment' | 'panding'
 // 前端=>后端
 // 游戏开始前
 export type EmitRejoinRoomData = {
     playerId: string,
-    roomId:string,
+    roomId: string,
 }
 
 export type EmitJoinRoomData = {
@@ -28,14 +29,13 @@ export type EmitResponseData = {
     selectedIndexes: number[],
 }
 
-export type CardAreaType = "hand" | 'equipment' | 'panding'
-export type CardBoardType = "REMOVE" | "MOVE"
+export type CardBoardActionType = "REMOVE" | "MOVE"
 export type EmitCardBoardData = {
     originId: string,
     targetId: string,
     card: Card,
-    cardAreaType: CardAreaType
-    type: CardBoardType,
+    cardAreaType: CardAreaType,
+    type: CardBoardActionType,
 
     selectedIndex: number,
 }
@@ -67,11 +67,14 @@ export type EmitRefreshRoomPlayers = {
 
 export type EmitNotifyAddToPublicCardData = {
     fromId: string,
-    toId: never,
+    originId: string,
+    targetId?: string,
     cards: Card[],
-    actualCard: Card,
+    pandingPlayerId: string,
+    pandingCard: Card,
+    throwPlayerId: string,
     originIndexes: number[],
-    message: string
+    type: 'play' | 'panding' | 'throw' | 'chai',
 }
 
 export type EmitNotifyAddToPlayerCardData = {

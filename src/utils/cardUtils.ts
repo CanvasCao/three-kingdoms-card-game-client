@@ -7,12 +7,12 @@ import {
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
-import {CardAreaType} from "../types/emit";
+import {CardAreaType, EmitNotifyAddToPublicCardData} from "../types/emit";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {sizeConfig} from "../config/sizeConfig";
 import {GameFEStatus} from "../types/gameFEStatus";
 
-const attachFEInfoToCard = (card: Card) => {
+const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {
         return
     }
@@ -137,7 +137,7 @@ const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: st
         return true
     }
 
-    // 顺手牵羊
+    // 顺手牵羊 借刀杀人
     return (cardAreaType !== 'hand')
 }
 
@@ -160,10 +160,38 @@ const getAmendCardTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
     return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
 }
 
+const generatePublicCardMessage = (
+    gameStatus: GameStatus,
+    {type, fromId, originId, targetId, pandingPlayerId, pandingCard, throwPlayerId}:
+        EmitNotifyAddToPublicCardData) => {
+    if (type == 'play') {
+        const originName = gameStatus.players[originId].name;
+
+        // AOE
+        if (!targetId) return `${originName}使用`;
+
+        const targetName = gameStatus.players[targetId].name;
+
+        if (originId == targetId) {
+            return `${originName}使用`;
+        } else {
+            return `${originName}对${targetName}`;
+        }
+    } else if (type == 'panding') {
+        return `${gameStatus.players[pandingPlayerId].name}的${pandingCard.CN}判定结果`;
+    } else if (type == 'throw') {
+        return `${gameStatus.players[throwPlayerId].name}弃牌`;
+    } else if (type == 'chai') {
+        return `${gameStatus.players[fromId].name}被拆`;
+    }
+    return ''
+}
+
 export {
     attachFEInfoToCard,
     getIfToPlayerCardFaceFront,
     getControlCardPosition,
     getCardColor,
-    getAmendCardTargetMinMax
+    getAmendCardTargetMinMax,
+    generatePublicCardMessage
 }

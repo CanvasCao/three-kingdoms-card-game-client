@@ -112,7 +112,6 @@ export type MultiTargetsAction = {
     cards: Card[],
     actualCard: Card,
     originId: string,
-    targetId?: string,
     targetIds: string[],
 
     selectedIndexes: number[],
