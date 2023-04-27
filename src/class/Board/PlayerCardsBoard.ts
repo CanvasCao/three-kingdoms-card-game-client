@@ -9,7 +9,7 @@ import {shuffle} from "lodash";
 import emitMap from "../../config/emitMap.json";
 import {CardAreaType, EmitCardBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
-import {getI18Lan, i18, i18Lans} from "../../i18n/i18nUtils";
+import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 
 const gridOffset = {
@@ -293,7 +293,7 @@ export class PlayerCardsBoard {
         this.titleText!.setAlpha(1)
         this.titleText!.setText(
             i18(i18Config.PLAYER_BOARD_TITLE, {
-                cardName: (getI18Lan() == i18Lans.EN) ? scrollResStage?.actualCard.EN : scrollResStage?.actualCard.CN,
+                cardName: i18(scrollResStage?.actualCard) ,
                 playerName: gameStatus.players[targetPlayer.playerId].name
             }),
         )

@@ -11,6 +11,8 @@ import {CardAreaType, EmitNotifyAddToPublicCardData} from "../types/emit";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {sizeConfig} from "../config/sizeConfig";
 import {GameFEStatus} from "../types/gameFEStatus";
+import {i18Config} from "../i18n/i18Config";
+import {i18} from "../i18n/i18nUtils";
 
 const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {
@@ -168,21 +170,23 @@ const generatePublicCardMessage = (
         const originName = gameStatus.players[originId].name;
 
         // AOE
-        if (!targetId) return `${originName}使用`;
+        if (!targetId) return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET, {name: originName});
 
         const targetName = gameStatus.players[targetId].name;
-
         if (originId == targetId) {
-            return `${originName}使用`;
+            return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET, {name: originName});
         } else {
-            return `${originName}对${targetName}`;
+            return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET, {originName, targetName});
         }
     } else if (type == 'panding') {
-        return `${gameStatus.players[pandingPlayerId].name}的${pandingCard.CN}判定结果`;
+        return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT, {
+            name: gameStatus.players[pandingPlayerId].name,
+            cardName: i18(pandingCard)
+        });
     } else if (type == 'throw') {
-        return `${gameStatus.players[throwPlayerId].name}弃牌`;
+        return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_THROW, {name: gameStatus.players[throwPlayerId].name});
     } else if (type == 'chai') {
-        return `${gameStatus.players[fromId].name}被拆`;
+        return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_CHAI, {name: gameStatus.players[fromId].name});
     }
     return ''
 }

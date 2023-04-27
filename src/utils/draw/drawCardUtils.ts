@@ -5,11 +5,12 @@ import {Card} from "../../types/gameStatus";
 import {
     cardHuaseNumberObjOffsetX,
     cardHuaseNumberObjOffsetY,
+    cardMessageObjOffsetY,
     cardNameObjOffsetX,
     cardNameObjOffsetY
 } from "../../config/cardContentOffsetConfig";
 import {getCardColor} from "../cardUtils";
-import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
+import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {CARD_NUM_DESC} from "../../config/cardConfig";
 
 // tint
@@ -41,7 +42,7 @@ const sharedDrawFrontCard = (
     const cardNameObj = gamingScene.add.text(
         x + cardNameObjOffsetX,
         y + cardNameObjOffsetY,
-        (getI18Lan() == i18Lans.EN) ? card.EN : card.CN,
+        i18(card),
         {
             fontFamily: 'CustomFont',
             // @ts-ignore
@@ -53,7 +54,7 @@ const sharedDrawFrontCard = (
     cardNameObj.setPadding(0, 6, 0, 1);
     cardNameObj.setOrigin(0.5, 0.5);
     cardNameObj.setAlpha(alpha)
-    cardNameObj.setFontSize((getI18Lan() == i18Lans.EN) ? 12 : 14)
+    cardNameObj.setFontSize((getI18Lan() == I18LANS.EN) ? 12 : 14)
     cardNameObj.setDepth(depth)
     cardNameObj.setData("offsetX", cardNameObjOffsetX)
     cardNameObj.setData("offsetY", cardNameObjOffsetY)
@@ -79,21 +80,21 @@ const sharedDrawFrontCard = (
 
     // message
     let cardMessageObj
-    cardMessageObj = gamingScene.add.text(x, y, message,
+    cardMessageObj = gamingScene.add.text(x, y + cardMessageObjOffsetY, message,
         {
             // @ts-ignore
             fill: "#000",
             align: "center",
-            wordWrap: {width: sizeConfig.controlCard.width * 0.9, useAdvancedWrap: true}
+            wordWrap: {width: sizeConfig.controlCard.width * 1, useAdvancedWrap: true}
         }
     )
     cardMessageObj.setPadding(0, 5, 0, 0);
-    cardMessageObj.setOrigin(0.5, 0.5);
-    cardMessageObj.setFontSize(12);
+    cardMessageObj.setOrigin(0.5, 1);
+    cardMessageObj.setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 12);
     cardMessageObj.setAlpha(1)
     cardMessageObj.setDepth(depth)
     cardMessageObj.setData("offsetX", 0)
-    cardMessageObj.setData("offsetY", 0)
+    cardMessageObj.setData("offsetY", cardMessageObjOffsetY)
 
     return {
         cardImgObj,

@@ -3,7 +3,7 @@ import colorConfig from "../../config/colorConfig.json";
 import {GamingScene} from "../../types/phaser";
 import {Card} from "../../types/gameStatus";
 import {CARD_NUM_DESC} from "../../config/cardConfig";
-import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
+import { i18} from "../../i18n/i18nUtils";
 
 const sharedDrawEquipment = (
     gamingScene: GamingScene,
@@ -47,7 +47,7 @@ const sharedDrawEquipment = (
     distanceText.setAlpha(alpha)
 
     const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.23, y,
-        (getI18Lan() == i18Lans.EN ? card?.EN : card?.CN) || '',
+        card ? i18(card) : '',
         {
             // @ts-ignore
             fill: "#000",

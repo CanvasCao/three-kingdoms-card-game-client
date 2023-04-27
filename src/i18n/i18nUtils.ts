@@ -1,13 +1,17 @@
 import {i18Config} from "./i18Config";
 
+export type I18Obj = {
+    CN: string,
+    EN: string,
+}
 export const i18WindowKey = 'three-kingdom-i18n';
-export const i18Lans = {
+export const I18LANS = {
     'CN': 'CN',
     'EN': 'EN',
 }
 
 export const setI18nLan = () => {
-    var params = {};
+    var params: { [key: string]: any } = {};
     if (location.search) {
         var parts = location.search.substring(1).split('&');
 
@@ -19,27 +23,28 @@ export const setI18nLan = () => {
     }
 
     if (['CN', 'EN'].includes(params.LAN)) {
-        window[i18WindowKey] = params.LAN
+        (window as { [key: string]: any })[i18WindowKey] = params.LAN
     } else {
         const languages = navigator.languages || [];
         if (languages.includes("zh-CN")) {
-            window[i18WindowKey] = 'CN'
+            (window as { [key: string]: any })[i18WindowKey] = 'CN'
         } else {
-            window[i18WindowKey] = 'EN'
+            (window as { [key: string]: any })[i18WindowKey] = 'EN'
         }
     }
 }
 
 export const getI18Lan = () => {
-    return window[i18WindowKey] || i18Lans.EN
+    return (window as { [key: string]: any })[i18WindowKey] || I18LANS.EN
 }
 
-export const i18 = (obj, replaceObj = {}) => {
-    const lan = window[i18WindowKey] || i18Lans.EN;
-    const key = obj.KEY
+export const i18 = (obj: I18Obj, replaceObj = {}) => {
+    const lan = (window as { [key: string]: any })[i18WindowKey] || I18LANS.EN;
     try {
-        const returnString = i18Config[key][lan];
+        // @ts-ignore
+        const returnString = obj[lan];
         const pattern = /\{(\w+)\}/g;
+        // @ts-ignore
         return returnString.replace(pattern, (match, capture) => replaceObj[capture]);
     } catch (e) {
         console.log("i18 error", obj, replaceObj);

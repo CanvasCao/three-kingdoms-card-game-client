@@ -1,10 +1,10 @@
 import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {getI18Lan, i18, i18Lans} from "../i18n/i18nUtils";
+import {i18} from "../i18n/i18nUtils";
 import {i18Config} from "../i18n/i18Config";
 import {
-    BASIC_CARDS_CONFIG,
     CARD_CONFIG,
+    DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     EQUIPMENT_TYPE,
     SCROLL_CARDS_CONFIG
@@ -18,7 +18,7 @@ import {getCurrentPlayer, getPlayerDisplayName} from "./playerUtils";
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
     const actualCardCNName = actualCard?.CN || ''
-    const actualCardName = (getI18Lan() == i18Lans.EN) ? actualCard?.EN : actualCard?.CN;
+    const actualCardName = actualCard ? i18(actualCard) : '';
     const equipmentType = actualCard?.equipmentType;
     const selectedWeaponCard = gameFEStatus.selectedWeaponCard;
 
@@ -87,17 +87,38 @@ const getIsMyResponseCardTurnOperationHint = (gameStatus: GameStatus, gameFEStat
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_SHAN, {name})
     } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
+        const wuxieChain = gameStatus.wuxieSimultaneousResStage.wuxieChain;
+
         if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
-            const wuxieChain = gameStatus.wuxieSimultaneousResStage.wuxieChain
-            const stage = gameStatus.scrollResStages[0];
-            let name;
-            if (wuxieChain?.length == 1) {
-                name = getPlayerDisplayName(gameStatus, stage.cardTakeEffectOnPlayerId);
-            } else if (wuxieChain?.length > 1) {
-                const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
-                name = getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId);
+            const scrollStage = gameStatus.scrollResStages?.[0];
+            if (scrollStage) { // 锦囊的无懈可击
+                let name;
+                if (wuxieChain?.length == 1) {
+                    name = getPlayerDisplayName(gameStatus, scrollStage.cardTakeEffectOnPlayerId);
+                } else if (wuxieChain?.length > 1) {
+                    const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
+                    name = getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId);
+                }
+                return i18(i18Config.RESPONSE_WU_XIE, {name})
+            } else { // 判定牌的无懈可击
+                const currentPlayer = getCurrentPlayer(gameStatus);
+                let name;
+                const needPandingSigns = currentPlayer.judgedShandian ?
+                    currentPlayer.pandingSigns.filter((sign) => sign.actualCard.CN !== DELAY_SCROLL_CARDS_CONFIG.SHAN_DIAN.CN) :
+                    currentPlayer.pandingSigns;
+
+                if (wuxieChain?.length == 1) {
+                    name = currentPlayer.name;
+                    return i18(i18Config.RESPONSE_PANDING_WU_XIE, {
+                        name,
+                        cardName: i18(needPandingSigns[0].card)
+                    })
+                } else if (wuxieChain?.length > 1) {
+                    const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
+                    name = getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId);
+                    return i18(i18Config.RESPONSE_WU_XIE, {name})
+                }
             }
-            return i18(i18Config.RESPONSE_WU_XIE, {name})
         } else {
             return i18(i18Config.WAIT_WU_XIE)
         }

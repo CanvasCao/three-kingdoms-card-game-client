@@ -27,6 +27,7 @@ export const i18Config = {
         CN: "{stage}阶段"
     },
 
+    // 操作提示
     // play phase
     PLEASE_SELECT_A_CARD: {
         KEY: "PLEASE_SELECT_A_CARD",
@@ -116,10 +117,11 @@ export const i18Config = {
         CN: "发动丈八蛇矛将两张手牌当杀使用或打出"
     },
 
+    // 操作提示
     // 响应
     RESPONSE_TAO: {
         KEY: "RESPONSE_TAO",
-        EN: "{name} is dying, needs {number} peach(es), do you play [Peach]?",
+        EN: "{name} is dying, needs {number} peach(es), do you want to play [Peach]?",
         CN: "{name}濒死，需要{number}个桃，是否出桃？"
     },
     RESPONSE_SHAN: {
@@ -136,6 +138,11 @@ export const i18Config = {
         KEY: "RESPONSE_WU_XIE",
         EN: "Play [Cancel] on {name}?",
         CN: "对{name}使用无懈可击？"
+    },
+    RESPONSE_PANDING_WU_XIE: {
+        KEY: "RESPONSE_PANDING_WU_XIE",
+        EN: "{name}'s {cardName} is going to take effect, do you want to play [Cancel]?",
+        CN: "{name}的{cardName}即将生效，是否使用无懈可击？"
     },
     RESPONSE_WAN_JIAN_QI_FA: {
         KEY: "RESPONSE_WAN_JIAN_QI_FA",
@@ -163,6 +170,7 @@ export const i18Config = {
         CN: "无懈可击询问中"
     },
 
+    // 操作提示
     // 弃牌
     SELECT_THROW_CARDS: {
         KEY: "SELECT_THROW_CARDS",
@@ -170,6 +178,7 @@ export const i18Config = {
         CN: "您需要弃置{number}张手牌，请选牌"
     },
 
+    // 操作提示
     // 五谷丰登
     WU_GU_FENG_DENG_WAIT_WU_XIE: {
         KEY: "WU_GU_FENG_DENG_WAIT_WU_XIE",
@@ -217,5 +226,32 @@ export const i18Config = {
         KEY: "PLAYER_BOARD_TITLE",
         EN: "{cardName} Choose a card from {playerName}",
         CN: "{cardName} 选择一张{playerName}的卡牌"
+    },
+
+    // PublicCardMessage
+    PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET: {
+        KEY: "PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET",
+        EN: "{name} play",
+        CN: "{name}使用"
+    },
+    PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET: {
+        KEY: "PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET",
+        EN: "{originName} to {targetName}",
+        CN: "{originName} 对 {targetName}"
+    },
+    PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT: {
+        KEY: "PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT",
+        EN: "{name}'s {cardName} judgement result",
+        CN: "{name}的{cardName}判定结果"
+    },
+    PUBLIC_CARD_MESSAGE_PLAY_THROW: {
+        KEY: "PUBLIC_CARD_MESSAGE_PLAY_THROW",
+        EN: "{name} throw",
+        CN: "{name}弃牌"
+    },
+    PUBLIC_CARD_MESSAGE_PLAY_CHAI: {
+        KEY: "PUBLIC_CARD_MESSAGE_PLAY_CHAI",
+        EN: "{name} dismantled",
+        CN: "{name}被拆"
     },
 }

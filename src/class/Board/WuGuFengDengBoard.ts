@@ -8,7 +8,7 @@ import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import emitMap from "../../config/emitMap.json";
 import {EmitWugufengdengData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
-import {getI18Lan, i18, i18Lans} from "../../i18n/i18nUtils";
+import { i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getPlayerDisplayName} from "../../utils/playerUtils";
 
@@ -88,7 +88,7 @@ export class WuGuFengDengBoard {
 
     drawTitle() {
         this.titleText = this.gamingScene.add.text(this.initX, this.initY - 158,
-            getI18Lan() == i18Lans.EN ? CARD_CONFIG.WU_GU_FENG_DENG.EN : CARD_CONFIG.WU_GU_FENG_DENG.CN
+             i18(CARD_CONFIG.WU_GU_FENG_DENG)
         )
         this.titleText.setOrigin(0.5, 0.5)
         this.titleText.setAlpha(0)

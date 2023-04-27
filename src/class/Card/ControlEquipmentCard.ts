@@ -9,7 +9,7 @@ import {getCanPlayerPlaySha} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getI18Lan, i18Lans} from "../../i18n/i18nUtils";
+import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 
 const typeCardNameMap = {
     [EQUIPMENT_TYPE.WEAPON]: 'weaponCard',
@@ -144,9 +144,9 @@ export class ControlEquipmentCard {
         if (this.card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || this.card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
             this.distanceText!.setText(this.card?.distanceDesc!)
         } else if (this.card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
-            this.distanceText!.setText((getI18Lan() == i18Lans.EN ? this.card?.distance?.toString() : this.card?.distanceDesc)!)
+            this.distanceText!.setText((getI18Lan() == I18LANS.EN ? this.card?.distance?.toString() : this.card?.distanceDesc)!)
         }
-        this.nameText!.setText((getI18Lan() == i18Lans.EN ? this.card?.EN?.substring(0, 7) + '...' : this.card?.CN))
+        this.nameText!.setText((getI18Lan() == I18LANS.EN ? this.card?.EN?.substring(0, 7) + '...' : this.card?.CN))
 
         // @ts-ignore
         this.huaseNumText!.setText(CARD_NUM_DESC[this.card.number] + this.card.huase)

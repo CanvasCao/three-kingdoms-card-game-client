@@ -15,7 +15,7 @@ import {
     getCanSelectMeAsFirstTargetCardNamesClosure,
     getCanSelectMeAsSecondTargetCardNamesClosure
 } from "../../utils/cardNamesClourseUtils";
-import {getI18Lan, i18, i18Lans} from "../../i18n/i18nUtils";
+import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {STAGE_NAMES, STAGE_NAMES_CN} from "../../config/gameConfig";
 
@@ -404,9 +404,9 @@ export class BoardPlayer {
                 if (card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
                     group.distanceText!.setText(card?.distanceDesc!)
                 } else if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
-                    group.distanceText!.setText((getI18Lan() == i18Lans.EN ? card?.distance?.toString() : card?.distanceDesc)!)
+                    group.distanceText!.setText((getI18Lan() == I18LANS.EN ? card?.distance?.toString() : card?.distanceDesc)!)
                 }
-                group.nameText.setText((getI18Lan() == i18Lans.EN ? card?.EN?.substring(0, 7) + '...' : card?.CN))
+                group.nameText.setText((getI18Lan() == I18LANS.EN ? card?.EN?.substring(0, 7) + '...' : card?.CN))
 
                 // @ts-ignore
                 group.huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
@@ -478,7 +478,7 @@ export class BoardPlayer {
             this.stageText!.setAlpha(1);
             this.stageText!.setText(i18(i18Config.STAGE_DESC,
                 {
-                    stage: (getI18Lan() == i18Lans.EN ?
+                    stage: (getI18Lan() == I18LANS.EN ?
                         STAGE_NAMES[gameStatus.stage.stageIndex] :
                         STAGE_NAMES_CN[gameStatus.stage.stageIndex])
                 })
