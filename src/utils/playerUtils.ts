@@ -1,4 +1,4 @@
-import {GameStatus, PandingSign, Player} from "../types/gameStatus";
+import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {
     BASIC_CARDS_CONFIG,
@@ -8,6 +8,8 @@ import {
 } from "../config/cardConfig";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {getI18Lan, I18LANS} from "../i18n/i18nUtils";
+import {PandingSign} from "../types/card";
+import {Player} from "../types/player";
 
 const getPlayersDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
     const tableDistance = Math.min(
@@ -115,7 +117,8 @@ const getCanPlayerPlaySha = (player: Player) => {
     if (player.weaponCard && (player.weaponCard.CN == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.CN)) {
         return true
     } else {
-        return player.shaTimes < player.shaLimitTimes
+        const shaLimitTimes = 1
+        return player.shaTimes < shaLimitTimes
     }
 }
 

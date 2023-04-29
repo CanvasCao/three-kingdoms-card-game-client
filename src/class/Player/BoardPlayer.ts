@@ -2,7 +2,7 @@ import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {CARD_NUM_DESC, DELAY_SCROLL_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {GamingScene, PlayerEquipmentGroup} from "../../types/phaser";
-import {Card, GameStatus, Player} from "../../types/gameStatus";
+import {GameStatus} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
@@ -18,6 +18,8 @@ import {
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {STAGE_NAMES, STAGE_NAMES_CN} from "../../config/gameConfig";
+import {Card} from "../../types/card";
+import {Player} from "../../types/player";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
 

@@ -4,10 +4,10 @@ import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {differenceBy} from "lodash";
 import {GamingScene} from "../../types/phaser";
-import {Card} from "../../types/gameStatus";
 import {BoardPlayer} from "../Player/BoardPlayer";
 import {getControlCardPosition} from "../../utils/cardUtils";
 import {uuidv4} from "../../utils/uuid";
+import {Card} from "../../types/card";
 
 export class ToPlayerCard {
     obId: string;

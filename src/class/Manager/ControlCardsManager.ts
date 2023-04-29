@@ -3,11 +3,12 @@ import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
 import {ControlCard} from "../Card/ControlCard";
 import {GamingScene} from "../../types/phaser";
-import {Card, GameStatus} from "../../types/gameStatus";
+import {GameStatus} from "../../types/gameStatus";
 import {sizeConfig} from "../../config/sizeConfig";
 import {ControlEquipmentCard} from "../Card/ControlEquipmentCard";
 import {EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {uuidv4} from "../../utils/uuid";
+import {Card} from "../../types/card";
 
 export class ControlCardsManager {
     obId: string;

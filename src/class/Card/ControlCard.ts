@@ -3,7 +3,7 @@ import colorConfig from "../../config/colorConfig.json";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../../types/phaser";
-import {Card, GameStatus} from "../../types/gameStatus";
+import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getControlCardPosition} from "../../utils/cardUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
@@ -13,6 +13,7 @@ import {uuidv4} from "../../utils/uuid";
 import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
 import {getInMyPlayTurnCanPlayCardNamesClourse} from "../../utils/cardNamesClourseUtils";
 import {generateActualCard} from "../../utils/emitDataGenerator";
+import {Card} from "../../types/card";
 
 export class ControlCard {
     obId: string;

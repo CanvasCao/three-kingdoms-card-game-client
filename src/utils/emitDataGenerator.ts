@@ -1,4 +1,4 @@
-import {GameStatus, Player} from "../types/gameStatus";
+import {GameStatus} from "../types/gameStatus";
 import {EmitActionData, EmitResponseData, EmitThrowData} from "../types/emit";
 import {attachFEInfoToCard} from "./cardUtils";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
@@ -6,6 +6,7 @@ import {GameFEStatus} from "../types/gameFEStatus";
 import {getMyResponseInfo} from "./stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {uuidv4} from "./uuid";
+import {Player} from "../types/player";
 
 const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (EmitActionData | undefined) => {
     const actualCard = JSON.parse(JSON.stringify(gameFEStatus.actualCard))

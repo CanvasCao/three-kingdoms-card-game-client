@@ -1,3 +1,5 @@
+// const bgWidth = 2048
+// const bgHeight = 1152
 const bgWidth = 1366
 const bgHeight = 768
 

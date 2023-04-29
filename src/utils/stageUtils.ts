@@ -25,8 +25,8 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
                 SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN,
             ].includes(gameStatus.scrollResStages[0].actualCard.CN))
     }
-    if (gameStatus.shanResStages.length > 0) {
-        return gameStatus.shanResStages[0]?.originId == getMyPlayerId();
+    if (gameStatus.shanResponse) {
+        return gameStatus.shanResponse.originId == getMyPlayerId();
     }
     if (gameStatus.weaponResStages.length > 0) {
         return gameStatus.weaponResStages[0]?.originId == getMyPlayerId();
@@ -34,7 +34,7 @@ const getIsMyResponseCardTurn = (gameStatus: GameStatus) => {
     return false;
 }
 const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
-    return gameStatus.shanResStages.length <= 0 &&
+    return !gameStatus.shanResponse &&
         gameStatus.taoResStages.length <= 0 &&
         gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length <= 0 &&
         gameStatus.scrollResStages.length <= 0 &&
@@ -59,9 +59,9 @@ const getMyResponseInfo = (gameStatus: GameStatus):
             cardNames: [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN],
             wuxieTargetCardId: chainItem.actualCard.cardId,// 为了校验无懈可击是否冲突
         }
-    } else if (gameStatus.shanResStages.length > 0) {
+    } else if (gameStatus.shanResponse) {
         return {
-            targetId: gameStatus.shanResStages[0].targetId,
+            targetId: gameStatus.shanResponse.targetId,
             cardNames: [BASIC_CARDS_CONFIG.SHAN.CN],
         }
     } else if (gameStatus.scrollResStages.length > 0) {

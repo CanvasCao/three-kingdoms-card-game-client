@@ -1,6 +1,6 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {GamingScene} from "../../types/phaser";
-import {Card, GameStatus} from "../../types/gameStatus";
+import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {CARD_NUM_DESC, EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
@@ -10,6 +10,7 @@ import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
+import {Card} from "../../types/card";
 
 const typeCardNameMap = {
     [EQUIPMENT_TYPE.WEAPON]: 'weaponCard',

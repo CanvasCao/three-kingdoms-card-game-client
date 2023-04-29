@@ -1,6 +1,6 @@
-import {Card} from "../types/gameStatus";
 import {attachFEInfoToCard} from "../utils/cardUtils";
 import {CARD_CONFIG} from "./cardConfig";
+import {Card} from "../types/card";
 
 const addFEInfoToCardConfig = (cardConfig: { [key: string]: Partial<Card> }) => {
     Object.keys(cardConfig).forEach((key, index) => {

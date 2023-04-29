@@ -82,8 +82,8 @@ const getIsMyResponseCardTurnOperationHint = (gameStatus: GameStatus, gameFEStat
         const number = gameStatus.taoResStages[0].cardNumber;
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_TAO, {number, name})
-    } else if (gameStatus.shanResStages.length > 0) {
-        const targetId = gameStatus.shanResStages[0].targetId;
+    } else if (gameStatus.shanResponse) {
+        const targetId = gameStatus.shanResponse.targetId;
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_SHAN, {name})
     } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {

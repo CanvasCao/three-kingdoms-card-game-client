@@ -1,4 +1,4 @@
-import {Card, GameStatus, ScrollResStage, Player} from "../../types/gameStatus";
+import {GameStatus, ScrollResStage} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
@@ -7,10 +7,12 @@ import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {shuffle} from "lodash";
 import emitMap from "../../config/emitMap.json";
-import {CardAreaType, EmitCardBoardData} from "../../types/emit";
+import {EmitCardBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
+import {Card, CardAreaType} from "../../types/card";
+import {Player} from "../../types/player";
 
 const gridOffset = {
     line1: {y: -55},

@@ -1,7 +1,6 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {GamingScene} from "../../types/phaser";
-import {Card} from "../../types/gameStatus";
 import {
     cardHuaseNumberObjOffsetX,
     cardHuaseNumberObjOffsetY,
@@ -12,6 +11,7 @@ import {
 import {getCardColor} from "../cardUtils";
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {CARD_NUM_DESC} from "../../config/cardConfig";
+import {Card} from "../../types/card";
 
 // tint
 const disableTint = colorConfig.disableCard;

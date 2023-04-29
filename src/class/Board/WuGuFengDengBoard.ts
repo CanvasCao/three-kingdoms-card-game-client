@@ -1,4 +1,4 @@
-import {Card, GameStatus} from "../../types/gameStatus";
+import {GameStatus} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
@@ -8,9 +8,10 @@ import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import emitMap from "../../config/emitMap.json";
 import {EmitWugufengdengData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
-import { i18} from "../../i18n/i18nUtils";
+import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getPlayerDisplayName} from "../../utils/playerUtils";
+import {Card} from "../../types/card";
 
 const boardSize = {
     height: 380,
@@ -88,7 +89,7 @@ export class WuGuFengDengBoard {
 
     drawTitle() {
         this.titleText = this.gamingScene.add.text(this.initX, this.initY - 158,
-             i18(CARD_CONFIG.WU_GU_FENG_DENG)
+            i18(CARD_CONFIG.WU_GU_FENG_DENG)
         )
         this.titleText.setOrigin(0.5, 0.5)
         this.titleText.setAlpha(0)
@@ -97,7 +98,7 @@ export class WuGuFengDengBoard {
     }
 
     drawBottomText() {
-        this.bottomText = this.gamingScene.add.text(this.initX, this.initY + 158, '',{align: "center"})
+        this.bottomText = this.gamingScene.add.text(this.initX, this.initY + 158, '', {align: "center"})
         this.bottomText.setOrigin(0.5, 0.5)
         this.bottomText.setAlpha(0)
         this.bottomText.setPadding(0, 2, 0, 0)
@@ -162,8 +163,8 @@ export class WuGuFengDengBoard {
             const hasWuxiePlayer = gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.length > 0;
             const originId = gameStatus.scrollResStages?.[0]?.originId;
             const bottomText = hasWuxiePlayer ?
-                i18(i18Config.WU_GU_FENG_DENG_WAIT_WU_XIE, {name: getPlayerDisplayName(gameStatus,originId)}) :
-                i18(i18Config.WU_GU_FENG_DENG_CHOOSING, {name: getPlayerDisplayName(gameStatus,originId)})
+                i18(i18Config.WU_GU_FENG_DENG_WAIT_WU_XIE, {name: getPlayerDisplayName(gameStatus, originId)}) :
+                i18(i18Config.WU_GU_FENG_DENG_CHOOSING, {name: getPlayerDisplayName(gameStatus, originId)})
             this.bottomText?.setText(bottomText)
         }
     }

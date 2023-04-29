@@ -12,7 +12,7 @@ import emitMap from "./config/emitMap.json";
 import "./jsoneditor/jsoneditor.min.css";
 import {NofityAnimationManager} from "./class/Manager/NofityAnimationManager";
 import {Socket} from "./socket/socket.io.esm.min";
-import {Card, GameStatus} from './types/gameStatus';
+import {GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
 import {PlayerCardsBoard} from './class/Board/PlayerCardsBoard';
 import {getPlayersWithPosition} from './utils/playerPositionUtils';
@@ -26,6 +26,7 @@ import {bindPageEvent, tryRejoinRoom} from './bindPageEvent';
 import {setI18nLan} from './i18n/i18nUtils';
 import {setPageByFeatureToggle} from "./utils/toggle/toggle";
 import {OperateHint} from "./class/OperateHint/OperateHint";
+import {Card} from "./types/card";
 
 setI18nLan();
 setPageByFeatureToggle();
@@ -154,6 +155,8 @@ const config = {
             height: 600
         },
         max: {
+            // width: 2048,
+            // height: 1152
             width: 1366,
             height: 768
         },

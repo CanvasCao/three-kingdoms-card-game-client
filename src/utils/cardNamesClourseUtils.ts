@@ -1,7 +1,8 @@
 import {CARD_CONFIG_WITH_FE_INFO} from "../config/cardConfigWithFEInfo";
-import {Card, Player} from "../types/gameStatus";
 import {BASIC_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {getCanPlayerPlaySha} from "./playerUtils";
+import {Card} from "../types/card";
+import {Player} from "../types/player";
 
 const getInMyPlayTurnCanPlayCardNamesClourse = (player: Player) => {
     let canPlayInMyTurnCardNames: string[];

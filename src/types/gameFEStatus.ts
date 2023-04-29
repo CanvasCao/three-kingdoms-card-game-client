@@ -1,4 +1,5 @@
-import {Card, Players} from "./gameStatus";
+import {Card} from "./card";
+import {Players} from "./player";
 
 export type GameFEStatus = {
     selectedCards: Card[],

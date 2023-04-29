@@ -9,7 +9,7 @@ import {
 import {attachFEInfoToCard, generatePublicCardMessage, getIfToPlayerCardFaceFront} from "../../utils/cardUtils";
 import {PublicLine} from "../Line/PublicLine";
 import {ToPlayerCard} from "../Card/ToPlayerCard";
-import {Card} from "../../types/gameStatus";
+import {Card} from "../../types/card";
 
 export class NofityAnimationManager {
     // obId: string;

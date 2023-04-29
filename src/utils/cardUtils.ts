@@ -1,4 +1,4 @@
-import {Card, GameStatus} from "../types/gameStatus";
+import {GameStatus} from "../types/gameStatus";
 import {
     BASIC_CARDS_CONFIG,
     CARD_HUASE,
@@ -7,12 +7,13 @@ import {
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
-import {CardAreaType, EmitNotifyAddToPublicCardData} from "../types/emit";
+import {EmitNotifyAddToPublicCardData} from "../types/emit";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {sizeConfig} from "../config/sizeConfig";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {i18Config} from "../i18n/i18Config";
 import {i18} from "../i18n/i18nUtils";
+import {Card, CardAreaType} from "../types/card";
 
 const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {

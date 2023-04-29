@@ -1,6 +1,6 @@
-import {Card, MultiTargetsAction, OneTargetAction} from "./gameStatus";
+import {MultiTargetsAction, OneTargetAction} from "./gameStatus";
+import {Card, CardAreaType, CardBoardActionType} from "./card";
 
-export type CardAreaType = "hand" | 'equipment' | 'panding'
 // 前端=>后端
 // 游戏开始前
 export type EmitRejoinRoomData = {
@@ -29,7 +29,6 @@ export type EmitResponseData = {
     selectedIndexes: number[],
 }
 
-export type CardBoardActionType = "REMOVE" | "MOVE"
 export type EmitCardBoardData = {
     originId: string,
     targetId: string,

@@ -1,97 +1,31 @@
-import {EQUIPMENT_TYPE} from "../config/cardConfig";
+import {Card, WugufengdengCard} from "./card";
+import {UseStrikeEvents} from "./event";
+import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
     roomId: string,
     players: GameStatusPlayers,
     stage: Stage,
+
+    // Action
     action: OneTargetAction | MultiTargetsAction,
-    shanResStages: ShanStage[],
+
+    // events
+    useStrikeEvents: UseStrikeEvents,
+
+    // Response
+    shanResponse: ShanResponse | undefined, // shanResponse不为undefined就需要出闪
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
     wuxieSimultaneousResStage: WuxieSimultaneousResStage,
     weaponResStages: weaponResStage[],
+
     wugufengdengCards: WugufengdengCard[]
+
+    // debug
     tieSuoTempStorage: TieSuoTempStorageItem[],
     throwedCards?: Card[],
 };
-
-export type GameStatusPlayers = { [key: string]: Player }
-export type Players = Player[]
-export type Player = {
-    maxBlood: number,
-    currentBlood: number,
-    imageName: string,
-    shaLimitTimes: number,
-    playerId: string,
-    name: string,
-    location: number,
-
-    // cards
-    cards: Card[],
-    pandingSigns: PandingSign[],
-    weaponCard: Card,
-    shieldCard: Card,
-    plusHorseCard: Card,
-    minusHorseCard: Card,
-
-
-    // ui tags
-    isTieSuo: boolean,
-
-    // resetWhenMyTurnEnds
-    judgedShandian: boolean,
-    skipDraw: boolean,
-    skipPlay: boolean,
-    shaTimes: number,
-
-    // skills
-    skills: any[],
-
-    // Dead
-    isDead: boolean,
-
-    // FE
-    linePosition: { x: number, y: number },
-    playerPosition: { x: number, y: number },
-}
-
-export type Card = {
-    huase: string,
-    number: number,
-    key: string,
-    KEY: string,
-    cardId: string,
-    cardNumDesc: string,
-    CN: string,
-    EN: string,
-    type: string,
-    attribute: string,
-
-    equipmentType?: keyof typeof EQUIPMENT_TYPE,
-    horseDistance?: number,
-    distance?: number,
-    distanceDesc?: string,
-
-    canClickMySelfAsFirstTarget?: boolean,
-    canClickMySelfAsSecondTarget?: boolean,
-    canPlayInMyTurn: boolean,
-    targetMinMax: { min: number, max: number },
-    noNeedSetTargetDueToImDefaultTarget?: boolean,
-    noNeedSetTargetDueToTargetAll?: boolean,
-    couldHaveMultiTarget?: boolean,
-    canOnlyHaveOneTarget?: boolean,
-
-    // 只有借刀杀人
-    needAActionToB?: boolean,
-}
-
-export type WugufengdengCard = Card & { wugefengdengSelectedPlayerId: string }
-
-export type PandingSign = {
-    card: Card,
-    actualCard: Card,
-    isEffect: boolean, // undefined/null 未开始结算生效 true结算生效 false结算失效
-}
 
 export type Stage = {
     playerId: string,
@@ -117,13 +51,13 @@ export type MultiTargetsAction = {
     selectedIndexes: number[],
 }
 
-export type ShanStage = {
+export type ShanResponse = {
     originId: string,
     targetId: string,
     cardNumber: number,
 }
 
-export type TaoStage = ShanStage
+export type TaoStage = ShanResponse
 
 export type ScrollResStage = {
     originId: string,
