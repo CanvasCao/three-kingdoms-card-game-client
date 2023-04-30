@@ -1,15 +1,15 @@
 import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {getCanPlayInMyTurn, getIsMyResponseCardTurn, getIsMyThrowTurn} from "./stageUtils";
+import {getCanPlayInMyTurn, getIsMyResponseTurn, getIsMyThrowTurn} from "./stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 
 const getNeedSelectControlCardNumber = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-    const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
+    const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
     const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
-    if (canPlayInMyTurn || isMyResponseCardTurn) {
+    if (canPlayInMyTurn || isMyResponseTurn) {
         if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
             return 2;
         }

@@ -1,6 +1,6 @@
 import JSONEditor from "../../jsoneditor/jsoneditor.min";
 import {socket} from "../../socket";
-import emitMap from "../../config/emitMap.json";
+import {EMIT_TYPE} from "../../config/emitConfig";
 
 const DEFAULT_FEATURE_TOGGLE = {
     SHOW_GO_TO_NEXT_STAGE: false,
@@ -39,7 +39,7 @@ export const setPageByFeatureToggle = () => {
         $("#GoNextStage").show()
 
         $("#GoNextStage").click(() => {
-            socket.emit(emitMap.GO_NEXT_STAGE);
+            socket.emit(EMIT_TYPE.GO_NEXT_STAGE);
         })
     }
 }

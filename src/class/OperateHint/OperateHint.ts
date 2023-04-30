@@ -3,11 +3,11 @@ import {GameStatus} from "../../types/gameStatus";
 import {sizeConfig} from "../../config/sizeConfig";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import Phaser from "phaser";
-import {getIsMyResponseCardTurn, getIsMyThrowTurn, getCanPlayInMyTurn} from "../../utils/stageUtils";
+import {getIsMyResponseTurn, getIsMyThrowTurn, getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {
     getCanPlayInMyTurnOperationHint,
-    getIsMyResponseCardTurnOperationHint,
+    getIsMyResponseTurnOperationHint,
     getIsMyThrowTurnOperationHint
 } from "../../utils/operateHintUtils";
 
@@ -47,15 +47,15 @@ export class OperateHint {
 
     setText(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-        const isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
+        const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
         if (canPlayInMyTurn) {
             this.operateHint?.setAlpha(1);
             const text = getCanPlayInMyTurnOperationHint(gameStatus, gameFEStatus)
             this.operateHint?.setText(text)
-        } else if (isMyResponseCardTurn) {
+        } else if (isMyResponseTurn) {
             this.operateHint?.setAlpha(1);
-            const text = getIsMyResponseCardTurnOperationHint(gameStatus, gameFEStatus)
+            const text = getIsMyResponseTurnOperationHint(gameStatus, gameFEStatus)
             this.operateHint?.setText(text)
         } else if (isMyThrowTurn) {
             this.operateHint?.setAlpha(1);

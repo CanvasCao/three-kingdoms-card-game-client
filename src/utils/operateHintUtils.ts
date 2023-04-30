@@ -10,7 +10,6 @@ import {
     SCROLL_CARDS_CONFIG
 } from "../config/cardConfig";
 import {getNeedSelectControlCardNumber} from "./cardValidation";
-import {getMyResponseInfo} from "./stageUtils";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {getAmendCardTargetMinMax} from "./cardUtils";
 import {getCurrentPlayer, getPlayerDisplayName} from "./playerUtils";
@@ -76,16 +75,19 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
     }
 }
 
-const getIsMyResponseCardTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    if (gameStatus.taoResStages.length > 0) {
+const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+    if (gameStatus.shanResponse) {
+        const targetId = gameStatus.shanResponse.targetId;
+        const name = getPlayerDisplayName(gameStatus, targetId);
+        return i18(i18Config.RESPONSE_SHAN, {name})
+    } else if (gameStatus.skillResponse) {
+        // TODO i18n
+        return '是否发动 ' + gameStatus.skillResponse.skillName + '？'
+    } else if (gameStatus.taoResStages.length > 0) {
         const targetId = gameStatus.taoResStages[0].targetId;
         const number = gameStatus.taoResStages[0].cardNumber;
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_TAO, {number, name})
-    } else if (gameStatus.shanResponse) {
-        const targetId = gameStatus.shanResponse.targetId;
-        const name = getPlayerDisplayName(gameStatus, targetId);
-        return i18(i18Config.RESPONSE_SHAN, {name})
     } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
         const wuxieChain = gameStatus.wuxieSimultaneousResStage.wuxieChain;
 
@@ -158,6 +160,6 @@ const getIsMyThrowTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: Gam
 
 export {
     getCanPlayInMyTurnOperationHint,
-    getIsMyResponseCardTurnOperationHint,
+    getIsMyResponseTurnOperationHint,
     getIsMyThrowTurnOperationHint
 }

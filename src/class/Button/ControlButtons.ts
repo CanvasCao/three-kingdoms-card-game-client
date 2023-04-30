@@ -1,19 +1,20 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import emitMap from "../../config/emitMap.json";
+import {EMIT_TYPE} from "../../config/emitConfig";
 import {BtnGroup, GamingScene} from "../../types/phaser";
 import Phaser from "phaser";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {GameStatus} from "../../types/gameStatus";
-import {generateAction, generateResponse, generateThrowData} from "../../utils/emitDataGenerator";
+import {generateAction, generateYesResponse, generateThrowData, generateNoResponse} from "../../utils/emitDataGenerator";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getMyResponseInfo, getCanPlayInMyTurn} from "../../utils/stageUtils";
-import {getIsMyResponseCardTurn} from "../../utils/stageUtils";
+import {getIsMyResponseTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getAmendCardTargetMinMax} from "../../utils/cardUtils";
+import {BasicCardResponseInfo} from "../../types/responseInfo";
 
 export class ControlButtons {
     obId: string;
@@ -24,7 +25,7 @@ export class ControlButtons {
     btnOffset: number;
     endBtnOffset: number;
 
-    _isMyResponseCardTurn?: boolean;
+    _isMyResponseTurn?: boolean;
     _canPlayInMyTurn?: boolean;
     _isMyThrowTurn?: boolean;
 
@@ -49,7 +50,7 @@ export class ControlButtons {
         this.btnOffset = 100;
         this.endBtnOffset = 150;
 
-        this._isMyResponseCardTurn;
+        this._isMyResponseTurn;
         this._canPlayInMyTurn;
         this._isMyThrowTurn;
 
@@ -139,12 +140,10 @@ export class ControlButtons {
 
     bindEvent() {
         this.cancelBtnImg!.on('pointerdown', () => {
-            if (this._isMyResponseCardTurn) {
+            if (this._isMyResponseTurn) {
                 this.gamingScene.socket.emit(
-                    emitMap.RESPONSE,
-                    {
-                        originId: getMyPlayerId(),
-                    }
+                    EMIT_TYPE.RESPONSE,
+                    generateNoResponse()
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._canPlayInMyTurn || this._isMyThrowTurn) {
@@ -162,18 +161,18 @@ export class ControlButtons {
                 }
 
                 this.gamingScene.socket.emit(
-                    emitMap.ACTION,
+                    EMIT_TYPE.ACTION,
                     generateAction(gameStatus, gameFEStatus)
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
-            } else if (this._isMyResponseCardTurn) {
-                if (!this.canClickOkBtnInMyResponseCardStage(gameStatus, gameFEStatus)) {
+            } else if (this._isMyResponseTurn) {
+                if (!this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus)) {
                     return
                 }
 
                 this.gamingScene.socket.emit(
-                    emitMap.RESPONSE,
-                    generateResponse(gameStatus, gameFEStatus),
+                    EMIT_TYPE.RESPONSE,
+                    generateYesResponse(gameStatus, gameFEStatus),
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
             } else if (this._isMyThrowTurn) {
@@ -182,7 +181,7 @@ export class ControlButtons {
                 }
 
                 this.gamingScene.socket.emit(
-                    emitMap.THROW,
+                    EMIT_TYPE.THROW,
                     generateThrowData(gameStatus, gameFEStatus)
                 )
                 this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
@@ -190,7 +189,7 @@ export class ControlButtons {
         });
 
         this.endBtnImg!.on('pointerdown', () => {
-            this.gamingScene.socket.emit(emitMap.GO_NEXT_STAGE)
+            this.gamingScene.socket.emit(EMIT_TYPE.GO_NEXT_STAGE)
         });
     }
 
@@ -237,17 +236,23 @@ export class ControlButtons {
         return false
     }
 
-    canClickOkBtnInMyResponseCardStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        if (!gameFEStatus?.actualCard) {
-            return
+    canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
+        const {cardNames} = (getMyResponseInfo(gameStatus) as BasicCardResponseInfo)
+        if (cardNames?.length > 0) {
+            return gameFEStatus?.actualCard?.CN && cardNames.includes(gameFEStatus.actualCard.CN)
         }
-        const {cardNames: needResponseCardNames} = getMyResponseInfo(gameStatus)!
-        return needResponseCardNames.includes(gameFEStatus.actualCard.CN)
+        return true
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         const needThrowCardNumber = getNeedSelectControlCardNumber(gameStatus, gameFEStatus);
         return gameFEStatus.selectedCards.length == needThrowCardNumber
+    }
+
+    showAllBtns() {
+        this.showBtn(this.okBtnGroup);
+        this.showBtn(this.cancelBtnGroup)
+        this.showBtn(this.endBtnGroup)
     }
 
     hideAllBtns() {
@@ -257,26 +262,26 @@ export class ControlButtons {
     }
 
     setButtonStatusByGameStatus(gameStatus: GameStatus) {
-        this._isMyResponseCardTurn = getIsMyResponseCardTurn(gameStatus);
+        this._isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         this._canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         this._isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
-        if (this._canPlayInMyTurn || this._isMyResponseCardTurn || this._isMyThrowTurn) {
-            this.showBtn(this.okBtnGroup)
-            this.disableBtn(this.okBtnGroup)
+        (this._canPlayInMyTurn || this._isMyResponseTurn || this._isMyThrowTurn) ? this.showAllBtns() : this.hideAllBtns()
 
-        }
         if (this._canPlayInMyTurn) {
-            this.showBtn(this.cancelBtnGroup)
+            this.disableBtn(this.okBtnGroup)
             this.disableBtn(this.cancelBtnGroup)
 
             this.showBtn(this.endBtnGroup)
-        } else if (this._isMyResponseCardTurn) {
-            this.showBtn(this.cancelBtnGroup)
+        } else if (this._isMyResponseTurn) {
+            const {cardNames} = getMyResponseInfo(gameStatus) as BasicCardResponseInfo
+            if (cardNames.length > 0) {
+                this.disableBtn(this.okBtnGroup)
+            }
 
             this.hideBtn(this.endBtnGroup)
         } else if (this._isMyThrowTurn) {
-            this.showBtn(this.cancelBtnGroup)
+            this.disableBtn(this.okBtnGroup)
             this.disableBtn(this.cancelBtnGroup)
 
             this.hideBtn(this.endBtnGroup)
@@ -288,11 +293,17 @@ export class ControlButtons {
     setButtonStatusByGameFEStatus(gameFEStatus: GameFEStatus) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
         if (this._canPlayInMyTurn) {
-            this.canClickOkBtnInMyPlayStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
-        } else if (this._isMyResponseCardTurn) {
-            this.canClickOkBtnInMyResponseCardStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+            this.canClickOkBtnInMyPlayStage(gameStatus, gameFEStatus) ?
+                this.showBtn(this.okBtnGroup) :
+                this.disableBtn(this.okBtnGroup)
+        } else if (this._isMyResponseTurn) {
+            this.canClickOkBtnInMyResponseStage(gameStatus, gameFEStatus) ?
+                this.showBtn(this.okBtnGroup) :
+                this.disableBtn(this.okBtnGroup)
         } else if (this._isMyThrowTurn) {
-            this.canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus) ? this.showBtn(this.okBtnGroup) : this.disableBtn(this.okBtnGroup)
+            this.canClickOkBtnInMyThrowStage(gameStatus, gameFEStatus) ?
+                this.showBtn(this.okBtnGroup) :
+                this.disableBtn(this.okBtnGroup)
         }
 
         if (this._canPlayInMyTurn || this._isMyThrowTurn) {

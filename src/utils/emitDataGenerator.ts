@@ -7,6 +7,7 @@ import {getMyResponseInfo} from "./stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {uuidv4} from "./uuid";
 import {Player} from "../types/player";
+import {BasicCardResponseInfo, WuXieResponseInfo} from "../types/responseInfo";
 
 const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (EmitActionData | undefined) => {
     const actualCard = JSON.parse(JSON.stringify(gameFEStatus.actualCard))
@@ -46,16 +47,24 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
     }
 }
 
-const generateResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitResponseData => {
-    const info = getMyResponseInfo(gameStatus)!
+const generateNoResponse = () => {
+    return {
+        originId: getMyPlayerId(),
+        chooseToResponse: false
+    }
+}
+
+const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitResponseData => {
+    const info = getMyResponseInfo(gameStatus)
 
     return {
+        chooseToResponse: true,
         cards: gameFEStatus.selectedCards,
         selectedIndexes: gameFEStatus.selectedIndexes,
         actualCard: gameFEStatus.actualCard!,
         originId: getMyPlayerId(),
-        targetId: info.targetId,
-        wuxieTargetCardId: info.wuxieTargetCardId
+        targetId: (info as BasicCardResponseInfo).targetId,
+        wuxieTargetCardId: (info as WuXieResponseInfo)?.wuxieTargetCardId
     }
 }
 
@@ -82,7 +91,8 @@ const generateActualCard = (gameFEStatus: GameFEStatus) => {
 
 export {
     generateAction,
-    generateResponse,
+    generateNoResponse,
+    generateYesResponse,
     generateThrowData,
     generateActualCard
 }

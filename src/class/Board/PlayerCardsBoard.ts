@@ -6,7 +6,7 @@ import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {shuffle} from "lodash";
-import emitMap from "../../config/emitMap.json";
+import {EMIT_TYPE} from "../../config/emitConfig";
 import {EmitCardBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {i18} from "../../i18n/i18nUtils";
@@ -266,7 +266,7 @@ export class PlayerCardsBoard {
     getCardClickHandler(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage, cardAreaType: CardAreaType) {
         return () => {
             this.gamingScene.socket.emit(
-                emitMap.CARD_BOARD_ACTION,
+                EMIT_TYPE.CARD_BOARD_ACTION,
                 this.getEmitCardBoardActionData(targetPlayer, card, scrollResStage, cardAreaType)
             )
         }

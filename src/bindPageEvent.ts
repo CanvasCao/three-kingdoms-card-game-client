@@ -6,7 +6,7 @@ import {
     setMyPlayerIdAndName,
     setRoomIdAndTimestamp
 } from "./utils/localstorage/localStorageUtils";
-import emitMap from "./config/emitMap.json";
+import {EMIT_TYPE} from "./config/emitConfig";
 import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms, EmitRejoinRoomData} from "./types/emit";
 import {i18Config} from "./i18n/i18Config";
 import {i18} from "./i18n/i18nUtils";
@@ -24,13 +24,13 @@ const bindLoginPageEvent = () => {
             setMyPlayerIdAndName(val.toString())
             $('.page').hide();
             $('#roomsPage').css('display', 'flex');
-            socket.emit(emitMap.REFRESH_ROOMS);
+            socket.emit(EMIT_TYPE.REFRESH_ROOMS);
         }
     })
 }
 
 const bindRoomsPageEvent = () => {
-    socket.on(emitMap.REFRESH_ROOMS, (data: EmitRefreshRooms) => {
+    socket.on(EMIT_TYPE.REFRESH_ROOMS, (data: EmitRefreshRooms) => {
         if ($("#roomsPage").css('display') == 'none') {
             return
         }
@@ -72,7 +72,7 @@ const bindRoomsPageEvent = () => {
         $("#roomsPage button").click(function () {
             const roomId = $(this).attr('data-roomid');
             setRoomIdAndTimestamp(roomId!)
-            socket.emit(emitMap.JOIN_ROOM, {
+            socket.emit(EMIT_TYPE.JOIN_ROOM, {
                 playerId: getMyPlayerId(),
                 playerName: getMyPlayerName(),
                 roomId
@@ -82,7 +82,7 @@ const bindRoomsPageEvent = () => {
 }
 
 const bindRoomPlayersPageEvent = () => {
-    socket.on(emitMap.REFRESH_ROOM_PLAYERS, (data: EmitRefreshRoomPlayers) => {
+    socket.on(EMIT_TYPE.REFRESH_ROOM_PLAYERS, (data: EmitRefreshRoomPlayers) => {
         console.log("REFRESH_ROOM_PLAYERS", data)
         $('.page').hide();
         $('#roomPlayersPage').css('display', 'flex');
@@ -112,7 +112,7 @@ const bindRoomPlayersPageEvent = () => {
             `</div>`
         )
         $("#startButton").click(() => {
-            socket.emit(emitMap.INIT);
+            socket.emit(EMIT_TYPE.INIT);
         })
     })
 }
@@ -124,7 +124,7 @@ const tryRejoinRoom = () => {
     }
 
     if (isWithin30Minutes(timestamp)) {
-        socket.emit(emitMap.REJOIN_ROOM, {
+        socket.emit(EMIT_TYPE.REJOIN_ROOM, {
             playerId: getMyPlayerId(),
             roomId
         } as EmitRejoinRoomData);

@@ -18,6 +18,7 @@ export type EmitJoinRoomData = {
 export type EmitActionData = OneTargetAction | MultiTargetsAction
 
 export type EmitResponseData = {
+    chooseToResponse: boolean,
     cards: Card[],
     actualCard: Card,
     originId: string,
@@ -70,7 +71,7 @@ export type EmitNotifyAddToPublicCardData = {
     targetId?: string,
     cards: Card[],
     pandingPlayerId: string,
-    pandingCard: Card,
+    pandingName: string,
     throwPlayerId: string,
     originIndexes: number[],
     type: 'play' | 'panding' | 'throw' | 'chai',

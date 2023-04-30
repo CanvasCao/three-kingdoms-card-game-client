@@ -8,7 +8,7 @@ import {ControlButtons} from "./class/Button/ControlButtons";
 import {GameStatusObserved} from "./class/Observed/GameStatusObserved";
 import {GameFEStatusObserved} from "./class/Observed/GameFEStatusObserved";
 import {BoardPlayer} from "./class/Player/BoardPlayer";
-import emitMap from "./config/emitMap.json";
+import {EMIT_TYPE} from "./config/emitConfig";
 import "./jsoneditor/jsoneditor.min.css";
 import {NofityAnimationManager} from "./class/Manager/NofityAnimationManager";
 import {Socket} from "./socket/socket.io.esm.min";
@@ -81,7 +81,7 @@ class Gaming extends Phaser.Scene {
         bg.displayHeight = sizeConfig.background.height;
 
         // 监听只可能有一次
-        socket.on(emitMap.INIT, (data: GameStatus) => {
+        socket.on(EMIT_TYPE.INIT, (data: GameStatus) => {
             if (this.init) {
                 return
             }
@@ -103,24 +103,24 @@ class Gaming extends Phaser.Scene {
             this.gameStatusObserved.setGameStatus(data);
         });
 
-        socket.on(emitMap.REFRESH_STATUS, (data: GameStatus) => {
+        socket.on(EMIT_TYPE.REFRESH_STATUS, (data: GameStatus) => {
             this.gameStatusObserved.setGameStatus(data);
         });
 
-        socket.on(emitMap.GO_NEXT_STAGE, (data: GameStatus) => {
+        socket.on(EMIT_TYPE.GO_NEXT_STAGE, (data: GameStatus) => {
             this.gameStatusObserved.setGameStatus(data);
         });
 
         // Notify FE
-        socket.on(emitMap.NOTIFY_ADD_TO_PUBLIC_CARD, (data: EmitNotifyAddToPublicCardData) => {
+        socket.on(EMIT_TYPE.NOTIFY_ADD_TO_PUBLIC_CARD, (data: EmitNotifyAddToPublicCardData) => {
             this.notifyAnimationManager!.addToPublicCard(data)
         });
 
-        socket.on(emitMap.NOTIFY_ADD_TO_PLAYER_CARD, (data: EmitNotifyAddToPlayerCardData) => {
+        socket.on(EMIT_TYPE.NOTIFY_ADD_TO_PLAYER_CARD, (data: EmitNotifyAddToPlayerCardData) => {
             this.notifyAnimationManager!.addToPlayerCard(data)
         });
 
-        socket.on(emitMap.NOTIFY_ADD_LINES, (data: EmitNotifyAddLinesData) => {
+        socket.on(EMIT_TYPE.NOTIFY_ADD_LINES, (data: EmitNotifyAddLinesData) => {
             this.notifyAnimationManager!.addLines(data)
         });
 

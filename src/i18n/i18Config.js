@@ -241,8 +241,8 @@ export const i18Config = {
     },
     PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT: {
         KEY: "PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT",
-        EN: "{name}'s {cardName} judgement result",
-        CN: "{name}的{cardName}判定结果"
+        EN: "{playerName}'s {pandingName} judgement result",
+        CN: "{playerName}的{pandingName}判定结果"
     },
     PUBLIC_CARD_MESSAGE_PLAY_THROW: {
         KEY: "PUBLIC_CARD_MESSAGE_PLAY_THROW",

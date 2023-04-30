@@ -14,6 +14,7 @@ import {GameFEStatus} from "../types/gameFEStatus";
 import {i18Config} from "../i18n/i18Config";
 import {i18} from "../i18n/i18nUtils";
 import {Card, CardAreaType} from "../types/card";
+import {ADD_TO_PUBLIC_CARD_TYPE} from "../config/emitConfig";
 
 const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {
@@ -165,9 +166,9 @@ const getAmendCardTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
 
 const generatePublicCardMessage = (
     gameStatus: GameStatus,
-    {type, fromId, originId, targetId, pandingPlayerId, pandingCard, throwPlayerId}:
+    {type, fromId, originId, targetId, pandingPlayerId, pandingName, throwPlayerId}:
         EmitNotifyAddToPublicCardData) => {
-    if (type == 'play') {
+    if (type == ADD_TO_PUBLIC_CARD_TYPE.PLAY) {
         const originName = gameStatus.players[originId].name;
 
         // AOE
@@ -179,14 +180,14 @@ const generatePublicCardMessage = (
         } else {
             return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET, {originName, targetName});
         }
-    } else if (type == 'panding') {
+    } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PANDING) {
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT, {
-            name: gameStatus.players[pandingPlayerId].name,
-            cardName: i18(pandingCard)
+            playerName: gameStatus.players[pandingPlayerId].name,
+            pandingName
         });
-    } else if (type == 'throw') {
+    } else if (type == ADD_TO_PUBLIC_CARD_TYPE.THROW) {
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_THROW, {name: gameStatus.players[throwPlayerId].name});
-    } else if (type == 'chai') {
+    } else if (type == ADD_TO_PUBLIC_CARD_TYPE.CHAI) {
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_CHAI, {name: gameStatus.players[fromId].name});
     }
     return ''

@@ -5,7 +5,7 @@ import colorConfig from "../../config/colorConfig.json";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {CARD_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
-import emitMap from "../../config/emitMap.json";
+import {EMIT_TYPE} from "../../config/emitConfig";
 import {EmitWugufengdengData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {i18} from "../../i18n/i18nUtils";
@@ -139,7 +139,7 @@ export class WuGuFengDengBoard {
                         return;
                     }
                     this.gamingScene.socket.emit(
-                        emitMap.WUGU_BOARD_ACTION,
+                        EMIT_TYPE.WUGU_BOARD_ACTION,
                         this.getEmitWugufengdengData(card)
                     )
                 }
