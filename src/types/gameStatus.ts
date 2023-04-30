@@ -1,5 +1,5 @@
 import {Card, WugufengdengCard} from "./card";
-import {UseStrikeEvents} from "./event";
+import {EventSkill, PandingEvent, UseStrikeEvents} from "./event";
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
@@ -10,11 +10,9 @@ export type GameStatus = {
     // Action
     action: OneTargetAction | MultiTargetsAction,
 
-    // events
-    useStrikeEvents: UseStrikeEvents,
-
     // Response
     shanResponse: ShanResponse | undefined, // shanResponse不为undefined就需要出闪
+    skillResponse: SkillResponse | undefined,
     taoResStages: TaoStage[],
     scrollResStages: ScrollResStage[],
     wuxieSimultaneousResStage: WuxieSimultaneousResStage,
@@ -22,7 +20,11 @@ export type GameStatus = {
 
     wugufengdengCards: WugufengdengCard[]
 
-    // debug
+    // only for debug
+    // events
+    useStrikeEvents: UseStrikeEvents,
+    pandingEvent: PandingEvent,
+
     tieSuoTempStorage: TieSuoTempStorageItem[],
     throwedCards?: Card[],
 };
@@ -56,6 +58,8 @@ export type ShanResponse = {
     targetId: string,
     cardNumber: number,
 }
+
+export type SkillResponse = EventSkill
 
 export type TaoStage = ShanResponse
 
