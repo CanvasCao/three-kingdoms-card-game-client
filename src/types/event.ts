@@ -1,30 +1,26 @@
-export type UseStrikeEvents = UseStrikeEvent[]
-
 export type UseStrikeEvent = {
     originId: string,
     targetId: string,
-    timings: EventTiming[],
+    cantShan: boolean,
+    eventTimingWithSkills: EventTimingWithSkill[],
+
+    // UseStrikeEvents的所有事件done UseStrikeEvents才能被删除 所以需要一个标记记录单个UseStrikeEvent的情况
     done: boolean
 }
 
 export type PandingEvent = {
     originId: string,
-    timings: EventTiming[],
+    eventTimingWithSkills: EventTimingWithSkill[],
     done: boolean
 }
 
-export type EventTiming = {
-    name: string,
-    skills: EventSkills,
+export type EventTimingWithSkill = {
+    eventTimingName: string,
+    eventTimingSkills: EventTimingSkill[],
 }
 
-export type EventSkill = {
+export type EventTimingSkill = {
     skillName: string,
     playerId: string,
-    chooseToRelease: boolean,
+    chooseToRelease: boolean | undefined,
 }
-
-export type EventSkills = EventSkill[]
-
-
-

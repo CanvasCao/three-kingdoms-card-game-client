@@ -3,6 +3,7 @@ import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {BASIC_CARDS_CONFIG, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {GAME_STAGE, STAGE_NAMES} from "../config/gameConfig";
 import {ResponseInfo} from "../types/responseInfo";
+import {Card} from "../types/card";
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == GAME_STAGE.PLAY;
@@ -52,23 +53,40 @@ const getMyResponseInfo = (gameStatus: GameStatus): ResponseInfo => {
     if (gameStatus.shanResponse) {
         return {
             targetId: gameStatus.shanResponse.targetId,
-            cardNames: [BASIC_CARDS_CONFIG.SHAN.CN],
+            cardValidate: (card) => [BASIC_CARDS_CONFIG.SHAN.CN].includes(card?.CN!),
+            needResponseCard: true,
         }
     } else if (gameStatus.skillResponse) {
-        return {
-            cardNames: []
+        const skillName = gameStatus.skillResponse.skillName;
+        const chooseToRelease = gameStatus.skillResponse.chooseToRelease;
+        let cardValidate = (card?: Card) => false
+        let needResponseCard = true;
+        if (skillName == '铁骑') {
+            cardValidate = (card?: Card) => false
+            needResponseCard = false;
+        } else if (skillName == '鬼才') {
+            if (chooseToRelease == undefined) {
+                cardValidate = (card?: Card) => false
+                needResponseCard = false;
+            } else if (chooseToRelease) {
+                cardValidate = (card?: Card) => true
+                needResponseCard = true;
+            }
         }
+        return {cardValidate, needResponseCard}
     } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
         const wuxieChain = gameStatus.wuxieSimultaneousResStage.wuxieChain
         const lastChainItem = wuxieChain[wuxieChain.length - 1]
         return {
-            cardNames: [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN],
             wuxieTargetCardId: lastChainItem.actualCard.cardId,// 为了校验无懈可击是否冲突
+            cardValidate: (card) => [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN].includes(card?.CN!),
+            needResponseCard: true,
         }
     } else if (gameStatus.taoResStages.length > 0) {
         return {
             targetId: gameStatus.taoResStages[0].targetId,
-            cardNames: [BASIC_CARDS_CONFIG.TAO.CN],
+            cardValidate: (card) => [BASIC_CARDS_CONFIG.TAO.CN].includes(card?.CN!),
+            needResponseCard: true,
         }
     } else if (gameStatus.scrollResStages.length > 0) {
         const curScrollResStage = gameStatus.scrollResStages[0]
@@ -76,26 +94,34 @@ const getMyResponseInfo = (gameStatus: GameStatus): ResponseInfo => {
             throw new Error(curScrollResStage.actualCard.CN + "未生效")
         }
 
-        let needResponseCardNames: string[] = [];
+        let cardValidate = (card?: Card) => false
         switch (curScrollResStage.actualCard.CN) {
             case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
-                needResponseCardNames = [BASIC_CARDS_CONFIG.SHAN.CN];
+                cardValidate = (card) => [BASIC_CARDS_CONFIG.SHAN.CN].includes(card?.CN!)
                 break;
             case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN:
             case SCROLL_CARDS_CONFIG.JUE_DOU.CN:
             case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN:
-                needResponseCardNames = [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN];
+                cardValidate = (card) => [
+                    BASIC_CARDS_CONFIG.SHA.CN,
+                    BASIC_CARDS_CONFIG.LEI_SHA.CN,
+                    BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(card?.CN!)
                 break;
         }
         return {
             targetId: curScrollResStage.targetId,
-            cardNames: needResponseCardNames,
+            cardValidate,
+            needResponseCard: true,
         }
     } else if (gameStatus.weaponResStages.length > 0) {
         if (gameStatus.weaponResStages[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
             return {
                 targetId: gameStatus.weaponResStages[0].targetId,
-                cardNames: [BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN],
+                cardValidate: (card) => [
+                    BASIC_CARDS_CONFIG.SHA.CN,
+                    BASIC_CARDS_CONFIG.LEI_SHA.CN,
+                    BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(card?.CN!),
+                needResponseCard: true,
             }
         }
     }

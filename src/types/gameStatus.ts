@@ -1,5 +1,5 @@
 import {Card, WugufengdengCard} from "./card";
-import {EventSkill, PandingEvent, UseStrikeEvents} from "./event";
+import {EventTimingSkill, PandingEvent, UseStrikeEvent} from "./event";
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
@@ -22,7 +22,7 @@ export type GameStatus = {
 
     // only for debug
     // events
-    useStrikeEvents: UseStrikeEvents,
+    useStrikeEvents: UseStrikeEvent[],
     pandingEvent: PandingEvent,
 
     tieSuoTempStorage: TieSuoTempStorageItem[],
@@ -59,7 +59,7 @@ export type ShanResponse = {
     cardNumber: number,
 }
 
-export type SkillResponse = EventSkill
+export type SkillResponse = EventTimingSkill
 
 export type TaoStage = ShanResponse
 

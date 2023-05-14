@@ -232,8 +232,8 @@ export class ControlCard {
         }
 
         if (isMyResponseTurn) {
-            const needResponseCardNames = (getMyResponseInfo(gameStatus) as BasicCardResponseInfo).cardNames
-            if (!needResponseCardNames.includes(this.card.CN)) {
+            const {cardValidate} = (getMyResponseInfo(gameStatus) as BasicCardResponseInfo)
+            if (!cardValidate(this.card)) {
                 setCardDisable()
                 return
             }

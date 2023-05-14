@@ -1,15 +1,20 @@
-export type ResponseInfo = BasicCardResponseInfo | WuXieResponseInfo | SkillResponseInfo|undefined
+import {Card} from "./card"
+
+export type ResponseInfo = BasicCardResponseInfo | WuXieResponseInfo | SkillResponseInfo | undefined
 
 export type BasicCardResponseInfo = {
     targetId: string,
-    cardNames: string[]
+    cardValidate: (card?: Card) => boolean,
+    needResponseCard: boolean
 }
 
 export type WuXieResponseInfo = {
     wuxieTargetCardId: string,
-    cardNames: string[]
+    cardValidate: (card?: Card) => boolean,
+    needResponseCard: boolean
 }
 
 export type SkillResponseInfo = {
-    cardNames: string[]
+    cardValidate: (card?: Card) => boolean
+    needResponseCard: boolean
 }

@@ -4,8 +4,12 @@ import {BtnGroup, GamingScene} from "../../types/phaser";
 import Phaser from "phaser";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {GameStatus} from "../../types/gameStatus";
-import {generateAction, generateYesResponse, generateThrowData, generateNoResponse} from "../../utils/emitDataGenerator";
-import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
+import {
+    generateAction,
+    generateYesResponse,
+    generateThrowData,
+    generateNoResponse
+} from "../../utils/emitDataGenerator";
 import {getMyResponseInfo, getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {getIsMyResponseTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
@@ -14,7 +18,7 @@ import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getAmendCardTargetMinMax} from "../../utils/cardUtils";
-import {BasicCardResponseInfo} from "../../types/responseInfo";
+import { SkillResponseInfo} from "../../types/responseInfo";
 
 export class ControlButtons {
     obId: string;
@@ -237,9 +241,9 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const {cardNames} = (getMyResponseInfo(gameStatus) as BasicCardResponseInfo)
-        if (cardNames?.length > 0) {
-            return gameFEStatus?.actualCard?.CN && cardNames.includes(gameFEStatus.actualCard.CN)
+        const {cardValidate, needResponseCard} = (getMyResponseInfo(gameStatus) as SkillResponseInfo)
+        if (needResponseCard) {
+            return gameFEStatus?.actualCard && cardValidate(gameFEStatus.actualCard)
         }
         return true
     }
@@ -274,8 +278,8 @@ export class ControlButtons {
 
             this.showBtn(this.endBtnGroup)
         } else if (this._isMyResponseTurn) {
-            const {cardNames} = getMyResponseInfo(gameStatus) as BasicCardResponseInfo
-            if (cardNames.length > 0) {
+            const {needResponseCard} = getMyResponseInfo(gameStatus) as SkillResponseInfo
+            if (needResponseCard) { // 我的响应回合需要选牌
                 this.disableBtn(this.okBtnGroup)
             }
 
