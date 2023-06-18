@@ -1,8 +1,10 @@
+import {Card} from "./card"
+
 export type UseStrikeEvent = {
     originId: string,
     targetId: string,
     cantShan: boolean,
-    eventTimingWithSkills: EventTimingWithSkill[],
+    eventTimingsWithSkills: EventTimingsWithSkill[],
 
     // UseStrikeEvents的所有事件done UseStrikeEvents才能被删除 所以需要一个标记记录单个UseStrikeEvent的情况
     done: boolean
@@ -10,11 +12,11 @@ export type UseStrikeEvent = {
 
 export type PandingEvent = {
     originId: string,
-    eventTimingWithSkills: EventTimingWithSkill[],
+    eventTimingsWithSkills: EventTimingsWithSkill[],
     done: boolean
 }
 
-export type EventTimingWithSkill = {
+export type EventTimingsWithSkill = {
     eventTimingName: string,
     eventTimingSkills: EventTimingSkill[],
 }
@@ -23,4 +25,7 @@ export type EventTimingSkill = {
     skillName: string,
     playerId: string,
     chooseToRelease: boolean | undefined,
+    releaseTargets: string[],
+    releaseCards: Card[],
+    done: boolean,
 }
