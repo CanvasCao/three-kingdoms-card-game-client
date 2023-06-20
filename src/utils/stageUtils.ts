@@ -58,17 +58,17 @@ const getMyResponseInfo = (gameStatus: GameStatus): ResponseInfo => {
         }
     } else if (gameStatus.skillResponse) {
         const skillName = gameStatus.skillResponse.skillName;
-        const chooseToRelease = gameStatus.skillResponse.chooseToRelease;
+        const chooseToReleaseSkill = gameStatus.skillResponse.chooseToReleaseSkill;
         let cardValidate = (card?: Card) => false
         let needResponseCard = true;
         if (skillName == '铁骑') {
             cardValidate = (card?: Card) => false
             needResponseCard = false;
         } else if (skillName == '鬼才') {
-            if (chooseToRelease == undefined) {
+            if (chooseToReleaseSkill == undefined) {
                 cardValidate = (card?: Card) => false
                 needResponseCard = false;
-            } else if (chooseToRelease) {
+            } else if (chooseToReleaseSkill) {
                 cardValidate = (card?: Card) => true
                 needResponseCard = true;
             }

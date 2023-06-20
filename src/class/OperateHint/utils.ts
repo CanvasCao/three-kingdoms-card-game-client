@@ -1,18 +1,18 @@
-import {GameStatus} from "../types/gameStatus";
-import {GameFEStatus} from "../types/gameFEStatus";
-import {i18} from "../i18n/i18nUtils";
-import {i18Config} from "../i18n/i18Config";
+import {GameStatus} from "../../types/gameStatus";
+import {GameFEStatus} from "../../types/gameFEStatus";
+import {i18} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
 import {
     CARD_CONFIG,
     DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     EQUIPMENT_TYPE,
     SCROLL_CARDS_CONFIG
-} from "../config/cardConfig";
-import {getNeedSelectControlCardNumber} from "./cardValidation";
-import {getMyPlayerId} from "./localstorage/localStorageUtils";
-import {getAmendCardTargetMinMax} from "./cardUtils";
-import {getCurrentPlayer, getPlayerDisplayName} from "./playerUtils";
+} from "../../config/cardConfig";
+import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
+import {getAmendCardTargetMinMax} from "../../utils/cardUtils";
+import {getCurrentPlayer, getPlayerDisplayName} from "../../utils/playerUtils";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
@@ -82,7 +82,13 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         return i18(i18Config.RESPONSE_SHAN, {name})
     } else if (gameStatus.skillResponse) {
         // TODO i18n
-        return '是否发动 ' + gameStatus.skillResponse.skillName + '？'
+        if (gameStatus.skillResponse.chooseToReleaseSkill === undefined) {
+            return '是否发动 ' + gameStatus.skillResponse.skillName + '？'
+        } else if (gameStatus.skillResponse.chooseToReleaseSkill) {
+            if (gameStatus.skillResponse.skillName == '鬼才') {
+                return '打出一张手牌代替判定牌'
+            }
+        }
     } else if (gameStatus.taoResStages.length > 0) {
         const targetId = gameStatus.taoResStages[0].targetId;
         const number = gameStatus.taoResStages[0].cardNumber;

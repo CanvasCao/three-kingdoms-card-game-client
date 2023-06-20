@@ -9,7 +9,7 @@ import {
     getCanPlayInMyTurnOperationHint,
     getIsMyResponseTurnOperationHint,
     getIsMyThrowTurnOperationHint
-} from "../../utils/operateHintUtils";
+} from "./utils";
 
 export class OperateHint {
     obId: string;

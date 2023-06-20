@@ -74,7 +74,7 @@ export type EmitNotifyAddToPublicCardData = {
     pandingName: string,
     throwPlayerId: string,
     originIndexes: number[],
-    type: 'play' | 'panding' | 'throw' | 'chai',
+    type: string,
 }
 
 export type EmitNotifyAddToPlayerCardData = {

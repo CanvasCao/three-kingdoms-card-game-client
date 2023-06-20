@@ -177,7 +177,7 @@ const generatePublicCardMessage = (
         const targetName = gameStatus.players[targetId].name;
         if (originId == targetId) {
             return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET, {name: originName});
-        } else {
+        } else if (originId && originId !== targetId) {
             return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET, {originName, targetName});
         }
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PANDING) {
@@ -189,6 +189,9 @@ const generatePublicCardMessage = (
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_THROW, {name: gameStatus.players[throwPlayerId].name});
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.CHAI) {
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_CHAI, {name: gameStatus.players[fromId].name});
+    }else if(type==ADD_TO_PUBLIC_CARD_TYPE.CHANGE_PANDING){
+        const originName = gameStatus.players[originId].name;
+        return `${originName}改判`
     }
     return ''
 }
