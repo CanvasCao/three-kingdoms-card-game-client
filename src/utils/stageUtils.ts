@@ -4,6 +4,7 @@ import {BASIC_CARDS_CONFIG, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from ".
 import {GAME_STAGE, STAGE_NAMES} from "../config/gameConfig";
 import {ResponseInfo} from "../types/responseInfo";
 import {Card} from "../types/card";
+import { SKILL_NAMES } from "../config/skillsConfig";
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == GAME_STAGE.PLAY;
@@ -61,14 +62,14 @@ const getMyResponseInfo = (gameStatus: GameStatus): ResponseInfo => {
         const chooseToReleaseSkill = gameStatus.skillResponse.chooseToReleaseSkill;
         let cardValidate = (card?: Card) => false
         let needResponseCard = true;
-        if (skillName == '铁骑') {
+        if (skillName == SKILL_NAMES.SHU["006"].TIE_JI) {
             cardValidate = (card?: Card) => false
             needResponseCard = false;
-        } else if (skillName == '鬼才') {
-            if (chooseToReleaseSkill == undefined) {
+        } else if (skillName == SKILL_NAMES.WEI["002"].GUI_CAI) {
+            if (chooseToReleaseSkill == undefined) { // 是否发动鬼才
                 cardValidate = (card?: Card) => false
                 needResponseCard = false;
-            } else if (chooseToReleaseSkill) {
+            } else if (chooseToReleaseSkill) { // 发动鬼才 选择手牌
                 cardValidate = (card?: Card) => true
                 needResponseCard = true;
             }
