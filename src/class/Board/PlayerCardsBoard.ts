@@ -1,4 +1,4 @@
-import {GameStatus, ScrollResStage} from "../../types/gameStatus";
+import {GameStatus, ScrollResponse} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
@@ -210,7 +210,7 @@ export class PlayerCardsBoard {
         })
     }
 
-    drawTargetPlayerCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
+    drawTargetPlayerCards(targetPlayer: Player, scrollResponse: ScrollResponse) {
         const cards = shuffle(targetPlayer.cards).slice(0, 8);
         cards.forEach((card, index) => {
             const {cardImgObj} = sharedDrawBackCard(this.gamingScene, card, {
@@ -219,13 +219,13 @@ export class PlayerCardsBoard {
                 depth: boardDepth,
             })
             cardImgObj.on('pointerdown',
-                this.getCardClickHandler(targetPlayer, card, scrollResStage, 'hand')
+                this.getCardClickHandler(targetPlayer, card, scrollResponse, 'hand')
             )
             this.destoryObjects.push(cardImgObj);
         })
     }
 
-    drawTargetEquipmentCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
+    drawTargetEquipmentCards(targetPlayer: Player, scrollResponse: ScrollResponse) {
         ['weaponCard', 'shieldCard', 'plusHorseCard', 'minusHorseCard'].forEach((key, index) => {
             const card = targetPlayer[key as keyof Player] as Card;
             if (!card) {
@@ -238,7 +238,7 @@ export class PlayerCardsBoard {
                 depth: boardDepth,
             })
             cardImgObj.on('pointerdown',
-                this.getCardClickHandler(targetPlayer, card, scrollResStage, "equipment"))
+                this.getCardClickHandler(targetPlayer, card, scrollResponse, "equipment"))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -247,7 +247,7 @@ export class PlayerCardsBoard {
 
     }
 
-    drawTargetPandingCards(targetPlayer: Player, scrollResStage: ScrollResStage) {
+    drawTargetPandingCards(targetPlayer: Player, scrollResponse: ScrollResponse) {
         targetPlayer.pandingSigns.forEach((sign, index) => {
             const card = sign.card
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
@@ -255,7 +255,7 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResStage, 'panding'))
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResponse, 'panding'))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -263,11 +263,11 @@ export class PlayerCardsBoard {
         })
     }
 
-    getCardClickHandler(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage, cardAreaType: CardAreaType) {
+    getCardClickHandler(targetPlayer: Player, card: Card, scrollResponse: ScrollResponse, cardAreaType: CardAreaType) {
         return () => {
             this.gamingScene.socket.emit(
                 EMIT_TYPE.CARD_BOARD_ACTION,
-                this.getEmitCardBoardActionData(targetPlayer, card, scrollResStage, cardAreaType)
+                this.getEmitCardBoardActionData(targetPlayer, card, scrollResponse, cardAreaType)
             )
         }
     }
@@ -290,26 +290,26 @@ export class PlayerCardsBoard {
     }
 
     updateTargetCards(gameStatus: GameStatus) {
-        const scrollResStage = gameStatus.scrollResStages?.[0];
-        const targetPlayer = gameStatus.players[scrollResStage.targetId]
+        const scrollResponse = gameStatus.scrollResponses?.[0];
+        const targetPlayer = gameStatus.players[scrollResponse.targetId]
         this.titleText!.setAlpha(1)
         this.titleText!.setText(
             i18(i18Config.PLAYER_BOARD_TITLE, {
-                cardName: i18(scrollResStage?.actualCard) ,
+                cardName: i18(scrollResponse?.actualCard) ,
                 playerName: gameStatus.players[targetPlayer.playerId].name
             }),
         )
 
-        this.drawTargetPlayerCards(targetPlayer, scrollResStage);
-        this.drawTargetEquipmentCards(targetPlayer, scrollResStage);
-        this.drawTargetPandingCards(targetPlayer, scrollResStage);
+        this.drawTargetPlayerCards(targetPlayer, scrollResponse);
+        this.drawTargetEquipmentCards(targetPlayer, scrollResponse);
+        this.drawTargetPandingCards(targetPlayer, scrollResponse);
     }
 
     destoryTargetCards() {
         this.destoryObjects.forEach((o) => o.destroy());
     }
 
-    getEmitCardBoardActionData(targetPlayer: Player, card: Card, scrollResStage: ScrollResStage, cardAreaType: CardAreaType): EmitCardBoardData {
+    getEmitCardBoardActionData(targetPlayer: Player, card: Card, scrollResponse: ScrollResponse, cardAreaType: CardAreaType): EmitCardBoardData {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
         return {
@@ -317,30 +317,30 @@ export class PlayerCardsBoard {
             targetId: targetPlayer.playerId,
             card: card,
             selectedIndex: gameFEStatus.selectedIndexes[0],
-            type: this.getEmitType(scrollResStage)!,
+            type: this.getEmitType(scrollResponse)!,
             cardAreaType,
         }
     }
 
-    getEmitType(scrollResStage: ScrollResStage) {
-        if (scrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+    getEmitType(scrollResponse: ScrollResponse) {
+        if (scrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
             return "REMOVE"
-        } else if (scrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+        } else if (scrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
             return "MOVE"
         }
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const curScrollResStage = gameStatus.scrollResStages?.[0];
-        const stageId = curScrollResStage?.stageId || '';
+        const curScrollResponse = gameStatus.scrollResponses?.[0];
+        const stageId = curScrollResponse?.stageId || '';
         if (this._stageId == stageId) {
             return;
         }
 
-        const showBoard = curScrollResStage && curScrollResStage.originId == getMyPlayerId() &&
-            curScrollResStage.isEffect &&
-            (curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
-                curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN)
+        const showBoard = curScrollResponse && curScrollResponse.originId == getMyPlayerId() &&
+            curScrollResponse.isEffect &&
+            (curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
+                curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN)
 
         if (!showBoard) {
             this.showBoard(false);

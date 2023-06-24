@@ -28,8 +28,8 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCardName)) {
         let attackDistance;
 
-        const curScrollResStage = gameStatus.scrollResStages[0];
-        if (curScrollResStage) { // 响应锦囊的杀 setPlayerAble
+        const curScrollResponse = gameStatus.scrollResponses[0];
+        if (curScrollResponse) { // 响应锦囊的杀 setPlayerAble
             return true
         } else {
             attackDistance = mePlayer?.weaponCard?.distance || 1;

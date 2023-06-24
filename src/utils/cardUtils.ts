@@ -1,6 +1,7 @@
 import {GameStatus} from "../types/gameStatus";
 import {
     BASIC_CARDS_CONFIG,
+    CARD_CONFIG,
     CARD_HUASE,
     CARD_LOCATION,
     CARD_TYPE,
@@ -158,7 +159,10 @@ const getCardColor = (huase: string) => {
 
 const getAmendCardTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const mePlayer = gameStatus.players[getMyPlayerId()]
-    if (mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN && mePlayer.cards.length == 1) {
+    if (mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN
+        && mePlayer.cards.length == 1
+        && [CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN,].includes(mePlayer.cards[0].CN)
+    ) {
         return {min: 1, max: 3}
     }
     return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
@@ -189,7 +193,7 @@ const generatePublicCardMessage = (
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_THROW, {name: gameStatus.players[throwPlayerId].name});
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.CHAI) {
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_CHAI, {name: gameStatus.players[fromId].name});
-    }else if(type==ADD_TO_PUBLIC_CARD_TYPE.CHANGE_PANDING){
+    } else if (type == ADD_TO_PUBLIC_CARD_TYPE.CHANGE_PANDING) {
         const originName = gameStatus.players[originId].name;
         return `${originName}改判`
     }

@@ -126,16 +126,16 @@ export class WuGuFengDengBoard {
             this.destoryObjects.push(cardMessageObj);
 
             cardImgObj.on('pointerdown', () => {
-                    if (gameStatus.scrollResStages?.[0].originId !== getMyPlayerId()) {
+                    if (gameStatus.scrollResponses?.[0].originId !== getMyPlayerId()) {
                         return;
                     }
-                    if (gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.length > 0) {
+                    if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0) {
                         return
                     }
                     if (card.wugefengdengSelectedPlayerId) {
                         return;
                     }
-                    if (!gameStatus.scrollResStages?.[0].isEffect) {
+                    if (!gameStatus.scrollResponses?.[0].isEffect) {
                         return;
                     }
                     this.gamingScene.socket.emit(
@@ -153,15 +153,15 @@ export class WuGuFengDengBoard {
         this.titleText!.setAlpha(show ? 1 : 0);
         this.bottomText!.setAlpha(show ? 1 : 0);
 
-        if (gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyPlayerId())) {
+        if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.includes(getMyPlayerId())) {
             this.maskImg!.disableInteractive()
         } else {
             this.maskImg!.setInteractive()
         }
 
         if (show) {
-            const hasWuxiePlayer = gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.length > 0;
-            const originId = gameStatus.scrollResStages?.[0]?.originId;
+            const hasWuxiePlayer = gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0;
+            const originId = gameStatus.scrollResponses?.[0]?.originId;
             const bottomText = hasWuxiePlayer ?
                 i18(i18Config.WU_GU_FENG_DENG_WAIT_WU_XIE, {name: getPlayerDisplayName(gameStatus, originId)}) :
                 i18(i18Config.WU_GU_FENG_DENG_CHOOSING, {name: getPlayerDisplayName(gameStatus, originId)})
@@ -186,14 +186,14 @@ export class WuGuFengDengBoard {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const curScrollResStage = gameStatus.scrollResStages?.[0];
-        const stageId = curScrollResStage?.stageId || '';
-        const isEffect = curScrollResStage?.isEffect || undefined;
+        const curScrollResponse = gameStatus.scrollResponses?.[0];
+        const stageId = curScrollResponse?.stageId || '';
+        const isEffect = curScrollResponse?.isEffect || undefined;
         if (this._stageId === stageId && this._isEffect === isEffect) {
             return;
         }
 
-        const showBoard = curScrollResStage && curScrollResStage.actualCard.CN == SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
+        const showBoard = curScrollResponse && curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
 
         if (showBoard) {
             this.showBoard(true, gameStatus);

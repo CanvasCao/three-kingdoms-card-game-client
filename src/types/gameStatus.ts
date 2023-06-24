@@ -13,19 +13,20 @@ export type GameStatus = {
     // Response
     shanResponse: ShanResponse | undefined, // shanResponse不为undefined就需要出闪
     skillResponse: SkillResponse | undefined,
-    taoResStages: TaoStage[],
-    scrollResStages: ScrollResStage[],
-    wuxieSimultaneousResStage: WuxieSimultaneousResStage,
-    weaponResStages: weaponResStage[],
+    taoResponses: TaoResponse[],
+    scrollResponses: ScrollResponse[],
+    wuxieSimultaneousResponse: WuxieSimultaneousResponse,
+    weaponResponses: weaponResponse[],
 
     wugufengdengCards: WugufengdengCard[]
 
-    // only for debug
     // events
     useStrikeEvents: UseStrikeEvent[],
     pandingEvent: PandingEvent,
 
     tieSuoTempStorage: TieSuoTempStorageItem[],
+
+    // only for debug
     throwedCards?: Card[],
 };
 
@@ -61,9 +62,9 @@ export type ShanResponse = {
 
 export type SkillResponse = EventTimingSkill
 
-export type TaoStage = ShanResponse
+export type TaoResponse = ShanResponse
 
-export type ScrollResStage = {
+export type ScrollResponse = {
     originId: string,
     targetId: string,
     cardTakeEffectOnPlayerId: string,
@@ -75,12 +76,12 @@ export type ScrollResStage = {
     stageId?: string,
 }
 
-export type WuxieSimultaneousResStage = {
+export type WuxieSimultaneousResponse = {
     hasWuxiePlayerIds: string[],
     wuxieChain: WuxieChain,
 }
 
-export type weaponResStage = {
+export type weaponResponse = {
     originId: string,
     targetId: string,
     weaponCardName: string,

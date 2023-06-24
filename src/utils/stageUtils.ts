@@ -19,23 +19,23 @@ const getIsMyResponseTurn = (gameStatus: GameStatus) => {
     if (gameStatus.skillResponse) {
         return gameStatus.skillResponse.playerId == getMyPlayerId();
     }
-    if (gameStatus.taoResStages.length > 0) {
-        return gameStatus.taoResStages[0]?.originId == getMyPlayerId();
+    if (gameStatus.taoResponses.length > 0) {
+        return gameStatus.taoResponses[0]?.originId == getMyPlayerId();
     }
-    if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length) {
-        return gameStatus.wuxieSimultaneousResStage.hasWuxiePlayerIds.includes(getMyPlayerId())
+    if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length) {
+        return gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.includes(getMyPlayerId())
     }
-    if (gameStatus.scrollResStages?.length > 0) {
+    if (gameStatus.scrollResponses?.length > 0) {
         // 不需要判断isEffect 如果没有人想出无懈可击 锦囊肯定生效了
-        return gameStatus.scrollResStages[0].originId == getMyPlayerId() &&
+        return gameStatus.scrollResponses[0].originId == getMyPlayerId() &&
             ([SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN,
                 SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN,
                 SCROLL_CARDS_CONFIG.JUE_DOU.CN,
                 SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN,
-            ].includes(gameStatus.scrollResStages[0].actualCard.CN))
+            ].includes(gameStatus.scrollResponses[0].actualCard.CN))
     }
-    if (gameStatus.weaponResStages.length > 0) {
-        return gameStatus.weaponResStages[0]?.originId == getMyPlayerId();
+    if (gameStatus.weaponResponses.length > 0) {
+        return gameStatus.weaponResponses[0]?.originId == getMyPlayerId();
     }
     return false;
 }
@@ -43,10 +43,10 @@ const getIsMyResponseTurn = (gameStatus: GameStatus) => {
 const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
     return !gameStatus.shanResponse &&
         !gameStatus.skillResponse &&
-        gameStatus.taoResStages.length <= 0 &&
-        gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length <= 0 &&
-        gameStatus.scrollResStages.length <= 0 &&
-        gameStatus.weaponResStages.length <= 0 &&
+        gameStatus.taoResponses.length <= 0 &&
+        gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length <= 0 &&
+        gameStatus.scrollResponses.length <= 0 &&
+        gameStatus.weaponResponses.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 
@@ -75,28 +75,28 @@ const getMyResponseInfo = (gameStatus: GameStatus): ResponseInfo => {
             }
         }
         return {cardValidate, needResponseCard}
-    } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
-        const wuxieChain = gameStatus.wuxieSimultaneousResStage.wuxieChain
+    } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
+        const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain
         const lastChainItem = wuxieChain[wuxieChain.length - 1]
         return {
             wuxieTargetCardId: lastChainItem.actualCard.cardId,// 为了校验无懈可击是否冲突
             cardValidate: (card) => [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN].includes(card?.CN!),
             needResponseCard: true,
         }
-    } else if (gameStatus.taoResStages.length > 0) {
+    } else if (gameStatus.taoResponses.length > 0) {
         return {
-            targetId: gameStatus.taoResStages[0].targetId,
+            targetId: gameStatus.taoResponses[0].targetId,
             cardValidate: (card) => [BASIC_CARDS_CONFIG.TAO.CN].includes(card?.CN!),
             needResponseCard: true,
         }
-    } else if (gameStatus.scrollResStages.length > 0) {
-        const curScrollResStage = gameStatus.scrollResStages[0]
-        if (!curScrollResStage.isEffect) {
-            throw new Error(curScrollResStage.actualCard.CN + "未生效")
+    } else if (gameStatus.scrollResponses.length > 0) {
+        const curScrollResponse = gameStatus.scrollResponses[0]
+        if (!curScrollResponse.isEffect) {
+            throw new Error(curScrollResponse.actualCard.CN + "未生效")
         }
 
         let cardValidate = (card?: Card) => false
-        switch (curScrollResStage.actualCard.CN) {
+        switch (curScrollResponse.actualCard.CN) {
             case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN:
                 cardValidate = (card) => [BASIC_CARDS_CONFIG.SHAN.CN].includes(card?.CN!)
                 break;
@@ -110,14 +110,14 @@ const getMyResponseInfo = (gameStatus: GameStatus): ResponseInfo => {
                 break;
         }
         return {
-            targetId: curScrollResStage.targetId,
+            targetId: curScrollResponse.targetId,
             cardValidate,
             needResponseCard: true,
         }
-    } else if (gameStatus.weaponResStages.length > 0) {
-        if (gameStatus.weaponResStages[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
+    } else if (gameStatus.weaponResponses.length > 0) {
+        if (gameStatus.weaponResponses[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
             return {
-                targetId: gameStatus.weaponResStages[0].targetId,
+                targetId: gameStatus.weaponResponses[0].targetId,
                 cardValidate: (card) => [
                     BASIC_CARDS_CONFIG.SHA.CN,
                     BASIC_CARDS_CONFIG.LEI_SHA.CN,

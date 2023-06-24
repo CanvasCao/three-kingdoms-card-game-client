@@ -13,6 +13,7 @@ import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getAmendCardTargetMinMax} from "../../utils/cardUtils";
 import {getCurrentPlayer, getPlayerDisplayName} from "../../utils/playerUtils";
+import { SKILL_NAMES } from "../../config/skillsConfig";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
@@ -85,24 +86,24 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         if (gameStatus.skillResponse.chooseToReleaseSkill === undefined) {
             return '是否发动 ' + gameStatus.skillResponse.skillName + '？'
         } else if (gameStatus.skillResponse.chooseToReleaseSkill) {
-            if (gameStatus.skillResponse.skillName == '鬼才') {
+            if (gameStatus.skillResponse.skillName == SKILL_NAMES.WEI["002"].GUI_CAI) {
                 return '打出一张手牌代替判定牌'
             }
         }
-    } else if (gameStatus.taoResStages.length > 0) {
-        const targetId = gameStatus.taoResStages[0].targetId;
-        const number = gameStatus.taoResStages[0].cardNumber;
+    } else if (gameStatus.taoResponses.length > 0) {
+        const targetId = gameStatus.taoResponses[0].targetId;
+        const number = gameStatus.taoResponses[0].cardNumber;
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_TAO, {number, name})
-    } else if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds?.length > 0) {
-        const wuxieChain = gameStatus.wuxieSimultaneousResStage.wuxieChain;
+    } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
+        const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain;
 
-        if (gameStatus.wuxieSimultaneousResStage?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
-            const scrollStage = gameStatus.scrollResStages?.[0];
-            if (scrollStage) { // 锦囊的无懈可击
+        if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
+            const scrollResponse = gameStatus.scrollResponses?.[0];
+            if (scrollResponse) { // 锦囊的无懈可击
                 let name;
                 if (wuxieChain?.length == 1) {
-                    name = getPlayerDisplayName(gameStatus, scrollStage.cardTakeEffectOnPlayerId);
+                    name = getPlayerDisplayName(gameStatus, scrollResponse.cardTakeEffectOnPlayerId);
                 } else if (wuxieChain?.length > 1) {
                     const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
                     name = getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId);
@@ -130,27 +131,27 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         } else {
             return i18(i18Config.WAIT_WU_XIE)
         }
-    } else if (gameStatus.scrollResStages.length > 0) {
-        const stage = gameStatus.scrollResStages[0]
-        if (!stage.isEffect) {
-            throw new Error(stage.actualCard.CN + "未生效")
+    } else if (gameStatus.scrollResponses.length > 0) {
+        const curScrollResponse = gameStatus.scrollResponses[0]
+        if (!curScrollResponse.isEffect) {
+            throw new Error(curScrollResponse.actualCard.CN + "未生效")
         }
-        if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN) {
-            const name = getPlayerDisplayName(gameStatus, stage.targetId)
+        if (curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN) {
+            const name = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_WAN_JIAN_QI_FA, {name})
-        } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN) {
-            const name = getPlayerDisplayName(gameStatus, stage.targetId)
+        } else if (curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN) {
+            const name = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN, {name})
-        } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.JUE_DOU.CN) {
-            const name = getPlayerDisplayName(gameStatus, stage.targetId)
+        } else if (curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.JUE_DOU.CN) {
+            const name = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_JUE_DOU, {name})
-        } else if (stage.actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
+        } else if (curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
             const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus).playerId)
-            const targetName = getPlayerDisplayName(gameStatus, stage.targetId)
+            const targetName = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN, {originName, targetName})
         }
-    } else if (gameStatus.weaponResStages.length > 0) {
-        if (gameStatus.weaponResStages[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
+    } else if (gameStatus.weaponResponses.length > 0) {
+        if (gameStatus.weaponResponses[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
             return i18(i18Config.RESPONSE_QING_LONG_YAN_YUE_DAO)
         }
     } else {
