@@ -4,7 +4,7 @@ import {getCanPlayInMyTurn, getIsMyResponseTurn, getIsMyThrowTurn} from "./stage
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 
-const getNeedSelectControlCardNumber = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
     const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
@@ -13,6 +13,12 @@ const getNeedSelectControlCardNumber = (gameStatus: GameStatus, gameFEStatus: Ga
         if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
             return 2;
         }
+
+        // 响应是否选择使用技能
+        if (gameStatus.skillResponse && gameStatus.skillResponse.chooseToReleaseSkill === undefined) {
+            return 0
+        }
+
         return 1;
     } else if (isMyThrowTurn) {
         const myPlayer = gameStatus.players[getMyPlayerId()];
@@ -22,5 +28,5 @@ const getNeedSelectControlCardNumber = (gameStatus: GameStatus, gameFEStatus: Ga
     return 0
 }
 
-// 选手牌 或 点击OK 的时候校验数字
-export {getNeedSelectControlCardNumber};
+// 选手牌 武器牌 或 点击OK 的时候校验数字
+export {getNeedSelectCardsNumber};

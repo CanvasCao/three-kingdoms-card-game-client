@@ -1,7 +1,7 @@
 import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {
-    BASIC_CARDS_CONFIG,
+    ALL_SHA_CARD_NAMES,
     DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
@@ -10,6 +10,9 @@ import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {getI18Lan, I18LANS} from "../i18n/i18nUtils";
 import {PandingSign} from "../types/card";
 import {Player} from "../types/player";
+import {SKILL_NAMES} from "../config/skillsConfig";
+import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
+import {getIsMyResponseTurn} from "./stageUtils";
 
 const getPlayersDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
     const tableDistance = Math.min(
@@ -24,20 +27,35 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     const mePlayer = gameStatus.players[getMyPlayerId()];
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
 
-    // 计算杀的距离
-    if ([BASIC_CARDS_CONFIG.SHA.CN, BASIC_CARDS_CONFIG.LEI_SHA.CN, BASIC_CARDS_CONFIG.HUO_SHA.CN].includes(actualCardName)) {
-        let attackDistance;
-
-        const curScrollResponse = gameStatus.scrollResponses[0];
-        if (curScrollResponse) { // 响应锦囊的杀 setPlayerAble
-            return true
-        } else {
-            attackDistance = mePlayer?.weaponCard?.distance || 1;
-            if (attackDistance >= distanceBetweenMeAndTarget) {
-                return true
-            } else {
+    // 响应技能和锦囊
+    if (getIsMyResponseTurn(gameStatus) && gameStatus.skillResponse) {
+        const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
+        if (
+            gameStatus.skillResponse.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
+            gameStatus.skillResponse.chooseToReleaseSkill
+        ) {
+            if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
                 return false
             }
+            let myAttackDistance = mePlayer?.weaponCard?.distance || 1
+            if (myAttackDistance < distanceBetweenMeAndTarget) {
+                return false
+            }
+        }
+        return true
+    }
+    if (gameStatus.scrollResponses[0]) {
+        return true
+    }
+
+    // 使用牌的时候
+    // 杀
+    if (ALL_SHA_CARD_NAMES.includes(actualCardName)) {
+        let myAttackDistance = mePlayer?.weaponCard?.distance || 1
+        if (myAttackDistance >= distanceBetweenMeAndTarget) {
+            return true
+        } else {
+            return false
         }
     }
     // 借刀杀人

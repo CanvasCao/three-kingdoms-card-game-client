@@ -1,6 +1,8 @@
-import {cloneDeep} from "lodash";
+import {cloneDeep, differenceBy} from "lodash";
+import {Card} from "../../types/card";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {FEObserver} from "../../types/observer";
+import {generateActualCard} from "../../utils/emitDataGenerator";
 
 export class GameFEStatusObserved {
     originCardState: {
@@ -17,7 +19,7 @@ export class GameFEStatusObserved {
         selectedSkill: GameFEStatus['selectedSkill']
     }
 
-    publicCardsState: {
+    originPublicCardsState: {
         publicCards: GameFEStatus['publicCards']
     }
 
@@ -29,9 +31,9 @@ export class GameFEStatusObserved {
     constructor() {
         this.originCardState = {
             selectedCards: [],
+            selectedIndexes: [],
             actualCard: null,
             selectedWeaponCard: null,
-            selectedIndexes: [],
         }
         this.originTargetState = {
             selectedTargetPlayers: [],
@@ -39,20 +41,24 @@ export class GameFEStatusObserved {
         this.originSkillState = {
             selectedSkill: []
         }
-        this.publicCardsState = {
-            publicCards: [] // 所有人打出的牌+(刘备仁德/张辽突袭)=失去的牌
+
+        // publicCardsState 是为了ToPublicCard对象 可以Observer并调整自己的位置
+        this.originPublicCardsState = {
+            publicCards: []
         }
 
         this.gameFEStatus = {
             ...cloneDeep(this.originCardState),
             ...cloneDeep(this.originTargetState),
             ...cloneDeep(this.originSkillState),
-            ...cloneDeep(this.publicCardsState)
+            ...cloneDeep(this.originPublicCardsState)
         };
         this.selectedStatusObservers = [];
         this.publicCardsObservers = [];
     }
 
+
+    // Observer functions
     addSelectedStatusObserver(observer: FEObserver) {
         this.selectedStatusObservers.push(observer);
     }
@@ -73,6 +79,8 @@ export class GameFEStatusObserved {
         });
     }
 
+    // set/reset state
+    // reset except public cards
     resetSelectedStatus() {
         this.gameFEStatus = {
             ...cloneDeep(this.gameFEStatus),
@@ -104,4 +112,26 @@ export class GameFEStatusObserved {
             observer.gameFEStatusNotify(this.gameFEStatus);
         });
     }
+
+
+    // select/unselect card
+    unselectCard(card: Card, _index: number) {
+        const gameFEStatus = this.gameFEStatus;
+        gameFEStatus.selectedCards = differenceBy(gameFEStatus.selectedCards, [card], 'cardId');
+        gameFEStatus.selectedIndexes = differenceBy(gameFEStatus.selectedIndexes, [_index]);
+        gameFEStatus.actualCard = null;
+        gameFEStatus.selectedTargetPlayers = [];
+        this.setSelectedGameEFStatus(gameFEStatus)
+    }
+
+    selectCard(card: Card, _index: number, {needGenerateActualCard}: { needGenerateActualCard?: boolean } = {}) {
+        const gameFEStatus = this.gameFEStatus;
+        gameFEStatus.selectedCards.push(card);
+        gameFEStatus.selectedIndexes.push(_index);
+        if (needGenerateActualCard) {
+            gameFEStatus.actualCard = generateActualCard(gameFEStatus);
+        }
+        this.setSelectedGameEFStatus(gameFEStatus)
+    }
+
 }

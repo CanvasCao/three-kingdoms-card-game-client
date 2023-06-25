@@ -9,11 +9,11 @@ import {
     EQUIPMENT_TYPE,
     SCROLL_CARDS_CONFIG
 } from "../../config/cardConfig";
-import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {getAmendCardTargetMinMax} from "../../utils/cardUtils";
+import {getTargetMinMax} from "../../utils/cardUtils";
 import {getCurrentPlayer, getPlayerDisplayName} from "../../utils/playerUtils";
-import { SKILL_NAMES } from "../../config/skillsConfig";
+import {SKILL_NAMES} from "../../config/skillsConfig";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
@@ -28,7 +28,7 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
     }
     // 基本牌
     else if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN].includes(actualCardCNName)) {
-        const minMax = getAmendCardTargetMinMax(gameStatus, gameFEStatus)
+        const minMax = getTargetMinMax(gameStatus, gameFEStatus)
         const replaceNumber = (minMax.min == minMax.max) ? minMax.min : `${minMax.min}-${minMax.max}`;
         return (i18(i18Config.SELECT_SHA, {number: replaceNumber}))
     } else if (actualCardCNName == CARD_CONFIG.TAO.CN) {
@@ -82,12 +82,16 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_SHAN, {name})
     } else if (gameStatus.skillResponse) {
+        const skillName = gameStatus.skillResponse.skillName;
+        const chooseToReleaseSkill = gameStatus.skillResponse.chooseToReleaseSkill;
         // TODO i18n
-        if (gameStatus.skillResponse.chooseToReleaseSkill === undefined) {
-            return '是否发动 ' + gameStatus.skillResponse.skillName + '？'
-        } else if (gameStatus.skillResponse.chooseToReleaseSkill) {
-            if (gameStatus.skillResponse.skillName == SKILL_NAMES.WEI["002"].GUI_CAI) {
+        if (chooseToReleaseSkill === undefined) {
+            return '是否发动 ' + skillName + '？'
+        } else if (chooseToReleaseSkill) {
+            if (skillName == SKILL_NAMES.WEI["002"].GUI_CAI) {
                 return '打出一张手牌代替判定牌'
+            } else if (skillName == SKILL_NAMES.WU["006"].LIU_LI) {
+                return '弃置一张牌并将此【杀】转移给你攻击范围内的一名其他角色（不能是使用此【杀】的角色）'
             }
         }
     } else if (gameStatus.taoResponses.length > 0) {
@@ -161,7 +165,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
 }
 
 const getIsMyThrowTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    const number = getNeedSelectControlCardNumber(gameStatus, gameFEStatus)
+    const number = getNeedSelectCardsNumber(gameStatus, gameFEStatus)
     return i18(i18Config.SELECT_THROW_CARDS, {number})
 }
 

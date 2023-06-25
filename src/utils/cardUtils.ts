@@ -1,7 +1,7 @@
 import {GameStatus} from "../types/gameStatus";
 import {
+    ALL_SHA_CARD_NAMES,
     BASIC_CARDS_CONFIG,
-    CARD_CONFIG,
     CARD_HUASE,
     CARD_LOCATION,
     CARD_TYPE,
@@ -16,6 +16,8 @@ import {i18Config} from "../i18n/i18Config";
 import {i18} from "../i18n/i18nUtils";
 import {Card, CardAreaType} from "../types/card";
 import {ADD_TO_PUBLIC_CARD_TYPE} from "../config/emitConfig";
+import {SKILL_NAMES} from "../config/skillsConfig";
+import {getIsMyPlayTurn} from "./stageUtils";
 
 const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {
@@ -157,11 +159,17 @@ const getCardColor = (huase: string) => {
     return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? '#f00' : '#000'
 }
 
-const getAmendCardTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+const getTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const mePlayer = gameStatus.players[getMyPlayerId()]
-    if (mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN
+
+    if (gameStatus.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI
+        && gameStatus.skillResponse.chooseToReleaseSkill
+    ) {
+        return {min: 1, max: 1}
+    }
+    if (getIsMyPlayTurn(gameStatus) && mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN
         && mePlayer.cards.length == 1
-        && [CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN,].includes(mePlayer.cards[0].CN)
+        && ALL_SHA_CARD_NAMES.includes(mePlayer.cards[0].CN)
     ) {
         return {min: 1, max: 3}
     }
@@ -205,6 +213,6 @@ export {
     getIfToPlayerCardFaceFront,
     getControlCardPosition,
     getCardColor,
-    getAmendCardTargetMinMax,
+    getTargetMinMax,
     generatePublicCardMessage
 }

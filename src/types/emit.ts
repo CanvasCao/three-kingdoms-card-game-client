@@ -22,12 +22,17 @@ export type EmitResponseData = {
     cards: Card[],
     actualCard: Card,
     originId: string,
+
+    selectedIndexes: number[],
+
+    // 基本卡
     targetId?: string,
 
     // 为了校验无懈可击是否冲突
     wuxieTargetCardId?: string,
 
-    selectedIndexes: number[],
+    // 响应技能选中的目标 流离
+    skillTargetIds?: string[]
 }
 
 export type EmitCardBoardData = {

@@ -7,7 +7,8 @@ import {getMyResponseInfo} from "./stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {uuidv4} from "./uuid";
 import {Player} from "../types/player";
-import {BasicCardResponseInfo, WuXieResponseInfo} from "../types/responseInfo";
+import {BasicCardResponseInfo, SkillResponseInfo, WuXieResponseInfo} from "../types/responseInfo";
+import {CARD_CONFIG} from "../config/cardConfig";
 
 const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (EmitActionData | undefined) => {
     const actualCard = JSON.parse(JSON.stringify(gameFEStatus.actualCard))
@@ -55,7 +56,7 @@ const generateNoResponse = () => {
 }
 
 const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitResponseData => {
-    const info = getMyResponseInfo(gameStatus)
+    const info = getMyResponseInfo(gameStatus,gameFEStatus)
 
     return {
         chooseToResponse: true,
@@ -64,7 +65,8 @@ const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus)
         actualCard: gameFEStatus.actualCard!,
         originId: getMyPlayerId(),
         targetId: (info as BasicCardResponseInfo).targetId,
-        wuxieTargetCardId: (info as WuXieResponseInfo)?.wuxieTargetCardId
+        wuxieTargetCardId: (info as WuXieResponseInfo)?.wuxieTargetCardId,
+        skillTargetIds: (info as SkillResponseInfo)?.skillTargetIds
     }
 }
 
@@ -73,14 +75,15 @@ const generateThrowData = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
 }
 
 const generateActualCard = (gameFEStatus: GameFEStatus) => {
+    const configSha = CARD_CONFIG.SHA;
     if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
         return {
-            "huase": gameFEStatus.selectedCards[0].huase,
-            "huase2": gameFEStatus.selectedCards[1].huase,
-            "cardId": uuidv4(),
-            "CN": "杀",
-            "EN": "Strike",
-            "type": "BASIC",
+            huase: gameFEStatus.selectedCards[0].huase,
+            huase2: gameFEStatus.selectedCards[1].huase,
+            cardId: uuidv4(),
+            CN: configSha.CN,
+            EN: configSha.EN,
+            type: configSha.KEY,
         }
     } else {
         const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]))

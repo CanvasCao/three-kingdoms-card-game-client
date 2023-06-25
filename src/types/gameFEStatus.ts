@@ -1,17 +1,26 @@
 import {Card} from "./card";
+import {FEObserver} from "./observer";
 import {Players} from "./player";
 
 export type GameFEStatus = {
     selectedCards: Card[],
-    actualCard: Card | null,
-
-    // 传给后端 后端nofity
     selectedIndexes: number[],
+    actualCard: Card | null,
+    selectedWeaponCard: Card | null,
 
     selectedTargetPlayers: Players,
 
-    selectedWeaponCard: Card | null,
     selectedSkill: any[],
 
     publicCards: Card[],
-};
+}
+
+
+
+
+
+
+
+
+
+

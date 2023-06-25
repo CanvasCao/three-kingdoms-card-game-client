@@ -10,9 +10,8 @@ import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
 import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseTurn, getMyResponseInfo} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
 import {getInMyPlayTurnCanPlayCardNamesClourse} from "../../utils/cardNamesClourseUtils";
-import {generateActualCard} from "../../utils/emitDataGenerator";
 import {Card} from "../../types/card";
 import {BasicCardResponseInfo} from "../../types/responseInfo";
 
@@ -105,13 +104,15 @@ export class ControlCard {
                     return
                 }
 
-                const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+                const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved;
+                const curFEStatus = gameFEStatusObserved.gameFEStatus!;
                 const curStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
                 const canPlayInMyTurn = getCanPlayInMyTurn(curStatus);
                 const isMyResponseTurn = getIsMyResponseTurn(curStatus);
                 const isMyThrowTurn = getIsMyThrowTurn(curStatus);
-                const needSelectControlCardNumber = getNeedSelectControlCardNumber(curStatus, curFEStatus);
+
+                const needSelectControlCardNumber = getNeedSelectCardsNumber(curStatus, curFEStatus);
                 const haveSelectedEnoughThrowCard = curFEStatus.selectedCards.length >= needSelectControlCardNumber;
 
                 if (!canPlayInMyTurn && !isMyResponseTurn && !isMyThrowTurn) {
@@ -121,30 +122,22 @@ export class ControlCard {
                 if (canPlayInMyTurn || isMyResponseTurn) {
                     // 选中再点击就是反选
                     if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        curFEStatus.selectedCards = differenceBy(curFEStatus.selectedCards, [this.card], 'cardId');
-                        curFEStatus.selectedIndexes = differenceBy(curFEStatus.selectedIndexes, [this._index]);
-                        curFEStatus.actualCard = null;
-                        curFEStatus.selectedTargetPlayers = [];
+                        gameFEStatusObserved.unselectCard(this.card, this._index)
                     } else { // 选中
                         if (!haveSelectedEnoughThrowCard) {
-                            curFEStatus.selectedCards.push(this.card);
-                            curFEStatus.selectedIndexes.push(this._index);
-                            if (curFEStatus.selectedCards.length == needSelectControlCardNumber) {
-                                curFEStatus.actualCard = generateActualCard(curFEStatus);
-                            }
+                            const needGenerateActualCard = curFEStatus.selectedCards.length == (needSelectControlCardNumber - 1)
+                            gameFEStatusObserved.selectCard(this.card, this._index, {needGenerateActualCard})
                         }
                     }
                 } else if (isMyThrowTurn) {
                     if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        curFEStatus.selectedCards = differenceBy(curFEStatus.selectedCards, [this.card], 'cardId');
+                        gameFEStatusObserved.unselectCard(this.card, this._index)
                     } else {
                         if (!haveSelectedEnoughThrowCard) {
-                            curFEStatus.selectedCards.push(this.card);
-                            curFEStatus.selectedIndexes.push(this._index);
+                            gameFEStatusObserved.selectCard(this.card, this._index)
                         }
                     }
                 }
-                this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curFEStatus);
             }
         );
     }
@@ -232,8 +225,8 @@ export class ControlCard {
         }
 
         if (isMyResponseTurn) {
-            const {cardValidate} = (getMyResponseInfo(gameStatus) as BasicCardResponseInfo)
-            if (!cardValidate(this.card)) {
+            const {cardIsAbleValidate} = (getMyResponseInfo(gameStatus, gameFEStatus) as BasicCardResponseInfo)
+            if (!cardIsAbleValidate(this.card)) {
                 setCardDisable()
                 return
             }

@@ -14,11 +14,11 @@ import {getMyResponseInfo, getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {getIsMyResponseTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectControlCardNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
-import {getAmendCardTargetMinMax} from "../../utils/cardUtils";
-import { SkillResponseInfo} from "../../types/responseInfo";
+import {getTargetMinMax} from "../../utils/cardUtils";
+import {BaseResponseInfo} from "../../types/responseInfo";
 
 export class ControlButtons {
     obId: string;
@@ -232,7 +232,7 @@ export class ControlButtons {
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
-            const targetMinMaxNumber = getAmendCardTargetMinMax(gameStatus, gameFEStatus);
+            const targetMinMaxNumber = getTargetMinMax(gameStatus, gameFEStatus);
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetPlayers.length >= targetMinMaxNumber.min
                 && gameFEStatus.selectedTargetPlayers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;
@@ -241,15 +241,12 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const {cardValidate, needResponseCard} = (getMyResponseInfo(gameStatus) as SkillResponseInfo)
-        if (needResponseCard) {
-            return gameFEStatus?.actualCard && cardValidate(gameFEStatus.actualCard)
-        }
-        return true
+        const {okButtonIsAbleValidate} = getMyResponseInfo(gameStatus, gameFEStatus) as BaseResponseInfo
+        return okButtonIsAbleValidate(gameFEStatus)
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const needThrowCardNumber = getNeedSelectControlCardNumber(gameStatus, gameFEStatus);
+        const needThrowCardNumber = getNeedSelectCardsNumber(gameStatus, gameFEStatus);
         return gameFEStatus.selectedCards.length == needThrowCardNumber
     }
 
@@ -266,6 +263,8 @@ export class ControlButtons {
     }
 
     setButtonStatusByGameStatus(gameStatus: GameStatus) {
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!
+
         this._isMyResponseTurn = getIsMyResponseTurn(gameStatus);
         this._canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
         this._isMyThrowTurn = getIsMyThrowTurn(gameStatus);
@@ -278,8 +277,8 @@ export class ControlButtons {
 
             this.showBtn(this.endBtnGroup)
         } else if (this._isMyResponseTurn) {
-            const {needResponseCard} = getMyResponseInfo(gameStatus) as SkillResponseInfo
-            if (needResponseCard) { // 我的响应回合需要选牌
+            const needSelectCardsNumber = getNeedSelectCardsNumber(gameStatus, gameFEStatus)
+            if (needSelectCardsNumber) { // 我的响应回合需要选牌
                 this.disableBtn(this.okBtnGroup)
             }
 

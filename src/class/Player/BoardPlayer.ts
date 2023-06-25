@@ -7,7 +7,7 @@ import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
-import {getAmendCardTargetMinMax, getCardColor} from "../../utils/cardUtils";
+import {getTargetMinMax, getCardColor} from "../../utils/cardUtils";
 import {getIfPlayerAble} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
@@ -333,6 +333,7 @@ export class BoardPlayer {
                 return;
             }
 
+            // 其他人不可点击
             if (this._disable) {
                 return;
             }
@@ -357,7 +358,7 @@ export class BoardPlayer {
             }
 
             // validate是否选择了足够目标
-            const targetMinMax = getAmendCardTargetMinMax(curGameStatus, curGameFEStatus)
+            const targetMinMax = getTargetMinMax(curGameStatus, curGameFEStatus)
             if (curGameFEStatus.selectedTargetPlayers.length >= targetMinMax.max) {
                 return;
             }
@@ -510,11 +511,7 @@ export class BoardPlayer {
 
         const targetPlayer = gameStatus.players[this.player.playerId];
         const playerAble = getIfPlayerAble(gameStatus, gameFEStatus, targetPlayer)
-        if (playerAble) {
-            setPlayerAble()
-        } else {
-            setPlayerDisable()
-        }
+        playerAble ? setPlayerAble() : setPlayerDisable()
 
         this._actualCardId = gameFEStatus?.actualCard?.cardId
         this._selectedTargetPlayersLength = gameFEStatus?.selectedTargetPlayers?.length

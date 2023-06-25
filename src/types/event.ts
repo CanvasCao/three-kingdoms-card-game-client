@@ -25,7 +25,7 @@ export type EventTimingSkill = {
     skillName: string,
     playerId: string,
     chooseToReleaseSkill: boolean | undefined,
-    // releaseTargets: string[],
+    releaseTargetIds: string[],
     releaseCards: Card[],
     done: boolean,
 }
