@@ -55,7 +55,7 @@ export class ToPlayerCard {
         if (!fromBoardPlayer) { // 牌堆出的牌 到player（摸牌 五谷丰登）
             this.fadeInStartX = sizeConfig.playersArea.width / 2;
             this.fadeInStartY = sizeConfig.background.height / 2;
-        } else if (fromBoardPlayer!.player.playerId == getMyPlayerId()) { // 我打出的牌
+        } else if (fromBoardPlayer!.playerId == getMyPlayerId()) { // 我打出的牌
             // LostCard的fadeInStartX 就是controlCard的cardInitEndY
             const position = getControlCardPosition(originIndex!);
             this.fadeInStartX = position.x;

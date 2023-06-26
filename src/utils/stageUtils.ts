@@ -64,7 +64,6 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             okButtonIsAbleValidate: (gameFEStatus) => gameFEStatus.actualCard?.CN === BASIC_CARDS_CONFIG.SHAN.CN
         }
     } else if (gameStatus.skillResponse) {
-        console.log("gameStatus.skillResponse",gameStatus.skillResponse)
         const skillName = gameStatus.skillResponse.skillName;
         const chooseToReleaseSkill = gameStatus.skillResponse.chooseToReleaseSkill;
         let cardIsAbleValidate = (card: Card) => false

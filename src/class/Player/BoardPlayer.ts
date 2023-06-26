@@ -7,7 +7,7 @@ import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
-import {getTargetMinMax, getCardColor} from "../../utils/cardUtils";
+import {getTargetPlayersNumberMinMax, getCardColor} from "../../utils/cardUtils";
 import {getIfPlayerAble} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
@@ -33,7 +33,10 @@ const cardAndGroupMaps = [
 export class BoardPlayer {
     obId: string;
     gamingScene: GamingScene;
-    player: Player;
+    playerId: string;
+    playerName: string;
+    playerImageName: string;
+    playerMaxBlood: number;
     linePosition: { x: number, y: number };
     playerPosition: { x: number, y: number };
     isMe: boolean;
@@ -73,10 +76,13 @@ export class BoardPlayer {
 
         // init
         this.gamingScene = gamingScene;
-        this.player = player;
+        this.playerId = player.playerId;
+        this.playerName = player.name;
+        this.playerImageName = player.imageName;
+        this.playerMaxBlood = player.maxBlood;
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
-        this.isMe = this.player.playerId === getMyPlayerId();
+        this.isMe = this.playerId === getMyPlayerId();
 
 
         // init inner state
@@ -96,9 +102,9 @@ export class BoardPlayer {
         this.maxPandingCardsNumber = Object.keys(DELAY_SCROLL_CARDS_CONFIG).length;
 
         // last state cache
-        this._currentBlood = this.player.currentBlood;
-        this._cardNumber = this.player.cards.length;
-        this._isTieSuo = this.player.isTieSuo;
+        this._currentBlood = player.currentBlood;
+        this._cardNumber = player.cards.length;
+        this._isTieSuo = player.isTieSuo;
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
 
@@ -111,7 +117,7 @@ export class BoardPlayer {
         this.drawPlayer();
         this.drawBloodsBg();
         this.drawBloods();
-        this.setBloods(this.player.currentBlood);
+        this.setBloods(player.currentBlood);
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
@@ -119,7 +125,7 @@ export class BoardPlayer {
         if (!this.isMe) {
             this.drawEquipmentCards();
         }
-        if (this.player.isDead) {
+        if (player.isDead) {
             this.drawIsDead();
             this._isDead = true;
         }
@@ -168,7 +174,7 @@ export class BoardPlayer {
         const nameText = this.gamingScene.add.text(
             this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
-            this.player.name,
+            this.playerName,
             // @ts-ignore
             {fill: "#fff", align: "left", fixedWidth: sizeConfig.player.width}
         );
@@ -222,7 +228,7 @@ export class BoardPlayer {
         const bloodWidth = bloodHeight * 1.5333;
         const marginBottom = this.isMe ? 4 : 0;
 
-        for (let i = 0; i < this.player.maxBlood; i++) {
+        for (let i = 0; i < this.playerMaxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
                 this.positionX + sizeConfig.player.width / 2 * 0.86,
                 this.positionY - marginBottom + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.9 * i),
@@ -333,37 +339,36 @@ export class BoardPlayer {
                 return;
             }
 
-            // 其他人不可点击
             if (this._disable) {
                 return;
             }
 
             // Player已经选中过 反选
-            if (curGameFEStatus.selectedTargetPlayers.find((u: Player) => u.playerId == this.player.playerId)) {
-                curGameFEStatus.selectedTargetPlayers = [];
+            if (curGameFEStatus.selectedTargetPlayers.find((u: Player) => u.playerId == this.playerId)) {
+                curGameFEStatus.selectedTargetPlayers = differenceBy(curGameFEStatus.selectedTargetPlayers, [curGameStatus.players[this.playerId]], 'playerIdId');
                 this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
                 return;
             }
 
-            // 因为mePlayer_disable永远是false 所以在这里validate 这张卡能否以自己为目标的卡
+            // 因为mePlayer的_disable 大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
             if (curGameFEStatus.selectedTargetPlayers.length == 0) {
-                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.player.playerId == getMyPlayerId()) {
+                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.isMe) {
                     return;
                 }
             }
             if (curGameFEStatus.selectedTargetPlayers.length == 1) {
-                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.player.playerId == getMyPlayerId()) {
+                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.isMe) {
                     return;
                 }
             }
 
             // validate是否选择了足够目标
-            const targetMinMax = getTargetMinMax(curGameStatus, curGameFEStatus)
+            const targetMinMax = getTargetPlayersNumberMinMax(curGameStatus, curGameFEStatus)
             if (curGameFEStatus.selectedTargetPlayers.length >= targetMinMax.max) {
                 return;
             }
 
-            curGameFEStatus.selectedTargetPlayers.push(this.player);
+            curGameFEStatus.selectedTargetPlayers.push(curGameStatus.players[this.playerId]);
             this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
         });
     }
@@ -389,7 +394,7 @@ export class BoardPlayer {
         this.playerImage = this.gamingScene.add.image(
             this.positionX,
             this.positionY,
-            this.player.imageName).setInteractive().setScale(140 / 536);
+            this.playerImageName).setInteractive().setScale(140 / 536);
         this.playerImage.setOrigin(0.5, 0.45) // 竖长图片被crop了下面 所以setOriginY 稍微让图片往下挪一点
 
         var cropRect = new Phaser.Geom.Rectangle(0, 0, 536, 536 * (sizeConfig.player.height / sizeConfig.player.width));
@@ -398,7 +403,7 @@ export class BoardPlayer {
     }
 
     onEquipmentsChange(gameStatus: GameStatus) {
-        const player = gameStatus.players[this.player.playerId];
+        const player = gameStatus.players[this.playerId];
         cardAndGroupMaps.forEach((ele, index) => {
             const card = player[ele.card as keyof Player] as Card
             if (card) {
@@ -430,7 +435,7 @@ export class BoardPlayer {
     }
 
     onPandingCardsChange(gameStatus: GameStatus) {
-        const player = gameStatus.players[this.player.playerId];
+        const player = gameStatus.players[this.playerId];
 
         if (this._pandingCardsLength != player.pandingSigns.length) {
             for (let i = 0; i < this.maxPandingCardsNumber; i++) {
@@ -448,7 +453,7 @@ export class BoardPlayer {
     }
 
     onPlayerBloodChange(gameStatus: GameStatus) {
-        const player = gameStatus.players[this.player.playerId]
+        const player = gameStatus.players[this.playerId]
 
         if (this._currentBlood != player.currentBlood) {
             this.setBloods(player.currentBlood)
@@ -457,7 +462,7 @@ export class BoardPlayer {
     }
 
     onCardNumberChange(gameStatus: GameStatus) {
-        const player = gameStatus.players[this.player.playerId]
+        const player = gameStatus.players[this.playerId]
 
         if (this._cardNumber != player.cards.length) {
             this.cardNumObj!.setText(player.cards.length.toString())
@@ -466,7 +471,7 @@ export class BoardPlayer {
     }
 
     onTieSuoChange(gameStatus: GameStatus) {
-        const player = gameStatus.players[this.player.playerId]
+        const player = gameStatus.players[this.playerId]
 
         if (this._isTieSuo != player.isTieSuo) {
             this.tieSuoImage!.setAlpha(player.isTieSuo ? 1 : 0)
@@ -476,7 +481,7 @@ export class BoardPlayer {
     }
 
     onPlayerTurnAndStageChange(gameStatus: GameStatus) {
-        if (gameStatus.stage.playerId === this.player.playerId) {
+        if (gameStatus.stage.playerId === this.playerId) {
             this.myTurnStroke!.setAlpha(1);
             this.stageText!.setAlpha(1);
             this.stageText!.setText(i18(i18Config.STAGE_DESC,
@@ -509,7 +514,7 @@ export class BoardPlayer {
             return
         }
 
-        const targetPlayer = gameStatus.players[this.player.playerId];
+        const targetPlayer = gameStatus.players[this.playerId];
         const playerAble = getIfPlayerAble(gameStatus, gameFEStatus, targetPlayer)
         playerAble ? setPlayerAble() : setPlayerDisable()
 
@@ -518,12 +523,12 @@ export class BoardPlayer {
     }
 
     onPlayerSelectedChange(gameFEStatus: GameFEStatus) {
-        const isSelected = !!gameFEStatus.selectedTargetPlayers.find((u) => u.playerId == this.player.playerId)
+        const isSelected = !!gameFEStatus.selectedTargetPlayers.find((u) => u.playerId == this.playerId)
         this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
     }
 
     onPlayerDieChange(gameStatus: GameStatus) {
-        const player = gameStatus.players[this.player.playerId]
+        const player = gameStatus.players[this.playerId]
         if (player.isDead) {
             this.drawIsDead();
             this._isDead = true;

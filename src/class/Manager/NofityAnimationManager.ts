@@ -26,13 +26,13 @@ export class NofityAnimationManager {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
 
         const fromId = data.fromId;
-        const fromBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == fromId)!;
+        const fromBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.playerId == fromId)!;
         let toIds = data.toIds || [];
 
         //借刀杀人 貂蝉决斗
         if (toIds && attachFEInfoToCard(data?.actualCard)?.needAActionToB) {
-            const targetBoardPlayer1 = this.gamingScene.boardPlayers.find((p) => p.player.playerId == toIds[0])!;
-            const targetBoardPlayer2 = this.gamingScene.boardPlayers.find((p) => p.player.playerId == toIds[1])!;
+            const targetBoardPlayer1 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[0])!;
+            const targetBoardPlayer2 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[1])!;
 
             new PublicLine(this.gamingScene, {
                 startPosition: fromBoardPlayer.linePosition,
@@ -53,7 +53,7 @@ export class NofityAnimationManager {
         }
         // 其他正确指定目标的情况
         toIds.forEach((toId: string) => {
-            const targetBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.player.playerId == toId)!;
+            const targetBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.playerId == toId)!;
             new PublicLine(this.gamingScene, {
                 startPosition: fromBoardPlayer.linePosition,
                 endPosition: targetBoardPlayer.linePosition,
@@ -64,7 +64,7 @@ export class NofityAnimationManager {
     addToPublicCard(data: EmitNotifyAddToPublicCardData) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
-        const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
+        const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
         let cardsWithOrder: { card: Card, originIndex: number }[] = []
         data.cards.forEach((card, index) => {
             const originIndex = data.originIndexes ? data.originIndexes[index] : 0;
@@ -97,15 +97,15 @@ export class NofityAnimationManager {
 
         // 到别人手里 需要叠起来移动
         // 到自己手里需要一张一张移动
-        const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.toId)
+        const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.toId)
         // 但是到自己手里的逻辑在ControlCard
-        if (toBoardPlayer?.player?.playerId == getMyPlayerId()) {
+        if (toBoardPlayer?.playerId == getMyPlayerId()) {
             return
         }
 
         // 从自己手里给出去需要一张一张给
-        const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.player.playerId == data.fromId)
-        if (fromBoardPlayer?.player?.playerId == getMyPlayerId()) {
+        const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
+        if (fromBoardPlayer?.playerId == getMyPlayerId()) {
             data.cards.forEach((card, index) => {
                 const originIndex = data.originIndexes?.[index] || 0;
                 new ToPlayerCard(

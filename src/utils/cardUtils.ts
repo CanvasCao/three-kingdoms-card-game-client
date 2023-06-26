@@ -159,7 +159,7 @@ const getCardColor = (huase: string) => {
     return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? '#f00' : '#000'
 }
 
-const getTargetMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+const getTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const mePlayer = gameStatus.players[getMyPlayerId()]
 
     if (gameStatus.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI
@@ -213,6 +213,6 @@ export {
     getIfToPlayerCardFaceFront,
     getControlCardPosition,
     getCardColor,
-    getTargetMinMax,
+    getTargetPlayersNumberMinMax,
     generatePublicCardMessage
 }

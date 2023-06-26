@@ -17,7 +17,7 @@ import {uuidv4} from "../../utils/uuid";
 import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
-import {getTargetMinMax} from "../../utils/cardUtils";
+import {getTargetPlayersNumberMinMax} from "../../utils/cardUtils";
 import {BaseResponseInfo} from "../../types/responseInfo";
 
 export class ControlButtons {
@@ -232,7 +232,7 @@ export class ControlButtons {
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
-            const targetMinMaxNumber = getTargetMinMax(gameStatus, gameFEStatus);
+            const targetMinMaxNumber = getTargetPlayersNumberMinMax(gameStatus, gameFEStatus);
             const ifSelectedTargetsQualified = gameFEStatus.selectedTargetPlayers.length >= targetMinMaxNumber.min
                 && gameFEStatus.selectedTargetPlayers.length <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;

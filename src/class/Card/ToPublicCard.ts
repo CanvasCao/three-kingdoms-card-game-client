@@ -57,7 +57,7 @@ export class ToPublicCard {
         if (!fromBoardPlayer) { //（判定牌）
             this.fadeInStartX = this.fadeInEndX + 50;
             this.fadeInStartY = this.fadeInEndY
-        } else if (fromBoardPlayer!.player.playerId == getMyPlayerId()) { // 我打出的牌
+        } else if (fromBoardPlayer!.playerId == getMyPlayerId()) { // 我打出的牌
             // LostCard的fadeInStartX 就是controlCard的cardInitEndY
             const position = getControlCardPosition(originIndex!);
             this.fadeInStartX = position.x;

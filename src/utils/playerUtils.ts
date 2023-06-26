@@ -14,7 +14,8 @@ import {SKILL_NAMES} from "../config/skillsConfig";
 import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
 import {getIsMyResponseTurn} from "./stageUtils";
 
-const getPlayersDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumber: number) => {
+const getPlayersDistanceFromAToB = (gameStatus: GameStatus, APlayer: Player, BPlayer: Player) => {
+    const playerNumber = Object.keys(gameStatus.players).length
     const tableDistance = Math.min(
         Math.abs(APlayer.location - BPlayer.location),
         Math.abs((APlayer.location + playerNumber) - BPlayer.location),
@@ -25,14 +26,15 @@ const getPlayersDistanceFromAToB = (APlayer: Player, BPlayer: Player, playerNumb
 const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayer: Player) => {
     const actualCardName = gameFEStatus?.actualCard?.CN || '';
     const mePlayer = gameStatus.players[getMyPlayerId()];
-    const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(mePlayer, targetPlayer, Object.keys(gameStatus.players).length)
+    const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, mePlayer, targetPlayer)
 
     // 响应技能和锦囊
-    if (getIsMyResponseTurn(gameStatus) && gameStatus.skillResponse) {
+    if (getIsMyResponseTurn(gameStatus)) {
         const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
         if (
-            gameStatus.skillResponse.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
-            gameStatus.skillResponse.chooseToReleaseSkill
+            gameStatus?.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
+            gameStatus?.skillResponse?.chooseToReleaseSkill &&
+            gameFEStatus.selectedCards.length == 1
         ) {
             if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
                 return false
@@ -68,9 +70,9 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
             }
         } else if (gameFEStatus.selectedTargetPlayers.length == 1) {
             let attackDistance, distanceBetweenAAndB;
-            const daoOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
-            attackDistance = daoOwnerPlayer?.weaponCard?.distance || 1;
-            distanceBetweenAAndB = getPlayersDistanceFromAToB(daoOwnerPlayer, targetPlayer, Object.keys(gameStatus.players).length)
+            const weaponOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
+            attackDistance = weaponOwnerPlayer?.weaponCard?.distance || 1;
+            distanceBetweenAAndB = getPlayersDistanceFromAToB(gameStatus, weaponOwnerPlayer, targetPlayer)
             if (attackDistance >= distanceBetweenAAndB) {
                 return true
             } else {

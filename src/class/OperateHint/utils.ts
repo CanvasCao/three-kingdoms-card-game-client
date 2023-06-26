@@ -3,6 +3,7 @@ import {GameFEStatus} from "../../types/gameFEStatus";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {
+    ALL_SHA_CARD_NAMES,
     CARD_CONFIG,
     DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
@@ -11,7 +12,7 @@ import {
 } from "../../config/cardConfig";
 import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {getTargetMinMax} from "../../utils/cardUtils";
+import {getTargetPlayersNumberMinMax} from "../../utils/cardUtils";
 import {getCurrentPlayer, getPlayerDisplayName} from "../../utils/playerUtils";
 import {SKILL_NAMES} from "../../config/skillsConfig";
 
@@ -27,8 +28,8 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
         return (i18(i18Config.PLEASE_SELECT_A_CARD))
     }
     // 基本牌
-    else if ([CARD_CONFIG.SHA.CN, CARD_CONFIG.LEI_SHA.CN, CARD_CONFIG.HUO_SHA.CN].includes(actualCardCNName)) {
-        const minMax = getTargetMinMax(gameStatus, gameFEStatus)
+    else if (ALL_SHA_CARD_NAMES.includes(actualCardCNName)) {
+        const minMax = getTargetPlayersNumberMinMax(gameStatus, gameFEStatus)
         const replaceNumber = (minMax.min == minMax.max) ? minMax.min : `${minMax.min}-${minMax.max}`;
         return (i18(i18Config.SELECT_SHA, {number: replaceNumber}))
     } else if (actualCardCNName == CARD_CONFIG.TAO.CN) {
