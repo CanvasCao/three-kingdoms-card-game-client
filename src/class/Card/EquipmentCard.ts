@@ -9,7 +9,6 @@ import {getCanPlayerPlaySha} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 
 const typeCardNameMap = {
@@ -19,33 +18,40 @@ const typeCardNameMap = {
     [EQUIPMENT_TYPE.MINUS_HORSE]: 'minusHorseCard',
 }
 
-export class ControlEquipmentCard {
+export class EquipmentCard {
     obId: string;
     gamingScene: GamingScene;
-    equipmentType: string;
-    card: Card | null;
+    equipmentType: keyof typeof EQUIPMENT_TYPE;
+    playerId: string;
+    card: Card;
+    cardId: string;
+    isMe: boolean;
 
-    _cardId: string;
-    _selected: boolean;
+    isDestoryed: boolean;
+
+    _isSelected: boolean;
 
     selectedStroke: Phaser.GameObjects.Graphics | null;
     background: Phaser.GameObjects.Image | null;
     distanceText: Phaser.GameObjects.Text | null;
     nameText: Phaser.GameObjects.Text | null;
     huaseNumText: Phaser.GameObjects.Text | null;
-    group: Phaser.GameObjects.GameObject[]
+    cardObjgroup: Phaser.GameObjects.GameObject[]
 
-    constructor(gamingScene: GamingScene, equipmentType: string) {
+    constructor(gamingScene: GamingScene, card: Card, playerId: string) {
         this.obId = uuidv4();
 
         this.gamingScene = gamingScene;
-        this.equipmentType = equipmentType;
-        this.card = null;
+        this.card = card;
+        this.cardId = card.cardId;
+        this.equipmentType = card.equipmentType!;
+        this.playerId = playerId;
+        this.isMe = playerId === getMyPlayerId()
+
+        this.isDestoryed = false;
 
         // inner state
-        this._cardId = '';
-        this._selected = false;
-
+        this._isSelected = false;
 
         // phaser obj
         this.selectedStroke = null;
@@ -53,7 +59,7 @@ export class ControlEquipmentCard {
         this.distanceText = null;
         this.nameText = null;
         this.huaseNumText = null;
-        this.group = [];
+        this.cardObjgroup = [];
 
         this.drawEquipmentCard();
         this.bindEvent();
@@ -63,24 +69,37 @@ export class ControlEquipmentCard {
     }
 
     drawEquipmentCard() {
-        const map = {
+        const indexMap = {
             [EQUIPMENT_TYPE.WEAPON]: 0,
             [EQUIPMENT_TYPE.SHIELD]: 1,
             [EQUIPMENT_TYPE.PLUS_HORSE]: 2,
             [EQUIPMENT_TYPE.MINUS_HORSE]: 3,
         }
-        const offsetY = map[this.equipmentType] * sizeConfig.controlEquipment.height;
+
+        const offsetIndex = indexMap[this.equipmentType];
+        let positionX;
+        let positionY;
+        if (this.isMe) {
+            positionX = 5;
+            positionY = sizeConfig.playersArea.height + offsetIndex * sizeConfig.controlEquipment.height + 10;
+        } else {
+            const boardPlayer = this.gamingScene.boardPlayers.find(bp => bp.playerId === this.playerId)!;
+            const playerPositionX = boardPlayer.positionX;
+            const playerPositionY = boardPlayer.positionY;
+            positionX = playerPositionX - sizeConfig.player.width / 2;
+            positionY = playerPositionY + offsetIndex * 16 + 22;
+        }
+
         const {
             selectedStroke,
             background,
             distanceText,
             nameText,
             huaseNumText,
-        } = sharedDrawEquipment(this.gamingScene, undefined, {
-            x: 5,
-            y: sizeConfig.playersArea.height + offsetY + 10,
-            isMe: true,
-            alpha: 0,
+        } = sharedDrawEquipment(this.gamingScene, this.card, {
+            x: positionX,
+            y: positionY,
+            isMe: this.isMe,
         })
 
         this.selectedStroke = selectedStroke;
@@ -88,16 +107,18 @@ export class ControlEquipmentCard {
         this.distanceText = distanceText;
         this.nameText = nameText;
         this.huaseNumText = huaseNumText;
-        this.group.push(background)
-        this.group.push(distanceText)
-        this.group.push(nameText)
-        this.group.push(huaseNumText)
+
+        this.cardObjgroup.push(background)
+        this.cardObjgroup.push(distanceText)
+        this.cardObjgroup.push(nameText)
+        this.cardObjgroup.push(huaseNumText)
+
     }
 
     bindEvent() {
         this.background!.on('pointerdown', () => {
-                if (!this.card) {
-                    return
+                if (this.isDestoryed) {
+                    return;
                 }
 
                 if (this.card.CN !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
@@ -124,70 +145,37 @@ export class ControlEquipmentCard {
         );
     }
 
-    hideCard() {
-        this.group.forEach((obj) => {
-            this.gamingScene.tweens.add({
-                targets: obj,
-                alpha: {
-                    value: 0,
-                    duration: 0,
-                },
-            });
-        });
-    }
+    destoryAll() {
+        this.isDestoryed = true;
 
-    showCard() {
-        if (!this.card) {
-            return
-        }
-        this.background?.setAlpha(1)
-
-        if (this.card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || this.card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
-            this.distanceText!.setText(this.card?.distanceDesc!)
-        } else if (this.card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
-            this.distanceText!.setText((getI18Lan() == I18LANS.EN ? this.card?.distance?.toString() : this.card?.distanceDesc)!)
-        }
-        this.nameText!.setText((getI18Lan() == I18LANS.EN ? this.card?.EN?.substring(0, 7) + '...' : this.card?.CN))
-
-        // @ts-ignore
-        this.huaseNumText!.setText(CARD_NUM_DESC[this.card.number] + this.card.huase)
-        this.huaseNumText!.setColor(getCardColor(this.card.huase))
-
-        this.group.forEach((obj) => {
-            this.gamingScene.tweens.add({
-                targets: obj,
-                alpha: {
-                    value: 1,
-                    duration: 0,
-                },
-            });
-        });
+        this.cardObjgroup.forEach((obj) => {
+            obj?.destroy();
+        })
+        this.gamingScene.gameStatusObserved.removeObserver(this);
+        this.gamingScene.gameFEStatusObserved.removeSelectedStatusObserver(this);
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
-        const myPlayer = gameStatus.players[getMyPlayerId()];
+        const player = gameStatus.players[this.playerId];
         // @ts-ignore
-        this.card = myPlayer[typeCardNameMap[this.equipmentType]] as Card
+        const equipmentCard = player[typeCardNameMap[this.equipmentType]] as Card
 
-        if (this.card?.cardId == this._cardId) {
-            return
+        if (equipmentCard.cardId !== this.cardId) {
+            this.destoryAll();
         }
-
-        if (this.card) {
-            this.showCard();
-        } else {
-            this.hideCard();
-        }
-
-        this._cardId = this.card?.cardId;
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
-        const isSelected = !!gameFEStatus.selectedWeaponCard && (gameFEStatus.selectedWeaponCard?.cardId === this.card?.cardId);
-        if (this._selected == isSelected) return;
+        // 不是我的武器牌不可能选中
+        if (this.playerId !== getMyPlayerId()) {
+            return;
+        }
 
-        this.group.forEach((obj) => {
+        const isSelected = !!gameFEStatus.selectedWeaponCard && (gameFEStatus.selectedWeaponCard?.cardId === this.card?.cardId);
+        if (this._isSelected == isSelected) return;
+
+        this.cardObjgroup.forEach((obj) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
@@ -197,7 +185,7 @@ export class ControlEquipmentCard {
                 },
                 onComplete: () => {
                     this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
-                    this._selected = isSelected
+                    this._isSelected = isSelected
                 }
             });
         });

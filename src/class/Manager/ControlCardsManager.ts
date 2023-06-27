@@ -5,8 +5,6 @@ import {ControlCard} from "../Card/ControlCard";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {sizeConfig} from "../../config/sizeConfig";
-import {ControlEquipmentCard} from "../Card/ControlEquipmentCard";
-import {EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
 
@@ -22,15 +20,7 @@ export class ControlCardsManager {
         this._playerCards = [];
 
         this.drawBackground();
-        this.drawEqupmentCards();
         this.gamingScene.gameStatusObserved.addObserver(this);
-    }
-
-    drawEqupmentCards() {
-        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.WEAPON);
-        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.SHIELD);
-        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.PLUS_HORSE);
-        new ControlEquipmentCard(this.gamingScene, EQUIPMENT_TYPE.MINUS_HORSE);
     }
 
     drawBackground() {

@@ -29,7 +29,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, mePlayer, targetPlayer)
 
     // 响应技能和锦囊
-    if (getIsMyResponseTurn(gameStatus)) {
+    if (getIsMyResponseTurn(gameStatus) && gameStatus?.skillResponse) {
         const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
         if (
             gameStatus?.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI &&

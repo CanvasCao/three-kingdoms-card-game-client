@@ -1,14 +1,15 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {GamingScene} from "../../types/phaser";
-import {CARD_NUM_DESC} from "../../config/cardConfig";
-import {i18} from "../../i18n/i18nUtils";
+import {CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfig";
+import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
+import {getCardColor} from "../cardUtils";
 
 const sharedDrawEquipment = (
     gamingScene: GamingScene,
-    card: Card | undefined,
-    {x, y, depth = 0, alpha = 1, isMe = false}: {
+    card: Card,
+    {x, y, depth = 0, isMe = false}: {
         x: number,
         y: number,
         depth?: number,
@@ -27,7 +28,7 @@ const sharedDrawEquipment = (
     selectedStroke.strokeRect(x + sizeConfig.controlSelectedOffsetX, y,
         equipmentCardWidth,
         equipmentCardHeight);
-    selectedStroke.setAlpha(alpha)
+    selectedStroke.setAlpha(0)
 
     const background = gamingScene.add.image(x, y, 'white')
     isMe && background.setInteractive();
@@ -35,19 +36,24 @@ const sharedDrawEquipment = (
     background.setTint(colorConfig.card);
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
-    background.setAlpha(alpha)
+    background.setAlpha(1)
     background.setOrigin(0, 0)
 
-    const distanceText = gamingScene.add.text(x, y, card?.distanceDesc || '',
+    const distanceText = gamingScene.add.text(x, y, '',
         // @ts-ignore
         {fill: "#000"}
     );
     distanceText.setPadding(padding + 5, paddingHorizontal, padding + 1, paddingHorizontal);
     distanceText.setFontSize(fontSize)
-    distanceText.setAlpha(alpha)
+    distanceText.setAlpha(1)
+    if (card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
+        distanceText.setText(card.distanceDesc!)
+    } else if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
+        distanceText.setText((getI18Lan() == I18LANS.EN ? card.distance?.toString() : card.distanceDesc)!)
+    }
 
-    const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.23, y,
-        card ? i18(card) : '',
+
+    const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.23, y, '',
         {
             // @ts-ignore
             fill: "#000",
@@ -57,17 +63,20 @@ const sharedDrawEquipment = (
     );
     nameText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
     nameText.setFontSize(fontSize)
-    nameText.setAlpha(alpha)
+    nameText.setAlpha(1)
+    nameText.setText((getI18Lan() == I18LANS.EN ? card.EN.substring(0, 7) + '...' : card.CN))
 
-    const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.85, y,
-        // @ts-ignore
-        (CARD_NUM_DESC[card?.number] || '') + (card?.huase || ''),
+
+    const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.85, y, '',
         // @ts-ignore
         {fill: "#000", align: "center"}
     );
     huaseNumText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
     huaseNumText.setFontSize(fontSize)
-    huaseNumText.setAlpha(alpha)
+    huaseNumText.setAlpha(1)
+    // @ts-ignore
+    huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
+    huaseNumText.setColor(getCardColor(card.huase))
 
     return {
         selectedStroke,

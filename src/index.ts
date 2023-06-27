@@ -4,6 +4,7 @@ import elementsUrl from './config/elementsUrl.json'
 import {sizeConfig} from './config/sizeConfig'
 import {socket} from "./socket";
 import {ControlCardsManager} from "./class/Manager/ControlCardsManager";
+import {EquipmentmentCardsManager} from "./class/Manager/EquipmentCardsManager";
 import {ControlButtons} from "./class/Button/ControlButtons";
 import {GameStatusObserved} from "./class/Observed/GameStatusObserved";
 import {GameFEStatusObserved} from "./class/Observed/GameFEStatusObserved";
@@ -44,6 +45,7 @@ class Gaming extends Phaser.Scene {
     operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
+    equipmentmentCardsManager: EquipmentmentCardsManager | undefined;
     notifyAnimationManager: NofityAnimationManager | undefined;
 
     constructor() {
@@ -95,6 +97,7 @@ class Gaming extends Phaser.Scene {
             this.operateHint = new OperateHint(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
+            this.equipmentmentCardsManager = new EquipmentmentCardsManager(this);
             this.notifyAnimationManager = new NofityAnimationManager(this);
 
             const players = getPlayersWithPosition(data.players);

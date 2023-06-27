@@ -18,17 +18,9 @@ import {
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {STAGE_NAMES, STAGE_NAMES_CN} from "../../config/gameConfig";
-import {Card} from "../../types/card";
 import {Player} from "../../types/player";
 
 const colorConfigJson = colorConfig as unknown as ColorConfigJson;
-
-const cardAndGroupMaps = [
-    {card: "weaponCard", group: "weaponGroup"},
-    {card: "shieldCard", group: "shieldGroup"},
-    {card: "plusHorseCard", group: "plusHorseGroup"},
-    {card: "minusHorseCard", group: "minusHorseGroup"},
-]
 
 export class BoardPlayer {
     obId: string;
@@ -63,10 +55,6 @@ export class BoardPlayer {
     cardNumObj?: Phaser.GameObjects.Text;
     tieSuoImage?: Phaser.GameObjects.Image;
     stageText?: Phaser.GameObjects.Text;
-    weaponGroup?: PlayerEquipmentGroup;
-    shieldGroup?: PlayerEquipmentGroup;
-    plusHorseGroup?: PlayerEquipmentGroup;
-    minusHorseGroup?: PlayerEquipmentGroup;
     playerImage?: Phaser.GameObjects.Image;
     isDeadText?: Phaser.GameObjects.Text;
     bloodsBgGraphics?: Phaser.GameObjects.Graphics;
@@ -83,7 +71,6 @@ export class BoardPlayer {
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
         this.isMe = this.playerId === getMyPlayerId();
-
 
         // init inner state
         this._disable = false;
@@ -122,9 +109,6 @@ export class BoardPlayer {
         this.drawTieSuo();
         this.drawCardNumber();
         this.drawPlayerName();
-        if (!this.isMe) {
-            this.drawEquipmentCards();
-        }
         if (player.isDead) {
             this.drawIsDead();
             this._isDead = true;
@@ -257,29 +241,6 @@ export class BoardPlayer {
         this.stageText.setAlpha(0)
     }
 
-    drawEquipmentCards() {
-        cardAndGroupMaps.forEach((ele, index) => {
-            // @ts-ignore
-            this[ele.group] = {};
-            // @ts-ignore
-            const group = this[ele.group]
-            const offsetY = sizeConfig.player.height / 9;
-            const offsetYStep = sizeConfig.player.height / 10;
-            const positionX = this.positionX - sizeConfig.player.width / 2;
-            const positionY = this.positionY + offsetY + offsetYStep * index;
-            const {
-                background,
-                distanceText,
-                nameText,
-                huaseNumText
-            } = sharedDrawEquipment(this.gamingScene, undefined, {x: positionX, y: positionY, alpha: 0})
-            group.background = background;
-            group.distanceText = distanceText;
-            group.nameText = nameText;
-            group.huaseNumText = huaseNumText;
-        })
-    }
-
     drawIsDead() {
         this.playerImage!.setTint(colorConfigJson.disablePlayer);
         this.isDeadText = this.gamingScene.add.text(
@@ -402,38 +363,6 @@ export class BoardPlayer {
         this.playerImage.setCrop(cropRect);
     }
 
-    onEquipmentsChange(gameStatus: GameStatus) {
-        const player = gameStatus.players[this.playerId];
-        cardAndGroupMaps.forEach((ele, index) => {
-            const card = player[ele.card as keyof Player] as Card
-            if (card) {
-                // @ts-ignore
-                const group = this[ele.group]
-                if (card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
-                    group.distanceText!.setText(card?.distanceDesc!)
-                } else if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
-                    group.distanceText!.setText((getI18Lan() == I18LANS.EN ? card?.distance?.toString() : card?.distanceDesc)!)
-                }
-                group.nameText.setText((getI18Lan() == I18LANS.EN ? card?.EN?.substring(0, 7) + '...' : card?.CN))
-
-                // @ts-ignore
-                group.huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
-                group.huaseNumText.setColor(getCardColor(card.huase))
-            }
-
-            // @ts-ignore
-            const group = this[ele.group]
-            this.gamingScene.tweens.add({
-                targets: [group.background, group.distanceText, group.nameText, group.huaseNumText],
-                alpha: {
-                    value: card ? 1 : 0,
-                    duration: 0,
-                },
-            });
-
-        })
-    }
-
     onPandingCardsChange(gameStatus: GameStatus) {
         const player = gameStatus.players[this.playerId];
 
@@ -541,7 +470,6 @@ export class BoardPlayer {
 
         if (!this.isMe) {
             this.onPlayerTurnAndStageChange(gameStatus);
-            this.onEquipmentsChange(gameStatus);
         }
         this.onCardNumberChange(gameStatus);
         this.onTieSuoChange(gameStatus);
