@@ -3,7 +3,7 @@ import {GameStatus} from "../../types/gameStatus";
 import {sizeConfig} from "../../config/sizeConfig";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import Phaser from "phaser";
-import {getIsMyResponseTurn, getIsMyThrowTurn, getCanPlayInMyTurn} from "../../utils/stageUtils";
+import {getIsMyResponseTurn, getIsMyThrowTurn, getCanPlayInMyTurn} from "../../utils/stage/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {
     getCanPlayInMyTurnOperationHint,

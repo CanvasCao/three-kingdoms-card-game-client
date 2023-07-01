@@ -1,6 +1,6 @@
 import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {getCanPlayInMyTurn, getIsMyResponseTurn, getIsMyThrowTurn} from "./stageUtils";
+import {getCanPlayInMyTurn, getIsMyResponseTurn, getIsMyThrowTurn} from "./stage/stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {SKILL_NAMES} from "../config/skillsConfig";

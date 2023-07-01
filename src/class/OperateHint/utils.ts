@@ -12,7 +12,7 @@ import {
 } from "../../config/cardConfig";
 import {getNeedSelectCardsNumber} from "../../utils/validationUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {getCurrentPlayer, getPlayerDisplayName, getTargetPlayersNumberMinMax} from "../../utils/playerUtils";
+import {getCurrentPlayer, getPlayerDisplayName, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {SKILL_NAMES} from "../../config/skillsConfig";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
@@ -28,7 +28,7 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
     }
     // 基本牌
     else if (ALL_SHA_CARD_NAMES.includes(actualCardCNName)) {
-        const minMax = getTargetPlayersNumberMinMax(gameStatus, gameFEStatus)
+        const minMax = getNeedTargetPlayersNumberMinMax(gameStatus, gameFEStatus)
         const replaceNumber = (minMax.min == minMax.max) ? minMax.min : `${minMax.min}-${minMax.max}`;
         return (i18(i18Config.SELECT_SHA, {number: replaceNumber}))
     } else if (actualCardCNName == CARD_CONFIG.TAO.CN) {

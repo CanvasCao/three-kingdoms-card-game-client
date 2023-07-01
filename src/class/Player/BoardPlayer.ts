@@ -6,7 +6,7 @@ import {GameStatus} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
-import  {getIfPlayerAble, getTargetPlayersNumberMinMax} from "../../utils/playerUtils";
+import  {getIfPlayerAble, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {
@@ -323,8 +323,8 @@ export class BoardPlayer {
             }
 
             // validate是否选择了足够目标
-            const targetMinMax = getTargetPlayersNumberMinMax(curGameStatus, curGameFEStatus)
-            if (curGameFEStatus.selectedTargetPlayers.length >= targetMinMax.max) {
+            const minMax = getNeedTargetPlayersNumberMinMax(curGameStatus, curGameFEStatus)
+            if (curGameFEStatus.selectedTargetPlayers.length >= minMax.max) {
                 return;
             }
 

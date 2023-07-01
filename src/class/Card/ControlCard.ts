@@ -7,13 +7,14 @@ import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
-import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseTurn, getMyResponseInfo} from "../../utils/stageUtils";
+import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseTurn} from "../../utils/stage/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/validationUtils";
 import {getInMyPlayTurnCanPlayCardNamesClourse} from "../../utils/cardNamesClourseUtils";
 import {Card} from "../../types/card";
 import {BasicCardResponseInfo} from "../../types/responseInfo";
-import {getMyCardPosition} from "../../utils/cardPositionUtils";
+import {getMyCardPosition} from "../../utils/position/cardPositionUtils";
+import {getMyResponseInfo} from "../../utils/response/responseUtils";
 
 export class ControlCard {
     obId: string;

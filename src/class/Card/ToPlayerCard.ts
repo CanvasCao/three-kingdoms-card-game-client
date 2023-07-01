@@ -7,7 +7,7 @@ import {GamingScene} from "../../types/phaser";
 import {BoardPlayer} from "../Player/BoardPlayer";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
-import {getMyCardPosition} from "../../utils/cardPositionUtils";
+import {getMyCardPosition} from "../../utils/position/cardPositionUtils";
 
 export class ToPlayerCard {
     obId: string;

@@ -12,23 +12,40 @@ import {PandingSign} from "../types/card";
 import {Player} from "../types/player";
 import {SKILL_NAMES} from "../config/skillsConfig";
 import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
-import {getIsMyPlayTurn, getIsMyResponseTurn} from "./stageUtils";
+import {getIsMyPlayTurn, getIsMyResponseTurn} from "./stage/stageUtils";
 import {getSelectedCardNumber, getSelectedTargetNumber} from "./validationUtils";
 import {attachFEInfoToCard} from "./cardUtils";
 
-const getPlayersDistanceFromAToB = (gameStatus: GameStatus, APlayer: Player, BPlayer: Player) => {
+const getPlayersDistanceFromAToB = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, APlayer: Player, BPlayer: Player) => {
     const playerNumber = Object.keys(gameStatus.players).length
-    const tableDistance = Math.min(
+    let distance = Math.min(
         Math.abs(APlayer.location - BPlayer.location),
         Math.abs((APlayer.location + playerNumber) - BPlayer.location),
         Math.abs(APlayer.location - (BPlayer.location + playerNumber))
     )
-    return tableDistance + (APlayer?.minusHorseCard?.horseDistance || 0) + (BPlayer?.plusHorseCard?.horseDistance || 0)
+    const minusHorseCard = APlayer?.minusHorseCard;
+
+    // -1参与距离计算的前提是 -1没有被选中
+    if (minusHorseCard && !gameFEStatus.selectedCards.map(c => c.cardId).includes(minusHorseCard.cardId)) {
+        distance + (APlayer?.minusHorseCard?.horseDistance || 0)
+    }
+    return distance + (BPlayer?.plusHorseCard?.horseDistance || 0)
 }
+
+const getPlayerAttackRangeNumber = (gameFEStatus: GameFEStatus, player: Player) => {
+    const weaponCard = player?.weaponCard;
+    if (weaponCard && !gameFEStatus.selectedCards.map(c => c.cardId).includes(weaponCard.cardId)) {
+        return player?.weaponCard?.distance!
+    }
+
+    return 1
+}
+
 const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayer: Player) => {
     const actualCardName = gameFEStatus?.actualCard?.CN || '';
     const mePlayer = gameStatus.players[getMyPlayerId()];
-    const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, mePlayer, targetPlayer)
+    const myAttackDistance = getPlayerAttackRangeNumber(gameFEStatus, mePlayer)
+    const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, mePlayer, targetPlayer)
     const selectedTargetNumber = getSelectedTargetNumber(gameFEStatus)
 
     // 响应技能和锦囊
@@ -39,10 +56,11 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
             gameStatus?.skillResponse?.chooseToReleaseSkill &&
             getSelectedCardNumber(gameFEStatus) == 1
         ) {
+            // 不能流离给杀的来源
             if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
                 return false
             }
-            let myAttackDistance = mePlayer?.weaponCard?.distance || 1
+
             if (myAttackDistance < distanceBetweenMeAndTarget) {
                 return false
             }
@@ -74,8 +92,8 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
         } else if (selectedTargetNumber == 1) {
             let attackDistance, distanceBetweenAAndB;
             const weaponOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
-            attackDistance = weaponOwnerPlayer?.weaponCard?.distance || 1;
-            distanceBetweenAAndB = getPlayersDistanceFromAToB(gameStatus, weaponOwnerPlayer, targetPlayer)
+            attackDistance = getPlayerAttackRangeNumber(gameFEStatus, weaponOwnerPlayer);
+            distanceBetweenAAndB = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, weaponOwnerPlayer, targetPlayer)
             if (attackDistance >= distanceBetweenAAndB) {
                 return true
             } else {
@@ -155,7 +173,7 @@ const getCurrentPlayer = (gameStatus: GameStatus) => {
     return gameStatus.players[gameStatus.stage.playerId]
 }
 
-const getTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+const getNeedTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const mePlayer = gameStatus.players[getMyPlayerId()]
 
     if (gameStatus.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI
@@ -180,8 +198,9 @@ export {
     getCanPlayerPlaySha,
 
     getPlayersDistanceFromAToB,
+    getPlayerAttackRangeNumber,
     getPlayerDisplayName,
     getCurrentPlayer,
 
-    getTargetPlayersNumberMinMax
+    getNeedTargetPlayersNumberMinMax
 }

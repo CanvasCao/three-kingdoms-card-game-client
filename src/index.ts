@@ -16,7 +16,7 @@ import {Socket} from "./socket/socket.io.esm.min";
 import {GameStatus} from './types/gameStatus';
 import {ElementsUrlJson} from './types/config';
 import {PlayerCardsBoard} from './class/Board/PlayerCardsBoard';
-import {getPlayersWithPosition} from './utils/playerPositionUtils';
+import {getPlayersWithPosition} from './utils/position/playerPositionUtils';
 import {
     EmitNotifyAddLinesData,
     EmitNotifyAddToPublicCardData,

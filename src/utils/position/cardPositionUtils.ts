@@ -1,5 +1,5 @@
 import {isNumber} from "lodash";
-import {sizeConfig} from "../config/sizeConfig";
+import {sizeConfig} from "../../config/sizeConfig";
 
 const getMyCardPosition = (index: number | string) => {
     if (isNumber(index)) {
