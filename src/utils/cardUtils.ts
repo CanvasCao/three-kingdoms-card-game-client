@@ -1,23 +1,11 @@
 import {GameStatus} from "../types/gameStatus";
-import {
-    ALL_SHA_CARD_NAMES,
-    BASIC_CARDS_CONFIG,
-    CARD_HUASE,
-    CARD_LOCATION,
-    CARD_TYPE,
-    EQUIPMENT_CARDS_CONFIG,
-    SCROLL_CARDS_CONFIG
-} from "../config/cardConfig";
+import {BASIC_CARDS_CONFIG, CARD_HUASE, CARD_LOCATION, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {EmitNotifyAddToPublicCardData} from "../types/emit";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
-import {sizeConfig} from "../config/sizeConfig";
-import {GameFEStatus} from "../types/gameFEStatus";
 import {i18Config} from "../i18n/i18Config";
 import {i18} from "../i18n/i18nUtils";
 import {Card, CardAreaType} from "../types/card";
 import {ADD_TO_PUBLIC_CARD_TYPE} from "../config/emitConfig";
-import {SKILL_NAMES} from "../config/skillsConfig";
-import {getIsMyPlayTurn} from "./stageUtils";
 
 const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {
@@ -135,45 +123,25 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
     return card
 }
 
-const getIfToPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
+const getIsToOtherPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
+    // 别人摸牌 FaceFront false
     if (fromPlayerId == CARD_LOCATION.PAIDUI) {
         return false
     }
 
+    // 我给别人 别人给我 FaceFront true
     if (getMyPlayerId() == fromPlayerId || getMyPlayerId() == toPlayerId) {
         return true
     }
 
-    // 顺手牵羊 借刀杀人
-    return (cardAreaType !== 'hand')
-}
-
-const getControlCardPosition = (index: number) => {
-    return {
-        x: sizeConfig.controlEquipment.width + sizeConfig.controlCardBgMargin + index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
-        y: sizeConfig.background.height - sizeConfig.controlCard.height / 2 - sizeConfig.controlCard.height * 0.15
-    }
+    // 顺手牵羊/借刀杀人
+    // 是手牌FaceFront false
+    // 武器/判定 FaceFront true
+    return (cardAreaType !== CARD_LOCATION.HAND)
 }
 
 const getCardColor = (huase: string) => {
     return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? '#f00' : '#000'
-}
-
-const getTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    const mePlayer = gameStatus.players[getMyPlayerId()]
-
-    if (gameStatus.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI
-        && gameStatus.skillResponse.chooseToReleaseSkill
-    ) {
-        return {min: 1, max: 1}
-    }
-    if (getIsMyPlayTurn(gameStatus) && mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN
-        && mePlayer.cards.length == 1
-        && ALL_SHA_CARD_NAMES.includes(mePlayer.cards[0].CN)
-    ) {
-        return {min: 1, max: 3}
-    }
-    return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
 }
 
 const generatePublicCardMessage = (
@@ -210,9 +178,7 @@ const generatePublicCardMessage = (
 
 export {
     attachFEInfoToCard,
-    getIfToPlayerCardFaceFront,
-    getControlCardPosition,
+    getIsToOtherPlayerCardFaceFront,
     getCardColor,
-    getTargetPlayersNumberMinMax,
     generatePublicCardMessage
 }

@@ -5,15 +5,15 @@ import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import {getControlCardPosition} from "../../utils/cardUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
 import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseTurn, getMyResponseInfo} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/validationUtils";
 import {getInMyPlayTurnCanPlayCardNamesClourse} from "../../utils/cardNamesClourseUtils";
 import {Card} from "../../types/card";
 import {BasicCardResponseInfo} from "../../types/responseInfo";
+import {getMyCardPosition} from "../../utils/cardPositionUtils";
 
 export class ControlCard {
     obId: string;
@@ -46,7 +46,7 @@ export class ControlCard {
         // 初始化index
         this._index = this.gamingScene.controlCardsManager!._playerCards.findIndex(c => c.cardId == this.card.cardId);
 
-        const position = getControlCardPosition(this._index);
+        const position = getMyCardPosition(this._index);
         this.cardInitEndX = position.x;
         this.cardInitEndY = position.y;
 
@@ -122,20 +122,20 @@ export class ControlCard {
 
                 if (canPlayInMyTurn || isMyResponseTurn) {
                     // 选中再点击就是反选
-                    if (curFEStatus.selectedCards.handCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectHandCard(this.card, this._index)
+                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
+                        gameFEStatusObserved.unselectCard(this.card, this._index)
                     } else { // 选中
                         if (!haveSelectedEnoughThrowCard) {
                             const needGenerateActualCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
-                            gameFEStatusObserved.selectHandCard(this.card, this._index, {needGenerateActualCard})
+                            gameFEStatusObserved.selectCard(this.card, this._index, {needGenerateActualCard})
                         }
                     }
                 } else if (isMyThrowTurn) {
-                    if (curFEStatus.selectedCards.handCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectHandCard(this.card, this._index)
+                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
+                        gameFEStatusObserved.unselectCard(this.card, this._index)
                     } else {
                         if (!haveSelectedEnoughThrowCard) {
-                            gameFEStatusObserved.selectHandCard(this.card, this._index)
+                            gameFEStatusObserved.selectCard(this.card, this._index)
                         }
                     }
                 }
@@ -282,7 +282,7 @@ export class ControlCard {
             return;
         }
 
-        const isSelected = !!gameFEStatus.selectedCards.handCards.find((c) => c.cardId == this.card.cardId)
+        const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
         if (this._selected == isSelected) return;
         if (this.isMoving) return;
         const whenSelectedMoveDistance = 20;

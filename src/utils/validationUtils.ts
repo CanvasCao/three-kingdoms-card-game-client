@@ -8,12 +8,11 @@ import {EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig"
 import {getCanPlayerPlaySha} from "./playerUtils";
 
 const getSelectedCardNumber = (gameFEStatus: GameFEStatus) => {
-    const selectedCards = gameFEStatus.selectedCards
-    return [...selectedCards.handCards, selectedCards.weaponCard, selectedCards.shieldCard, selectedCards.plusHorseCard, selectedCards.minusHorseCard].filter(Boolean).length
+    return gameFEStatus.selectedCards.length
 }
 
 const getSelectedTargetNumber = (gameFEStatus: GameFEStatus) => {
-    return  gameFEStatus.selectedTargetPlayers.length
+    return gameFEStatus.selectedTargetPlayers.length
 }
 
 const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {

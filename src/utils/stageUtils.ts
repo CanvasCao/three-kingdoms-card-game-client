@@ -11,7 +11,7 @@ import {ResponseInfo} from "../types/responseInfo";
 import {Card} from "../types/card";
 import {SKILL_NAMES} from "../config/skillsConfig";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {getSelectedCardNumber, getSelectedTargetNumber} from "./cardValidation";
+import {getSelectedCardNumber, getSelectedTargetNumber} from "./validationUtils";
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == GAME_STAGE.PLAY;

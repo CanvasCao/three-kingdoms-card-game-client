@@ -6,9 +6,9 @@ import {differenceBy} from "lodash";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {GamingScene} from "../../types/phaser";
 import {BoardPlayer} from "../Player/BoardPlayer";
-import {getControlCardPosition} from "../../utils/cardUtils";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
+import {getMyCardPosition} from "../../utils/cardPositionUtils";
 
 export class ToPublicCard {
     obId: string;
@@ -35,7 +35,7 @@ export class ToPublicCard {
                 message: string,
                 publicCards: Card[],
                 fromBoardPlayer: BoardPlayer | undefined,
-                originIndex: number | undefined, // 只出现在我打出的牌
+                originIndex: number | string, // 只出现在我打出的牌 number是手牌 string是判定武器
     ) {
         this.obId = uuidv4();
 
@@ -58,8 +58,7 @@ export class ToPublicCard {
             this.fadeInStartX = this.fadeInEndX + 50;
             this.fadeInStartY = this.fadeInEndY
         } else if (fromBoardPlayer!.playerId == getMyPlayerId()) { // 我打出的牌
-            // LostCard的fadeInStartX 就是controlCard的cardInitEndY
-            const position = getControlCardPosition(originIndex!);
+            const position =  getMyCardPosition(originIndex);
             this.fadeInStartX = position.x;
             this.fadeInStartY = position.y;
         } else { // 别人打出的牌

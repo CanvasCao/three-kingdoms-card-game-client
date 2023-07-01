@@ -1,9 +1,9 @@
-import {Card, SelectedCards} from "./card";
+import {Card} from "./card";
 import {Players} from "./player";
 
 export type GameFEStatus = {
-    selectedCards: SelectedCards,
-    selectedIndexes: number[],
+    selectedCards: Card[],
+    selectedIndexes: (number | string)[],
     actualCard: Card | null,
 
     selectedTargetPlayers: Players,

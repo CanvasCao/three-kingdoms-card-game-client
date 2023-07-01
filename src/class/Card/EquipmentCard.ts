@@ -2,13 +2,20 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import {EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE, EQ_TYPE_CARD_NAME_MAP} from "../../config/cardConfig";
+import {EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
-import {getCanSelectEquipment, getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/cardValidation";
+import {getCanSelectEquipment, getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/validationUtils";
 
+
+const EQ_TYPE_CARD_NAME_MAP = {
+    [EQUIPMENT_TYPE.WEAPON]: "weaponCard",
+    [EQUIPMENT_TYPE.SHIELD]: 'shieldCard',
+    [EQUIPMENT_TYPE.PLUS_HORSE]: 'plusHorseCard',
+    [EQUIPMENT_TYPE.MINUS_HORSE]: 'minusHorseCard'
+}
 
 export class EquipmentCard {
     obId: string;
@@ -130,12 +137,11 @@ export class EquipmentCard {
                 // 已经选中技能 或者响应技能 的情况下 一定是要打出武器
                 const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillName && (gameFEStatus.selectedSkillName !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN)
                 if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {
-                    // @ts-ignore
-                    if (gameFEStatus.selectedCards[EQ_TYPE_CARD_NAME_MAP[(this.equipmentType)]]) { // 已经选中
-                        gameFEStatusObserved.unselectEquipmentCard(this.card)
+                    if (gameFEStatus.selectedCards.map(c => c.cardId).includes(this.cardId)) { // 已经选中
+                        gameFEStatusObserved.unselectCard(this.card, this.equipmentType)
                     } else { // 还没选中
                         if (!haveSelectedEnoughCard) {
-                            gameFEStatusObserved.selectEquipmentCard(this.card)
+                            gameFEStatusObserved.selectCard(this.card, this.equipmentType)
                         }
                     }
                 }
@@ -183,7 +189,7 @@ export class EquipmentCard {
             isSelected = true
         }
         // @ts-ignore
-        if (gameFEStatus.selectedCards[EQ_TYPE_CARD_NAME_MAP[this.equipmentType]].cardId == this.cardId) {
+        if (gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.cardId)) {
             isSelected = true
         }
 

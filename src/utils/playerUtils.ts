@@ -12,8 +12,9 @@ import {PandingSign} from "../types/card";
 import {Player} from "../types/player";
 import {SKILL_NAMES} from "../config/skillsConfig";
 import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
-import {getIsMyResponseTurn} from "./stageUtils";
-import {getSelectedCardNumber, getSelectedTargetNumber} from "./cardValidation";
+import {getIsMyPlayTurn, getIsMyResponseTurn} from "./stageUtils";
+import {getSelectedCardNumber, getSelectedTargetNumber} from "./validationUtils";
+import {attachFEInfoToCard} from "./cardUtils";
 
 const getPlayersDistanceFromAToB = (gameStatus: GameStatus, APlayer: Player, BPlayer: Player) => {
     const playerNumber = Object.keys(gameStatus.players).length
@@ -154,6 +155,23 @@ const getCurrentPlayer = (gameStatus: GameStatus) => {
     return gameStatus.players[gameStatus.stage.playerId]
 }
 
+const getTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
+    const mePlayer = gameStatus.players[getMyPlayerId()]
+
+    if (gameStatus.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI
+        && gameStatus.skillResponse.chooseToReleaseSkill
+    ) {
+        return {min: 1, max: 1}
+    }
+    if (getIsMyPlayTurn(gameStatus) && mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN
+        && mePlayer.cards.length == 1
+        && ALL_SHA_CARD_NAMES.includes(mePlayer.cards[0].CN)
+    ) {
+        return {min: 1, max: 3}
+    }
+    return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+}
+
 export {
     getIfPlayerAble,
     getIfPlayerHasAnyCards,
@@ -164,5 +182,6 @@ export {
     getPlayersDistanceFromAToB,
     getPlayerDisplayName,
     getCurrentPlayer,
-}
 
+    getTargetPlayersNumberMinMax
+}

@@ -10,10 +10,9 @@ import {
     EQUIPMENT_TYPE,
     SCROLL_CARDS_CONFIG
 } from "../../config/cardConfig";
-import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber} from "../../utils/validationUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {getTargetPlayersNumberMinMax} from "../../utils/cardUtils";
-import {getCurrentPlayer, getPlayerDisplayName} from "../../utils/playerUtils";
+import {getCurrentPlayer, getPlayerDisplayName, getTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {SKILL_NAMES} from "../../config/skillsConfig";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {

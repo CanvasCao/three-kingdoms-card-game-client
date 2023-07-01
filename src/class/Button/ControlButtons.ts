@@ -14,11 +14,11 @@ import {getMyResponseInfo, getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {getIsMyResponseTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectCardsNumber, getSelectedCardNumber, getSelectedTargetNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber, getSelectedCardNumber, getSelectedTargetNumber} from "../../utils/validationUtils";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
-import {getTargetPlayersNumberMinMax} from "../../utils/cardUtils";
 import {BaseResponseInfo} from "../../types/responseInfo";
+import {getTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 
 export class ControlButtons {
     obId: string;

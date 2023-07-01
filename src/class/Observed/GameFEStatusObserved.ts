@@ -1,9 +1,8 @@
 import {cloneDeep, differenceBy} from "lodash";
-import {EQ_TYPE_CARD_NAME_MAP} from "../../config/cardConfig";
 import {Card} from "../../types/card";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {FEObserver} from "../../types/observer";
-import { Player } from "../../types/player";
+import {Player} from "../../types/player";
 import {generateActualCard} from "../../utils/emitDataGenerator";
 
 export class GameFEStatusObserved {
@@ -31,13 +30,7 @@ export class GameFEStatusObserved {
 
     constructor() {
         this.originCardState = {
-            selectedCards: {
-                handCards: [],
-                weaponCard: null,
-                shieldCard: null,
-                minusHorseCard: null,
-                plusHorseCard: null
-            },
+            selectedCards: [],
             selectedIndexes: [],
             actualCard: null,
         }
@@ -120,38 +113,22 @@ export class GameFEStatusObserved {
 
 
     // select/unselect card
-    unselectHandCard(card: Card, _index: number) {
+    unselectCard(card: Card, indexOrEqName: number | string) {
         const gameFEStatus = this.gameFEStatus;
-        gameFEStatus.selectedCards.handCards = differenceBy(gameFEStatus.selectedCards.handCards, [card], 'cardId');
-        gameFEStatus.selectedIndexes = differenceBy(gameFEStatus.selectedIndexes, [_index]);
+        gameFEStatus.selectedCards = differenceBy(gameFEStatus.selectedCards, [card], 'cardId');
+        gameFEStatus.selectedIndexes = differenceBy(gameFEStatus.selectedIndexes, [indexOrEqName]);
         gameFEStatus.actualCard = null;
         gameFEStatus.selectedTargetPlayers = [];
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 
-    selectHandCard(card: Card, _index: number, {needGenerateActualCard}: { needGenerateActualCard?: boolean } = {}) {
+    selectCard(card: Card, indexOrEqName: number | string, {needGenerateActualCard}: { needGenerateActualCard?: boolean } = {}) {
         const gameFEStatus = this.gameFEStatus;
-        gameFEStatus.selectedCards.handCards.push(card);
-        gameFEStatus.selectedIndexes.push(_index);
+        gameFEStatus.selectedCards.push(card);
+        gameFEStatus.selectedIndexes.push(indexOrEqName);
         if (needGenerateActualCard) {
             gameFEStatus.actualCard = generateActualCard(gameFEStatus);
         }
-        this._setSelectedGameEFStatus(gameFEStatus)
-    }
-
-    unselectEquipmentCard(card: Card) {
-        const gameFEStatus = this.gameFEStatus;
-        // @ts-ignore
-        gameFEStatus.selectedCards[EQ_TYPE_CARD_NAME_MAP[card.equipmentType]] = null;
-        gameFEStatus.actualCard = null;
-        gameFEStatus.selectedTargetPlayers = [];
-        this._setSelectedGameEFStatus(gameFEStatus)
-    }
-
-    selectEquipmentCard(card: Card) {
-        const gameFEStatus = this.gameFEStatus;
-        // @ts-ignore
-        gameFEStatus.selectedCards[EQ_TYPE_CARD_NAME_MAP[card.equipmentType]].push(card);
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 
@@ -168,14 +145,14 @@ export class GameFEStatusObserved {
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 
-    unselectPlayer(player:Player) {
+    unselectPlayer(player: Player) {
         const gameFEStatus = this.gameFEStatus;
         // @ts-ignore
         gameFEStatus.selectedTargetPlayers = differenceBy(gameFEStatus.selectedTargetPlayers, [player], 'playerIdId');
         this._setSelectedGameEFStatus(gameFEStatus);
     }
 
-    selectPlayer(player:Player) {
+    selectPlayer(player: Player) {
         const gameFEStatus = this.gameFEStatus;
         // @ts-ignore
         gameFEStatus.selectedTargetPlayers.push(player);

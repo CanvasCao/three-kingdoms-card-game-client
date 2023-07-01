@@ -17,7 +17,10 @@ const CARD_NUM_DESC = {
 
 // BE
 const CARD_LOCATION = {
-    PAIDUI: "PAIDUI"
+    PAIDUI: "PAIDUI",
+    HAND: "HAND",
+    EQUIPMENT: "EQUIPMENT",
+    PANDING: "PANDING"
 }
 
 const CARD_HUASE = {
@@ -382,16 +385,8 @@ const ALL_SHA_CARD_NAMES = [
     CARD_CONFIG.HUO_SHA.CN,
 ]
 
-const EQ_TYPE_CARD_NAME_MAP = {
-    [EQUIPMENT_TYPE.WEAPON]: "weaponCard",
-    [EQUIPMENT_TYPE.SHIELD]: 'shieldCard',
-    [EQUIPMENT_TYPE.PLUS_HORSE]: 'plusHorseCard',
-    [EQUIPMENT_TYPE.MINUS_HORSE]: 'minusHorseCard'
-}
-
 export {
     ALL_SHA_CARD_NAMES,
-    EQ_TYPE_CARD_NAME_MAP,
 
     CARD_NUM_DESC,
     CARD_LOCATION,

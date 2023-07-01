@@ -1,4 +1,4 @@
-import {Card, SelectedCards, WugufengdengCard} from "./card";
+import {Card, WugufengdengCard} from "./card";
 import {EventTimingSkill, PandingEvent, UseStrikeEvent} from "./event";
 import {GameStatusPlayers} from "./player";
 
@@ -16,7 +16,7 @@ export type GameStatus = {
     taoResponses: TaoResponse[],
     scrollResponses: ScrollResponse[],
     wuxieSimultaneousResponse: WuxieSimultaneousResponse,
-    weaponResponses: weaponResponse[],
+    weaponResponses: WeaponResponse[],
 
     wugufengdengCards: WugufengdengCard[]
 
@@ -35,25 +35,26 @@ export type Stage = {
     stageIndex: number,
 }
 
+// action
 export type OneTargetAction = {
-    cards: SelectedCards,
+    cards: Card[],
     actualCard: Card,
     originId: string,
     targetId?: string,
 
-    selectedIndexes: number[],
-
+    selectedIndexes: (number|string)[],
 }
 
 export type MultiTargetsAction = {
-    cards: SelectedCards,
+    cards:Card[],
     actualCard: Card,
     originId: string,
     targetIds: string[],
 
-    selectedIndexes: number[],
+    selectedIndexes: (number|string)[],
 }
 
+// response
 export type ShanResponse = {
     originId: string,
     targetId: string,
@@ -81,7 +82,7 @@ export type WuxieSimultaneousResponse = {
     wuxieChain: WuxieChain,
 }
 
-export type weaponResponse = {
+export type WeaponResponse = {
     originId: string,
     targetId: string,
     weaponCardName: string,

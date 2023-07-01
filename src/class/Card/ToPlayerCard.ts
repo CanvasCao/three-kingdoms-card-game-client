@@ -5,9 +5,9 @@ import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCard
 import {differenceBy} from "lodash";
 import {GamingScene} from "../../types/phaser";
 import {BoardPlayer} from "../Player/BoardPlayer";
-import {getControlCardPosition} from "../../utils/cardUtils";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
+import {getMyCardPosition} from "../../utils/cardPositionUtils";
 
 export class ToPlayerCard {
     obId: string;
@@ -31,7 +31,7 @@ export class ToPlayerCard {
     constructor(gamingScene: GamingScene,
                 card: Card,
                 isFaceFront: boolean,
-                originIndex: number | undefined, // 来源 我打出的牌
+                originIndex: number | string | undefined, // 来源 我打出的牌
                 fromBoardPlayer: BoardPlayer | undefined,
                 toBoardPlayer: BoardPlayer | undefined,
                 repeatTimes?: number,
@@ -56,8 +56,7 @@ export class ToPlayerCard {
             this.fadeInStartX = sizeConfig.playersArea.width / 2;
             this.fadeInStartY = sizeConfig.background.height / 2;
         } else if (fromBoardPlayer!.playerId == getMyPlayerId()) { // 我打出的牌
-            // LostCard的fadeInStartX 就是controlCard的cardInitEndY
-            const position = getControlCardPosition(originIndex!);
+            const position = getMyCardPosition(originIndex!);
             this.fadeInStartX = position.x;
             this.fadeInStartY = position.y;
         } else { // 别人打出的牌

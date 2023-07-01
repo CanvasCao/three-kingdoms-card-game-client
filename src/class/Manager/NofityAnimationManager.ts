@@ -6,10 +6,11 @@ import {
     EmitNotifyAddToPublicCardData,
     EmitNotifyAddToPlayerCardData,
 } from "../../types/emit";
-import {attachFEInfoToCard, generatePublicCardMessage, getIfToPlayerCardFaceFront} from "../../utils/cardUtils";
+import {attachFEInfoToCard, generatePublicCardMessage, getIsToOtherPlayerCardFaceFront} from "../../utils/cardUtils";
 import {PublicLine} from "../Line/PublicLine";
 import {ToPlayerCard} from "../Card/ToPlayerCard";
 import {Card} from "../../types/card";
+import {isNumber} from "lodash";
 
 export class NofityAnimationManager {
     // obId: string;
@@ -66,36 +67,42 @@ export class NofityAnimationManager {
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
         const isMe = fromBoardPlayer?.playerId === getMyPlayerId()
-        let cardsWithOrder: { card: Card, originIndex: number }[] = [] // 只有我打出的牌才需要Card with order
-        data.cards.forEach((card, index) => {
-            cardsWithOrder.push({card, originIndex: isMe ? data.originIndexes[index] : 0})
-        })
+        let handCardsWithOrder: { card: Card, originIndex: number }[] = [] // 只有我打出的牌才需要Card with order
+        let otherCardsWithOrder: { card: Card, originIndex: string }[] = [] // 只有我打出的牌才需要Card with order
 
         if (isMe) {
-            cardsWithOrder = cardsWithOrder.sort((a, b) => a.originIndex - b.originIndex)
+            data.cards.forEach((card, index) => {
+                const originIndex = data.originIndexes[index]
+                isNumber(originIndex) ?
+                    handCardsWithOrder.push({card, originIndex}) :
+                    otherCardsWithOrder.push({card, originIndex})
+            })
+            handCardsWithOrder = handCardsWithOrder.sort((a, b) => a.originIndex - b.originIndex)
+        } else {
+            handCardsWithOrder = data.cards.map((card) => {
+                return {card, originIndex: 0} // 别人的牌originIndex无所谓是什么
+            })
         }
 
         const message = generatePublicCardMessage(gameStatus, data);
 
-        cardsWithOrder.forEach(({card, originIndex}) => {
+        [...handCardsWithOrder, ...otherCardsWithOrder].forEach(({card, originIndex}) => {
             gameFEStatus.publicCards.push(card)
             new ToPublicCard(
                 this.gamingScene,
                 card,
                 message,
-                gameFEStatus.publicCards,
+                gameFEStatus.publicCards, // 为了计算初始位置
                 fromBoardPlayer,
                 originIndex,
             )
         })
 
-        // setGameEFStatus 是为了ToPublicCard adjustLocation
+        // 为了 adjustLocation
         this.gamingScene.gameFEStatusObserved.setPublicCardsGameEFStatus(gameFEStatus)
     }
 
     addToPlayerCard(data: EmitNotifyAddToPlayerCardData) {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-
         // 到别人手里 需要叠起来移动
         // 到自己手里需要一张一张移动
         const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.toId)
@@ -108,18 +115,17 @@ export class NofityAnimationManager {
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
         if (fromBoardPlayer?.playerId == getMyPlayerId()) {
             data.cards.forEach((card, index) => {
-                const originIndex = data.originIndexes?.[index] || 0;
                 new ToPlayerCard(
                     this.gamingScene,
                     card,
                     true,
-                    originIndex,
+                    data.originIndexes[index],
                     fromBoardPlayer,
                     toBoardPlayer,
                 )
             })
         } else {
-            let isFaceFront = getIfToPlayerCardFaceFront(data.cardAreaType, data.fromId, data.toId)
+            let isFaceFront = getIsToOtherPlayerCardFaceFront(data.cardAreaType, data.fromId, data.toId)
             new ToPlayerCard(
                 this.gamingScene,
                 data.cards[0],

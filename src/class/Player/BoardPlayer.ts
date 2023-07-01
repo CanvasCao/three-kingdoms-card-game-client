@@ -1,14 +1,12 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
-import {CARD_NUM_DESC, DELAY_SCROLL_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
-import {GamingScene, PlayerEquipmentGroup} from "../../types/phaser";
+import {DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
-import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
-import {getTargetPlayersNumberMinMax, getCardColor} from "../../utils/cardUtils";
-import {getIfPlayerAble} from "../../utils/playerUtils";
+import  {getIfPlayerAble, getTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {

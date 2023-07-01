@@ -3,7 +3,7 @@ import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import colorConfig from "../../config/colorConfig.json";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {CARD_LOCATION, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {shuffle} from "lodash";
 import {EMIT_TYPE} from "../../config/emitConfig";
@@ -210,7 +210,7 @@ export class PlayerCardsBoard {
         })
     }
 
-    drawTargetPlayerCards(targetPlayer: Player, scrollResponse: ScrollResponse) {
+    drawTargetPlayerCards(targetPlayer: Player) {
         const cards = shuffle(targetPlayer.cards).slice(0, 8);
         cards.forEach((card, index) => {
             const {cardImgObj} = sharedDrawBackCard(this.gamingScene, card, {
@@ -219,13 +219,13 @@ export class PlayerCardsBoard {
                 depth: boardDepth,
             })
             cardImgObj.on('pointerdown',
-                this.getCardClickHandler(targetPlayer, card, scrollResponse, 'hand')
+                this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.HAND as CardAreaType, index)
             )
             this.destoryObjects.push(cardImgObj);
         })
     }
 
-    drawTargetEquipmentCards(targetPlayer: Player, scrollResponse: ScrollResponse) {
+    drawTargetEquipmentCards(targetPlayer: Player) {
         ['weaponCard', 'shieldCard', 'plusHorseCard', 'minusHorseCard'].forEach((key, index) => {
             const card = targetPlayer[key as keyof Player] as Card;
             if (!card) {
@@ -238,7 +238,7 @@ export class PlayerCardsBoard {
                 depth: boardDepth,
             })
             cardImgObj.on('pointerdown',
-                this.getCardClickHandler(targetPlayer, card, scrollResponse, "equipment"))
+                this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.EQUIPMENT as CardAreaType))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -247,7 +247,7 @@ export class PlayerCardsBoard {
 
     }
 
-    drawTargetPandingCards(targetPlayer: Player, scrollResponse: ScrollResponse) {
+    drawTargetPandingCards(targetPlayer: Player) {
         targetPlayer.pandingSigns.forEach((sign, index) => {
             const card = sign.card
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
@@ -255,7 +255,7 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: boardDepth,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, scrollResponse, 'panding'))
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.PANDING as CardAreaType))
 
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
@@ -263,11 +263,11 @@ export class PlayerCardsBoard {
         })
     }
 
-    getCardClickHandler(targetPlayer: Player, card: Card, scrollResponse: ScrollResponse, cardAreaType: CardAreaType) {
+    getCardClickHandler(targetPlayer: Player, card: Card, cardAreaType: CardAreaType, index?: number) {
         return () => {
             this.gamingScene.socket.emit(
                 EMIT_TYPE.CARD_BOARD_ACTION,
-                this.getEmitCardBoardActionData(targetPlayer, card, scrollResponse, cardAreaType)
+                this.getEmitCardBoardActionData(targetPlayer, card, cardAreaType, index)
             )
         }
     }
@@ -295,34 +295,48 @@ export class PlayerCardsBoard {
         this.titleText!.setAlpha(1)
         this.titleText!.setText(
             i18(i18Config.PLAYER_BOARD_TITLE, {
-                cardName: i18(scrollResponse?.actualCard) ,
+                cardName: i18(scrollResponse?.actualCard),
                 playerName: gameStatus.players[targetPlayer.playerId].name
             }),
         )
 
-        this.drawTargetPlayerCards(targetPlayer, scrollResponse);
-        this.drawTargetEquipmentCards(targetPlayer, scrollResponse);
-        this.drawTargetPandingCards(targetPlayer, scrollResponse);
+        this.drawTargetPlayerCards(targetPlayer);
+        this.drawTargetEquipmentCards(targetPlayer);
+        this.drawTargetPandingCards(targetPlayer);
     }
 
     destoryTargetCards() {
         this.destoryObjects.forEach((o) => o.destroy());
     }
 
-    getEmitCardBoardActionData(targetPlayer: Player, card: Card, scrollResponse: ScrollResponse, cardAreaType: CardAreaType): EmitCardBoardData {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+    getEmitCardBoardActionData(
+        targetPlayer: Player,
+        card: Card,
+        cardAreaType: CardAreaType, // NofityAnimationManager判断正反
+        index?: number | string
+    ): EmitCardBoardData {
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
+        let selectedIndex: number | string = 0
+        if (index) {
+            selectedIndex = index
+        } else if (cardAreaType == CARD_LOCATION.PANDING) {
+            selectedIndex = card.CN
+        } else if (cardAreaType == CARD_LOCATION.EQUIPMENT) {
+            selectedIndex = card.equipmentType!
+        }
 
         return {
             originId: getMyPlayerId(),
             targetId: targetPlayer.playerId,
             card: card,
-            selectedIndex: gameFEStatus.selectedIndexes[0],
-            type: this.getEmitType(scrollResponse)!,
+            selectedIndexes: [selectedIndex],
+            type: this.getEmitType(gameStatus)!,
             cardAreaType,
         }
     }
 
-    getEmitType(scrollResponse: ScrollResponse) {
+    getEmitType(gameStatus: GameStatus) {
+        const scrollResponse = gameStatus.scrollResponses[0]
         if (scrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
             return "REMOVE"
         } else if (scrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {

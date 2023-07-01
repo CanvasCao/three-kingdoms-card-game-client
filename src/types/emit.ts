@@ -1,5 +1,5 @@
 import {MultiTargetsAction, OneTargetAction} from "./gameStatus";
-import {Card, CardAreaType, CardBoardActionType, SelectedCards} from "./card";
+import {Card, CardAreaType, CardBoardActionType} from "./card";
 
 // 前端=>后端
 // 游戏开始前
@@ -19,11 +19,11 @@ export type EmitActionData = OneTargetAction | MultiTargetsAction
 
 export type EmitResponseData = {
     chooseToResponse: boolean,
-    cards: SelectedCards,
+    cards: Card[],
     actualCard: Card,
     originId: string,
 
-    selectedIndexes: number[],
+    selectedIndexes: (number|string)[],
 
     // 基本卡
     targetId?: string,
@@ -42,13 +42,13 @@ export type EmitCardBoardData = {
     cardAreaType: CardAreaType,
     type: CardBoardActionType,
 
-    selectedIndex: number,
+    selectedIndexes: (number|string)[],
 }
 
 
 export type EmitThrowData = {
     cards: Card[]
-    selectedIndexes: number[],
+    selectedIndexes: (number|string)[],
 }
 
 export type EmitWugufengdengData = {
@@ -78,7 +78,7 @@ export type EmitNotifyAddToPublicCardData = {
     pandingPlayerId: string,
     pandingName: string,
     throwPlayerId: string,
-    originIndexes: number[],
+    originIndexes: (number|string)[],
     type: string,
 }
 
