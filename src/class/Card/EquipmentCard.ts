@@ -141,7 +141,8 @@ export class EquipmentCard {
                         gameFEStatusObserved.unselectCard(this.card, this.equipmentType)
                     } else { // 还没选中
                         if (!haveSelectedEnoughCard) {
-                            gameFEStatusObserved.selectCard(this.card, this.equipmentType)
+                            const needGenerateActualCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
+                            gameFEStatusObserved.selectCard(this.card, this.equipmentType, {needGenerateActualCard})
                         }
                     }
                 }

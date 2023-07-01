@@ -80,6 +80,7 @@ export type EmitNotifyAddToPublicCardData = {
     throwPlayerId: string,
     originIndexes: (number|string)[],
     type: string,
+    skillName?: string,
 }
 
 export type EmitNotifyAddToPlayerCardData = {
