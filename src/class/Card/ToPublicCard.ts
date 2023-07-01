@@ -35,7 +35,7 @@ export class ToPublicCard {
                 message: string,
                 publicCards: Card[],
                 fromBoardPlayer: BoardPlayer | undefined,
-                originIndex: number | undefined, // 来源 只出现在我打出的牌
+                originIndex: number | undefined, // 只出现在我打出的牌
     ) {
         this.obId = uuidv4();
 

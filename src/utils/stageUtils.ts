@@ -11,6 +11,7 @@ import {ResponseInfo} from "../types/responseInfo";
 import {Card} from "../types/card";
 import {SKILL_NAMES} from "../config/skillsConfig";
 import {GameFEStatus} from "../types/gameFEStatus";
+import {getSelectedCardNumber, getSelectedTargetNumber} from "./cardValidation";
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == GAME_STAGE.PLAY;
@@ -74,16 +75,13 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             if (chooseToReleaseSkill == undefined) { // 是否发动鬼才
             } else if (chooseToReleaseSkill) { // 发动鬼才 选择手牌
                 cardIsAbleValidate = (card: Card) => true
-                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) =>
-                    gameFEStatus.selectedCards.length === 1
+                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
             }
         } else if (skillName == SKILL_NAMES.WU["006"].LIU_LI) {
             if (chooseToReleaseSkill == undefined) {
             } else if (chooseToReleaseSkill) {
                 cardIsAbleValidate = (card: Card) => true
-                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) =>
-                    gameFEStatus.selectedCards.length === 1 &&
-                    gameFEStatus.selectedTargetPlayers.length === 1
+                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1 && getSelectedTargetNumber(gameFEStatus) === 1
             }
         }
         return {

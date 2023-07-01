@@ -65,17 +65,18 @@ export class NofityAnimationManager {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
-        let cardsWithOrder: { card: Card, originIndex: number }[] = []
+        const isMe = fromBoardPlayer?.playerId === getMyPlayerId()
+        let cardsWithOrder: { card: Card, originIndex: number }[] = [] // 只有我打出的牌才需要Card with order
         data.cards.forEach((card, index) => {
-            const originIndex = data.originIndexes ? data.originIndexes[index] : 0;
-            cardsWithOrder.push({card, originIndex})
+            cardsWithOrder.push({card, originIndex: isMe ? data.originIndexes[index] : 0})
         })
 
-        cardsWithOrder = cardsWithOrder.sort((a, b) => {
-            return a.originIndex - b.originIndex
-        })
+        if (isMe) {
+            cardsWithOrder = cardsWithOrder.sort((a, b) => a.originIndex - b.originIndex)
+        }
 
         const message = generatePublicCardMessage(gameStatus, data);
+
         cardsWithOrder.forEach(({card, originIndex}) => {
             gameFEStatus.publicCards.push(card)
             new ToPublicCard(

@@ -21,10 +21,10 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
     const actualCardCNName = actualCard?.CN || ''
     const actualCardName = actualCard ? i18(actualCard) : '';
     const equipmentType = actualCard?.equipmentType;
-    const selectedWeaponCard = gameFEStatus.selectedWeaponCard;
+    const selectedSkillName = gameFEStatus.selectedSkillName;
 
     // 没有选择牌
-    if (!actualCard && !selectedWeaponCard) {
+    if (!actualCard && !selectedSkillName) {
         return (i18(i18Config.PLEASE_SELECT_A_CARD))
     }
     // 基本牌
@@ -69,7 +69,7 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
         return (i18(i18Config.SELECT_LE_BU_SI_SHU))
     } else if (actualCardCNName == SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN) {
         return (i18(i18Config.SELECT_BING_LIANG_CUN_DUAN))
-    } else if (selectedWeaponCard?.CN == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
+    } else if (selectedSkillName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
         return (i18(i18Config.SELECT_ZHANG_BA_SHE_MAO))
     } else {
         console.log(actualCard)

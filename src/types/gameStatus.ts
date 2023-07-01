@@ -1,4 +1,4 @@
-import {Card, WugufengdengCard} from "./card";
+import {Card, SelectedCards, WugufengdengCard} from "./card";
 import {EventTimingSkill, PandingEvent, UseStrikeEvent} from "./event";
 import {GameStatusPlayers} from "./player";
 
@@ -36,7 +36,7 @@ export type Stage = {
 }
 
 export type OneTargetAction = {
-    cards: Card[],
+    cards: SelectedCards,
     actualCard: Card,
     originId: string,
     targetId?: string,
@@ -46,7 +46,7 @@ export type OneTargetAction = {
 }
 
 export type MultiTargetsAction = {
-    cards: Card[],
+    cards: SelectedCards,
     actualCard: Card,
     originId: string,
     targetIds: string[],

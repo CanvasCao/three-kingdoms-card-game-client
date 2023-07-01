@@ -10,7 +10,7 @@ import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
 import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseTurn, getMyResponseInfo} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/cardValidation";
 import {getInMyPlayTurnCanPlayCardNamesClourse} from "../../utils/cardNamesClourseUtils";
 import {Card} from "../../types/card";
 import {BasicCardResponseInfo} from "../../types/responseInfo";
@@ -112,8 +112,9 @@ export class ControlCard {
                 const isMyResponseTurn = getIsMyResponseTurn(curStatus);
                 const isMyThrowTurn = getIsMyThrowTurn(curStatus);
 
-                const needSelectControlCardNumber = getNeedSelectCardsNumber(curStatus, curFEStatus);
-                const haveSelectedEnoughThrowCard = curFEStatus.selectedCards.length >= needSelectControlCardNumber;
+                const needSelectCardsNumber = getNeedSelectCardsNumber(curStatus, curFEStatus);
+                const haveSelectCardsNumber = getSelectedCardNumber(curFEStatus);
+                const haveSelectedEnoughThrowCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
                 if (!canPlayInMyTurn && !isMyResponseTurn && !isMyThrowTurn) {
                     return
@@ -121,20 +122,20 @@ export class ControlCard {
 
                 if (canPlayInMyTurn || isMyResponseTurn) {
                     // 选中再点击就是反选
-                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectCard(this.card, this._index)
+                    if (curFEStatus.selectedCards.handCards.map(c => c.cardId).includes(this.card.cardId)) {
+                        gameFEStatusObserved.unselectHandCard(this.card, this._index)
                     } else { // 选中
                         if (!haveSelectedEnoughThrowCard) {
-                            const needGenerateActualCard = curFEStatus.selectedCards.length == (needSelectControlCardNumber - 1)
-                            gameFEStatusObserved.selectCard(this.card, this._index, {needGenerateActualCard})
+                            const needGenerateActualCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
+                            gameFEStatusObserved.selectHandCard(this.card, this._index, {needGenerateActualCard})
                         }
                     }
                 } else if (isMyThrowTurn) {
-                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectCard(this.card, this._index)
+                    if (curFEStatus.selectedCards.handCards.map(c => c.cardId).includes(this.card.cardId)) {
+                        gameFEStatusObserved.unselectHandCard(this.card, this._index)
                     } else {
                         if (!haveSelectedEnoughThrowCard) {
-                            gameFEStatusObserved.selectCard(this.card, this._index)
+                            gameFEStatusObserved.selectHandCard(this.card, this._index)
                         }
                     }
                 }
@@ -212,7 +213,7 @@ export class ControlCard {
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
         if (canPlayInMyTurn) {
-            if (gameFEStatus.selectedWeaponCard?.CN == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
+            if (gameFEStatus.selectedSkillName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
                 setCardAble()
                 return
             }
@@ -281,7 +282,7 @@ export class ControlCard {
             return;
         }
 
-        const isSelected = !!gameFEStatus.selectedCards.find((c) => c.cardId == this.card.cardId)
+        const isSelected = !!gameFEStatus.selectedCards.handCards.find((c) => c.cardId == this.card.cardId)
         if (this._selected == isSelected) return;
         if (this.isMoving) return;
         const whenSelectedMoveDistance = 20;

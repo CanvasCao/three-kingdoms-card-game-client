@@ -32,8 +32,16 @@ export type Card = {
 export type PandingSign = {
     card: Card,
     actualCard: Card,
-    isEffect: boolean, // undefined/null 未开始结算生效 true结算生效 false结算失效
+    isEffect: boolean, // undefined/null 未开始结算生效 true结算生效开始判定 false结算失效
 }
 export type WugufengdengCard = Card & { wugefengdengSelectedPlayerId: string }
 export type CardAreaType = "hand" | 'equipment' | 'panding'
 export type CardBoardActionType = "REMOVE" | "MOVE"
+
+export type SelectedCards={
+    handCards: Card[],
+    weaponCard: Card|null,
+    shieldCard: Card|null,
+    plusHorseCard: Card|null,
+    minusHorseCard: Card|null,
+}

@@ -2,28 +2,21 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import {CARD_NUM_DESC, EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
+import {EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE, EQ_TYPE_CARD_NAME_MAP} from "../../config/cardConfig";
 import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
-import {getCardColor} from "../../utils/cardUtils";
-import {getCanPlayerPlaySha} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
+import {getCanSelectEquipment, getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/cardValidation";
 
-const typeCardNameMap = {
-    [EQUIPMENT_TYPE.WEAPON]: 'weaponCard',
-    [EQUIPMENT_TYPE.SHIELD]: 'shieldCard',
-    [EQUIPMENT_TYPE.PLUS_HORSE]: 'plusHorseCard',
-    [EQUIPMENT_TYPE.MINUS_HORSE]: 'minusHorseCard',
-}
 
 export class EquipmentCard {
     obId: string;
     gamingScene: GamingScene;
+    card: Card;
     equipmentType: keyof typeof EQUIPMENT_TYPE;
     playerId: string;
-    card: Card;
+    cardName: string;
     cardId: string;
     isMe: boolean;
 
@@ -43,6 +36,7 @@ export class EquipmentCard {
 
         this.gamingScene = gamingScene;
         this.card = card;
+        this.cardName = card.CN;
         this.cardId = card.cardId;
         this.equipmentType = card.equipmentType!;
         this.playerId = playerId;
@@ -61,14 +55,16 @@ export class EquipmentCard {
         this.huaseNumText = null;
         this.cardObjgroup = [];
 
-        this.drawEquipmentCard();
+        this.drawEquipmentCard(card);
         this.bindEvent();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
-        this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
+        if (this.isMe) {
+            this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
+        }
     }
 
-    drawEquipmentCard() {
+    drawEquipmentCard(card: Card) {
         const indexMap = {
             [EQUIPMENT_TYPE.WEAPON]: 0,
             [EQUIPMENT_TYPE.SHIELD]: 1,
@@ -96,7 +92,7 @@ export class EquipmentCard {
             distanceText,
             nameText,
             huaseNumText,
-        } = sharedDrawEquipment(this.gamingScene, this.card, {
+        } = sharedDrawEquipment(this.gamingScene, card, {
             x: positionX,
             y: positionY,
             isMe: this.isMe,
@@ -112,7 +108,6 @@ export class EquipmentCard {
         this.cardObjgroup.push(distanceText)
         this.cardObjgroup.push(nameText)
         this.cardObjgroup.push(huaseNumText)
-
     }
 
     bindEvent() {
@@ -121,26 +116,38 @@ export class EquipmentCard {
                     return;
                 }
 
-                if (this.card.CN !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
-                    return;
-                }
-
+                const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved;
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-                if (!getCanPlayerPlaySha(gameStatus.players[getMyPlayerId()])) {
-                    return;
-                }
-
-                if (!getCanPlayInMyTurn(gameStatus)) {
-                    return;
-                }
-
                 const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
-                if (gameFEStatus.selectedWeaponCard) {
-                    this.gamingScene.gameFEStatusObserved.resetSelectedStatus()
-                } else {
-                    gameFEStatus.selectedWeaponCard = this.card;
-                    this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(gameFEStatus)
+
+                const canSelectEquipment = getCanSelectEquipment(gameStatus, gameFEStatus, this.cardName);
+                if (!canSelectEquipment) return;
+
+                const needSelectCardsNumber = getNeedSelectCardsNumber(gameStatus, gameFEStatus);
+                const haveSelectCardsNumber = getSelectedCardNumber(gameFEStatus);
+                const haveSelectedEnoughCard = haveSelectCardsNumber >= needSelectCardsNumber;
+
+                // 已经选中技能 或者响应技能 的情况下 一定是要打出武器
+                const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillName && (gameFEStatus.selectedSkillName !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN)
+                if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {
+                    // @ts-ignore
+                    if (gameFEStatus.selectedCards[EQ_TYPE_CARD_NAME_MAP[(this.equipmentType)]]) { // 已经选中
+                        gameFEStatusObserved.unselectEquipmentCard(this.card)
+                    } else { // 还没选中
+                        if (!haveSelectedEnoughCard) {
+                            gameFEStatusObserved.selectEquipmentCard(this.card)
+                        }
+                    }
                 }
+                // 没有选中技能 或者响应技能 是要选中丈八蛇矛
+                else {
+                    if (gameFEStatus.selectedSkillName == this.cardName) {
+                        gameFEStatusObserved.unselectSkill()
+                    } else {
+                        gameFEStatusObserved.selectSkill(this.cardName)
+                    }
+                }
+
             }
         );
     }
@@ -156,12 +163,10 @@ export class EquipmentCard {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
         const player = gameStatus.players[this.playerId];
         // @ts-ignore
-        const equipmentCard = player[typeCardNameMap[this.equipmentType]] as Card
-
-        if (equipmentCard.cardId !== this.cardId) {
+        const newEquipmentCard = player[EQ_TYPE_CARD_NAME_MAP[this.equipmentType]] as Card
+        if (!newEquipmentCard) {
             this.destoryAll();
         }
     }
@@ -172,7 +177,16 @@ export class EquipmentCard {
             return;
         }
 
-        const isSelected = !!gameFEStatus.selectedWeaponCard && (gameFEStatus.selectedWeaponCard?.cardId === this.card?.cardId);
+        let isSelected = false;
+        if (gameFEStatus.selectedSkillName === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN &&
+            this.cardName === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
+            isSelected = true
+        }
+        // @ts-ignore
+        if (gameFEStatus.selectedCards[EQ_TYPE_CARD_NAME_MAP[this.equipmentType]].cardId == this.cardId) {
+            isSelected = true
+        }
+
         if (this._isSelected == isSelected) return;
 
         this.cardObjgroup.forEach((obj) => {
@@ -181,10 +195,10 @@ export class EquipmentCard {
                 x: {
                     // @ts-ignore
                     value: isSelected ? (obj.x + sizeConfig.controlSelectedOffsetX) : (obj.x - sizeConfig.controlSelectedOffsetX),
-                    duration: 0,
+                    duration: 100,
                 },
                 onComplete: () => {
-                    this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
+                    // this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
                     this._isSelected = isSelected
                 }
             });

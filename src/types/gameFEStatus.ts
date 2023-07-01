@@ -1,16 +1,14 @@
-import {Card} from "./card";
-import {FEObserver} from "./observer";
+import {Card, SelectedCards} from "./card";
 import {Players} from "./player";
 
 export type GameFEStatus = {
-    selectedCards: Card[],
+    selectedCards: SelectedCards,
     selectedIndexes: number[],
     actualCard: Card | null,
-    selectedWeaponCard: Card | null,
 
     selectedTargetPlayers: Players,
 
-    selectedSkill: any[],
+    selectedSkillName: string,
 
     publicCards: Card[],
 }

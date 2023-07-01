@@ -1,5 +1,5 @@
 import {MultiTargetsAction, OneTargetAction} from "./gameStatus";
-import {Card, CardAreaType, CardBoardActionType} from "./card";
+import {Card, CardAreaType, CardBoardActionType, SelectedCards} from "./card";
 
 // 前端=>后端
 // 游戏开始前
@@ -19,7 +19,7 @@ export type EmitActionData = OneTargetAction | MultiTargetsAction
 
 export type EmitResponseData = {
     chooseToResponse: boolean,
-    cards: Card[],
+    cards: SelectedCards,
     actualCard: Card,
     originId: string,
 

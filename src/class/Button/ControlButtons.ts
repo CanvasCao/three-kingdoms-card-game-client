@@ -14,7 +14,7 @@ import {getMyResponseInfo, getCanPlayInMyTurn} from "../../utils/stageUtils";
 import {getIsMyResponseTurn} from "../../utils/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectCardsNumber} from "../../utils/cardValidation";
+import {getNeedSelectCardsNumber, getSelectedCardNumber, getSelectedTargetNumber} from "../../utils/cardValidation";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getTargetPlayersNumberMinMax} from "../../utils/cardUtils";
@@ -231,10 +231,10 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        if (gameFEStatus?.actualCard && gameFEStatus.selectedCards.length > 0) {
+        if (gameFEStatus?.actualCard) {
             const targetMinMaxNumber = getTargetPlayersNumberMinMax(gameStatus, gameFEStatus);
-            const ifSelectedTargetsQualified = gameFEStatus.selectedTargetPlayers.length >= targetMinMaxNumber.min
-                && gameFEStatus.selectedTargetPlayers.length <= targetMinMaxNumber.max;
+            const ifSelectedTargetsQualified = getSelectedTargetNumber(gameFEStatus) >= targetMinMaxNumber.min
+                && getSelectedTargetNumber(gameFEStatus) <= targetMinMaxNumber.max;
             return ifSelectedTargetsQualified;
         }
         return false
@@ -246,8 +246,7 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const needThrowCardNumber = getNeedSelectCardsNumber(gameStatus, gameFEStatus);
-        return gameFEStatus.selectedCards.length == needThrowCardNumber
+        return getSelectedCardNumber(gameFEStatus) == getNeedSelectCardsNumber(gameStatus, gameFEStatus)
     }
 
     showAllBtns() {
@@ -310,7 +309,7 @@ export class ControlButtons {
         }
 
         if (this._canPlayInMyTurn || this._isMyThrowTurn) {
-            if (gameFEStatus.selectedCards.length > 0) {
+            if (getSelectedCardNumber(gameFEStatus) > 0) {
                 this.showBtn(this.cancelBtnGroup)
             } else {
                 this.disableBtn(this.cancelBtnGroup)

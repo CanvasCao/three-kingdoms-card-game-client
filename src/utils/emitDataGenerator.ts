@@ -56,7 +56,7 @@ const generateNoResponse = () => {
 }
 
 const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitResponseData => {
-    const info = getMyResponseInfo(gameStatus,gameFEStatus)
+    const info = getMyResponseInfo(gameStatus, gameFEStatus)
 
     return {
         chooseToResponse: true,
@@ -71,22 +71,22 @@ const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus)
 }
 
 const generateThrowData = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitThrowData => {
-    return {cards: gameFEStatus.selectedCards, selectedIndexes: gameFEStatus.selectedIndexes}
+    return {cards: gameFEStatus.selectedCards.handCards, selectedIndexes: gameFEStatus.selectedIndexes}
 }
 
 const generateActualCard = (gameFEStatus: GameFEStatus) => {
     const configSha = CARD_CONFIG.SHA;
     if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
         return {
-            huase: gameFEStatus.selectedCards[0].huase,
-            huase2: gameFEStatus.selectedCards[1].huase,
+            huase: gameFEStatus.selectedCards.handCards[0].huase,
+            huase2: gameFEStatus.selectedCards.handCards[1].huase,
             cardId: uuidv4(),
             CN: configSha.CN,
             EN: configSha.EN,
             type: configSha.KEY,
         }
     } else {
-        const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]))
+        const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards.handCards[0]))
         card.cardId = uuidv4()
         return card
     }

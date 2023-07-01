@@ -13,6 +13,7 @@ import {Player} from "../types/player";
 import {SKILL_NAMES} from "../config/skillsConfig";
 import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
 import {getIsMyResponseTurn} from "./stageUtils";
+import {getSelectedCardNumber, getSelectedTargetNumber} from "./cardValidation";
 
 const getPlayersDistanceFromAToB = (gameStatus: GameStatus, APlayer: Player, BPlayer: Player) => {
     const playerNumber = Object.keys(gameStatus.players).length
@@ -27,6 +28,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     const actualCardName = gameFEStatus?.actualCard?.CN || '';
     const mePlayer = gameStatus.players[getMyPlayerId()];
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, mePlayer, targetPlayer)
+    const selectedTargetNumber = getSelectedTargetNumber(gameFEStatus)
 
     // 响应技能和锦囊
     if (getIsMyResponseTurn(gameStatus) && gameStatus?.skillResponse) {
@@ -34,7 +36,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
         if (
             gameStatus?.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
             gameStatus?.skillResponse?.chooseToReleaseSkill &&
-            gameFEStatus.selectedCards.length == 1
+            getSelectedCardNumber(gameFEStatus) == 1
         ) {
             if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
                 return false
@@ -62,13 +64,13 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     }
     // 借刀杀人
     else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
-        if (gameFEStatus.selectedTargetPlayers.length == 0) {
+        if (selectedTargetNumber == 0) {
             if (getIfPlayerHasWeapon(targetPlayer)) {
                 return true
             } else {
                 return false
             }
-        } else if (gameFEStatus.selectedTargetPlayers.length == 1) {
+        } else if (selectedTargetNumber == 1) {
             let attackDistance, distanceBetweenAAndB;
             const weaponOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
             attackDistance = weaponOwnerPlayer?.weaponCard?.distance || 1;

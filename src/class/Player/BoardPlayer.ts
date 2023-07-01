@@ -289,8 +289,10 @@ export class BoardPlayer {
 
     bindEvent() {
         this.playerImage!.on('pointerdown', () => {
+            const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved
             const curGameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
             const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
+            const player = curGameStatus.players[this.playerId]
 
             if (this._isDead) {
                 return;
@@ -306,8 +308,7 @@ export class BoardPlayer {
 
             // Player已经选中过 反选
             if (curGameFEStatus.selectedTargetPlayers.find((u: Player) => u.playerId == this.playerId)) {
-                curGameFEStatus.selectedTargetPlayers = differenceBy(curGameFEStatus.selectedTargetPlayers, [curGameStatus.players[this.playerId]], 'playerIdId');
-                this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
+                gameFEStatusObserved.unselectPlayer(player)
                 return;
             }
 
@@ -329,8 +330,7 @@ export class BoardPlayer {
                 return;
             }
 
-            curGameFEStatus.selectedTargetPlayers.push(curGameStatus.players[this.playerId]);
-            this.gamingScene.gameFEStatusObserved.setSelectedGameEFStatus(curGameFEStatus);
+            gameFEStatusObserved.selectPlayer(player)
         });
     }
 
