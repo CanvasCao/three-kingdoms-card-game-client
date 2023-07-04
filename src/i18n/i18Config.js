@@ -224,8 +224,8 @@ export const i18Config = {
     },
     PLAYER_BOARD_TITLE: {
         KEY: "PLAYER_BOARD_TITLE",
-        EN: "{cardName} Choose a card from {playerName}",
-        CN: "{cardName} 选择一张{playerName}的卡牌"
+        EN: "{name} Choose a card from {playerName}",
+        CN: "{name} 选择一张{playerName}的卡牌"
     },
 
     // PublicCardMessage

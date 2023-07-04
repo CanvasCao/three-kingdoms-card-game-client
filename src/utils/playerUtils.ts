@@ -154,6 +154,14 @@ const getIfPlayerHasAnyHandCards = (player: Player) => {
     return player.cards.length > 0
 }
 
+const getIfPlayerHasAnyHandCardsOrEquipmentCards = (player: Player) => {
+    return player.cards.length ||
+        player.plusHorseCard ||
+        player.minusHorseCard ||
+        player.shieldCard ||
+        player.weaponCard
+}
+
 const getCanPlayerPlaySha = (player: Player) => {
     if (player.weaponCard && (player.weaponCard.CN == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.CN)) {
         return true
@@ -194,6 +202,7 @@ export {
     getIfPlayerAble,
     getIfPlayerHasAnyCards,
     getIfPlayerHasAnyHandCards,
+    getIfPlayerHasAnyHandCardsOrEquipmentCards,
     getIfPlayerHasWeapon,
     getCanPlayerPlaySha,
 

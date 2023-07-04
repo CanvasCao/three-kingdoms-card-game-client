@@ -1,4 +1,5 @@
-import {EQUIPMENT_TYPE} from "../config/cardConfig";
+import { PLAYER_BOARD_ACTION } from "../config/boardConfig";
+import {CARD_LOCATION, EQUIPMENT_TYPE} from "../config/cardConfig";
 
 export type Card = {
     huase: string,
@@ -35,5 +36,5 @@ export type PandingSign = {
     isEffect: boolean, // undefined/null 未开始结算生效 true结算生效开始判定 false结算失效
 }
 export type WugufengdengCard = Card & { wugefengdengSelectedPlayerId: string }
-export type CardAreaType = "HAND" | 'EQUIPMENT' | 'PANDING'
-export type CardBoardActionType = "REMOVE" | "MOVE"
+export type CardAreaType = keyof typeof CARD_LOCATION
+export type CardBoardActionType = keyof typeof PLAYER_BOARD_ACTION

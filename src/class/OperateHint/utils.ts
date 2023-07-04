@@ -92,6 +92,8 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return '打出一张手牌代替判定牌'
             } else if (skillName == SKILL_NAMES.WU["006"].LIU_LI) {
                 return '弃置一张牌并将此【杀】转移给你攻击范围内的一名其他角色（不能是使用此【杀】的角色）'
+            } else if (skillName == SKILL_NAMES.WEI["002"].FAN_KUI) {
+                return '获得伤害来源的一张牌'
             }
         }
     } else if (gameStatus.taoResponses.length > 0) {

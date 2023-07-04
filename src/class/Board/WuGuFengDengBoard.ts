@@ -42,7 +42,7 @@ export class WuGuFengDengBoard {
     destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[];
 
     // innerState 联合主键
-    _stageId: string;
+    _boardObserveId: string;
     _isEffect: boolean | undefined;
 
     constructor(gamingScene: GamingScene) {
@@ -59,7 +59,7 @@ export class WuGuFengDengBoard {
         this.cardMessageObjs = [];
         this.destoryObjects = [];
 
-        this._stageId = '';
+        this._boardObserveId = '';
         this._isEffect = undefined;
 
 
@@ -169,8 +169,7 @@ export class WuGuFengDengBoard {
         }
     }
 
-    updateCards(gameStatus: GameStatus) {
-        this.destoryCards();
+    drawCards(gameStatus: GameStatus) {
         this.drawWugufengdengCards(gameStatus);
     }
 
@@ -187,23 +186,23 @@ export class WuGuFengDengBoard {
 
     gameStatusNotify(gameStatus: GameStatus) {
         const curScrollResponse = gameStatus.scrollResponses?.[0];
-        const stageId = curScrollResponse?.stageId || '';
+        const boardObserveId = curScrollResponse?.boardObserveId || '';
         const isEffect = curScrollResponse?.isEffect || undefined;
-        if (this._stageId === stageId && this._isEffect === isEffect) {
+        if (this._boardObserveId === boardObserveId && this._isEffect === isEffect) {
             return;
         }
 
-        const showBoard = curScrollResponse && curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
+        const showBoard = curScrollResponse?.actualCard?.CN === SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
 
         if (showBoard) {
             this.showBoard(true, gameStatus);
-            this.updateCards(gameStatus);
+            this.drawCards(gameStatus);
         } else {
             this.showBoard(false, gameStatus);
             this.destoryCards();
         }
 
-        this._stageId = stageId;
+        this._boardObserveId = boardObserveId;
         this._isEffect = isEffect;
     }
 }

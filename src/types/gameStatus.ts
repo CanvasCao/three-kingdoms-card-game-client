@@ -1,5 +1,5 @@
 import {Card, WugufengdengCard} from "./card";
-import {EventTimingSkill, PandingEvent, UseStrikeEvent} from "./event";
+import {DamageEvent, EventTimingSkill, PandingEvent, UseStrikeEvent} from "./event";
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
@@ -23,6 +23,7 @@ export type GameStatus = {
     // events
     useStrikeEvents: UseStrikeEvent[],
     pandingEvent: PandingEvent,
+    damageEvent: DamageEvent,
 
     tieSuoTempStorage: TieSuoTempStorageItem[],
 
@@ -74,7 +75,7 @@ export type ScrollResponse = {
     isEffect: boolean,
 
     // 顺拆 前端刷新Board的依据
-    stageId?: string,
+    boardObserveId?: string,
 }
 
 export type WuxieSimultaneousResponse = {

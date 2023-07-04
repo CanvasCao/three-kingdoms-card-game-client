@@ -16,6 +16,18 @@ export type PandingEvent = {
     done: boolean
 }
 
+export type DamageEvent = {
+    damageCards: Card[], // 渠道
+    damageActualCard: Card, // 渠道
+    damageSkill: string, // 渠道
+    damageAttribute: string,// 属性
+    originId: string,
+    targetId: string,
+    damageNumber: number,
+    eventTimingsWithSkills: EventTimingsWithSkill[],
+    done: boolean
+}
+
 export type EventTimingsWithSkill = {
     eventTimingName: string,
     eventTimingSkills: EventTimingSkill[],
@@ -28,4 +40,5 @@ export type EventTimingSkill = {
     releaseTargetIds: string[],
     releaseCards: Card[],
     done: boolean,
+    boardObserveId: string,
 }

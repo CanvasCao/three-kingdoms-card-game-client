@@ -11,8 +11,10 @@ import {EmitCardBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
-import {Card, CardAreaType} from "../../types/card";
+import {Card, CardAreaType, CardBoardActionType} from "../../types/card";
 import {Player} from "../../types/player";
+import {getIfShowFanKuiPlayerCardsBoard, getIfShowShunChaiPlayerCardsBoard} from "../../utils/board/boardUtils";
+import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
 
 const gridOffset = {
     line1: {y: -55},
@@ -55,7 +57,7 @@ export class PlayerCardsBoard {
     destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[];
 
     // innerState
-    _stageId: string;
+    _boardObserveId: string;
 
 
     constructor(gamingScene: GamingScene) {
@@ -63,8 +65,8 @@ export class PlayerCardsBoard {
         this.gamingScene = gamingScene
         this.maskImg;
 
-        this.initX = sizeConfig.background.width / 2;
-        this.initY = sizeConfig.background.height / 2;
+        this.initX = sizeConfig.playersArea.width / 2;
+        this.initY = sizeConfig.playersArea.height / 2;
 
         this.maskImg;
         this.boardImg;
@@ -80,7 +82,7 @@ export class PlayerCardsBoard {
 
         this.destoryObjects = [];
 
-        this._stageId = '';
+        this._boardObserveId = '';
 
         this.drawBackground();
         this.drawTitle();
@@ -289,20 +291,32 @@ export class PlayerCardsBoard {
         this.pandingCardsPlaceholderTexts.forEach((o) => o.setAlpha(show ? 1 : 0))
     }
 
-    updateTargetCards(gameStatus: GameStatus) {
+    drawTargetCards(gameStatus: GameStatus) {
+        let name;
+        let targetPlayer: Player;
         const scrollResponse = gameStatus.scrollResponses?.[0];
-        const targetPlayer = gameStatus.players[scrollResponse.targetId]
+        const skillResponse = gameStatus.skillResponse;
+
+        if (scrollResponse) {
+            targetPlayer = gameStatus.players[scrollResponse.targetId]
+            name = i18(scrollResponse?.actualCard)
+
+        } else if (skillResponse) {
+            targetPlayer = gameStatus.players[gameStatus.damageEvent.originId]
+            name = skillResponse.skillName
+        }
+
         this.titleText!.setAlpha(1)
         this.titleText!.setText(
             i18(i18Config.PLAYER_BOARD_TITLE, {
-                cardName: i18(scrollResponse?.actualCard),
-                playerName: gameStatus.players[targetPlayer.playerId].name
+                name,
+                playerName: gameStatus.players[targetPlayer!.playerId].name
             }),
         )
 
-        this.drawTargetPlayerCards(targetPlayer);
-        this.drawTargetEquipmentCards(targetPlayer);
-        this.drawTargetPandingCards(targetPlayer);
+        this.drawTargetPlayerCards(targetPlayer!);
+        this.drawTargetEquipmentCards(targetPlayer!);
+        this.drawTargetPandingCards(targetPlayer!);
     }
 
     destoryTargetCards() {
@@ -330,31 +344,34 @@ export class PlayerCardsBoard {
             targetId: targetPlayer.playerId,
             card: card,
             selectedIndexes: [selectedIndex],
-            type: this.getEmitType(gameStatus)!,
+            type: this.getEmitType(gameStatus) as CardBoardActionType,
             cardAreaType,
         }
     }
 
     getEmitType(gameStatus: GameStatus) {
-        const scrollResponse = gameStatus.scrollResponses[0]
-        if (scrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
-            return "REMOVE"
-        } else if (scrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
-            return "MOVE"
+        const scrollResponse = gameStatus.scrollResponses?.[0]
+        if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+            return PLAYER_BOARD_ACTION.REMOVE
+        } else if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+            return PLAYER_BOARD_ACTION.MOVE
         }
+        return PLAYER_BOARD_ACTION.MOVE
+    }
+
+    getCanShowBoard(gameStatus: GameStatus) {
+        return getIfShowShunChaiPlayerCardsBoard(gameStatus) || getIfShowFanKuiPlayerCardsBoard(gameStatus)
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const curScrollResponse = gameStatus.scrollResponses?.[0];
-        const stageId = curScrollResponse?.stageId || '';
-        if (this._stageId == stageId) {
+        const scrollResponse = gameStatus.scrollResponses?.[0];
+        const skillResponse = gameStatus.skillResponse;
+        const boardObserveId = scrollResponse?.boardObserveId || skillResponse?.boardObserveId || '';
+        if (this._boardObserveId == boardObserveId) {
             return;
         }
 
-        const showBoard = curScrollResponse && curScrollResponse.originId == getMyPlayerId() &&
-            curScrollResponse.isEffect &&
-            (curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN ||
-                curScrollResponse.actualCard.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN)
+        const showBoard = this.getCanShowBoard(gameStatus)
 
         if (!showBoard) {
             this.showBoard(false);
@@ -362,9 +379,9 @@ export class PlayerCardsBoard {
             return;
         }
         this.showBoard(true);
-        this.updateTargetCards(gameStatus)
+        this.drawTargetCards(gameStatus)
 
-        this._stageId = stageId;
+        this._boardObserveId = boardObserveId;
     }
 
 }
