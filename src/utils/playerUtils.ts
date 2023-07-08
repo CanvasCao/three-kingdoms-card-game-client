@@ -27,7 +27,7 @@ const getPlayersDistanceFromAToB = (gameStatus: GameStatus, gameFEStatus: GameFE
 
     // -1参与距离计算的前提是 -1没有被选中
     if (minusHorseCard && !gameFEStatus.selectedCards.map(c => c.cardId).includes(minusHorseCard.cardId)) {
-        distance + (APlayer?.minusHorseCard?.horseDistance || 0)
+        distance= distance + (APlayer?.minusHorseCard?.horseDistance || 0)
     }
     return distance + (BPlayer?.plusHorseCard?.horseDistance || 0)
 }
