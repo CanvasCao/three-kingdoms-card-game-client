@@ -99,7 +99,7 @@ export type WuxieChain = {
 export type TieSuoTempStorageItem = {
     damage: number,
     targetId: string,
-    originId?: string,
+    originId?: string, // 闪电没有来源
     cards?: Card[],
     actualCard?: Card,
 }

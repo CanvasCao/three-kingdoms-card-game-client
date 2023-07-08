@@ -328,7 +328,10 @@ export class PlayerCardsBoard {
 
         this.drawTargetPlayerCards(targetPlayer!);
         this.drawTargetEquipmentCards(targetPlayer!);
-        this.drawTargetPandingCards(targetPlayer!);
+
+        if (gameStatus.scrollResponses?.[0]) {
+            this.drawTargetPandingCards(targetPlayer!);
+        }
     }
 
     destoryTargetCards() {
