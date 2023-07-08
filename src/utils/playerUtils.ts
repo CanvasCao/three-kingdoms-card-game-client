@@ -50,12 +50,12 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
 
     // 响应技能和锦囊
     if (getIsMyResponseTurn(gameStatus) && gameStatus?.skillResponse) {
-        const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
         if (
             gameStatus?.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
             gameStatus?.skillResponse?.chooseToReleaseSkill &&
             getSelectedCardNumber(gameFEStatus) == 1
         ) {
+            const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
             // 不能流离给杀的来源
             if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
                 return false

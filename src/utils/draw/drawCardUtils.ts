@@ -1,5 +1,5 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import colorConfig from "../../config/colorConfig.json";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {GamingScene} from "../../types/phaser";
 import {
     cardHuaseNumberObjOffsetX,
@@ -14,8 +14,8 @@ import {CARD_NUM_DESC} from "../../config/cardConfig";
 import {Card} from "../../types/card";
 
 // tint
-const disableTint = colorConfig.disableCard;
-const ableTint = colorConfig.card;
+const disableTint = COLOR_CONFIG.disableCard;
+const ableTint = COLOR_CONFIG.card;
 
 const sharedDrawFrontCard = (
     gamingScene: GamingScene,

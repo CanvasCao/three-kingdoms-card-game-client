@@ -1,5 +1,5 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import colorConfig from "../../config/colorConfig.json";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {GamingScene} from "../../types/phaser";
 import {CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
@@ -24,7 +24,7 @@ const sharedDrawEquipment = (
 
     const selectedStroke = gamingScene.add.graphics();
     // @ts-ignore
-    selectedStroke.lineStyle(3, colorConfig.selectedCardStroke, 1);
+    selectedStroke.lineStyle(3, COLOR_CONFIG.selectedCardStroke, 1);
     selectedStroke.strokeRect(x + sizeConfig.controlSelectedOffsetX, y,
         equipmentCardWidth,
         equipmentCardHeight);
@@ -33,7 +33,7 @@ const sharedDrawEquipment = (
     const background = gamingScene.add.image(x, y, 'white')
     isMe && background.setInteractive();
     // @ts-ignore
-    background.setTint(colorConfig.card);
+    background.setTint(COLOR_CONFIG.card);
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
     background.setAlpha(1)

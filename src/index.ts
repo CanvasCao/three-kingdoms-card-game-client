@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import 'normalize.css'
-import elementsUrl from './config/elementsUrl.json'
+import {HERO_INDEXES, HERO_URL_PREFIX, URL_CONFIG} from './config/urlConfig'
 import {sizeConfig} from './config/sizeConfig'
 import {socket} from "./socket";
 import {ControlCardsManager} from "./class/Manager/ControlCardsManager";
@@ -14,7 +14,6 @@ import "./jsoneditor/jsoneditor.min.css";
 import {NofityAnimationManager} from "./class/Manager/NofityAnimationManager";
 import {Socket} from "./socket/socket.io.esm.min";
 import {GameStatus} from './types/gameStatus';
-import {ElementsUrlJson} from './types/config';
 import {PlayerCardsBoard} from './class/Board/PlayerCardsBoard';
 import {getPlayersWithPosition} from './utils/position/playerPositionUtils';
 import {
@@ -63,17 +62,18 @@ class Gaming extends Phaser.Scene {
     }
 
     preload() {
-        const elementsUrlJson = elementsUrl as unknown as ElementsUrlJson;
-        this.load.setBaseURL(elementsUrl.baseUrl);
-        for (const key in elementsUrl.card) {
-            this.load.image(key, elementsUrlJson.card[key]);
+        this.load.setBaseURL(URL_CONFIG.baseUrl);
+        for (const key in URL_CONFIG.card) {
+            this.load.image(key, (URL_CONFIG.card as any)[key]);
         }
-        for (const playerId in elementsUrl.player) {
-            this.load.image(playerId, elementsUrlJson.player[playerId]);
+
+        for (const key in URL_CONFIG.other) {
+            this.load.image(key, (URL_CONFIG.other as any)[key]);
         }
-        for (const key in elementsUrl.other) {
-            this.load.image(key, elementsUrlJson.other[key]);
-        }
+
+        HERO_INDEXES.forEach((i)=>{
+            this.load.image(i, HERO_URL_PREFIX+i+".png");
+        })
     }
 
     create() {

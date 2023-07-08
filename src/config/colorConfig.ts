@@ -1,4 +1,4 @@
-{
+const COLOR_CONFIG={
   "card": "0xf9f1e0",
   "cardString": "#f9f1e0",
   "disablePlayer": "0x666666",
@@ -10,4 +10,8 @@
   "bloodGreen": "0x60EE54",
   "bloodYellow": "0xFFCD76",
   "bloodRed": "0xFBBA9D"
+}
+
+export {
+  COLOR_CONFIG
 }

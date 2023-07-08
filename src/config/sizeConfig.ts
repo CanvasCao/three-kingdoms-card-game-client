@@ -11,44 +11,51 @@ const controlEquipmentWidth = 140;
 const controlEquipmentHeight = 30;
 const controlSelectedOffsetX = 10;
 
+const playerHeight = 168
+const playerWeight = 140;
+
 const sizeConfig = {
-    "background": {
-        "width": bgWidth,
-        "height": bgHeight
+    background: {
+        width: bgWidth,
+        height: bgHeight
     },
-    "playersArea": {
-        "width": bgWidth * 0.8,
-        "height": bgHeight - cardHeight - controlCardBgMargin * 2
+    playersArea: {
+        width: bgWidth * 0.8,
+        height: bgHeight - cardHeight - controlCardBgMargin * 2
     },
-    "controlCard": {
-        "width": cardWidth,
-        "height": cardHeight
+    controlCard: {
+        width: cardWidth,
+        height: cardHeight
     },
-    "controlCardBgMargin": controlCardBgMargin,
-    "controlEquipment": {
-        "width": controlEquipmentWidth,
-        "height": controlEquipmentHeight
+    controlCardBgMargin: controlCardBgMargin,
+    controlEquipment: {
+        width: controlEquipmentWidth,
+        height: controlEquipmentHeight
     },
-    "controlSelectedOffsetX": controlSelectedOffsetX,
-    "player": {
-        "width": 140,
-        "height": 168
+    controlSelectedOffsetX: controlSelectedOffsetX,
+    player: {
+        width: playerWeight,
+        height: playerHeight
     },
-    "blood": {
-        "height": 30,
-        "width": 45.6
+    playerSource: {
+        width: 574,
+        height: 761
     },
-    "okBtn": {
-        "width": 100,
-        "height": 40
+    blood: {
+        height: 30,
+        width: 45.6
     },
-    "cancelBtn": {
-        "width": 100,
-        "height": 40
+    okBtn: {
+        width: 100,
+        height: 40
     },
-    "endRoundBtn": {
-        "width": 75,
-        "height": 40
+    cancelBtn: {
+        width: 100,
+        height: 40
+    },
+    endRoundBtn: {
+        width: 75,
+        height: 40
     }
 }
 

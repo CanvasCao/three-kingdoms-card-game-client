@@ -5,7 +5,7 @@ export type Players = Player[]
 export type Player = {
     maxBlood: number,
     currentBlood: number,
-    imageName: string,
+    heroId: string,
     shaLimitTimes: number,
     playerId: string,
     name: string,

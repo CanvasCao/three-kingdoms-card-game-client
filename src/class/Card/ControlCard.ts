@@ -1,5 +1,5 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import colorConfig from "../../config/colorConfig.json";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../../types/phaser";
@@ -55,8 +55,8 @@ export class ControlCard {
         this.cardInitStartY = this.cardInitEndY
 
         // tint
-        this.disableTint = colorConfig.disableCard;
-        this.ableTint = colorConfig.card;
+        this.disableTint = COLOR_CONFIG.disableCard;
+        this.ableTint = COLOR_CONFIG.card;
 
         // inner state
         this._cardDisable = false;

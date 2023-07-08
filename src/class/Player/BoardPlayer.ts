@@ -1,12 +1,11 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import colorConfig from "../../config/colorConfig.json";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
-import {ColorConfigJson} from "../../types/config";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
-import  {getIfPlayerAble, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
+import {getIfPlayerAble, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {
@@ -18,14 +17,12 @@ import {i18Config} from "../../i18n/i18Config";
 import {STAGE_NAMES, STAGE_NAMES_CN} from "../../config/gameConfig";
 import {Player} from "../../types/player";
 
-const colorConfigJson = colorConfig as unknown as ColorConfigJson;
-
 export class BoardPlayer {
     obId: string;
     gamingScene: GamingScene;
     playerId: string;
     playerName: string;
-    playerImageName: string;
+    heroId: string;
     playerMaxBlood: number;
     linePosition: { x: number, y: number };
     playerPosition: { x: number, y: number };
@@ -64,7 +61,7 @@ export class BoardPlayer {
         this.gamingScene = gamingScene;
         this.playerId = player.playerId;
         this.playerName = player.name;
-        this.playerImageName = player.imageName;
+        this.heroId = player.heroId;
         this.playerMaxBlood = player.maxBlood;
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
@@ -119,7 +116,8 @@ export class BoardPlayer {
 
     drawMyTurnStroke() {
         this.myTurnStroke = this.gamingScene.add.graphics();
-        this.myTurnStroke.lineStyle(10, colorConfigJson.myTurnStroke, 1);
+        // @ts-ignore
+        this.myTurnStroke.lineStyle(10, COLOR_CONFIG.myTurnStroke, 1);
         this.myTurnStroke.strokeRect(this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
@@ -129,7 +127,8 @@ export class BoardPlayer {
 
     drawSelectedStroke() {
         this.selectedStroke = this.gamingScene.add.graphics();
-        this.selectedStroke.lineStyle(10, colorConfigJson.selectedPlayerStroke, 1);
+        // @ts-ignore
+        this.selectedStroke.lineStyle(10, COLOR_CONFIG.selectedPlayerStroke, 1);
         this.selectedStroke.strokeRect(this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
@@ -186,7 +185,8 @@ export class BoardPlayer {
             pandingCardImage.displayHeight = sizeConfig.player.width / 8;
             pandingCardImage.displayWidth = sizeConfig.player.width / 8;
             pandingCardImage.setRotation(Math.PI / 4)
-            pandingCardImage.setTint(colorConfigJson.card)
+            // @ts-ignore
+            pandingCardImage.setTint(COLOR_CONFIG.card)
             pandingCardImage.setAlpha(0)
 
             this.pandingCardImages!.push(pandingCardImage);
@@ -218,7 +218,7 @@ export class BoardPlayer {
             bloodImage.displayHeight = bloodHeight;
             bloodImage.displayWidth = bloodWidth;
             // @ts-ignore
-            bloodImage.setTint(colorConfig.bloodGreen);
+            bloodImage.setTint(COLOR_CONFIG.bloodGreen);
             this.bloodImages!.push(bloodImage);
         }
     }
@@ -240,7 +240,8 @@ export class BoardPlayer {
     }
 
     drawIsDead() {
-        this.playerImage!.setTint(colorConfigJson.disablePlayer);
+        // @ts-ignore
+        this.playerImage!.setTint(COLOR_CONFIG.disablePlayer);
         this.isDeadText = this.gamingScene.add.text(
             this.positionX,
             this.positionY,
@@ -258,11 +259,11 @@ export class BoardPlayer {
     setBloods(number: number) {
         let color;
         if (number > 2) {
-            color = colorConfig.bloodGreen
+            color = COLOR_CONFIG.bloodGreen
         } else if (number == 2) {
-            color = colorConfig.bloodYellow
+            color = COLOR_CONFIG.bloodYellow
         } else {
-            color = colorConfig.bloodRed
+            color = COLOR_CONFIG.bloodRed
         }
 
         for (let i = 0; i < this.bloodImages!.length; i++) {
@@ -351,12 +352,17 @@ export class BoardPlayer {
 
     drawPlayer() {
         this.playerImage = this.gamingScene.add.image(
-            this.positionX,
-            this.positionY,
-            this.playerImageName).setInteractive().setScale(140 / 536);
-        this.playerImage.setOrigin(0.5, 0.45) // 竖长图片被crop了下面 所以setOriginY 稍微让图片往下挪一点
+            this.positionX - sizeConfig.player.width / 2,
+            this.positionY - sizeConfig.player.height / 2,
+            this.heroId).setInteractive()
+        this.playerImage.setDisplaySize(sizeConfig.player.width,
+            sizeConfig.player.width * (sizeConfig.playerSource.height / sizeConfig.playerSource.width))
+        this.playerImage.setOrigin(0, 0)
 
-        var cropRect = new Phaser.Geom.Rectangle(0, 0, 536, 536 * (sizeConfig.player.height / sizeConfig.player.width));
+        var cropRect = new Phaser.Geom.Rectangle(0,
+            0,
+            sizeConfig.playerSource.width,
+            sizeConfig.playerSource.width * 1.2);
 
         this.playerImage.setCrop(cropRect);
     }
@@ -428,7 +434,8 @@ export class BoardPlayer {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
 
         const setPlayerDisable = () => {
-            this.playerImage!.setTint(colorConfigJson.disablePlayer);
+            // @ts-ignore
+            this.playerImage!.setTint(COLOR_CONFIG.disablePlayer);
             this._disable = true;
         }
         const setPlayerAble = () => {

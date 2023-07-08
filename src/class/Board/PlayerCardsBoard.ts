@@ -1,7 +1,7 @@
-import {GameStatus, ScrollResponse} from "../../types/gameStatus";
+import {GameStatus} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
-import colorConfig from "../../config/colorConfig.json";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {CARD_LOCATION, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
@@ -150,7 +150,7 @@ export class PlayerCardsBoard {
             this.initX + gridOffset.column1.x - sizeConfig.controlCard.width / 2,
             this.initY + gridOffset.line1.y, 'white')
         // @ts-ignore
-        this.handCardsPlaceholder.setTint(colorConfig.boardCardPlaceholder)
+        this.handCardsPlaceholder.setTint(COLOR_CONFIG.boardCardPlaceholder)
         this.handCardsPlaceholder.displayHeight = sizeConfig.controlCard.height;
         this.handCardsPlaceholder.displayWidth = 675;
         this.handCardsPlaceholder.setOrigin(0, 0.5)
@@ -168,7 +168,7 @@ export class PlayerCardsBoard {
                 this.initY + gridOffset.line2.y,
                 'white')
             // @ts-ignore
-            img.setTint(colorConfig.boardCardPlaceholder)
+            img.setTint(COLOR_CONFIG.boardCardPlaceholder)
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
@@ -193,7 +193,7 @@ export class PlayerCardsBoard {
                 this.initY + gridOffset.line2.y,
                 'white')
             // @ts-ignore
-            img.setTint(colorConfig.boardCardPlaceholder)
+            img.setTint(COLOR_CONFIG.boardCardPlaceholder)
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
@@ -274,21 +274,33 @@ export class PlayerCardsBoard {
         }
     }
 
-    showBoard(show: boolean) {
+    showBoard(gameStatus: GameStatus, show: boolean) {
         this.maskImg!.setAlpha(show ? 0.0001 : 0) // 配合setInteractive 阻止冒泡
         this.boardImg!.setAlpha(show ? boardAlpha : 0)
 
-        this.titleText!.setAlpha(show ? 1 : 0)
+        const alpha = show ? 1 : 0
+        this.titleText!.setAlpha(alpha)
 
-        this.handCardsCategoryText!.setAlpha(show ? 1 : 0)
-        this.equipmentCardsCategoryText!.setAlpha(show ? 1 : 0)
-        this.pandingCardsCategoryText!.setAlpha(show ? 1 : 0)
+        this.handCardsCategoryText!.setAlpha(alpha)
+        this.equipmentCardsCategoryText!.setAlpha(alpha)
 
-        this.handCardsPlaceholder!.setAlpha(show ? 1 : 0)
-        this.equipmentCardsPlaceholders.forEach((o) => o.setAlpha(show ? 1 : 0))
-        this.equipmentCardsPlaceholderTexts.forEach((o) => o.setAlpha(show ? 1 : 0))
-        this.pandingCardsPlaceholders.forEach((o) => o.setAlpha(show ? 1 : 0))
-        this.pandingCardsPlaceholderTexts.forEach((o) => o.setAlpha(show ? 1 : 0))
+        this.handCardsPlaceholder!.setAlpha(alpha)
+        this.equipmentCardsPlaceholders.forEach((o) => o.setAlpha(alpha))
+        this.equipmentCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
+
+        // 锦囊才可以显示判定牌
+        if (gameStatus.scrollResponses?.[0]) {
+            this.pandingCardsCategoryText!.setAlpha(alpha)
+            this.pandingCardsPlaceholders.forEach((o) => o.setAlpha(alpha))
+            this.pandingCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
+        }
+
+        // hideBoard 不能以scrollResponses判断依据
+        if (!show) {
+            this.pandingCardsCategoryText!.setAlpha(alpha)
+            this.pandingCardsPlaceholders.forEach((o) => o.setAlpha(alpha))
+            this.pandingCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
+        }
     }
 
     drawTargetCards(gameStatus: GameStatus) {
@@ -356,6 +368,8 @@ export class PlayerCardsBoard {
         } else if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
             return PLAYER_BOARD_ACTION.MOVE
         }
+
+        // 否则一定是鬼才
         return PLAYER_BOARD_ACTION.MOVE
     }
 
@@ -374,11 +388,11 @@ export class PlayerCardsBoard {
         const showBoard = this.getCanShowBoard(gameStatus)
 
         if (!showBoard) {
-            this.showBoard(false);
+            this.showBoard(gameStatus, false);
             this.destoryTargetCards();
             return;
         }
-        this.showBoard(true);
+        this.showBoard(gameStatus, true);
         this.drawTargetCards(gameStatus)
 
         this._boardObserveId = boardObserveId;

@@ -117,21 +117,19 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_WU_XIE, {name})
             } else { // 判定牌的无懈可击
                 const currentPlayer = getCurrentPlayer(gameStatus);
-                let name;
                 const needPandingSigns = currentPlayer.judgedShandian ?
                     currentPlayer.pandingSigns.filter((sign) => sign.actualCard.CN !== DELAY_SCROLL_CARDS_CONFIG.SHAN_DIAN.CN) :
                     currentPlayer.pandingSigns;
 
                 if (wuxieChain?.length == 1) {
-                    name = currentPlayer.name;
                     return i18(i18Config.RESPONSE_PANDING_WU_XIE, {
-                        name,
+                        name: getPlayerDisplayName(gameStatus, currentPlayer.playerId),
                         cardName: i18(needPandingSigns[0].card)
                     })
                 } else if (wuxieChain?.length > 1) {
                     const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
-                    name = getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId);
-                    return i18(i18Config.RESPONSE_WU_XIE, {name})
+                    return i18(i18Config.RESPONSE_WU_XIE,
+                        {name: getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId)})
                 }
             }
         } else {

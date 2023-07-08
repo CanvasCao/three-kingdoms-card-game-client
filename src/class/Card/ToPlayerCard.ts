@@ -1,5 +1,5 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import colorConfig from "../../config/colorConfig.json";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {differenceBy} from "lodash";
@@ -65,8 +65,8 @@ export class ToPlayerCard {
         }
 
         // tint
-        this.disableTint = colorConfig.disableCard;
-        this.ableTint = colorConfig.card;
+        this.disableTint = COLOR_CONFIG.disableCard;
+        this.ableTint = COLOR_CONFIG.card;
 
         // inner state
         this.isMoving = false;

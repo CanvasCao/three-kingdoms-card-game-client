@@ -1,7 +1,7 @@
 import {GameStatus} from "../../types/gameStatus";
 import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
-import colorConfig from "../../config/colorConfig.json";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {CARD_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
@@ -118,7 +118,7 @@ export class WuGuFengDengBoard {
 
             if (card.wugefengdengSelectedPlayerId) {
                 // @ts-ignore
-                cardImgObj.setTint(colorConfig.disableCard)
+                cardImgObj.setTint(COLOR_CONFIG.disableCard)
             }
             this.destoryObjects.push(cardNameObj);
             this.destoryObjects.push(cardHuaseNumberObj);
