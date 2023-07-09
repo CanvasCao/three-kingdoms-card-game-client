@@ -27,6 +27,8 @@ const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFESt
         if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
             return 2;
         }
+
+        return 1;
     } else if (isMyResponseTurn) {
         if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
             return 2;

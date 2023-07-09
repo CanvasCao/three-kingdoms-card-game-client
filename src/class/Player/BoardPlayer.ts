@@ -91,10 +91,10 @@ export class BoardPlayer {
         this._selectedTargetPlayersLength = 0;
 
         if (!this.isMe) {
-            this.drawMyTurnStroke();
             this.drawStageText();
         }
 
+        this.drawMyTurnStroke();
         this.drawSelectedStroke();
         this.drawPlayer();
         this.drawBloodsBg();
@@ -242,18 +242,19 @@ export class BoardPlayer {
     drawIsDead() {
         // @ts-ignore
         this.playerImage!.setTint(COLOR_CONFIG.disablePlayer);
+
         this.isDeadText = this.gamingScene.add.text(
             this.positionX,
             this.positionY,
             "阵亡",
             // @ts-ignore
-            {fill: "#000", align: "center"}
+            {fill: "#cb0c0c", align: "center"}
         );
         this.isDeadText.setOrigin(0.5, 0.5)
         const padding = 2;
         this.isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        this.isDeadText.setBackgroundColor("#fff")
-        this.isDeadText.setFontSize(16)
+        this.isDeadText.setFontSize(40)
+        this.isDeadText.setRotation(-3.14/10)
     }
 
     setBloods(number: number) {
@@ -413,9 +414,8 @@ export class BoardPlayer {
         }
     }
 
-    onPlayerTurnAndStageChange(gameStatus: GameStatus) {
+    onStageChange(gameStatus: GameStatus) {
         if (gameStatus.stage.playerId === this.playerId) {
-            this.myTurnStroke!.setAlpha(1);
             this.stageText!.setAlpha(1);
             this.stageText!.setText(i18(i18Config.STAGE_DESC,
                 {
@@ -425,8 +425,15 @@ export class BoardPlayer {
                 })
             )
         } else {
-            this.myTurnStroke!.setAlpha(0);
             this.stageText!.setAlpha(0)
+        }
+    }
+
+    onPlayerTurnStrokeChange(gameStatus: GameStatus) {
+        if (gameStatus.stage.playerId === this.playerId) {
+            this.myTurnStroke!.setAlpha(1);
+        } else {
+            this.myTurnStroke!.setAlpha(0);
         }
     }
 
@@ -473,8 +480,9 @@ export class BoardPlayer {
         if (this._isDead)
             return
 
+        this.onPlayerTurnStrokeChange(gameStatus);
         if (!this.isMe) {
-            this.onPlayerTurnAndStageChange(gameStatus);
+            this.onStageChange(gameStatus);
         }
         this.onCardNumberChange(gameStatus);
         this.onTieSuoChange(gameStatus);
