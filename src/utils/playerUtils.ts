@@ -15,6 +15,8 @@ import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
 import {getIsMyPlayTurn, getIsMyResponseTurn} from "./stage/stageUtils";
 import {getSelectedCardNumber, getSelectedTargetNumber} from "./validationUtils";
 import {attachFEInfoToCard} from "./cardUtils";
+import {getResponseType} from "./response/responseUtils";
+import {RESPONSE_TYPE_CONFIG} from "../config/responseTypeConfig";
 
 const getPlayersDistanceFromAToB = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, APlayer: Player, BPlayer: Player) => {
     const playerNumber = Object.keys(gameStatus.players).length
@@ -27,7 +29,7 @@ const getPlayersDistanceFromAToB = (gameStatus: GameStatus, gameFEStatus: GameFE
 
     // -1参与距离计算的前提是 -1没有被选中
     if (minusHorseCard && !gameFEStatus.selectedCards.map(c => c.cardId).includes(minusHorseCard.cardId)) {
-        distance= distance + (APlayer?.minusHorseCard?.horseDistance || 0)
+        distance = distance + (APlayer?.minusHorseCard?.horseDistance || 0)
     }
     return distance + (BPlayer?.plusHorseCard?.horseDistance || 0)
 }
@@ -47,12 +49,14 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     const myAttackDistance = getPlayerAttackRangeNumber(gameFEStatus, mePlayer)
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, mePlayer, targetPlayer)
     const selectedTargetNumber = getSelectedTargetNumber(gameFEStatus)
+    const responseType = getResponseType(gameStatus)
+    const isMyResponseTurn = getIsMyResponseTurn(gameStatus)
 
-    // 响应技能和锦囊
-    if (getIsMyResponseTurn(gameStatus) && gameStatus?.skillResponse) {
+    // 我响应技能
+    if (isMyResponseTurn && responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         if (
-            gameStatus?.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
-            gameStatus?.skillResponse?.chooseToReleaseSkill &&
+            gameStatus.skillResponse!.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
+            gameStatus.skillResponse!.chooseToReleaseSkill &&
             getSelectedCardNumber(gameFEStatus) == 1
         ) {
             const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
@@ -67,7 +71,9 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
         }
         return true
     }
-    if (gameStatus.scrollResponses[0]) {
+
+    // 我响应锦囊
+    if (isMyResponseTurn && responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
         return true
     }
 
@@ -183,9 +189,11 @@ const getCurrentPlayer = (gameStatus: GameStatus) => {
 
 const getNeedTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const mePlayer = gameStatus.players[getMyPlayerId()]
+    const responseType = getResponseType(gameStatus)
 
-    if (gameStatus.skillResponse?.skillName === SKILL_NAMES.WU["006"].LIU_LI
-        && gameStatus.skillResponse.chooseToReleaseSkill
+    if (responseType == RESPONSE_TYPE_CONFIG.SKILL &&
+        gameStatus.skillResponse!.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
+        gameStatus.skillResponse!.chooseToReleaseSkill
     ) {
         return {min: 1, max: 1}
     }

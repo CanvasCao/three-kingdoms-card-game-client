@@ -14,6 +14,8 @@ import {getNeedSelectCardsNumber} from "../../utils/validationUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {getCurrentPlayer, getPlayerDisplayName, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {SKILL_NAMES} from "../../config/skillsConfig";
+import {getResponseType} from "../../utils/response/responseUtils";
+import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
@@ -77,13 +79,19 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
 }
 
 const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    if (gameStatus.shanResponse) {
-        const targetId = gameStatus.shanResponse.targetId;
+    const responseType = getResponseType(gameStatus);
+    if (responseType == RESPONSE_TYPE_CONFIG.TAO) {
+        const targetId = gameStatus.taoResponses[0].targetId;
+        const number = gameStatus.taoResponses[0].cardNumber;
+        const name = getPlayerDisplayName(gameStatus, targetId);
+        return i18(i18Config.RESPONSE_TAO, {number, name})
+    } else if (responseType == RESPONSE_TYPE_CONFIG.SHAN) {
+        const targetId = gameStatus.shanResponse!.targetId;
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_SHAN, {name})
-    } else if (gameStatus.skillResponse) {
-        const skillName = gameStatus.skillResponse.skillName;
-        const chooseToReleaseSkill = gameStatus.skillResponse.chooseToReleaseSkill;
+    } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+        const skillName = gameStatus.skillResponse!.skillName;
+        const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
         // TODO i18n
         if (chooseToReleaseSkill === undefined) {
             return '是否发动 ' + skillName + '？'
@@ -96,12 +104,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return '获得伤害来源的一张牌'
             }
         }
-    } else if (gameStatus.taoResponses.length > 0) {
-        const targetId = gameStatus.taoResponses[0].targetId;
-        const number = gameStatus.taoResponses[0].cardNumber;
-        const name = getPlayerDisplayName(gameStatus, targetId);
-        return i18(i18Config.RESPONSE_TAO, {number, name})
-    } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
+    } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
         const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain;
 
         if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
@@ -135,7 +138,11 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         } else {
             return i18(i18Config.WAIT_WU_XIE)
         }
-    } else if (gameStatus.scrollResponses.length > 0) {
+    } else if (responseType == RESPONSE_TYPE_CONFIG.WEAPON) {
+        if (gameStatus.weaponResponses[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
+            return i18(i18Config.RESPONSE_QING_LONG_YAN_YUE_DAO)
+        }
+    } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
         const curScrollResponse = gameStatus.scrollResponses[0]
         if (!curScrollResponse.isEffect) {
             throw new Error(curScrollResponse.actualCard.CN + "未生效")
@@ -153,10 +160,6 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
             const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus).playerId)
             const targetName = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN, {originName, targetName})
-        }
-    } else if (gameStatus.weaponResponses.length > 0) {
-        if (gameStatus.weaponResponses[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
-            return i18(i18Config.RESPONSE_QING_LONG_YAN_YUE_DAO)
         }
     } else {
         console.log(gameStatus)

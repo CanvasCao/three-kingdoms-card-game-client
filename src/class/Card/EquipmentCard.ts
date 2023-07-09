@@ -134,8 +134,8 @@ export class EquipmentCard {
                 const haveSelectCardsNumber = getSelectedCardNumber(gameFEStatus);
                 const haveSelectedEnoughCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
-                // 已经选中技能 或者响应技能 的情况下 一定是要打出武器
                 const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillName && (gameFEStatus.selectedSkillName !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN)
+                // 已经选中技能 或者 响应技能 的情况下 一定是要打出武器
                 if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {
                     if (gameFEStatus.selectedCards.map(c => c.cardId).includes(this.cardId)) { // 已经选中
                         gameFEStatusObserved.unselectCard(this.card, this.equipmentType)
@@ -154,7 +154,6 @@ export class EquipmentCard {
                         gameFEStatusObserved.selectSkill(this.cardName)
                     }
                 }
-
             }
         );
     }

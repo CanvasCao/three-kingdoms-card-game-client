@@ -1,0 +1,12 @@
+const RESPONSE_TYPE_CONFIG = {
+    TAO: "TAO",
+    SHAN: "SHAN",
+    SKILL: "SKILL",
+    WUXIE: "WUXIE",
+    WEAPON: "WEAPON",
+    SCROLL: "SCROLL"
+}
+
+export {
+    RESPONSE_TYPE_CONFIG
+}

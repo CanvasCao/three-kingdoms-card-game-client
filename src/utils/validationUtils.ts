@@ -6,6 +6,8 @@ import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {SKILL_NAMES} from "../config/skillsConfig";
 import {EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {getCanPlayerPlaySha} from "./playerUtils";
+import {getResponseType} from "./response/responseUtils";
+import {RESPONSE_TYPE_CONFIG} from "../config/responseTypeConfig";
 
 const getSelectedCardNumber = (gameFEStatus: GameFEStatus) => {
     return gameFEStatus.selectedCards.length
@@ -19,14 +21,19 @@ const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFESt
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
     const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
+    const responseType = getResponseType(gameStatus);
 
-    if (canPlayInMyTurn || isMyResponseTurn) {
+    if (canPlayInMyTurn) {
+        if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
+            return 2;
+        }
+    } else if (isMyResponseTurn) {
         if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
             return 2;
         }
 
-        // 响应是否选择使用技能
-        if (gameStatus.skillResponse && gameStatus.skillResponse.chooseToReleaseSkill === undefined) {
+        if (responseType == RESPONSE_TYPE_CONFIG.SKILL &&
+            gameStatus.skillResponse!.chooseToReleaseSkill === undefined) {
             return 0
         }
 
@@ -43,15 +50,21 @@ const getCanSelectEquipment = (gameStatus: GameStatus, gameFEStatus: GameFEStatu
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
     // const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
+
     if (isMyResponseTurn) {
-        if (gameStatus.skillResponse?.skillName == SKILL_NAMES.WU["006"].LIU_LI &&
-            gameStatus.skillResponse?.chooseToReleaseSkill
+        const responseType = getResponseType(gameStatus)
+        if (responseType === RESPONSE_TYPE_CONFIG.SKILL &&
+            gameStatus.skillResponse!.skillName == SKILL_NAMES.WU["006"].LIU_LI &&
+            gameStatus.skillResponse!.chooseToReleaseSkill
         ) {
             return true
         }
 
-        if (gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN ||
-            gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.JUE_DOU.CN
+        if (responseType === RESPONSE_TYPE_CONFIG.SCROLL &&
+            (gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN ||
+                gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.JUE_DOU.CN ||
+                gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) &&
+            eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN
         ) {
             return true
         }

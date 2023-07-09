@@ -15,6 +15,8 @@ import {Card, CardAreaType, CardBoardActionType} from "../../types/card";
 import {Player} from "../../types/player";
 import {getIfShowFanKuiPlayerCardsBoard, getIfShowShunChaiPlayerCardsBoard} from "../../utils/board/boardUtils";
 import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
+import {getResponseType} from "../../utils/response/responseUtils";
+import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
 
 const gridOffset = {
     line1: {y: -55},
@@ -58,6 +60,7 @@ export class PlayerCardsBoard {
 
     // innerState
     _boardObserveId: string;
+    _responseType: string | undefined;
 
 
     constructor(gamingScene: GamingScene) {
@@ -83,6 +86,7 @@ export class PlayerCardsBoard {
         this.destoryObjects = [];
 
         this._boardObserveId = '';
+        this._responseType = '';
 
         this.drawBackground();
         this.drawTitle();
@@ -289,7 +293,7 @@ export class PlayerCardsBoard {
         this.equipmentCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
 
         // 锦囊才可以显示判定牌
-        if (gameStatus.scrollResponses?.[0]) {
+        if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
             this.pandingCardsCategoryText!.setAlpha(alpha)
             this.pandingCardsPlaceholders.forEach((o) => o.setAlpha(alpha))
             this.pandingCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
@@ -306,16 +310,15 @@ export class PlayerCardsBoard {
     drawTargetCards(gameStatus: GameStatus) {
         let name;
         let targetPlayer: Player;
-        const scrollResponse = gameStatus.scrollResponses?.[0];
-        const skillResponse = gameStatus.skillResponse;
 
-        if (scrollResponse) {
-            targetPlayer = gameStatus.players[scrollResponse.targetId]
-            name = i18(scrollResponse?.actualCard)
-
-        } else if (skillResponse) {
+        // 反馈
+        if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
             targetPlayer = gameStatus.players[gameStatus.damageEvent.originId]
-            name = skillResponse.skillName
+            name = gameStatus.skillResponse!.skillName
+        } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+            const scrollResponse = gameStatus.scrollResponses[0]!
+            targetPlayer = gameStatus.players[scrollResponse.targetId]
+            name = i18(scrollResponse.actualCard)
         }
 
         this.titleText!.setAlpha(1)
@@ -329,7 +332,7 @@ export class PlayerCardsBoard {
         this.drawTargetPlayerCards(targetPlayer!);
         this.drawTargetEquipmentCards(targetPlayer!);
 
-        if (gameStatus.scrollResponses?.[0]) {
+        if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
             this.drawTargetPandingCards(targetPlayer!);
         }
     }
@@ -365,25 +368,37 @@ export class PlayerCardsBoard {
     }
 
     getEmitType(gameStatus: GameStatus) {
-        const scrollResponse = gameStatus.scrollResponses?.[0]
-        if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
-            return PLAYER_BOARD_ACTION.REMOVE
-        } else if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+        if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
             return PLAYER_BOARD_ACTION.MOVE
+        } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+            const scrollResponse = gameStatus.scrollResponses[0]
+            if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+                return PLAYER_BOARD_ACTION.REMOVE
+            } else if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+                return PLAYER_BOARD_ACTION.MOVE
+            }
         }
-
-        // 否则一定是鬼才
-        return PLAYER_BOARD_ACTION.MOVE
     }
 
     getCanShowBoard(gameStatus: GameStatus) {
-        return getIfShowShunChaiPlayerCardsBoard(gameStatus) || getIfShowFanKuiPlayerCardsBoard(gameStatus)
+        if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+            return getIfShowFanKuiPlayerCardsBoard(gameStatus)
+        } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+            return getIfShowShunChaiPlayerCardsBoard(gameStatus)
+        }
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const scrollResponse = gameStatus.scrollResponses?.[0];
-        const skillResponse = gameStatus.skillResponse;
-        const boardObserveId = scrollResponse?.boardObserveId || skillResponse?.boardObserveId || '';
+        const responseType = getResponseType(gameStatus)
+        this._responseType = responseType;
+
+        let boardObserveId = ''
+        if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+            boardObserveId = gameStatus.skillResponse!.boardObserveId
+        } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+            boardObserveId = gameStatus.scrollResponses[0].boardObserveId!
+        }
+
         if (this._boardObserveId == boardObserveId) {
             return;
         }

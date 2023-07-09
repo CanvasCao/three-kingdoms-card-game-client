@@ -10,17 +10,41 @@ import {
 import {Card} from "../../types/card";
 import {SKILL_NAMES} from "../../config/skillsConfig";
 import {getSelectedCardNumber, getSelectedTargetNumber} from "../validationUtils";
+import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
+
+const getResponseType = (gameStatus: GameStatus) => {
+    if (gameStatus.taoResponses.length > 0) {
+        return RESPONSE_TYPE_CONFIG.TAO;
+    } else if (gameStatus.shanResponse) {
+        return RESPONSE_TYPE_CONFIG.SHAN;
+    } else if (gameStatus.skillResponse) {
+        return RESPONSE_TYPE_CONFIG.SKILL;
+    } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
+        return RESPONSE_TYPE_CONFIG.WUXIE;
+    } else if (gameStatus.weaponResponses.length > 0) {
+        return RESPONSE_TYPE_CONFIG.WEAPON;
+    } else if (gameStatus.scrollResponses.length > 0) {
+        return RESPONSE_TYPE_CONFIG.SCROLL;
+    }
+}
 
 const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): ResponseInfo => {
-    if (gameStatus.shanResponse) {
+    const responseType = getResponseType(gameStatus)
+    if (responseType == RESPONSE_TYPE_CONFIG.TAO) {
         return {
-            targetId: gameStatus.shanResponse.targetId,
+            targetId: gameStatus.taoResponses[0].targetId,
+            cardIsAbleValidate: (card) => [BASIC_CARDS_CONFIG.TAO.CN].includes(card?.CN!),
+            okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.CN === BASIC_CARDS_CONFIG.TAO.CN
+        }
+    } else if (responseType == RESPONSE_TYPE_CONFIG.SHAN) {
+        return {
+            targetId: gameStatus.shanResponse!.targetId,
             cardIsAbleValidate: (card) => [BASIC_CARDS_CONFIG.SHAN.CN].includes(card?.CN!),
             okButtonIsAbleValidate: (gameFEStatus) => gameFEStatus.actualCard?.CN === BASIC_CARDS_CONFIG.SHAN.CN
         }
-    } else if (gameStatus.skillResponse) {
-        const skillName = gameStatus.skillResponse.skillName;
-        const chooseToReleaseSkill = gameStatus.skillResponse.chooseToReleaseSkill;
+    } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+        const skillName = gameStatus.skillResponse!.skillName;
+        const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
         let cardIsAbleValidate = (card: Card) => false
         let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => true
 
@@ -43,7 +67,7 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             okButtonIsAbleValidate,
             skillTargetIds: gameFEStatus.selectedTargetPlayers.map(p => p.playerId)
         }
-    } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
+    } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
         const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain
         const lastChainItem = wuxieChain[wuxieChain.length - 1]
         return {
@@ -51,13 +75,15 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             cardIsAbleValidate: (card) => [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN].includes(card?.CN!),
             okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.CN === SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN
         }
-    } else if (gameStatus.taoResponses.length > 0) {
-        return {
-            targetId: gameStatus.taoResponses[0].targetId,
-            cardIsAbleValidate: (card) => [BASIC_CARDS_CONFIG.TAO.CN].includes(card?.CN!),
-            okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.CN === BASIC_CARDS_CONFIG.TAO.CN
+    } else if (responseType == RESPONSE_TYPE_CONFIG.WEAPON) {
+        if (gameStatus.weaponResponses[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
+            return {
+                targetId: gameStatus.weaponResponses[0].targetId,
+                cardIsAbleValidate: (card) => ALL_SHA_CARD_NAMES.includes(card?.CN!),
+                okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_NAMES.includes(gameFEStatus.actualCard?.CN!)
+            }
         }
-    } else if (gameStatus.scrollResponses.length > 0) {
+    } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
         const curScrollResponse = gameStatus.scrollResponses[0]
         if (!curScrollResponse.isEffect) {
             throw new Error(curScrollResponse.actualCard.CN + "未生效")
@@ -83,14 +109,9 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             cardIsAbleValidate,
             okButtonIsAbleValidate
         }
-    } else if (gameStatus.weaponResponses.length > 0) {
-        if (gameStatus.weaponResponses[0].weaponCardName == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.CN) {
-            return {
-                targetId: gameStatus.weaponResponses[0].targetId,
-                cardIsAbleValidate: (card) => ALL_SHA_CARD_NAMES.includes(card?.CN!),
-                okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_NAMES.includes(gameFEStatus.actualCard?.CN!)
-            }
-        }
     }
 }
-export {getMyResponseInfo};
+export {
+    getMyResponseInfo,
+    getResponseType
+};
