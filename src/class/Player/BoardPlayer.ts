@@ -91,10 +91,10 @@ export class BoardPlayer {
         this._selectedTargetPlayersLength = 0;
 
         if (!this.isMe) {
+            this.drawMyTurnStroke();
             this.drawStageText();
         }
 
-        this.drawMyTurnStroke();
         this.drawSelectedStroke();
         this.drawPlayer();
         this.drawBloodsBg();
@@ -118,10 +118,11 @@ export class BoardPlayer {
         this.myTurnStroke = this.gamingScene.add.graphics();
         // @ts-ignore
         this.myTurnStroke.lineStyle(10, COLOR_CONFIG.myTurnStroke, 1);
-        this.myTurnStroke.strokeRect(this.positionX - sizeConfig.player.width / 2,
+        this.myTurnStroke.strokeRoundedRect(this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
-            sizeConfig.player.height);
+            sizeConfig.player.height,
+            2);
         this.myTurnStroke.setAlpha(0);
     }
 
@@ -129,10 +130,11 @@ export class BoardPlayer {
         this.selectedStroke = this.gamingScene.add.graphics();
         // @ts-ignore
         this.selectedStroke.lineStyle(10, COLOR_CONFIG.selectedPlayerStroke, 1);
-        this.selectedStroke.strokeRect(this.positionX - sizeConfig.player.width / 2,
+        this.selectedStroke.strokeRoundedRect(this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
             sizeConfig.player.width,
-            sizeConfig.player.height);
+            sizeConfig.player.height,
+            2);
         this.selectedStroke.setAlpha(0);
     }
 
@@ -254,7 +256,7 @@ export class BoardPlayer {
         const padding = 2;
         this.isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         this.isDeadText.setFontSize(40)
-        this.isDeadText.setRotation(-3.14/10)
+        this.isDeadText.setRotation(-3.14 / 10)
     }
 
     setBloods(number: number) {
@@ -431,7 +433,7 @@ export class BoardPlayer {
 
     onPlayerTurnStrokeChange(gameStatus: GameStatus) {
         if (gameStatus.stage.playerId === this.playerId) {
-            this.myTurnStroke!.setAlpha(1);
+            this.myTurnStroke!.setAlpha(0.5);
         } else {
             this.myTurnStroke!.setAlpha(0);
         }
@@ -465,7 +467,7 @@ export class BoardPlayer {
 
     onPlayerSelectedChange(gameFEStatus: GameFEStatus) {
         const isSelected = !!gameFEStatus.selectedTargetPlayers.find((u) => u.playerId == this.playerId)
-        this.selectedStroke!.setAlpha(isSelected ? 1 : 0);
+        this.selectedStroke!.setAlpha(isSelected ? 0.5 : 0);
     }
 
     onPlayerDieChange(gameStatus: GameStatus) {
@@ -480,8 +482,8 @@ export class BoardPlayer {
         if (this._isDead)
             return
 
-        this.onPlayerTurnStrokeChange(gameStatus);
         if (!this.isMe) {
+            this.onPlayerTurnStrokeChange(gameStatus);
             this.onStageChange(gameStatus);
         }
         this.onCardNumberChange(gameStatus);
