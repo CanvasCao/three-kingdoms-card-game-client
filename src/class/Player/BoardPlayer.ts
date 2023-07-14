@@ -45,6 +45,7 @@ export class BoardPlayer {
     _selectedTargetPlayersLength?: number;
     _isDead?: boolean;
 
+    defaultStroke?: Phaser.GameObjects.Graphics;
     myTurnStroke?: Phaser.GameObjects.Graphics;
     selectedStroke?: Phaser.GameObjects.Graphics;
     cardNumObj?: Phaser.GameObjects.Text;
@@ -91,11 +92,11 @@ export class BoardPlayer {
         this._selectedTargetPlayersLength = 0;
 
         if (!this.isMe) {
-            this.drawMyTurnStroke();
+            this.drawdefaultAndMyTurnStroke();
             this.drawStageText();
         }
 
-        this.drawSelectedStroke();
+        this.drawStroke();
         this.drawPlayer();
         this.drawBloodsBg();
         this.drawBloods();
@@ -114,7 +115,18 @@ export class BoardPlayer {
         this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
     }
 
-    drawMyTurnStroke() {
+    drawdefaultAndMyTurnStroke() {
+        this.defaultStroke = this.gamingScene.add.graphics();
+        // @ts-ignore
+        this.defaultStroke.lineStyle(10, COLOR_CONFIG.defaultStroke, 1);
+        this.defaultStroke.strokeRoundedRect(this.positionX - sizeConfig.player.width / 2,
+            this.positionY - sizeConfig.player.height / 2,
+            sizeConfig.player.width,
+            sizeConfig.player.height,
+            2);
+        this.defaultStroke.setAlpha(1);
+
+
         this.myTurnStroke = this.gamingScene.add.graphics();
         // @ts-ignore
         this.myTurnStroke.lineStyle(10, COLOR_CONFIG.myTurnStroke, 1);
@@ -126,7 +138,7 @@ export class BoardPlayer {
         this.myTurnStroke.setAlpha(0);
     }
 
-    drawSelectedStroke() {
+    drawStroke() {
         this.selectedStroke = this.gamingScene.add.graphics();
         // @ts-ignore
         this.selectedStroke.lineStyle(10, COLOR_CONFIG.selectedPlayerStroke, 1);
