@@ -1,11 +1,14 @@
 import {GameStatus} from "../../types/gameStatus";
 import {Observer} from "../../types/observer";
+import {GamingScene} from "../../types/phaser";
 
 export class GameStatusObserved {
+    gamingScene: GamingScene;
     gameStatus?: GameStatus;
     observers: Observer[];
 
-    constructor() {
+    constructor(gamingScene: GamingScene) {
+        this.gamingScene = gamingScene
         this.gameStatus;
         this.observers = [];
     }
@@ -23,9 +26,11 @@ export class GameStatusObserved {
     setGameStatus(gameStatus: GameStatus) {
         this.gameStatus = gameStatus;
         // @ts-ignore
-        window?.editor&&window?.editor?.set(gameStatus);
+        window?.editor && window?.editor?.set(gameStatus);
         this.observers.forEach(observer => {
             observer.gameStatusNotify(this.gameStatus as GameStatus);
         });
+
+        this.gamingScene.gameFEStatusObserved.resetSelectedStatus();
     }
 }

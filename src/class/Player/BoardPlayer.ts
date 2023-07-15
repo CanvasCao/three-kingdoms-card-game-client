@@ -16,6 +16,11 @@ import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {STAGE_NAMES, STAGE_NAMES_CN} from "../../config/gameConfig";
 import {Player} from "../../types/player";
+import {
+    getPlayerStrokeAlphaAndColor,
+    reDrawPlayerStroke,
+    sharedDrawPlayerStroke
+} from "../../utils/draw/drawPlayerStrokeUtils";
 
 export class BoardPlayer {
     obId: string;
@@ -45,9 +50,7 @@ export class BoardPlayer {
     _selectedTargetPlayersLength?: number;
     _isDead?: boolean;
 
-    defaultStroke?: Phaser.GameObjects.Graphics;
-    myTurnStroke?: Phaser.GameObjects.Graphics;
-    selectedStroke?: Phaser.GameObjects.Graphics;
+    playerStroke?: Phaser.GameObjects.Graphics;
     cardNumObj?: Phaser.GameObjects.Text;
     tieSuoImage?: Phaser.GameObjects.Image;
     stageText?: Phaser.GameObjects.Text;
@@ -91,63 +94,38 @@ export class BoardPlayer {
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
 
-        if (!this.isMe) {
-            this.drawdefaultAndMyTurnStroke();
-            this.drawStageText();
-        }
-
-        this.drawStroke();
         this.drawPlayer();
         this.drawBloodsBg();
         this.drawBloods();
         this.setBloods(player.currentBlood);
+        this.drawPlayerName();
+
+        this.drawStroke();
+        if (!this.isMe) {
+            this.drawStageText();
+        }
+
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
-        this.drawPlayerName();
+
         if (player.isDead) {
             this.drawIsDead();
             this._isDead = true;
         }
-        this.bindEvent();
 
+        this.bindEvent();
         this.gamingScene.gameStatusObserved.addObserver(this);
         this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
     }
 
-    drawdefaultAndMyTurnStroke() {
-        this.defaultStroke = this.gamingScene.add.graphics();
-        // @ts-ignore
-        this.defaultStroke.lineStyle(10, COLOR_CONFIG.defaultStroke, 1);
-        this.defaultStroke.strokeRoundedRect(this.positionX - sizeConfig.player.width / 2,
-            this.positionY - sizeConfig.player.height / 2,
-            sizeConfig.player.width,
-            sizeConfig.player.height,
-            2);
-        this.defaultStroke.setAlpha(1);
-
-
-        this.myTurnStroke = this.gamingScene.add.graphics();
-        // @ts-ignore
-        this.myTurnStroke.lineStyle(10, COLOR_CONFIG.myTurnStroke, 1);
-        this.myTurnStroke.strokeRoundedRect(this.positionX - sizeConfig.player.width / 2,
-            this.positionY - sizeConfig.player.height / 2,
-            sizeConfig.player.width,
-            sizeConfig.player.height,
-            2);
-        this.myTurnStroke.setAlpha(0);
-    }
-
     drawStroke() {
-        this.selectedStroke = this.gamingScene.add.graphics();
-        // @ts-ignore
-        this.selectedStroke.lineStyle(10, COLOR_CONFIG.selectedPlayerStroke, 1);
-        this.selectedStroke.strokeRoundedRect(this.positionX - sizeConfig.player.width / 2,
-            this.positionY - sizeConfig.player.height / 2,
-            sizeConfig.player.width,
-            sizeConfig.player.height,
-            2);
-        this.selectedStroke.setAlpha(0);
+        const {stroke} = sharedDrawPlayerStroke(this.gamingScene, {
+            x: this.positionX - sizeConfig.player.width / 2,
+            y: this.positionY - sizeConfig.player.height / 2,
+        })
+        this.playerStroke = stroke;
+        this.playerStroke.setAlpha(0);
     }
 
     drawCardNumber() {
@@ -443,14 +421,6 @@ export class BoardPlayer {
         }
     }
 
-    onPlayerTurnStrokeChange(gameStatus: GameStatus) {
-        if (gameStatus.stage.playerId === this.playerId) {
-            this.myTurnStroke!.setAlpha(0.5);
-        } else {
-            this.myTurnStroke!.setAlpha(0);
-        }
-    }
-
     onPlayerDisableChange(gameFEStatus: GameFEStatus) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
 
@@ -477,9 +447,17 @@ export class BoardPlayer {
         this._selectedTargetPlayersLength = gameFEStatus?.selectedTargetPlayers?.length
     }
 
-    onPlayerSelectedChange(gameFEStatus: GameFEStatus) {
-        const isSelected = !!gameFEStatus.selectedTargetPlayers.find((u) => u.playerId == this.playerId)
-        this.selectedStroke!.setAlpha(isSelected ? 0.5 : 0);
+
+    onPlayerStrokeChange(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
+        const {color, alpha,lineWidth} = getPlayerStrokeAlphaAndColor(gameStatus, gameFEStatus, this.playerId);
+        reDrawPlayerStroke(this.playerStroke!, {
+            x: this.positionX - sizeConfig.player.width / 2,
+            y: this.positionY - sizeConfig.player.height / 2,
+            // @ts-ignore
+            color,
+            alpha,
+            lineWidth,
+        })
     }
 
     onPlayerDieChange(gameStatus: GameStatus) {
@@ -494,22 +472,27 @@ export class BoardPlayer {
         if (this._isDead)
             return
 
-        if (!this.isMe) {
-            this.onPlayerTurnStrokeChange(gameStatus);
-            this.onStageChange(gameStatus);
-        }
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!
+
+
         this.onCardNumberChange(gameStatus);
         this.onTieSuoChange(gameStatus);
         this.onPlayerBloodChange(gameStatus);
         this.onPandingCardsChange(gameStatus);
         this.onPlayerDieChange(gameStatus)
+        this.onPlayerStrokeChange(gameStatus, gameFEStatus);
+        if (!this.isMe) {
+            this.onStageChange(gameStatus);
+        }
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
         if (this._isDead)
             return
 
-        this.onPlayerSelectedChange(gameFEStatus);
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
+
+        this.onPlayerStrokeChange(gameStatus, gameFEStatus);
         this.onPlayerDisableChange(gameFEStatus);
     }
 }

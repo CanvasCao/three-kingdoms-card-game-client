@@ -3,14 +3,18 @@ const COLOR_CONFIG={
   "cardString": "#f9f1e0",
   "disablePlayer": "0x666666",
   "disableCard": "0x999999",
-  "myTurnStroke": "0x00ff00",
-  "selectedPlayerStroke": "0xff7700",
-  "defaultStroke": "0x000000",
-  "selectedCardStroke": "0xffff00",
+
   "boardCardPlaceholder": "0x70685b",
+
   "bloodGreen": "0x60EE54",
   "bloodYellow": "0xFFCD76",
-  "bloodRed": "0xFBBA9D"
+  "bloodRed": "0xFBBA9D",
+
+  // stroke
+  "myTurnStroke": "0x00ff00",
+  "selectedPlayerStroke": "0xffe20c",
+  "defaultStroke": "0x000000",
+  "selectedCardStroke": "0xffff00",
 }
 
 export {

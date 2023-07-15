@@ -2,10 +2,13 @@ import {cloneDeep, differenceBy} from "lodash";
 import {Card} from "../../types/card";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {FEObserver} from "../../types/observer";
+import { GamingScene } from "../../types/phaser";
 import {Player} from "../../types/player";
 import {generateActualCard} from "../../utils/emitDataGenerator";
 
 export class GameFEStatusObserved {
+    gamingScene: GamingScene;
+
     originCardState: {
         selectedCards: GameFEStatus['selectedCards'],
         selectedIndexes: GameFEStatus['selectedIndexes'],
@@ -28,7 +31,9 @@ export class GameFEStatusObserved {
     selectedStatusObservers: FEObserver[]
     publicCardsObservers: FEObserver[]
 
-    constructor() {
+    constructor(gamingScene:GamingScene) {
+        this.gamingScene = gamingScene
+
         this.originCardState = {
             selectedCards: [],
             selectedIndexes: [],

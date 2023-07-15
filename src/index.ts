@@ -57,8 +57,8 @@ class Gaming extends Phaser.Scene {
         this.controlCards = [];
         this.boardPlayers = [];
 
-        this.gameStatusObserved = new GameStatusObserved();
-        this.gameFEStatusObserved = new GameFEStatusObserved();
+        this.gameStatusObserved = new GameStatusObserved(this);
+        this.gameFEStatusObserved = new GameFEStatusObserved(this);
     }
 
     preload() {

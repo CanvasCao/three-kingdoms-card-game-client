@@ -17,7 +17,8 @@ const URL_CONFIG = {
         "gouyu": "other/gouyu.png",
         "white": "other/white.png",
         "bg": "other/bg.png",
-        "tiesuo": "other/tiesuo.png"
+        "tiesuo": "other/tiesuo.png",
+        "bigSkin": "other/bigSkin.webp"
     }
 }
 
