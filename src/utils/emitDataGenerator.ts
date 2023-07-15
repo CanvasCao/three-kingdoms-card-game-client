@@ -17,7 +17,6 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
     if (actualCardWithFEInfo.couldHaveMultiTarget || actualCardWithFEInfo.needAActionToB) {
         return {
             cards: gameFEStatus.selectedCards,
-            selectedIndexes: gameFEStatus.selectedIndexes,
             actualCard,
             originId: getMyPlayerId(),
             targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
@@ -25,7 +24,6 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
     } else if (actualCardWithFEInfo.noNeedSetTargetDueToImDefaultTarget) {
         return {
             cards: gameFEStatus.selectedCards,
-            selectedIndexes: gameFEStatus.selectedIndexes,
             actualCard,
             originId: getMyPlayerId(),
             targetId: getMyPlayerId(),
@@ -33,7 +31,6 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
     } else if (actualCardWithFEInfo.canOnlyHaveOneTarget) {
         return {
             cards: gameFEStatus.selectedCards,
-            selectedIndexes: gameFEStatus.selectedIndexes,
             actualCard,
             originId: getMyPlayerId(),
             targetId: gameFEStatus.selectedTargetPlayers[0].playerId,
@@ -41,7 +38,6 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
     } else if (actualCardWithFEInfo.noNeedSetTargetDueToTargetAll) {
         return {
             cards: gameFEStatus.selectedCards,
-            selectedIndexes: gameFEStatus.selectedIndexes,
             actualCard,
             originId: getMyPlayerId(),
         }
@@ -61,7 +57,6 @@ const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus)
     return {
         chooseToResponse: true,
         cards: gameFEStatus.selectedCards,
-        selectedIndexes: gameFEStatus.selectedIndexes,
         actualCard: gameFEStatus.actualCard!,
         originId: getMyPlayerId(),
         targetId: (info as BasicCardResponseInfo).targetId,
@@ -71,7 +66,7 @@ const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus)
 }
 
 const generateThrowData = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitThrowData => {
-    return {cards: gameFEStatus.selectedCards, selectedIndexes: gameFEStatus.selectedIndexes}
+    return {cards: gameFEStatus.selectedCards}
 }
 
 const generateActualCard = (gameFEStatus: GameFEStatus) => {

@@ -42,8 +42,6 @@ export type OneTargetAction = {
     actualCard: Card,
     originId: string,
     targetId?: string,
-
-    selectedIndexes: (number|string)[],
 }
 
 export type MultiTargetsAction = {
@@ -51,8 +49,6 @@ export type MultiTargetsAction = {
     actualCard: Card,
     originId: string,
     targetIds: string[],
-
-    selectedIndexes: (number|string)[],
 }
 
 // response

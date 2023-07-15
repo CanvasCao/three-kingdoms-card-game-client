@@ -35,7 +35,7 @@ export class ToPublicCard {
                 message: string,
                 publicCards: Card[],
                 fromBoardPlayer: BoardPlayer | undefined,
-                originIndex: number | string, // 只出现在我打出的牌 number是手牌 string是判定武器
+                originIndex: number , // 只出现在我打出的牌 number是手牌 -1是判定武器
     ) {
         this.obId = uuidv4();
 

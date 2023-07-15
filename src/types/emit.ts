@@ -23,8 +23,6 @@ export type EmitResponseData = {
     actualCard: Card,
     originId: string,
 
-    selectedIndexes: (number|string)[],
-
     // 基本卡
     targetId?: string,
 
@@ -41,14 +39,11 @@ export type EmitCardBoardData = {
     card: Card,
     cardAreaType: CardAreaType,
     type: CardBoardActionType,
-
-    selectedIndexes: (number|string)[],
 }
 
 
 export type EmitThrowData = {
     cards: Card[]
-    selectedIndexes: (number|string)[],
 }
 
 export type EmitWugufengdengData = {
@@ -78,7 +73,6 @@ export type EmitNotifyAddToPublicCardData = {
     pandingPlayerId: string,
     pandingName: string,
     throwPlayerId: string,
-    originIndexes: (number|string)[],
     type: string,
     skillName?: string,
 }
@@ -87,7 +81,6 @@ export type EmitNotifyAddToPlayerCardData = {
     fromId: string,
     toId: string,
     cards: Card[],
-    originIndexes: number[],
     message: never,
 
     cardAreaType: CardAreaType,

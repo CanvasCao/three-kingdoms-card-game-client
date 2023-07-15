@@ -124,7 +124,7 @@ export class ControlCard {
                 if (canPlayInMyTurn || isMyResponseTurn) {
                     // 选中再点击就是反选
                     if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectCard(this.card, this._index)
+                        gameFEStatusObserved.unselectCard(this.card)
                     } else { // 选中
                         if (!haveSelectedEnoughThrowCard) {
                             const needGenerateActualCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
@@ -133,7 +133,7 @@ export class ControlCard {
                     }
                 } else if (isMyThrowTurn) {
                     if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectCard(this.card, this._index)
+                        gameFEStatusObserved.unselectCard(this.card)
                     } else {
                         if (!haveSelectedEnoughThrowCard) {
                             gameFEStatusObserved.selectCard(this.card, this._index)

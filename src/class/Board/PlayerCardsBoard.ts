@@ -224,7 +224,7 @@ export class PlayerCardsBoard {
                 depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown',
-                this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.HAND as CardAreaType, index)
+                this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.HAND as CardAreaType)
             )
             this.destoryObjects.push(cardImgObj);
         })
@@ -268,11 +268,11 @@ export class PlayerCardsBoard {
         })
     }
 
-    getCardClickHandler(targetPlayer: Player, card: Card, cardAreaType: CardAreaType, index?: number) {
+    getCardClickHandler(targetPlayer: Player, card: Card, cardAreaType: CardAreaType) {
         return () => {
             this.gamingScene.socket.emit(
                 EMIT_TYPE.CARD_BOARD_ACTION,
-                this.getEmitCardBoardActionData(targetPlayer, card, cardAreaType, index)
+                this.getEmitCardBoardActionData(targetPlayer, card, cardAreaType)
             )
         }
     }
@@ -344,23 +344,13 @@ export class PlayerCardsBoard {
         targetPlayer: Player,
         card: Card,
         cardAreaType: CardAreaType, // NofityAnimationManager判断正反
-        index?: number | string
     ): EmitCardBoardData {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-        let selectedIndex: number | string = 0
-        if (index) {
-            selectedIndex = index
-        } else if (cardAreaType == CARD_LOCATION.PANDING) {
-            selectedIndex = card.CN
-        } else if (cardAreaType == CARD_LOCATION.EQUIPMENT) {
-            selectedIndex = card.equipmentType!
-        }
 
         return {
             originId: getMyPlayerId(),
             targetId: targetPlayer.playerId,
             card: card,
-            selectedIndexes: [selectedIndex],
             type: this.getEmitType(gameStatus) as CardBoardActionType,
             cardAreaType,
         }

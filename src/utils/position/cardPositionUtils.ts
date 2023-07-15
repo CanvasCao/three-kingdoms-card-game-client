@@ -1,8 +1,7 @@
-import {isNumber} from "lodash";
 import {sizeConfig} from "../../config/sizeConfig";
 
-const getMyCardPosition = (index: number | string) => {
-    if (isNumber(index)) {
+const getMyCardPosition = (index: number) => {
+    if (index >= 0) {
         return {
             x: sizeConfig.controlEquipment.width + sizeConfig.controlCardBgMargin + index * sizeConfig.controlCard.width + sizeConfig.controlCard.width / 2,
             y: sizeConfig.background.height - sizeConfig.controlCard.height / 2 - sizeConfig.controlCard.height * 0.15

@@ -31,7 +31,7 @@ export class ToPlayerCard {
     constructor(gamingScene: GamingScene,
                 card: Card,
                 isFaceFront: boolean,
-                originIndex: number | string | undefined, // 来源 我打出的牌
+                originIndex: number, // 来源 我打出的牌
                 fromBoardPlayer: BoardPlayer | undefined,
                 toBoardPlayer: BoardPlayer | undefined,
                 repeatTimes?: number,

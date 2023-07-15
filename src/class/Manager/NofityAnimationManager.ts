@@ -63,30 +63,32 @@ export class NofityAnimationManager {
     }
 
     addToPublicCard(data: EmitNotifyAddToPublicCardData) {
+        const prevGameStatus = this.gamingScene.gameStatusObserved.prev_gameStatus!;
+
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
         const isMe = fromBoardPlayer?.playerId === getMyPlayerId()
         let handCardsWithOrder: { card: Card, originIndex: number }[] = [] // 只有我打出的牌才需要Card with order
-        let otherCardsWithOrder: { card: Card, originIndex: string }[] = [] // 只有我打出的牌才需要Card with order
 
         if (isMe) {
-            data.cards.forEach((card, index) => {
-                const originIndex = data.originIndexes[index]
-                isNumber(originIndex) ?
-                    handCardsWithOrder.push({card, originIndex}) :
-                    otherCardsWithOrder.push({card, originIndex})
+            data.cards.forEach((card) => {
+                handCardsWithOrder.push({
+                    card,
+                    originIndex: prevGameStatus.players[getMyPlayerId()].cards.findIndex((prev_card) => prev_card.cardId === card.cardId)
+                })
+                handCardsWithOrder = handCardsWithOrder.sort((a, b) => a.originIndex - b.originIndex)
             })
-            handCardsWithOrder = handCardsWithOrder.sort((a, b) => a.originIndex - b.originIndex)
         } else {
             handCardsWithOrder = data.cards.map((card) => {
-                return {card, originIndex: 0} // 别人的牌originIndex无所谓是什么
+                return {card, originIndex: -1} // 别人的牌originIndex -1
             })
         }
 
         const message = generatePublicCardMessage(gameStatus, data);
 
-        [...handCardsWithOrder, ...otherCardsWithOrder].forEach(({card, originIndex}) => {
+        handCardsWithOrder.forEach(({card, originIndex}) => {
             gameFEStatus.publicCards.push(card)
             new ToPublicCard(
                 this.gamingScene,
@@ -103,6 +105,8 @@ export class NofityAnimationManager {
     }
 
     addToPlayerCard(data: EmitNotifyAddToPlayerCardData) {
+        const prevGameStatus = this.gamingScene.gameStatusObserved.prev_gameStatus!;
+
         // 到别人手里 需要叠起来移动
         // 到自己手里需要一张一张移动
         const toBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.toId)
@@ -115,11 +119,13 @@ export class NofityAnimationManager {
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
         if (fromBoardPlayer?.playerId == getMyPlayerId()) {
             data.cards.forEach((card, index) => {
+                const originIndex = prevGameStatus.players[getMyPlayerId()].cards.findIndex((prev_card) => prev_card.cardId === card.cardId)
+
                 new ToPlayerCard(
                     this.gamingScene,
                     card,
                     true,
-                    data.originIndexes[index],
+                    originIndex,
                     fromBoardPlayer,
                     toBoardPlayer,
                 )
@@ -130,7 +136,7 @@ export class NofityAnimationManager {
                 this.gamingScene,
                 data.cards[0],
                 isFaceFront,
-                undefined,
+                -1,
                 fromBoardPlayer,
                 toBoardPlayer,
                 data.cards.length

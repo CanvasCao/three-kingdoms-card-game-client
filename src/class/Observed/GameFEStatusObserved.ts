@@ -11,7 +11,6 @@ export class GameFEStatusObserved {
 
     originCardState: {
         selectedCards: GameFEStatus['selectedCards'],
-        selectedIndexes: GameFEStatus['selectedIndexes'],
         actualCard: GameFEStatus['actualCard'],
     }
     originTargetState: {
@@ -36,7 +35,6 @@ export class GameFEStatusObserved {
 
         this.originCardState = {
             selectedCards: [],
-            selectedIndexes: [],
             actualCard: null,
         }
         this.originTargetState = {
@@ -118,10 +116,9 @@ export class GameFEStatusObserved {
 
 
     // select/unselect card
-    unselectCard(card: Card, indexOrEqName: number | string) {
+    unselectCard(card: Card) {
         const gameFEStatus = this.gameFEStatus;
         gameFEStatus.selectedCards = differenceBy(gameFEStatus.selectedCards, [card], 'cardId');
-        gameFEStatus.selectedIndexes = differenceBy(gameFEStatus.selectedIndexes, [indexOrEqName]);
         gameFEStatus.actualCard = null;
         gameFEStatus.selectedTargetPlayers = [];
         this._setSelectedGameEFStatus(gameFEStatus)
@@ -130,7 +127,6 @@ export class GameFEStatusObserved {
     selectCard(card: Card, indexOrEqName: number | string, {needGenerateActualCard}: { needGenerateActualCard?: boolean } = {}) {
         const gameFEStatus = this.gameFEStatus;
         gameFEStatus.selectedCards.push(card);
-        gameFEStatus.selectedIndexes.push(indexOrEqName);
         if (needGenerateActualCard) {
             gameFEStatus.actualCard = generateActualCard(gameFEStatus);
         }
