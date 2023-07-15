@@ -19,19 +19,27 @@ import {getResponseType} from "./response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../config/responseTypeConfig";
 
 const getPlayersDistanceFromAToB = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, APlayer: Player, BPlayer: Player) => {
-    const playerNumber = Object.keys(gameStatus.players).length
-    let distance = Math.min(
-        Math.abs(APlayer.location - BPlayer.location),
-        Math.abs((APlayer.location + playerNumber) - BPlayer.location),
-        Math.abs(APlayer.location - (BPlayer.location + playerNumber))
-    )
-    const minusHorseCard = APlayer?.minusHorseCard;
+    const alivePlayers = Object.values(gameStatus.players).filter((p) => !p.isDead).sort((a, b) => a.location - b.location)
+    const APlayerNewLocation = alivePlayers.findIndex((p) => p.playerId === APlayer.playerId)
+    const BPlayerNewLocation = alivePlayers.findIndex((p) => p.playerId === BPlayer.playerId)
 
+    let distance = Math.min(
+        Math.abs(APlayerNewLocation - BPlayerNewLocation),
+        Math.abs((APlayerNewLocation + alivePlayers.length) - BPlayerNewLocation),
+        Math.abs(APlayerNewLocation - (BPlayerNewLocation + alivePlayers.length))
+    )
+
+    const minusHorseCard = APlayer?.minusHorseCard;
     // -1参与距离计算的前提是 -1没有被选中
     if (minusHorseCard && !gameFEStatus.selectedCards.map(c => c.cardId).includes(minusHorseCard.cardId)) {
         distance = distance + (APlayer?.minusHorseCard?.horseDistance || 0)
     }
-    return distance + (BPlayer?.plusHorseCard?.horseDistance || 0)
+
+    if (BPlayer?.plusHorseCard?.horseDistance) {
+        distance = distance + (BPlayer?.plusHorseCard?.horseDistance)
+    }
+
+    return distance
 }
 
 const getPlayerAttackRangeNumber = (gameFEStatus: GameFEStatus, player: Player) => {

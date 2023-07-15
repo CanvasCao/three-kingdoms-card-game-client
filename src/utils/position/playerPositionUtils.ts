@@ -46,7 +46,7 @@ const rightBottom = {
     y: playersAreaH * 0.7
 }
 
-const getPotisions = (number: number) => {
+const getPositions = (number: number) => {
     let positions;
     switch (number) {
         case 1:
@@ -80,7 +80,7 @@ export const getPlayersWithPosition = (gameStatusPlayers: GameStatusPlayers): Pl
 
     const playersNumber = Object.keys(gameStatusPlayers).length
     const otherPlayersNumber = playersNumber - 1
-    const otherPositions = getPotisions(otherPlayersNumber);
+    const otherPositions = getPositions(otherPlayersNumber);
     const firstLocation = myPlayer.location;
 
     const playersWithPosition: Player[] = []
@@ -94,7 +94,7 @@ export const getPlayersWithPosition = (gameStatusPlayers: GameStatusPlayers): Pl
 
     myPlayer.linePosition = {
         x: sizeConfig.background.width / 2,
-        y: playersAreaH + sizeConfig.player.height / 2
+        y: playersAreaH
     }
     myPlayer.playerPosition = {
         x: (sizeConfig.background.width - sizeConfig.player.width / 2),
