@@ -19,7 +19,7 @@ const sharedDrawEquipment = (
     const padding = 1;
     const paddingHorizontal = padding + (isMe ? 4 : 1)
     const equipmentCardWidth = isMe ? sizeConfig.controlEquipment.width : sizeConfig.player.width * 0.8
-    const equipmentCardHeight = isMe ? sizeConfig.controlEquipment.height - 4 : 16
+    const equipmentCardHeight = isMe ? sizeConfig.controlEquipment.height - 4 : 15
     const fontSize = isMe ? 14 : sizeConfig.player.height / 16;
 
     const selectedStroke = gamingScene.add.graphics();

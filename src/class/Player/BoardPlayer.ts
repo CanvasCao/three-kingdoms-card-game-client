@@ -18,7 +18,7 @@ import {
     reDrawPlayerStroke,
     sharedDrawPlayerStroke
 } from "../../utils/draw/drawPlayerStrokeUtils";
-import { DEPTH_CONFIG } from "../../config/depthConfig";
+import {DEPTH_CONFIG} from "../../config/depthConfig";
 
 export class BoardPlayer {
     obId: string;
@@ -140,14 +140,14 @@ export class BoardPlayer {
         const nameText = this.gamingScene.add.text(
             this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
-            this.playerName,
+            " " + this.playerName,
             // @ts-ignore
             {fill: "#fff", align: "left", fixedWidth: sizeConfig.player.width}
         );
 
         const padding = 2;
         nameText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        nameText.setBackgroundColor("#0000003D")
+        nameText.setBackgroundColor("rgba(0,0,0,0.7)")
     }
 
     drawTieSuo() {
@@ -181,7 +181,7 @@ export class BoardPlayer {
                 this.positionY + sizeConfig.player.height / 2 + 5,
                 "",
                 // @ts-ignore
-                {fill: "#000", align: "center"}
+                {fill: COLOR_CONFIG.black, align: "center"}
             );
             pandingCardText.setOrigin(0.5, 0.5)
             pandingCardText.setFontSize(sizeConfig.player.width / 11)
@@ -198,13 +198,12 @@ export class BoardPlayer {
 
         for (let i = 0; i < this.playerMaxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
-                this.positionX + sizeConfig.player.width / 2 * 0.86,
+                this.positionX + sizeConfig.player.width / 2 * 0.85,
                 this.positionY - marginBottom + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.9 * i),
                 "gouyu");
             bloodImage.displayHeight = bloodHeight;
             bloodImage.displayWidth = bloodWidth;
-            // @ts-ignore
-            bloodImage.setTint(COLOR_CONFIG.bloodGreen);
+
             this.bloodImages!.push(bloodImage);
         }
     }
@@ -239,21 +238,8 @@ export class BoardPlayer {
 
         for (let i = 0; i < this.bloodImages!.length; i++) {
             const bloodNumber = i + 1;
-            const alpha = (bloodNumber > number) ? 0 : 1
-
-            this.gamingScene.tweens.add({
-                targets: this.bloodImages![i],
-                alpha: {
-                    value: alpha,
-                    duration: 500,
-                    ease: "Bounce.easeInOut"
-                }
-            });
-
-            if (alpha) {
-                // @ts-ignore
-                this.bloodImages![i].setTint(color)
-            }
+            color = (bloodNumber > number) ? COLOR_CONFIG.darkGrey : color
+            this.bloodImages![i].setTint(Number(color))
         }
     }
 
@@ -305,8 +291,8 @@ export class BoardPlayer {
     }
 
     drawBloodsBg() {
-        const graphicsW = this.isMe ? sizeConfig.player.width * 0.16 : sizeConfig.player.width * 0.16 * 0.8
-        const graphicsH = this.isMe ? sizeConfig.player.height * 0.6 : sizeConfig.player.height * 0.6 * 0.8
+        const graphicsW = this.isMe ? sizeConfig.player.width * 0.18 : sizeConfig.player.width * 0.18 * 0.8
+        const graphicsH = this.isMe ? sizeConfig.player.height * 0.62 : sizeConfig.player.height * 0.62 * 0.8
         this.bloodsBgGraphics = this.gamingScene.add.graphics();
         this.bloodsBgGraphics.fillStyle(0x000, 1);
         this.bloodsBgGraphics.fillRoundedRect(
@@ -412,7 +398,7 @@ export class BoardPlayer {
 
 
     onPlayerStrokeChange(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const {color, alpha,lineWidth} = getPlayerStrokeAlphaAndColor(gameStatus, gameFEStatus, this.playerId);
+        const {color, alpha, lineWidth} = getPlayerStrokeAlphaAndColor(gameStatus, gameFEStatus, this.playerId);
         reDrawPlayerStroke(this.playerStroke!, {
             x: this.positionX - sizeConfig.player.width / 2,
             y: this.positionY - sizeConfig.player.height / 2,

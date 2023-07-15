@@ -38,8 +38,8 @@ const sizeConfig = {
         height: playerHeight
     },
     playerSource: {
-        width: 574,
-        height: 761
+        width: 350,
+        height: 464
     },
     blood: {
         height: 30,

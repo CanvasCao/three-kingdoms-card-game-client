@@ -90,7 +90,7 @@ export class EquipmentCard {
             const playerPositionX = boardPlayer.positionX;
             const playerPositionY = boardPlayer.positionY;
             positionX = playerPositionX - sizeConfig.player.width / 2;
-            positionY = playerPositionY + offsetIndex * 16 + 22;
+            positionY = playerPositionY + offsetIndex * 17 + 18;
         }
 
         const {

@@ -24,7 +24,8 @@ const COLOR_CONFIG={
   "countDownBottom":"0xff0000",
 
   // pure color
-  "black":"0x000000"
+  "black":"0x000000",
+  "darkGrey":"0x555555"
 }
 
 export {
