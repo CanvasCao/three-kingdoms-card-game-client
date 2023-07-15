@@ -15,6 +15,16 @@ const COLOR_CONFIG={
   "selectedPlayerStroke": "0xffe20c",
   "defaultStroke": "0x000000",
   "selectedCardStroke": "0xffff00",
+
+  // line
+  "line":"0xF8D781",
+
+  // countDown
+  "countDownTop":"0xff7d7d",
+  "countDownBottom":"0xff0000",
+
+  // pure color
+  "black":"0x000000"
 }
 
 export {

@@ -17,6 +17,7 @@ import {getIfShowFanKuiPlayerCardsBoard, getIfShowShunChaiPlayerCardsBoard} from
 import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
 import {getResponseType} from "../../utils/response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
+import { DEPTH_CONFIG } from "../../config/depthConfig";
 
 const gridOffset = {
     line1: {y: -55},
@@ -32,8 +33,6 @@ const boardSize = {
     height: 320,
     width: 760,
 }
-
-const boardDepth = 100;
 
 export class PlayerCardsBoard {
     obId: string;
@@ -102,7 +101,7 @@ export class PlayerCardsBoard {
         this.maskImg.displayWidth = sizeConfig.background.width;
         this.maskImg.setAlpha(0)
         this.maskImg.setOrigin(0, 0)
-        this.maskImg.setDepth(boardDepth)
+        this.maskImg.setDepth(DEPTH_CONFIG.BOARD)
 
         this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
         // @ts-ignore
@@ -110,7 +109,7 @@ export class PlayerCardsBoard {
         this.boardImg.displayHeight = boardSize.height;
         this.boardImg.displayWidth = boardSize.width;
         this.boardImg.setAlpha(0)
-        this.boardImg.setDepth(boardDepth)
+        this.boardImg.setDepth(DEPTH_CONFIG.BOARD)
     }
 
     drawTitle() {
@@ -118,7 +117,7 @@ export class PlayerCardsBoard {
         this.titleText.setOrigin(0.5, 0.5)
         this.titleText.setAlpha(0)
         this.titleText.setPadding(0, 2, 0, 0)
-        this.titleText.setDepth(boardDepth)
+        this.titleText.setDepth(DEPTH_CONFIG.BOARD)
     }
 
     drawCardCategories() {
@@ -145,7 +144,7 @@ export class PlayerCardsBoard {
             text.setFontSize(fontSize)
             text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
-            text.setDepth(boardDepth)
+            text.setDepth(DEPTH_CONFIG.BOARD)
         })
     }
 
@@ -159,7 +158,7 @@ export class PlayerCardsBoard {
         this.handCardsPlaceholder.displayWidth = 675;
         this.handCardsPlaceholder.setOrigin(0, 0.5)
         this.handCardsPlaceholder.setAlpha(0)
-        this.handCardsPlaceholder.setDepth(boardDepth)
+        this.handCardsPlaceholder.setDepth(DEPTH_CONFIG.BOARD)
 
         const equipmentTexts = [
             i18(i18Config.PLAYER_BOARD_WEAPON_CARD_PLACEHOLDER),
@@ -176,14 +175,14 @@ export class PlayerCardsBoard {
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
-            img.setDepth(boardDepth)
+            img.setDepth(DEPTH_CONFIG.BOARD)
 
             const text = this.gamingScene.add.text(
                 this.initX + gridOffset.column1.x + (index * (sizeConfig.controlCard.width + cardMargin)),
                 this.initY + gridOffset.line2.y, equipmentText)
             text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
-            text.setDepth(boardDepth)
+            text.setDepth(DEPTH_CONFIG.BOARD)
             text.setPadding(0, 2, 0, 0);
 
             this.equipmentCardsPlaceholders.push(img)
@@ -201,14 +200,14 @@ export class PlayerCardsBoard {
             img.displayHeight = sizeConfig.controlCard.height;
             img.displayWidth = sizeConfig.controlCard.width;
             img.setAlpha(0)
-            img.setDepth(boardDepth)
+            img.setDepth(DEPTH_CONFIG.BOARD)
 
             const text = this.gamingScene.add.text(
                 this.initX + gridOffset.column2.x + (index * (sizeConfig.controlCard.width + cardMargin)),
                 this.initY + gridOffset.line2.y, delayText)
             text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
-            text.setDepth(boardDepth)
+            text.setDepth(DEPTH_CONFIG.BOARD)
             text.setPadding(0, 2, 0, 0)
 
             this.pandingCardsPlaceholders.push(img)
@@ -222,7 +221,7 @@ export class PlayerCardsBoard {
             const {cardImgObj} = sharedDrawBackCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line1.y,
-                depth: boardDepth,
+                depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown',
                 this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.HAND as CardAreaType, index)
@@ -241,7 +240,7 @@ export class PlayerCardsBoard {
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line2.y,
-                depth: boardDepth,
+                depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown',
                 this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.EQUIPMENT as CardAreaType))
@@ -259,7 +258,7 @@ export class PlayerCardsBoard {
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + gridOffset.line2.y,
-                depth: boardDepth,
+                depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.PANDING as CardAreaType))
 

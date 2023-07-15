@@ -23,12 +23,12 @@ const sharedDrawPlayerStroke = (
     }
 }
 
-const reDrawPlayerStroke = (stroke: Phaser.GameObjects.Graphics, {x, y, alpha, color,lineWidth}: {
+const reDrawPlayerStroke = (stroke: Phaser.GameObjects.Graphics, {x, y, alpha, color, lineWidth}: {
     x: number,
     y: number,
     alpha: number,
     color: number,
-    lineWidth:number
+    lineWidth: number
 }) => {
     // @ts-ignore
     stroke.clear()
@@ -38,7 +38,6 @@ const reDrawPlayerStroke = (stroke: Phaser.GameObjects.Graphics, {x, y, alpha, c
         sizeConfig.player.height,
         2);
     stroke.setAlpha(alpha);
-    stroke.setDepth(2);
 }
 
 const getPlayerStrokeAlphaAndColor = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, playerId: string) => {
@@ -46,26 +45,27 @@ const getPlayerStrokeAlphaAndColor = (gameStatus: GameStatus, gameFEStatus: Game
 
     if (getCurrentPlayer(gameStatus).playerId === playerId && !isMe) {
         return {
-            alpha: 1,
-            lineWidth:4,
+            alpha: 0.7,
+            lineWidth: 10,
             color: COLOR_CONFIG.myTurnStroke
         }
     }
     if (!!gameFEStatus.selectedTargetPlayers.find((u) => u.playerId == playerId)) {
         return {
             alpha: 1,
-            lineWidth:2,
+            lineWidth: 2,
             color: COLOR_CONFIG.selectedPlayerStroke
         }
     }
 
     return {
         alpha: 1,
-        lineWidth:2,
+        lineWidth: 2,
         color: COLOR_CONFIG.defaultStroke
     }
 }
 export {
-    sharedDrawPlayerStroke,reDrawPlayerStroke,
+    sharedDrawPlayerStroke,
+    reDrawPlayerStroke,
     getPlayerStrokeAlphaAndColor
 }

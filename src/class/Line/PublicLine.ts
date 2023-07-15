@@ -1,3 +1,4 @@
+import {COLOR_CONFIG} from "../../config/colorConfig";
 import {GamingScene} from "../../types/phaser";
 import {uuidv4} from "../../utils/uuid";
 
@@ -51,18 +52,18 @@ export class PublicLine {
             }
 
             this.graphics!.clear();
-            this.graphics!.lineStyle(2, 0xF8D781);
+            this.graphics!.lineStyle(2, Number(COLOR_CONFIG.line));
             this.graphics!.strokeLineShape(line);
 
             if (endPointPercent >= 1 && startPointPercent >= 1 && loopIndex >= 20) {
-                this.destoryAll();
-                clearInterval(timer)
+                this.destoryAll(timer as unknown as number);
             }
         }, 10)
     }
 
-    destoryAll() {
+    destoryAll(timer: number) {
         this.graphics!.destroy()
+        clearInterval(timer)
     }
 
 }

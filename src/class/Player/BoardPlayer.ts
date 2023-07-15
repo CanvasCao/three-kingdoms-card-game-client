@@ -12,15 +12,13 @@ import {
     getCanSelectMeAsFirstTargetCardNamesClosure,
     getCanSelectMeAsSecondTargetCardNamesClosure
 } from "../../utils/cardNamesClourseUtils";
-import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
-import {i18Config} from "../../i18n/i18Config";
-import {STAGE_NAMES, STAGE_NAMES_CN} from "../../config/gameConfig";
 import {Player} from "../../types/player";
 import {
     getPlayerStrokeAlphaAndColor,
     reDrawPlayerStroke,
     sharedDrawPlayerStroke
 } from "../../utils/draw/drawPlayerStrokeUtils";
+import { DEPTH_CONFIG } from "../../config/depthConfig";
 
 export class BoardPlayer {
     obId: string;
@@ -94,17 +92,12 @@ export class BoardPlayer {
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
 
+        this.drawStroke();
         this.drawPlayer();
         this.drawBloodsBg();
         this.drawBloods();
         this.setBloods(player.currentBlood);
         this.drawPlayerName();
-
-        this.drawStroke();
-        if (!this.isMe) {
-            this.drawStageText();
-        }
-
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
@@ -180,7 +173,7 @@ export class BoardPlayer {
             // @ts-ignore
             pandingCardImage.setTint(COLOR_CONFIG.card)
             pandingCardImage.setAlpha(0)
-
+            pandingCardImage.setDepth(DEPTH_CONFIG.PANDING_SIGN)
             this.pandingCardImages!.push(pandingCardImage);
 
             const pandingCardText = this.gamingScene.add.text(
@@ -193,6 +186,7 @@ export class BoardPlayer {
             pandingCardText.setOrigin(0.5, 0.5)
             pandingCardText.setFontSize(sizeConfig.player.width / 11)
             pandingCardText.setAlpha(0)
+            pandingCardText.setDepth(DEPTH_CONFIG.PANDING_SIGN)
             this.pandingCardTexts!.push(pandingCardText);
         }
     }
@@ -213,22 +207,6 @@ export class BoardPlayer {
             bloodImage.setTint(COLOR_CONFIG.bloodGreen);
             this.bloodImages!.push(bloodImage);
         }
-    }
-
-    drawStageText() {
-        this.stageText = this.gamingScene.add.text(
-            this.positionX,
-            this.positionY + sizeConfig.player.height / 2 + 10,
-            "",
-            // @ts-ignore
-            {fill: "#fff", align: "center", stroke: '#ff0000', strokeThickness: 6}
-        );
-
-        this.stageText.setOrigin(0.5, 0.5)
-        const padding = 2;
-        this.stageText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        this.stageText.setFontSize(14)
-        this.stageText.setAlpha(0)
     }
 
     drawIsDead() {
@@ -406,21 +384,6 @@ export class BoardPlayer {
         }
     }
 
-    onStageChange(gameStatus: GameStatus) {
-        if (gameStatus.stage.playerId === this.playerId) {
-            this.stageText!.setAlpha(1);
-            this.stageText!.setText(i18(i18Config.STAGE_DESC,
-                {
-                    stage: (getI18Lan() == I18LANS.EN ?
-                        STAGE_NAMES[gameStatus.stage.stageIndex] :
-                        STAGE_NAMES_CN[gameStatus.stage.stageIndex])
-                })
-            )
-        } else {
-            this.stageText!.setAlpha(0)
-        }
-    }
-
     onPlayerDisableChange(gameFEStatus: GameFEStatus) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
 
@@ -474,16 +437,12 @@ export class BoardPlayer {
 
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!
 
-
+        this.onPlayerStrokeChange(gameStatus, gameFEStatus);
         this.onCardNumberChange(gameStatus);
         this.onTieSuoChange(gameStatus);
         this.onPlayerBloodChange(gameStatus);
         this.onPandingCardsChange(gameStatus);
         this.onPlayerDieChange(gameStatus)
-        this.onPlayerStrokeChange(gameStatus, gameFEStatus);
-        if (!this.isMe) {
-            this.onStageChange(gameStatus);
-        }
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {

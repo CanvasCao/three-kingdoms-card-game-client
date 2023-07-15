@@ -12,13 +12,13 @@ import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getPlayerDisplayName} from "../../utils/playerUtils";
 import {Card} from "../../types/card";
+import { DEPTH_CONFIG } from "../../config/depthConfig";
 
 const boardSize = {
     height: 380,
     width: 420,
 }
 const boardAlpha = 0.8;
-const boardDepth = 100;
 const cardMargin = 5
 
 const gridOffset = {
@@ -76,7 +76,7 @@ export class WuGuFengDengBoard {
         this.maskImg.displayWidth = sizeConfig.background.width;
         this.maskImg.setAlpha(0)
         this.maskImg.setOrigin(0, 0)
-        this.maskImg.setDepth(boardDepth)
+        this.maskImg.setDepth(DEPTH_CONFIG.BOARD)
 
         this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
         // @ts-ignore
@@ -84,7 +84,7 @@ export class WuGuFengDengBoard {
         this.boardImg.displayHeight = boardSize.height;
         this.boardImg.displayWidth = boardSize.width;
         this.boardImg.setAlpha(0)
-        this.boardImg.setDepth(boardDepth)
+        this.boardImg.setDepth(DEPTH_CONFIG.BOARD)
     }
 
     drawTitle() {
@@ -94,7 +94,7 @@ export class WuGuFengDengBoard {
         this.titleText.setOrigin(0.5, 0.5)
         this.titleText.setAlpha(0)
         this.titleText.setPadding(0, 2, 0, 0)
-        this.titleText.setDepth(boardDepth)
+        this.titleText.setDepth(DEPTH_CONFIG.BOARD)
     }
 
     drawBottomText() {
@@ -102,7 +102,7 @@ export class WuGuFengDengBoard {
         this.bottomText.setOrigin(0.5, 0.5)
         this.bottomText.setAlpha(0)
         this.bottomText.setPadding(0, 2, 0, 0)
-        this.bottomText.setDepth(boardDepth)
+        this.bottomText.setDepth(DEPTH_CONFIG.BOARD)
     }
 
     drawWugufengdengCards(gameStatus: GameStatus) {
@@ -112,7 +112,7 @@ export class WuGuFengDengBoard {
             const {cardNameObj, cardHuaseNumberObj, cardImgObj, cardMessageObj} = sharedDrawFrontCard(this.gamingScene, card, {
                 x: this.initX - 125 + modIndex * (sizeConfig.controlCard.width + cardMargin),
                 y: this.initY + offsetY,
-                depth: boardDepth,
+                depth: DEPTH_CONFIG.BOARD,
                 message: card.wugefengdengSelectedPlayerId ? gameStatus.players[card.wugefengdengSelectedPlayerId].name : '',
             })
 

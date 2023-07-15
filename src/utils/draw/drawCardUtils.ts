@@ -12,15 +12,12 @@ import {getCardColor} from "../cardUtils";
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {CARD_NUM_DESC} from "../../config/cardConfig";
 import {Card} from "../../types/card";
-
-// tint
-const disableTint = COLOR_CONFIG.disableCard;
-const ableTint = COLOR_CONFIG.card;
+import {DEPTH_CONFIG} from "../../config/depthConfig";
 
 const sharedDrawFrontCard = (
     gamingScene: GamingScene,
     card: Card,
-    {x, y, message = '', depth = 0, alpha = 1}: {
+    {x, y, message = '', depth = DEPTH_CONFIG.CARD, alpha = 1}: {
         x: number,
         y: number,
         message?: string,
@@ -33,7 +30,7 @@ const sharedDrawFrontCard = (
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setAlpha(alpha)
     // @ts-ignore
-    cardImgObj.setTint(ableTint);
+    cardImgObj.setTint(COLOR_CONFIG.card);
     cardImgObj.setDepth(depth)
     cardImgObj.setData("offsetX", 0)
     cardImgObj.setData("offsetY", 0)
@@ -104,14 +101,13 @@ const sharedDrawFrontCard = (
     }
 }
 
-
 const sharedDrawBackCard = (
     gamingScene: GamingScene,
     card: Card,
     {
         x,
         y,
-        depth = 0,
+        depth  = DEPTH_CONFIG.CARD,
         offsetX = 0,
         offsetY = 0,
     }: {

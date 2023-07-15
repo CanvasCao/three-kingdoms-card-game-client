@@ -27,6 +27,7 @@ import {setI18nLan} from './i18n/i18nUtils';
 import {setPageByFeatureToggle} from "./utils/toggle/toggle";
 import {OperateHint} from "./class/OperateHint/OperateHint";
 import {Card} from "./types/card";
+import {BoardPlayerThinkingHint} from './class/Player/BoardPlayerThinkingHint';
 
 setI18nLan();
 setPageByFeatureToggle();
@@ -37,6 +38,7 @@ class Gaming extends Phaser.Scene {
     init: boolean;
     controlCards: Card[];
     boardPlayers: BoardPlayer[];
+    boardPlayerThinkHints: BoardPlayerThinkingHint[];
     gameStatusObserved: GameStatusObserved;
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
@@ -56,6 +58,7 @@ class Gaming extends Phaser.Scene {
 
         this.controlCards = [];
         this.boardPlayers = [];
+        this.boardPlayerThinkHints = [];
 
         this.gameStatusObserved = new GameStatusObserved(this);
         this.gameFEStatusObserved = new GameFEStatusObserved(this);
@@ -71,8 +74,8 @@ class Gaming extends Phaser.Scene {
             this.load.image(key, (URL_CONFIG.other as any)[key]);
         }
 
-        HERO_INDEXES.forEach((i)=>{
-            this.load.image(i, HERO_URL_PREFIX+i+".png");
+        HERO_INDEXES.forEach((i) => {
+            this.load.image(i, HERO_URL_PREFIX + i + ".png");
         })
     }
 
@@ -101,6 +104,7 @@ class Gaming extends Phaser.Scene {
             this.notifyAnimationManager = new NofityAnimationManager(this);
 
             const players = getPlayersWithPosition(data.players);
+            this.boardPlayerThinkHints = players.map((player) => new BoardPlayerThinkingHint(this, player));
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
 
             this.gameStatusObserved.setGameStatus(data);
