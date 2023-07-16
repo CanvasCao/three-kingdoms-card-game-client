@@ -1,4 +1,4 @@
-import { getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import intersection from 'lodash/intersection';
 import differenceBy from 'lodash/differenceBy';
 import {ControlCard} from "../Card/ControlCard";

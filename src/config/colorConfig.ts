@@ -25,7 +25,8 @@ const COLOR_CONFIG={
 
   // pure color
   "black":"0x000000",
-  "darkGrey":"0x555555"
+  "darkGrey":"0x555555",
+  "red":"0xff0000"
 }
 
 export {

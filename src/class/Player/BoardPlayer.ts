@@ -20,6 +20,9 @@ import {
 } from "../../utils/draw/drawPlayerStrokeUtils";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 
+const reduceBloodOut = 50;
+const reduceBloodIn = 300;
+
 export class BoardPlayer {
     obId: string;
     gamingScene: GamingScene;
@@ -41,12 +44,16 @@ export class BoardPlayer {
     _heroId: string;
     _disable: boolean;
     _pandingCardsLength: number;
-    _currentBlood: number;
+    _blood: number;
     _cardNumber: number;
     _isTieSuo: boolean;
     _actualCardId?: string;
     _selectedTargetPlayersLength?: number;
     _isDead?: boolean;
+
+    phaserGroup: (Phaser.GameObjects.Graphics |
+        Phaser.GameObjects.Text |
+        Phaser.GameObjects.Image)[];
 
     playerStroke?: Phaser.GameObjects.Graphics;
     cardNumObj?: Phaser.GameObjects.Text;
@@ -54,6 +61,7 @@ export class BoardPlayer {
     playerImage?: Phaser.GameObjects.Image;
     isDeadText?: Phaser.GameObjects.Text;
     bloodsBgGraphics?: Phaser.GameObjects.Graphics;
+    wound?: Phaser.GameObjects.Image;
 
     constructor(gamingScene: GamingScene, player: Player) {
         this.obId = uuidv4();
@@ -83,11 +91,13 @@ export class BoardPlayer {
         this._heroId = '';
         this._disable = false;
         this._pandingCardsLength = 0;
-        this._currentBlood = player.currentBlood;
+        this._blood = player.currentBlood;
         this._cardNumber = player.cards.length;
         this._isTieSuo = player.isTieSuo;
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
+
+        this.phaserGroup = [];
 
         this.drawPlayer('xuanjiang');
         this.drawPlayerName();
@@ -108,6 +118,7 @@ export class BoardPlayer {
         this.drawPandingCards();
         this.drawTieSuo();
         this.drawCardNumber();
+        this.drawWound();
 
         if (player.isDead) {
             this.drawIsDead();
@@ -124,6 +135,8 @@ export class BoardPlayer {
         })
         this.playerStroke = stroke;
         this.playerStroke.setAlpha(0);
+
+        this.phaserGroup.push(stroke)
     }
 
     drawCardNumber() {
@@ -139,6 +152,27 @@ export class BoardPlayer {
         this.cardNumObj.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         this.cardNumObj.setBackgroundColor("#fff");
         this.cardNumObj.setFontSize(sizeConfig.player.width / 8)
+
+        this.phaserGroup.push(this.cardNumObj)
+    }
+
+    drawPlayer(playerImage: string) {
+        this.playerImage = this.gamingScene.add.image(
+            this.positionX - sizeConfig.player.width / 2,
+            this.positionY - sizeConfig.player.height / 2,
+            playerImage).setInteractive()
+        this.playerImage.setDisplaySize(sizeConfig.player.width,
+            sizeConfig.player.width * (sizeConfig.playerSource.height / sizeConfig.playerSource.width))
+        this.playerImage.setOrigin(0, 0)
+
+        var cropRect = new Phaser.Geom.Rectangle(0,
+            0,
+            sizeConfig.playerSource.width,
+            sizeConfig.playerSource.width * 1.2);
+
+        this.playerImage.setCrop(cropRect);
+
+        this.phaserGroup.push(this.playerImage)
     }
 
     drawPlayerName() {
@@ -153,6 +187,8 @@ export class BoardPlayer {
         const padding = 2;
         nameText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         nameText.setBackgroundColor("rgba(0,0,0,0.7)")
+
+        this.phaserGroup.push(nameText)
     }
 
     drawTieSuo() {
@@ -163,6 +199,8 @@ export class BoardPlayer {
         this.tieSuoImage.displayHeight = sizeConfig.player.height * 0.3;
         this.tieSuoImage.displayWidth = sizeConfig.player.width;
         this.tieSuoImage.setAlpha(this._isTieSuo ? 1 : 0);
+
+        this.phaserGroup.push(this.tieSuoImage)
     }
 
     drawPandingCards() {
@@ -180,6 +218,8 @@ export class BoardPlayer {
             pandingCardImage.setAlpha(0)
             pandingCardImage.setDepth(DEPTH_CONFIG.PANDING_SIGN)
             this.pandingCardImages!.push(pandingCardImage);
+            this.phaserGroup.push(pandingCardImage)
+
 
             const pandingCardText = this.gamingScene.add.text(
                 this.positionX + sizeConfig.player.width / 2 - 15 - stepX * i,
@@ -193,7 +233,26 @@ export class BoardPlayer {
             pandingCardText.setAlpha(0)
             pandingCardText.setDepth(DEPTH_CONFIG.PANDING_SIGN)
             this.pandingCardTexts!.push(pandingCardText);
+            this.phaserGroup.push(pandingCardText)
         }
+    }
+
+    drawBloodsBg() {
+        const graphicsW = this.isMe ? sizeConfig.player.width * 0.18 : sizeConfig.player.width * 0.18 * 0.8
+        const graphicsH = this.isMe ? sizeConfig.player.height * 0.62 : sizeConfig.player.height * 0.62 * 0.8
+        this.bloodsBgGraphics = this.gamingScene.add.graphics();
+        this.bloodsBgGraphics.fillStyle(0x000, 1);
+        this.bloodsBgGraphics.fillRoundedRect(
+            this.positionX + sizeConfig.player.width / 2 - graphicsW,
+            this.positionY + sizeConfig.player.height / 2 - graphicsH,
+            graphicsW,
+            graphicsH, {
+                tl: 4,
+                tr: 0,
+                bl: 0,
+                br: 0
+            });
+        this.phaserGroup.push(this.bloodsBgGraphics)
     }
 
     drawBloods() {
@@ -210,6 +269,7 @@ export class BoardPlayer {
             bloodImage.displayWidth = bloodWidth;
 
             this.bloodImages!.push(bloodImage);
+            this.phaserGroup.push(bloodImage)
         }
     }
 
@@ -229,6 +289,18 @@ export class BoardPlayer {
         this.isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         this.isDeadText.setFontSize(40)
         this.isDeadText.setRotation(-3.14 / 10)
+
+        this.phaserGroup.push(this.isDeadText)
+    }
+
+    drawWound() {
+        this.wound = this.gamingScene.add.image(
+            this.positionX,
+            this.positionY,
+            "wound").setAlpha(0);
+
+        this.wound.setData('name', 'wound');
+        this.phaserGroup.push(this.wound);
     }
 
     setBloods(number: number) {
@@ -295,40 +367,6 @@ export class BoardPlayer {
         });
     }
 
-    drawBloodsBg() {
-        const graphicsW = this.isMe ? sizeConfig.player.width * 0.18 : sizeConfig.player.width * 0.18 * 0.8
-        const graphicsH = this.isMe ? sizeConfig.player.height * 0.62 : sizeConfig.player.height * 0.62 * 0.8
-        this.bloodsBgGraphics = this.gamingScene.add.graphics();
-        this.bloodsBgGraphics.fillStyle(0x000, 1);
-        this.bloodsBgGraphics.fillRoundedRect(
-            this.positionX + sizeConfig.player.width / 2 - graphicsW,
-            this.positionY + sizeConfig.player.height / 2 - graphicsH,
-            graphicsW,
-            graphicsH, {
-                tl: 4,
-                tr: 0,
-                bl: 0,
-                br: 0
-            });
-    }
-
-    drawPlayer(playerImage: string) {
-        this.playerImage = this.gamingScene.add.image(
-            this.positionX - sizeConfig.player.width / 2,
-            this.positionY - sizeConfig.player.height / 2,
-            playerImage).setInteractive()
-        this.playerImage.setDisplaySize(sizeConfig.player.width,
-            sizeConfig.player.width * (sizeConfig.playerSource.height / sizeConfig.playerSource.width))
-        this.playerImage.setOrigin(0, 0)
-
-        var cropRect = new Phaser.Geom.Rectangle(0,
-            0,
-            sizeConfig.playerSource.width,
-            sizeConfig.playerSource.width * 1.2);
-
-        this.playerImage.setCrop(cropRect);
-    }
-
     onPandingCardsChange(gameStatus: GameStatus) {
         const player = gameStatus.players[this.playerId];
 
@@ -347,13 +385,62 @@ export class BoardPlayer {
         }
     }
 
+    startReduceBloodMove() {
+        this.phaserGroup.forEach((obj) => {
+            console.log(obj)
+            this.gamingScene.tweens.add({
+                targets: obj,
+                x: {
+                    // @ts-ignore
+                    value: obj.x - 50,
+                    duration: reduceBloodOut,
+                },
+                onComplete: () => {
+                    this.gamingScene.tweens.add({
+                        targets: obj,
+                        x: {
+                            // @ts-ignore
+                            value: obj.x + 50,
+                            duration: reduceBloodIn,
+                        },
+                    });
+                }
+            });
+
+            if (obj.getData('name') == 'wound') {
+                this.gamingScene.tweens.add({
+                    targets: obj,
+                    alpha: {
+                        // @ts-ignore
+                        value: 1,
+                        duration: reduceBloodOut,
+                    },
+                    onComplete: () => {
+                        this.gamingScene.tweens.add({
+                            targets: obj,
+                            alpha: {
+                                // @ts-ignore
+                                value: 0,
+                                duration: reduceBloodIn,
+                            },
+                        });
+                    }
+                });
+            }
+        });
+    }
+
     onPlayerBloodChange(gameStatus: GameStatus) {
         const player = gameStatus.players[this.playerId]
 
-        if (this._currentBlood != player.currentBlood) {
+        if (this._blood != player.currentBlood) {
             this.setBloods(player.currentBlood)
-            this._currentBlood = player.currentBlood
+            if (player.currentBlood < this._blood) {
+                this.startReduceBloodMove();
+            }
+            this._blood = player.currentBlood;
         }
+
     }
 
     onCardNumberChange(gameStatus: GameStatus) {
