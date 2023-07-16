@@ -66,7 +66,7 @@ const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus)
 }
 
 const generateThrowData = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitThrowData => {
-    return {cards: gameFEStatus.selectedCards}
+    return {cards: gameFEStatus.selectedCards, playerId: getMyPlayerId()}
 }
 
 const generateActualCard = (gameFEStatus: GameFEStatus) => {

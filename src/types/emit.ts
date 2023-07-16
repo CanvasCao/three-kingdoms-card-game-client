@@ -34,7 +34,8 @@ export type EmitResponseData = {
 }
 
 export type EmitThrowData = {
-    cards: Card[]
+    cards: Card[],
+    playerId: string,
 }
 
 export type EmitCardBoardData = {
@@ -76,7 +77,6 @@ export type EmitNotifyAddToPublicCardData = {
     cards: Card[],
     pandingPlayerId: string,
     pandingName: string,
-    throwPlayerId: string,
     type: string,
     skillName?: string,
 }

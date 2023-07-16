@@ -64,7 +64,6 @@ export class NofityAnimationManager {
 
     addToPublicCard(data: EmitNotifyAddToPublicCardData) {
         const prevGameStatus = this.gamingScene.gameStatusObserved.prev_gameStatus!;
-
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
@@ -74,10 +73,8 @@ export class NofityAnimationManager {
 
         if (isMe) {
             data.cards.forEach((card) => {
-                handCardsWithOrder.push({
-                    card,
-                    originIndex: prevGameStatus.players[getMyPlayerId()].cards.findIndex((prev_card) => prev_card.cardId === card.cardId)
-                })
+                const originIndex= prevGameStatus.players[getMyPlayerId()].cards.findIndex((prev_card) => prev_card.cardId === card.cardId)
+                handCardsWithOrder.push({card, originIndex})
                 handCardsWithOrder = handCardsWithOrder.sort((a, b) => a.originIndex - b.originIndex)
             })
         } else {
