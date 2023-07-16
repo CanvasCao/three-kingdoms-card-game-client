@@ -108,15 +108,11 @@ export class ToPublicCard {
                 targets: obj,
                 x: {
                     value: this.fadeInEndX + (obj?.getData("offsetX") || 0),
-                    duration: 300,
+                    duration: 400,
                 },
                 y: {
                     value: this.fadeInEndY + (obj?.getData("offsetY") || 0),
-                    duration: 300,
-                },
-                alpha: {
-                    value: 1,
-                    duration: 300,
+                    duration: 400,
                 },
                 onComplete: () => {
                     this.isMoving = false;
@@ -140,7 +136,7 @@ export class ToPublicCard {
                 targets: obj,
                 x: {
                     value: sizeConfig.playersArea.width / 2 + diffDis + (obj?.getData("offsetX")),
-                    duration: 300,
+                    duration: 400,
                 },
             });
         })

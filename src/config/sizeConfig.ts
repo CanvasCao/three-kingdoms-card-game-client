@@ -6,6 +6,7 @@ const bgHeight = 768
 const cardWidth = 85;
 const cardHeight = 116;
 
+const controlCardMargin = 2
 const controlCardBgMargin = 15
 const controlEquipmentWidth = 140;
 const controlEquipmentHeight = 30;
@@ -29,7 +30,8 @@ const sizeConfig = {
         width: cardWidth,
         height: cardHeight
     },
-    controlCardBgMargin: controlCardBgMargin,
+    controlCardMargin,
+    controlCardBgMargin,
     controlEquipment: {
         width: controlEquipmentWidth,
         height: controlEquipmentHeight

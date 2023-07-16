@@ -89,7 +89,6 @@ export class ControlCard {
             {
                 x: this.cardInitStartX,
                 y: this.cardInitStartY,
-                alpha: 0
             }
         )
         this.cardImgObj = cardImgObj;
@@ -161,7 +160,7 @@ export class ControlCard {
                 targets: obj,
                 x: {
                     // @ts-ignore
-                    value: obj.x + diff * sizeConfig.controlCard.width,
+                    value: obj.x + diff * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                     duration: 100,
                 },
                 onComplete: () => {
@@ -179,15 +178,11 @@ export class ControlCard {
                 targets: obj,
                 x: {
                     value: this.cardInitEndX + (obj?.getData("offsetX")),
-                    duration: 300,
+                    duration: 400,
                 },
                 y: {
                     value: this.cardInitEndY + (obj?.getData("offsetY")),
-                    duration: 300,
-                },
-                alpha: {
-                    value: 1,
-                    duration: 50,
+                    duration: 400,
                 },
                 onComplete: () => {
                     this.isMoving = false;

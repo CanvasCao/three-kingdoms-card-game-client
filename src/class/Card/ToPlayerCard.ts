@@ -113,15 +113,11 @@ export class ToPlayerCard {
                 targets: obj,
                 x: {
                     value: this.fadeInEndX + (obj?.getData("offsetX")),
-                    duration: 300,
+                    duration: 400,
                 },
                 y: {
                     value: this.fadeInEndY + (obj?.getData("offsetY")),
-                    duration: 300,
-                },
-                alpha: {
-                    value: 1,
-                    duration: 500,
+                    duration: 400,
                 },
                 onComplete: () => {
                     this.isMoving = false;

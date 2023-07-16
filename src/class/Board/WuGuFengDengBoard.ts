@@ -18,12 +18,10 @@ const boardSize = {
     height: 380,
     width: 420,
 }
-const boardAlpha = 0.8;
-const cardMargin = 5
 
 const gridOffset = {
     line1: {y: -55},
-    line2: {y: -55 + sizeConfig.controlCard.height + cardMargin},
+    line2: {y: -55 + sizeConfig.controlCard.height + sizeConfig.controlCardMargin},
 }
 
 export class WuGuFengDengBoard {
@@ -110,7 +108,7 @@ export class WuGuFengDengBoard {
             const offsetY = (index) > 3 ? gridOffset.line2.y : gridOffset.line1.y;
             const modIndex = index % 4;
             const {cardNameObj, cardHuaseNumberObj, cardImgObj, cardMessageObj} = sharedDrawFrontCard(this.gamingScene, card, {
-                x: this.initX - 125 + modIndex * (sizeConfig.controlCard.width + cardMargin),
+                x: this.initX - 125 + modIndex * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 y: this.initY + offsetY,
                 depth: DEPTH_CONFIG.BOARD,
                 message: card.wugefengdengSelectedPlayerId ? gameStatus.players[card.wugefengdengSelectedPlayerId].name : '',
@@ -149,7 +147,7 @@ export class WuGuFengDengBoard {
 
     showBoard(show: boolean, gameStatus: GameStatus) {
         this.maskImg!.setAlpha(show ? 0.0001 : 0) // 配合setInteractive 阻止冒泡
-        this.boardImg!.setAlpha(show ? boardAlpha : 0)
+        this.boardImg!.setAlpha(show ? 1 : 0)
         this.titleText!.setAlpha(show ? 1 : 0);
         this.bottomText!.setAlpha(show ? 1 : 0);
 

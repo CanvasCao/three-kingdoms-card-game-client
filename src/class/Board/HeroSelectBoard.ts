@@ -6,12 +6,12 @@ import {EMIT_TYPE} from "../../config/emitConfig";
 import {EmitHeroSelectBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
+import { COLOR_CONFIG } from "../../config/colorConfig";
 
 const boardSize = {
     height: 380,
     width: 490,
 }
-const boardAlpha = 0.8;
 const cardMargin = 10
 
 const gridOffset = {
@@ -29,8 +29,10 @@ export class HeroSelectBoard {
     maskImg?: Phaser.GameObjects.Image;
     boardImg?: Phaser.GameObjects.Image;
     titleText?: Phaser.GameObjects.Text;
+    graphics?: Phaser.GameObjects.Graphics;
 
-    destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[];
+    dragObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
+    destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
 
     // innerState
     _heroId: string;
@@ -46,6 +48,7 @@ export class HeroSelectBoard {
         this.maskImg;
         this.boardImg;
 
+        this.dragObjects = [];
         this.destoryObjects = [];
 
         this._heroId = '';
@@ -65,13 +68,36 @@ export class HeroSelectBoard {
         this.maskImg.setOrigin(0, 0)
         this.maskImg.setDepth(DEPTH_CONFIG.BOARD)
 
+
         this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
-        // @ts-ignore
-        this.boardImg.setTint("0x000000")
+        this.boardImg.setTint(Number(COLOR_CONFIG.grey111))
         this.boardImg.displayHeight = boardSize.height;
         this.boardImg.displayWidth = boardSize.width;
         this.boardImg.setAlpha(0)
         this.boardImg.setDepth(DEPTH_CONFIG.BOARD)
+        this.boardImg.setInteractive({draggable: true, cursor: "grab"});
+        this.dragObjects.push(this.boardImg);
+
+        this.graphics = this.gamingScene.add.graphics();
+        const lineWidth = 2; // 描边线的宽度
+        this.graphics.lineStyle(lineWidth, Number(COLOR_CONFIG.line), 1);
+        this.graphics.strokeRect(this.boardImg.x - this.boardImg.displayWidth / 2 - lineWidth / 2,
+            this.boardImg.y - this.boardImg.displayHeight / 2 - lineWidth / 2,
+            this.boardImg.displayWidth + lineWidth,
+            this.boardImg.displayHeight + lineWidth);
+        this.graphics.setAlpha(0)
+        this.graphics.setDepth(DEPTH_CONFIG.BOARD)
+        this.dragObjects.push(this.graphics);
+
+        // @ts-ignore
+        this.gamingScene.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+            const deltaX = dragX - gameObject.x;
+            const deltaY = dragY - gameObject.y;
+            this.dragObjects.forEach(obj => {
+                obj.x += deltaX;
+                obj.y += deltaY;
+            });
+        });
     }
 
     drawTitle() {
@@ -80,6 +106,8 @@ export class HeroSelectBoard {
         this.titleText.setAlpha(0)
         this.titleText.setPadding(0, 2, 0, 0)
         this.titleText.setDepth(DEPTH_CONFIG.BOARD)
+
+        this.dragObjects.push(this.titleText);
     }
 
 
@@ -99,6 +127,7 @@ export class HeroSelectBoard {
             cardImgObj.setDepth(DEPTH_CONFIG.BOARD)
 
             this.destoryObjects.push(cardImgObj);
+            this.dragObjects.push(cardImgObj);
 
             cardImgObj.on('pointerdown', () => {
                     this.gamingScene.socket.emit(
@@ -112,8 +141,9 @@ export class HeroSelectBoard {
 
     showBoard(show: boolean) {
         this.maskImg!.setAlpha(show ? 0.0001 : 0) // 配合setInteractive 阻止冒泡
-        this.boardImg!.setAlpha(show ? boardAlpha : 0)
+        this.boardImg!.setAlpha(show ? 1 : 0)
         this.titleText!.setAlpha(show ? 1 : 0);
+        this.graphics!.setAlpha(show ? 1 : 0);
     }
 
     destoryCards() {

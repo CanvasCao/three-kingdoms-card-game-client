@@ -315,7 +315,7 @@ export class BoardPlayer {
 
         for (let i = 0; i < this.bloodImages!.length; i++) {
             const bloodNumber = i + 1;
-            color = (bloodNumber > number) ? COLOR_CONFIG.darkGrey : color
+            color = (bloodNumber > number) ? COLOR_CONFIG.grey555 : color
             this.bloodImages![i].setTint(Number(color))
         }
     }

@@ -26,8 +26,6 @@ const gridOffset = {
     column2: {x: 130}
 }
 const categoryDiffX = -70;
-const cardMargin = 5
-const boardAlpha = 0.4;
 
 const boardSize = {
     height: 320,
@@ -167,7 +165,7 @@ export class PlayerCardsBoard {
             "-1🐎"] as string[];
         equipmentTexts.forEach((equipmentText: string, index) => {
             const img = this.gamingScene.add.image(
-                this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
+                this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 this.initY + gridOffset.line2.y,
                 'white')
             // @ts-ignore
@@ -178,7 +176,7 @@ export class PlayerCardsBoard {
             img.setDepth(DEPTH_CONFIG.BOARD)
 
             const text = this.gamingScene.add.text(
-                this.initX + gridOffset.column1.x + (index * (sizeConfig.controlCard.width + cardMargin)),
+                this.initX + gridOffset.column1.x + (index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin)),
                 this.initY + gridOffset.line2.y, equipmentText)
             text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
@@ -192,7 +190,7 @@ export class PlayerCardsBoard {
         const delayTexts = ["", "", ""].fill(i18(i18Config.PLAYER_BOARD_DELAY_SCROLL_CARD_PLACEHOLDER)) as string[];
         delayTexts.forEach((delayText: string, index) => {
             const img = this.gamingScene.add.image(
-                this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + cardMargin),
+                this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 this.initY + gridOffset.line2.y,
                 'white')
             // @ts-ignore
@@ -203,7 +201,7 @@ export class PlayerCardsBoard {
             img.setDepth(DEPTH_CONFIG.BOARD)
 
             const text = this.gamingScene.add.text(
-                this.initX + gridOffset.column2.x + (index * (sizeConfig.controlCard.width + cardMargin)),
+                this.initX + gridOffset.column2.x + (index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin)),
                 this.initY + gridOffset.line2.y, delayText)
             text.setOrigin(0.5, 0.5)
             text.setAlpha(0)
@@ -219,7 +217,7 @@ export class PlayerCardsBoard {
         const cards = shuffle(targetPlayer.cards).slice(0, 8);
         cards.forEach((card, index) => {
             const {cardImgObj} = sharedDrawBackCard(this.gamingScene, card, {
-                x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
+                x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 y: this.initY + gridOffset.line1.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
@@ -238,7 +236,7 @@ export class PlayerCardsBoard {
             }
 
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
-                x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + cardMargin),
+                x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
@@ -256,7 +254,7 @@ export class PlayerCardsBoard {
         targetPlayer.pandingSigns.forEach((sign, index) => {
             const card = sign.card
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
-                x: this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + cardMargin),
+                x: this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
@@ -279,7 +277,7 @@ export class PlayerCardsBoard {
 
     showBoard(gameStatus: GameStatus, show: boolean) {
         this.maskImg!.setAlpha(show ? 0.0001 : 0) // 配合setInteractive 阻止冒泡
-        this.boardImg!.setAlpha(show ? boardAlpha : 0)
+        this.boardImg!.setAlpha(show ? 1 : 0)
 
         const alpha = show ? 1 : 0
         this.titleText!.setAlpha(alpha)

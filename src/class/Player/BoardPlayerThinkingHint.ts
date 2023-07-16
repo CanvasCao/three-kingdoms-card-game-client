@@ -44,16 +44,17 @@ export class BoardPlayerThinkingHint {
     drawOperateHint() {
         this.thinkingHint = this.gamingScene.add.text(
             this.playerPosition.x,
-            this.playerPosition.y + sizeConfig.player.height / 2 + 3,
+            this.playerPosition.y + sizeConfig.player.height / 2 + 5,
             "",
             // @ts-ignore
-            {fill: "#fff", align: "center", stroke: '#000', strokeThickness: 4}
+            {fill: "#fff", align: "center"}
         )
         this.thinkingHint.setPadding(0, 5, 0, 0);
         this.thinkingHint.setOrigin(0.5, 0.5);
         this.thinkingHint.setAlpha(1)
-        this.thinkingHint.setFontSize(10)
+        this.thinkingHint.setFontSize(12)
         this.thinkingHint.setDepth(DEPTH_CONFIG.THINKING_HINT)
+        this.thinkingHint.setShadow(1, 1, '#000', 10, true, true)
     }
 
     startCountDown() {

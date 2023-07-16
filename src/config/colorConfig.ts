@@ -25,7 +25,9 @@ const COLOR_CONFIG={
 
   // pure color
   "black":"0x000000",
-  "darkGrey":"0x555555",
+  "grey111":"0x111111",
+  "grey333":"0x333333",
+  "grey555":"0x555555",
   "red":"0xff0000"
 }
 
