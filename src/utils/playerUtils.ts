@@ -214,6 +214,21 @@ const getNeedTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: 
     return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
 }
 
+let isAllSelectHeroDone = false
+const getIsAllSelectHeroDone = (gameStatus: GameStatus) => {
+    if (isAllSelectHeroDone) {
+        return true
+    }
+
+    const done = Object.values(gameStatus.players).every((p) => p.heroId);
+    if (done) {
+        isAllSelectHeroDone = true
+        return true
+    } else {
+        return false
+    }
+}
+
 export {
     getIfPlayerAble,
     getIfPlayerHasAnyCards,
@@ -227,5 +242,7 @@ export {
     getPlayerDisplayName,
     getCurrentPlayer,
 
-    getNeedTargetPlayersNumberMinMax
+    getNeedTargetPlayersNumberMinMax,
+
+    getIsAllSelectHeroDone,
 }

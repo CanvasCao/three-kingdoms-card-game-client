@@ -5,7 +5,7 @@ import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import differenceBy from "lodash/differenceBy";
-import {getIfPlayerAble, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
+import {getIfPlayerAble, getIsAllSelectHeroDone, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {
@@ -25,14 +25,11 @@ export class BoardPlayer {
     gamingScene: GamingScene;
     playerId: string;
     playerName: string;
-    heroId: string;
     playerMaxBlood: number;
     linePosition: { x: number, y: number };
     playerPosition: { x: number, y: number };
     isMe: boolean;
 
-    _disable: boolean;
-    _pandingCardsLength: number;
     positionX: number;
     positionY: number;
 
@@ -41,6 +38,9 @@ export class BoardPlayer {
     pandingCardTexts?: Phaser.GameObjects.Text[];
     maxPandingCardsNumber: number;
 
+    _heroId: string;
+    _disable: boolean;
+    _pandingCardsLength: number;
     _currentBlood: number;
     _cardNumber: number;
     _isTieSuo: boolean;
@@ -51,7 +51,6 @@ export class BoardPlayer {
     playerStroke?: Phaser.GameObjects.Graphics;
     cardNumObj?: Phaser.GameObjects.Text;
     tieSuoImage?: Phaser.GameObjects.Image;
-    stageText?: Phaser.GameObjects.Text;
     playerImage?: Phaser.GameObjects.Image;
     isDeadText?: Phaser.GameObjects.Text;
     bloodsBgGraphics?: Phaser.GameObjects.Graphics;
@@ -63,15 +62,10 @@ export class BoardPlayer {
         this.gamingScene = gamingScene;
         this.playerId = player.playerId;
         this.playerName = player.name;
-        this.heroId = player.heroId;
         this.playerMaxBlood = player.maxBlood;
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
         this.isMe = this.playerId === getMyPlayerId();
-
-        // init inner state
-        this._disable = false;
-        this._pandingCardsLength = 0
 
         // position
         this.positionX = this?.playerPosition?.x;
@@ -85,15 +79,28 @@ export class BoardPlayer {
         // varible
         this.maxPandingCardsNumber = Object.keys(DELAY_SCROLL_CARDS_CONFIG).length;
 
-        // last state cache
+        // init inner state
+        this._heroId = '';
+        this._disable = false;
+        this._pandingCardsLength = 0;
         this._currentBlood = player.currentBlood;
         this._cardNumber = player.cards.length;
         this._isTieSuo = player.isTieSuo;
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
 
+        this.drawPlayer('xuanjiang');
+        this.drawPlayerName();
+
+        this.gamingScene.gameStatusObserved.addObserver(this);
+        this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
+    }
+
+    initHero(gameStatus: GameStatus) {
+        const player = gameStatus.players[this.playerId]
+
         this.drawStroke();
-        this.drawPlayer();
+        this.drawPlayer(player.heroId);
         this.drawBloodsBg();
         this.drawBloods();
         this.setBloods(player.currentBlood);
@@ -108,8 +115,6 @@ export class BoardPlayer {
         }
 
         this.bindEvent();
-        this.gamingScene.gameStatusObserved.addObserver(this);
-        this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
     }
 
     drawStroke() {
@@ -307,11 +312,11 @@ export class BoardPlayer {
             });
     }
 
-    drawPlayer() {
+    drawPlayer(playerImage: string) {
         this.playerImage = this.gamingScene.add.image(
             this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
-            this.heroId).setInteractive()
+            playerImage).setInteractive()
         this.playerImage.setDisplaySize(sizeConfig.player.width,
             sizeConfig.player.width * (sizeConfig.playerSource.height / sizeConfig.playerSource.width))
         this.playerImage.setOrigin(0, 0)
@@ -422,13 +427,30 @@ export class BoardPlayer {
             return
 
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!
+        const allSelectHeroDone = getIsAllSelectHeroDone(gameStatus)
+        const heroId = gameStatus.players[this.playerId].heroId
 
-        this.onPlayerStrokeChange(gameStatus, gameFEStatus);
-        this.onCardNumberChange(gameStatus);
-        this.onTieSuoChange(gameStatus);
-        this.onPlayerBloodChange(gameStatus);
-        this.onPandingCardsChange(gameStatus);
-        this.onPlayerDieChange(gameStatus)
+        if (this.isMe) { // 是我的话 我选完就要显示武将
+            if (heroId && !this._heroId) {
+                this.initHero(gameStatus);
+                this._heroId = heroId;
+            }
+        } else {
+            if (heroId && !this._heroId && allSelectHeroDone) {
+                this.initHero(gameStatus);
+                this._heroId = heroId;
+            }
+        }
+
+
+        if (allSelectHeroDone) { // 选将完成了
+            this.onPlayerStrokeChange(gameStatus, gameFEStatus);
+            this.onCardNumberChange(gameStatus);
+            this.onTieSuoChange(gameStatus);
+            this.onPlayerBloodChange(gameStatus);
+            this.onPandingCardsChange(gameStatus);
+            this.onPlayerDieChange(gameStatus)
+        }
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
@@ -437,7 +459,10 @@ export class BoardPlayer {
 
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
 
-        this.onPlayerStrokeChange(gameStatus, gameFEStatus);
-        this.onPlayerDisableChange(gameFEStatus);
+        const allSelectHeroDone = getIsAllSelectHeroDone(gameStatus)
+        if (allSelectHeroDone) { // 选将完成了
+            this.onPlayerStrokeChange(gameStatus, gameFEStatus);
+            this.onPlayerDisableChange(gameFEStatus);
+        }
     }
 }

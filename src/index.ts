@@ -22,6 +22,7 @@ import {
     EmitNotifyAddToPlayerCardData
 } from "./types/emit";
 import {WuGuFengDengBoard} from './class/Board/WuGuFengDengBoard';
+import {HeroSelectBoard} from './class/Board/HeroSelectBoard';
 import {bindPageEvent, tryRejoinRoom} from './bindPageEvent';
 import {setI18nLan} from './i18n/i18nUtils';
 import {setPageByFeatureToggle} from "./utils/toggle/toggle";
@@ -43,6 +44,7 @@ class Gaming extends Phaser.Scene {
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
     wuGuFengDengBoard: WuGuFengDengBoard | undefined;
+    heroSelectBoard: HeroSelectBoard | undefined;
     operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
@@ -97,6 +99,8 @@ class Gaming extends Phaser.Scene {
 
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.wuGuFengDengBoard = new WuGuFengDengBoard(this);
+            this.heroSelectBoard = new HeroSelectBoard(this);
+
             this.operateHint = new OperateHint(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);

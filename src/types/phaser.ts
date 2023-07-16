@@ -7,16 +7,14 @@ import {ControlButtons} from "../class/Button/ControlButtons";
 import {ControlCardsManager} from "../class/Manager/ControlCardsManager";
 import {NofityAnimationManager} from "../class/Manager/NofityAnimationManager";
 import {Card} from "./card";
+import {PlayerCardsBoard } from "../class/Board/PlayerCardsBoard";
+import { OperateHint } from "../class/OperateHint/OperateHint";
+import { HeroSelectBoard } from "../class/Board/HeroSelectBoard";
+import { WuGuFengDengBoard } from "../class/Board/WuGuFengDengBoard";
 
 export type BtnGroup = {
     img?: Phaser.GameObjects.Image,
     text?: Phaser.GameObjects.Text,
-}
-
-export type PlayerEquipmentGroup = {
-    distanceText?: Phaser.GameObjects.Text,
-    nameText?: Phaser.GameObjects.Text,
-    huaseNumText?: Phaser.GameObjects.Text,
 }
 
 export type GamingScene = Phaser.Scene &
@@ -26,7 +24,12 @@ export type GamingScene = Phaser.Scene &
         boardPlayers: BoardPlayer[];
         gameStatusObserved: GameStatusObserved;
         gameFEStatusObserved: GameFEStatusObserved;
+        playerCardsBoard: PlayerCardsBoard | undefined;
+        wuGuFengDengBoard: WuGuFengDengBoard | undefined;
+        heroSelectBoard: HeroSelectBoard | undefined;
+        operateHint: OperateHint | undefined;
         controlButtons: ControlButtons | undefined;
         controlCardsManager: ControlCardsManager | undefined;
         notifyAnimationManager: NofityAnimationManager | undefined;
     }
+

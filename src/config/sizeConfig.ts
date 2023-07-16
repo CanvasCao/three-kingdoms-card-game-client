@@ -9,7 +9,7 @@ const cardHeight = 116;
 const controlCardBgMargin = 15
 const controlEquipmentWidth = 140;
 const controlEquipmentHeight = 30;
-const controlSelectedOffsetX = 10;
+const controlCardSelectedOffsetX = 10;
 
 const playerHeight = 168
 const playerWeight = 140;
@@ -23,6 +23,8 @@ const sizeConfig = {
         width: bgWidth * 0.8,
         height: bgHeight - cardHeight - controlCardBgMargin * 2
     },
+
+    // controlCard
     controlCard: {
         width: cardWidth,
         height: cardHeight
@@ -32,7 +34,9 @@ const sizeConfig = {
         width: controlEquipmentWidth,
         height: controlEquipmentHeight
     },
-    controlSelectedOffsetX: controlSelectedOffsetX,
+    controlCardSelectedOffsetX: controlCardSelectedOffsetX,
+
+    // player
     player: {
         width: playerWeight,
         height: playerHeight
@@ -41,10 +45,23 @@ const sizeConfig = {
         width: 350,
         height: 464
     },
+    // select hero
+    selectHero: {
+        width: cardWidth,
+        height: cardHeight
+    },
+    heroSource: {
+        width: 350,
+        height: 464
+    },
+
+    //blood
     blood: {
         height: 30,
         width: 45.6
     },
+
+    //btn
     okBtn: {
         width: 100,
         height: 40

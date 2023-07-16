@@ -25,7 +25,7 @@ const sharedDrawEquipment = (
     const selectedStroke = gamingScene.add.graphics();
     // @ts-ignore
     selectedStroke.lineStyle(3, COLOR_CONFIG.selectedCardStroke, 1);
-    selectedStroke.strokeRect(x + sizeConfig.controlSelectedOffsetX, y,
+    selectedStroke.strokeRect(x + sizeConfig.controlCardSelectedOffsetX, y,
         equipmentCardWidth,
         equipmentCardHeight);
     selectedStroke.setAlpha(0)

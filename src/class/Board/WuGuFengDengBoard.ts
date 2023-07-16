@@ -6,7 +6,7 @@ import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {CARD_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {EMIT_TYPE} from "../../config/emitConfig";
-import {EmitWugufengdengData} from "../../types/emit";
+import {EmitWugufengdengBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
@@ -140,7 +140,7 @@ export class WuGuFengDengBoard {
                     }
                     this.gamingScene.socket.emit(
                         EMIT_TYPE.WUGU_BOARD_ACTION,
-                        this.getEmitWugufengdengData(card)
+                        this.getEmitWugufengdengBoardData(card)
                     )
                 }
             )
@@ -177,7 +177,7 @@ export class WuGuFengDengBoard {
         this.destoryObjects.forEach((o) => o.destroy());
     }
 
-    getEmitWugufengdengData(card: Card): EmitWugufengdengData {
+    getEmitWugufengdengBoardData(card: Card): EmitWugufengdengBoardData {
         return {
             playerId: getMyPlayerId(),
             card: card,

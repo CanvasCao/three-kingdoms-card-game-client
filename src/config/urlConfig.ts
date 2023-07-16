@@ -18,7 +18,8 @@ const URL_CONFIG = {
         "white": "other/white.png",
         "bg": "other/bg.png",
         "tiesuo": "other/tiesuo.png",
-        "bigSkin": "other/bigSkin.webp"
+        "bigSkin": "other/bigSkin.webp",
+        "xuanjiang": "other/xuanjiang.png"
     }
 }
 

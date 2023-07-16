@@ -200,7 +200,7 @@ export class EquipmentCard {
                 targets: obj,
                 x: {
                     // @ts-ignore
-                    value: isSelected ? (obj.x + sizeConfig.controlSelectedOffsetX) : (obj.x - sizeConfig.controlSelectedOffsetX),
+                    value: isSelected ? (obj.x + sizeConfig.controlCardSelectedOffsetX) : (obj.x - sizeConfig.controlCardSelectedOffsetX),
                     duration: 100,
                 },
                 onComplete: () => {

@@ -33,6 +33,10 @@ export type EmitResponseData = {
     skillTargetIds?: string[]
 }
 
+export type EmitThrowData = {
+    cards: Card[]
+}
+
 export type EmitCardBoardData = {
     originId: string,
     targetId: string,
@@ -41,14 +45,14 @@ export type EmitCardBoardData = {
     type: CardBoardActionType,
 }
 
-
-export type EmitThrowData = {
-    cards: Card[]
-}
-
-export type EmitWugufengdengData = {
+export type EmitWugufengdengBoardData = {
     card: Card,
     playerId: string,
+}
+
+export type EmitHeroSelectBoardData = {
+    playerId: string,
+    heroId: string,
 }
 
 

@@ -11,6 +11,8 @@ export type Player = {
     name: string,
     location: number,
 
+    canSelectHeroIds: string[];
+
     // cards
     cards: Card[],
     pandingSigns: PandingSign[],

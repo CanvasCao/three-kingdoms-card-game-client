@@ -11,7 +11,7 @@ import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms, EmitRejoinRo
 import {i18Config} from "./i18n/i18Config";
 import {i18} from "./i18n/i18nUtils";
 import {GAME_STATUS} from "./config/gameConfig";
-import {isWithin30Minutes} from "./utils/time/timeUtils";
+import {isWithinMinutes} from "./utils/time/timeUtils";
 
 const bindLoginPageEvent = () => {
     $('#joinPage h2').text(i18(i18Config.TITLE))
@@ -123,7 +123,7 @@ const tryRejoinRoom = () => {
         return
     }
 
-    if (isWithin30Minutes(timestamp)) {
+    if (isWithinMinutes(timestamp)) {
         socket.emit(EMIT_TYPE.REJOIN_ROOM, {
             playerId: getMyPlayerId(),
             roomId
