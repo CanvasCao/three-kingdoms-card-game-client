@@ -6,7 +6,7 @@ import {EMIT_TYPE} from "../../config/emitConfig";
 import {EmitHeroSelectBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
-import { COLOR_CONFIG } from "../../config/colorConfig";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 
 const boardSize = {
     height: 380,
@@ -25,6 +25,8 @@ export class HeroSelectBoard {
 
     initX: number;
     initY: number;
+
+    isShow: boolean;
 
     maskImg?: Phaser.GameObjects.Image;
     boardImg?: Phaser.GameObjects.Image;
@@ -45,6 +47,7 @@ export class HeroSelectBoard {
         this.initX = sizeConfig.playersArea.width / 2;
         this.initY = sizeConfig.playersArea.height / 2;
 
+        this.isShow = false;
         this.maskImg;
         this.boardImg;
 
@@ -168,9 +171,11 @@ export class HeroSelectBoard {
         if (!heroId) {
             this.showBoard(true);
             this.drawHeroCards(gameStatus);
+            this.isShow = true // 防止重复drawHeroCards
         } else if (!this._heroId && heroId) {
             this.showBoard(false);
             this.destoryCards();
+            this.isShow = false
         }
 
         this._heroId = heroId
