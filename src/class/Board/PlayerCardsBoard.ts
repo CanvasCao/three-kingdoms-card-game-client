@@ -17,201 +17,90 @@ import {getIfShowFanKuiPlayerCardsBoard, getIfShowShunChaiPlayerCardsBoard} from
 import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
 import {getResponseType} from "../../utils/response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
-import { DEPTH_CONFIG } from "../../config/depthConfig";
+import {DEPTH_CONFIG} from "../../config/depthConfig";
+import {BaseBoard} from "./BaseBoard";
 
 const gridOffset = {
     line1: {y: -55},
-    line2: {y: 80},
+    line2: {y: 90},
     column1: {x: -280},
     column2: {x: 130}
 }
-const categoryDiffX = -70;
+
+const categoryDiffX = -80;
 
 const boardSize = {
-    height: 320,
-    width: 760,
+    height: 380,
+    width: 800,
 }
 
 export class PlayerCardsBoard {
     obId: string;
     gamingScene: GamingScene;
-
-    initX: number;
-    initY: number;
-
-    maskImg?: Phaser.GameObjects.Image;
-    boardImg?: Phaser.GameObjects.Image;
-    titleText?: Phaser.GameObjects.Text;
-
-    handCardsCategoryText?: Phaser.GameObjects.Text;
-    equipmentCardsCategoryText?: Phaser.GameObjects.Text;
-    pandingCardsCategoryText?: Phaser.GameObjects.Text;
-
-    handCardsPlaceholder?: Phaser.GameObjects.Image;
-    equipmentCardsPlaceholders: Phaser.GameObjects.Image[];
-    equipmentCardsPlaceholderTexts: Phaser.GameObjects.Text[];
-    pandingCardsPlaceholders: Phaser.GameObjects.Image[];
-    pandingCardsPlaceholderTexts: Phaser.GameObjects.Text[];
-
-    destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[];
+    boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
 
     // innerState
     _boardObserveId: string;
     _responseType: string | undefined;
 
+    baseBoard: BaseBoard;
+    initX: number;
+    initY: number;
 
     constructor(gamingScene: GamingScene) {
         this.obId = uuidv4();
         this.gamingScene = gamingScene
-        this.maskImg;
 
-        this.initX = sizeConfig.playersArea.width / 2;
-        this.initY = sizeConfig.playersArea.height / 2;
+        this.boardContent = []
 
-        this.maskImg;
-        this.boardImg;
-        this.handCardsCategoryText;
-        this.equipmentCardsCategoryText;
-        this.pandingCardsCategoryText;
-
-        this.handCardsPlaceholder;
-        this.equipmentCardsPlaceholders = [];
-        this.equipmentCardsPlaceholderTexts = [];
-        this.pandingCardsPlaceholders = [];
-        this.pandingCardsPlaceholderTexts = [];
-
-        this.destoryObjects = [];
+        this.baseBoard = new BaseBoard(gamingScene, {
+            boardSize,
+        });
+        this.initX = this.baseBoard.initX;
+        this.initY = this.baseBoard.initY;
 
         this._boardObserveId = '';
         this._responseType = '';
-
-        this.drawBackground();
-        this.drawTitle();
-        this.drawCardCategories();
-        this.drawCardPlaceHolders();
-
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
-    drawBackground() {
-        this.maskImg = this.gamingScene.add.image(0, 0, 'white').setInteractive()
-        this.maskImg.displayHeight = sizeConfig.background.height;
-        this.maskImg.displayWidth = sizeConfig.background.width;
-        this.maskImg.setAlpha(0)
-        this.maskImg.setOrigin(0, 0)
-        this.maskImg.setDepth(DEPTH_CONFIG.BOARD)
-
-        this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
-        // @ts-ignore
-        this.boardImg.setTint("0x000000")
-        this.boardImg.displayHeight = boardSize.height;
-        this.boardImg.displayWidth = boardSize.width;
-        this.boardImg.setAlpha(0)
-        this.boardImg.setDepth(DEPTH_CONFIG.BOARD)
-    }
-
-    drawTitle() {
-        this.titleText = this.gamingScene.add.text(this.initX, this.initY - 138, '')
-        this.titleText.setOrigin(0.5, 0.5)
-        this.titleText.setAlpha(0)
-        this.titleText.setPadding(0, 2, 0, 0)
-        this.titleText.setDepth(DEPTH_CONFIG.BOARD)
-    }
 
     drawCardCategories() {
-        const fontSize = 14
-        this.handCardsCategoryText = this.gamingScene.add.text(
+        const categoryFontSize = 16
+        const handCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column1.x + categoryDiffX,
             this.initY + gridOffset.line1.y,
-            i18(i18Config.PLAYER_BOARD_HAND_CARD_CATEGORY),
+            i18(i18Config.PLAYER_BOARD_HAND_CARD_CATEGORY), {
+                align: 'center'
+            }
         );
 
-        this.equipmentCardsCategoryText = this.gamingScene.add.text(
+        const equipmentCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column1.x + categoryDiffX,
             this.initY + gridOffset.line2.y,
-            i18(i18Config.PLAYER_BOARD_EQUIPMENT_CARD_CATEGORY),
+            i18(i18Config.PLAYER_BOARD_EQUIPMENT_CARD_CATEGORY), {
+                align: 'center'
+            }
         );
 
-        this.pandingCardsCategoryText = this.gamingScene.add.text(
+        const pandingCardsCategoryText = this.gamingScene.add.text(
             this.initX + gridOffset.column2.x + categoryDiffX,
             this.initY + gridOffset.line2.y,
-            i18(i18Config.PLAYER_BOARD_PANDING_CARD_CATEGORY),
+            i18(i18Config.PLAYER_BOARD_PANDING_CARD_CATEGORY),  {
+                align: 'center'
+            }
         );
 
-        [this.handCardsCategoryText, this.equipmentCardsCategoryText, this.pandingCardsCategoryText].forEach(text => {
-            text.setFontSize(fontSize)
+        [handCardsCategoryText, equipmentCardsCategoryText, pandingCardsCategoryText].forEach(text => {
+            text.setFontSize(categoryFontSize)
             text.setOrigin(0.5, 0.5)
-            text.setAlpha(0)
             text.setDepth(DEPTH_CONFIG.BOARD)
         })
+        this.boardContent.push(handCardsCategoryText)
+        this.boardContent.push(equipmentCardsCategoryText)
+        this.boardContent.push(pandingCardsCategoryText)
     }
 
-    drawCardPlaceHolders() {
-        this.handCardsPlaceholder = this.gamingScene.add.image(
-            this.initX + gridOffset.column1.x - sizeConfig.controlCard.width / 2,
-            this.initY + gridOffset.line1.y, 'white')
-        // @ts-ignore
-        this.handCardsPlaceholder.setTint(COLOR_CONFIG.boardCardPlaceholder)
-        this.handCardsPlaceholder.displayHeight = sizeConfig.controlCard.height;
-        this.handCardsPlaceholder.displayWidth = 675;
-        this.handCardsPlaceholder.setOrigin(0, 0.5)
-        this.handCardsPlaceholder.setAlpha(0)
-        this.handCardsPlaceholder.setDepth(DEPTH_CONFIG.BOARD)
-
-        const equipmentTexts = [
-            i18(i18Config.PLAYER_BOARD_WEAPON_CARD_PLACEHOLDER),
-            i18(i18Config.PLAYER_BOARD_SHEILD_CARD_PLACEHOLDER),
-            "+1🐎",
-            "-1🐎"] as string[];
-        equipmentTexts.forEach((equipmentText: string, index) => {
-            const img = this.gamingScene.add.image(
-                this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
-                this.initY + gridOffset.line2.y,
-                'white')
-            // @ts-ignore
-            img.setTint(COLOR_CONFIG.boardCardPlaceholder)
-            img.displayHeight = sizeConfig.controlCard.height;
-            img.displayWidth = sizeConfig.controlCard.width;
-            img.setAlpha(0)
-            img.setDepth(DEPTH_CONFIG.BOARD)
-
-            const text = this.gamingScene.add.text(
-                this.initX + gridOffset.column1.x + (index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin)),
-                this.initY + gridOffset.line2.y, equipmentText)
-            text.setOrigin(0.5, 0.5)
-            text.setAlpha(0)
-            text.setDepth(DEPTH_CONFIG.BOARD)
-            text.setPadding(0, 2, 0, 0);
-
-            this.equipmentCardsPlaceholders.push(img)
-            this.equipmentCardsPlaceholderTexts.push(text)
-        })
-
-        const delayTexts = ["", "", ""].fill(i18(i18Config.PLAYER_BOARD_DELAY_SCROLL_CARD_PLACEHOLDER)) as string[];
-        delayTexts.forEach((delayText: string, index) => {
-            const img = this.gamingScene.add.image(
-                this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
-                this.initY + gridOffset.line2.y,
-                'white')
-            // @ts-ignore
-            img.setTint(COLOR_CONFIG.boardCardPlaceholder)
-            img.displayHeight = sizeConfig.controlCard.height;
-            img.displayWidth = sizeConfig.controlCard.width;
-            img.setAlpha(0)
-            img.setDepth(DEPTH_CONFIG.BOARD)
-
-            const text = this.gamingScene.add.text(
-                this.initX + gridOffset.column2.x + (index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin)),
-                this.initY + gridOffset.line2.y, delayText)
-            text.setOrigin(0.5, 0.5)
-            text.setAlpha(0)
-            text.setDepth(DEPTH_CONFIG.BOARD)
-            text.setPadding(0, 2, 0, 0)
-
-            this.pandingCardsPlaceholders.push(img)
-            this.pandingCardsPlaceholderTexts.push(text)
-        })
-    }
 
     drawTargetPlayerCards(targetPlayer: Player) {
         const cards = shuffle(targetPlayer.cards).slice(0, 8);
@@ -224,28 +113,31 @@ export class PlayerCardsBoard {
             cardImgObj.on('pointerdown',
                 this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.HAND as CardAreaType)
             )
-            this.destoryObjects.push(cardImgObj);
+            this.boardContent.push(cardImgObj);
         })
     }
 
     drawTargetEquipmentCards(targetPlayer: Player) {
-        ['weaponCard', 'shieldCard', 'plusHorseCard', 'minusHorseCard'].forEach((key, index) => {
+        let i = 0;
+        ['weaponCard', 'shieldCard', 'plusHorseCard', 'minusHorseCard'].forEach((key) => {
             const card = targetPlayer[key as keyof Player] as Card;
             if (!card) {
                 return
             }
 
             const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
-                x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
+                x: this.initX + gridOffset.column1.x + i * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown',
                 this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.EQUIPMENT as CardAreaType))
 
-            this.destoryObjects.push(cardNameObj);
-            this.destoryObjects.push(cardHuaseNumberObj);
-            this.destoryObjects.push(cardImgObj);
+            i++;
+
+            this.boardContent.push(cardNameObj);
+            this.boardContent.push(cardHuaseNumberObj);
+            this.boardContent.push(cardImgObj);
         })
 
     }
@@ -260,9 +152,9 @@ export class PlayerCardsBoard {
             })
             cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.PANDING as CardAreaType))
 
-            this.destoryObjects.push(cardNameObj);
-            this.destoryObjects.push(cardHuaseNumberObj);
-            this.destoryObjects.push(cardImgObj);
+            this.boardContent.push(cardNameObj);
+            this.boardContent.push(cardHuaseNumberObj);
+            this.boardContent.push(cardImgObj);
         })
     }
 
@@ -275,56 +167,36 @@ export class PlayerCardsBoard {
         }
     }
 
-    showBoard(gameStatus: GameStatus, show: boolean) {
-        this.maskImg!.setAlpha(show ? 0.0001 : 0) // 配合setInteractive 阻止冒泡
-        this.boardImg!.setAlpha(show ? 1 : 0)
-
-        const alpha = show ? 1 : 0
-        this.titleText!.setAlpha(alpha)
-
-        this.handCardsCategoryText!.setAlpha(alpha)
-        this.equipmentCardsCategoryText!.setAlpha(alpha)
-
-        this.handCardsPlaceholder!.setAlpha(alpha)
-        this.equipmentCardsPlaceholders.forEach((o) => o.setAlpha(alpha))
-        this.equipmentCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
-
-        // 锦囊才可以显示判定牌
-        if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
-            this.pandingCardsCategoryText!.setAlpha(alpha)
-            this.pandingCardsPlaceholders.forEach((o) => o.setAlpha(alpha))
-            this.pandingCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
-        }
-
-        // hideBoard 不能以scrollResponses判断依据
-        if (!show) {
-            this.pandingCardsCategoryText!.setAlpha(alpha)
-            this.pandingCardsPlaceholders.forEach((o) => o.setAlpha(alpha))
-            this.pandingCardsPlaceholderTexts.forEach((o) => o.setAlpha(alpha))
-        }
-    }
-
-    drawTargetCards(gameStatus: GameStatus) {
-        let name;
+    getTitle(gameStatus: GameStatus) {
+        let titleName;
         let targetPlayer: Player;
 
         // 反馈
         if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
             targetPlayer = gameStatus.players[gameStatus.damageEvent.originId]
-            name = gameStatus.skillResponse!.skillName
+            titleName = gameStatus.skillResponse!.skillName
         } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
             const scrollResponse = gameStatus.scrollResponses[0]!
             targetPlayer = gameStatus.players[scrollResponse.targetId]
-            name = i18(scrollResponse.actualCard)
+            titleName = i18(scrollResponse.actualCard)
         }
+        return i18(i18Config.PLAYER_BOARD_TITLE, {
+            titleName,
+            playerName: gameStatus.players[targetPlayer!.playerId].name
+        })
+    }
 
-        this.titleText!.setAlpha(1)
-        this.titleText!.setText(
-            i18(i18Config.PLAYER_BOARD_TITLE, {
-                name,
-                playerName: gameStatus.players[targetPlayer!.playerId].name
-            }),
-        )
+    drawTargetCards(gameStatus: GameStatus) {
+        this.drawCardCategories();
+
+        let targetPlayer: Player;
+        // 反馈
+        if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+            targetPlayer = gameStatus.players[gameStatus.damageEvent.originId]
+        } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+            const scrollResponse = gameStatus.scrollResponses[0]!
+            targetPlayer = gameStatus.players[scrollResponse.targetId]
+        }
 
         this.drawTargetPlayerCards(targetPlayer!);
         this.drawTargetEquipmentCards(targetPlayer!);
@@ -332,10 +204,6 @@ export class PlayerCardsBoard {
         if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
             this.drawTargetPandingCards(targetPlayer!);
         }
-    }
-
-    destoryTargetCards() {
-        this.destoryObjects.forEach((o) => o.destroy());
     }
 
     getEmitCardBoardActionData(
@@ -349,12 +217,12 @@ export class PlayerCardsBoard {
             originId: getMyPlayerId(),
             targetId: targetPlayer.playerId,
             card: card,
-            type: this.getEmitType(gameStatus) as CardBoardActionType,
+            type: this._getEmitType(gameStatus) as CardBoardActionType,
             cardAreaType,
         }
     }
 
-    getEmitType(gameStatus: GameStatus) {
+    _getEmitType(gameStatus: GameStatus) {
         if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
             return PLAYER_BOARD_ACTION.MOVE
         } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
@@ -367,7 +235,7 @@ export class PlayerCardsBoard {
         }
     }
 
-    getCanShowBoard(gameStatus: GameStatus) {
+    getNeedShowBoard(gameStatus: GameStatus) {
         if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
             return getIfShowFanKuiPlayerCardsBoard(gameStatus)
         } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
@@ -379,28 +247,18 @@ export class PlayerCardsBoard {
         const responseType = getResponseType(gameStatus)
         this._responseType = responseType;
 
-        let boardObserveId = ''
-        if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
-            boardObserveId = gameStatus.skillResponse!.boardObserveId
-        } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
-            boardObserveId = gameStatus.scrollResponses[0].boardObserveId!
+        const needShowBoard = this.getNeedShowBoard(gameStatus)
+
+        console.log(needShowBoard)
+        if (needShowBoard && !this.baseBoard.show) {
+            this.baseBoard.showBoard();
+            this.baseBoard.setTitle(this.getTitle(gameStatus))
+
+            this.drawTargetCards(gameStatus)
+            this.baseBoard.addContent(this.boardContent);
+        } else if (!needShowBoard && this.baseBoard.show) {
+            this.baseBoard.hideBoard();
         }
-
-        if (this._boardObserveId == boardObserveId) {
-            return;
-        }
-
-        const showBoard = this.getCanShowBoard(gameStatus)
-
-        if (!showBoard) {
-            this.showBoard(gameStatus, false);
-            this.destoryTargetCards();
-            return;
-        }
-        this.showBoard(gameStatus, true);
-        this.drawTargetCards(gameStatus)
-
-        this._boardObserveId = boardObserveId;
     }
 
 }

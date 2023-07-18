@@ -57,7 +57,7 @@ export class BaseBoard {
 
 
         this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
-        this.boardImg.setTint(Number(COLOR_CONFIG.grey111))
+        this.boardImg.setTint(Number(COLOR_CONFIG.boardBg))
         this.boardImg.displayHeight = this.boardSize.height;
         this.boardImg.displayWidth = this.boardSize.width;
         this.boardImg.setAlpha(0)
@@ -66,12 +66,12 @@ export class BaseBoard {
         this.dragObjects.push(this.boardImg);
 
         this.border = this.gamingScene.add.graphics();
-        const lineWidth = 2; // 描边线的宽度
-        this.border.lineStyle(lineWidth, Number(COLOR_CONFIG.line), 1);
-        this.border.strokeRect(this.boardImg.x - this.boardImg.displayWidth / 2 - lineWidth / 2,
+        const lineWidth = 3; // 描边线的宽度
+        this.border.lineStyle(lineWidth, Number(COLOR_CONFIG.white), 1);
+        this.border.strokeRoundedRect(this.boardImg.x - this.boardImg.displayWidth / 2 - lineWidth / 2,
             this.boardImg.y - this.boardImg.displayHeight / 2 - lineWidth / 2,
             this.boardImg.displayWidth + lineWidth,
-            this.boardImg.displayHeight + lineWidth);
+            this.boardImg.displayHeight + lineWidth,10);
         this.border.setAlpha(0)
         this.border.setDepth(DEPTH_CONFIG.BOARD)
 
@@ -84,6 +84,7 @@ export class BaseBoard {
         this.titleText.setAlpha(0)
         this.titleText.setPadding(0, 2, 0, 0)
         this.titleText.setDepth(DEPTH_CONFIG.BOARD)
+        this.titleText.setFontSize(24)
 
         this.dragObjects.push(this.titleText);
     }

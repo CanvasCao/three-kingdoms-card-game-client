@@ -84,17 +84,18 @@ export class HeroSelectBoard {
             return;
         }
 
-        const heroId = gameStatus.players[getMyPlayerId()].heroId;
+        const curheroId = gameStatus.players[getMyPlayerId()].heroId;
 
-        if (!heroId && !this.baseBoard.show) {
+        if (!curheroId && !this.baseBoard.show) {
             this.baseBoard.showBoard();
-            this.drawContent(gameStatus);
             this.baseBoard.setTitle('选将')
+
+            this.drawContent(gameStatus);
             this.baseBoard.addContent(this.boardContent);
-        } else if (!this._heroId && heroId) {
+        } else if (this.baseBoard.show && curheroId) {
             this.baseBoard.hideBoard();
         }
 
-        this._heroId = heroId
+        this._heroId = curheroId
     }
 }
