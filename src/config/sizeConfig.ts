@@ -7,6 +7,7 @@ const cardWidth = 85;
 const cardHeight = 116;
 
 const controlCardMargin = 2
+const selectHeroCardMargin = 10
 const controlCardBgMargin = 15
 const controlEquipmentWidth = 140;
 const controlEquipmentHeight = 30;
@@ -47,12 +48,14 @@ const sizeConfig = {
         width: 350,
         height: 464
     },
+
     // select hero
-    selectHero: {
+    selectHeroCard: {
         width: cardWidth,
         height: cardHeight
     },
-    heroSource: {
+    selectHeroCardMargin,
+    heroCardSource: {
         width: 350,
         height: 464
     },
