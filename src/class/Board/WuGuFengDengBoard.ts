@@ -12,7 +12,7 @@ import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getPlayerDisplayName} from "../../utils/playerUtils";
 import {Card} from "../../types/card";
-import { DEPTH_CONFIG } from "../../config/depthConfig";
+import {DEPTH_CONFIG} from "../../config/depthConfig";
 
 const boardSize = {
     height: 380,
@@ -40,7 +40,6 @@ export class WuGuFengDengBoard {
     destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[];
 
     // innerState 联合主键
-    _boardObserveId: string;
     _isEffect: boolean | undefined;
 
     constructor(gamingScene: GamingScene) {
@@ -57,9 +56,7 @@ export class WuGuFengDengBoard {
         this.cardMessageObjs = [];
         this.destoryObjects = [];
 
-        this._boardObserveId = '';
         this._isEffect = undefined;
-
 
         this.drawBackground();
         this.drawTitle();
@@ -184,9 +181,8 @@ export class WuGuFengDengBoard {
 
     gameStatusNotify(gameStatus: GameStatus) {
         const curScrollResponse = gameStatus.scrollResponses?.[0];
-        const boardObserveId = curScrollResponse?.boardObserveId || '';
         const isEffect = curScrollResponse?.isEffect || undefined;
-        if (this._boardObserveId === boardObserveId && this._isEffect === isEffect) {
+        if (this._isEffect === isEffect) {
             return;
         }
 
@@ -200,7 +196,6 @@ export class WuGuFengDengBoard {
             this.destoryCards();
         }
 
-        this._boardObserveId = boardObserveId;
         this._isEffect = isEffect;
     }
 }

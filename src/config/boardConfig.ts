@@ -3,6 +3,13 @@ const PLAYER_BOARD_ACTION = {
     REMOVE: "REMOVE",
 }
 
+const BOARD_TYPE = {
+    SHUN_CHAI: "SHUN_CHAI",
+    FAN_KUI: "FANKUI",
+    QI_LIN_GONG: "QI_LIN_GONG"
+}
+
 export {
     PLAYER_BOARD_ACTION,
+    BOARD_TYPE
 }

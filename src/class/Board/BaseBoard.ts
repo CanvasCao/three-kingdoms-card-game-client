@@ -24,7 +24,6 @@ export class BaseBoard {
     border?: Phaser.GameObjects.Graphics;
 
     dragObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
-    boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
 
     constructor(gamingScene: GamingScene, {boardSize}: BaseBoardProps) {
         this.gamingScene = gamingScene
@@ -40,18 +39,13 @@ export class BaseBoard {
         this.boardImg;
 
         this.dragObjects = [];
-        this.boardContent = [];
-
-        this.drawBackground();
-        this.drawTitle();
-        this.bindDragEvent();
     }
 
     drawBackground() {
         this.maskImg = this.gamingScene.add.image(0, 0, 'white').setInteractive()
         this.maskImg.displayHeight = sizeConfig.background.height;
         this.maskImg.displayWidth = sizeConfig.background.width;
-        this.maskImg.setAlpha(0)
+        this.maskImg.setAlpha(0.0001)
         this.maskImg.setOrigin(0, 0)
         this.maskImg.setDepth(DEPTH_CONFIG.BOARD)
 
@@ -60,10 +54,10 @@ export class BaseBoard {
         this.boardImg.setTint(Number(COLOR_CONFIG.boardBg))
         this.boardImg.displayHeight = this.boardSize.height;
         this.boardImg.displayWidth = this.boardSize.width;
-        this.boardImg.setAlpha(0)
         this.boardImg.setDepth(DEPTH_CONFIG.BOARD)
         this.boardImg.setInteractive({draggable: true, cursor: "grab"});
         this.dragObjects.push(this.boardImg);
+
 
         this.border = this.gamingScene.add.graphics();
         const lineWidth = 3; // 描边线的宽度
@@ -72,16 +66,14 @@ export class BaseBoard {
             this.boardImg.y - this.boardImg.displayHeight / 2 - lineWidth / 2,
             this.boardImg.displayWidth + lineWidth,
             this.boardImg.displayHeight + lineWidth,10);
-        this.border.setAlpha(0)
         this.border.setDepth(DEPTH_CONFIG.BOARD)
 
         this.dragObjects.push(this.border);
     }
 
     drawTitle() {
-        this.titleText = this.gamingScene.add.text(this.initX, this.initY - 158, '选将')
+        this.titleText = this.gamingScene.add.text(this.initX, this.initY - 158, '')
         this.titleText.setOrigin(0.5, 0.5)
-        this.titleText.setAlpha(0)
         this.titleText.setPadding(0, 2, 0, 0)
         this.titleText.setDepth(DEPTH_CONFIG.BOARD)
         this.titleText.setFontSize(24)
@@ -90,9 +82,7 @@ export class BaseBoard {
     }
 
     addContent(boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[]) {
-        this.boardContent = boardContent
         boardContent.forEach((obj) => {
-            obj.setData('insertedContent', true)
             this.dragObjects.push(obj);
         })
     }
@@ -102,30 +92,24 @@ export class BaseBoard {
     }
 
     removeContent() {
-        this.dragObjects = this.dragObjects.filter((obj) => {
-            return !obj.getData("insertedContent")
-        })
-        this.boardContent.forEach((obj) => {
+      this.dragObjects.forEach((obj) => {
             obj.destroy();
         })
+        this.maskImg!.destroy()
     }
 
     showBoard() {
-        this._showBoard(true)
+        this.show=true;
+        this.drawBackground();
+        this.drawTitle();
+        this.bindDragEvent();
     }
 
     hideBoard() {
-        this._showBoard(false)
+        this.show=false
         this.removeContent()
     }
 
-    _showBoard(show: boolean) {
-        this.show = show
-        this.maskImg!.setAlpha(show ? 0.0001 : 0) // 配合setInteractive 阻止冒泡
-        this.boardImg!.setAlpha(show ? 1 : 0)
-        this.titleText!.setAlpha(show ? 1 : 0);
-        this.border!.setAlpha(show ? 1 : 0);
-    }
 
     bindDragEvent() {
         // @ts-ignore

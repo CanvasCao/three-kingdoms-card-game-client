@@ -10,9 +10,9 @@ import {
 import {Card} from "../../types/card";
 import {SKILL_NAMES} from "../../config/skillsConfig";
 import {getSelectedCardNumber, getSelectedTargetNumber} from "../validationUtils";
-import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
+import {RESPONSE_TYPE_CONFIG, RESPONSE_TYPE_CONFIG_VALUES} from "../../config/responseTypeConfig";
 
-const getResponseType = (gameStatus: GameStatus) => {
+const getResponseType = (gameStatus: GameStatus): RESPONSE_TYPE_CONFIG_VALUES | undefined => {
     if (gameStatus.taoResponses.length > 0) {
         return RESPONSE_TYPE_CONFIG.TAO;
     } else if (gameStatus.shanResponse) {

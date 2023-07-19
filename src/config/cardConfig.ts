@@ -20,6 +20,7 @@ const CARD_LOCATION = {
     PAIDUI: "PAIDUI",
     HAND: "HAND",
     EQUIPMENT: "EQUIPMENT",
+    HORSE: "HORSE",
     PANDING: "PANDING"
 }
 
