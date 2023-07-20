@@ -6,7 +6,7 @@ import {uuidv4} from "../../utils/uuid";
 import {Player} from "../../types/player";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 
-import {getBoardPlayerThinkHint} from './utils'
+import {getBoardPlayerThinkHintText} from './utils'
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 
@@ -92,7 +92,7 @@ export class BoardPlayerThinkingHint {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const boardPlayerThinkHint = getBoardPlayerThinkHint(gameStatus, this.playerId)
+        const boardPlayerThinkHint = getBoardPlayerThinkHintText(gameStatus, this.playerId)
 
         this.destoryAll()
         this.thinkingHint?.setText(boardPlayerThinkHint)

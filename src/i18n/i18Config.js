@@ -10,7 +10,7 @@ export const i18Config = {
     JOIN: {KEY: "JOIN", EN: "Join", CN: "加入"},
     PLAYING: {KEY: "PLAYING", EN: "Playing", CN: "游戏中"},
 
-    // roomPlayersPage
+    // ROOM Players Page
     START: {KEY: "START", EN: "START", CN: "开始游戏"},
     WAIT_FOR_START: {KEY: "WAIT_FOR_START", EN: "Please wait for host to start the game", CN: "请等待房主开始游戏"},
     HOST: {KEY: "HOST", EN: "Host", CN: "房主"},
@@ -20,12 +20,6 @@ export const i18Config = {
     CANCEL: {KEY: "CANCEL", EN: "CANCEL", CN: "取消"},
     END: {KEY: "END", EN: "END", CN: "结束"},
 
-    // stage
-    STAGE_DESC: {
-        KEY: "STAGE_DESC",
-        EN: "{stage} phase",
-        CN: "{stage}阶段"
-    },
 
     // 操作提示
     // play phase
@@ -207,10 +201,14 @@ export const i18Config = {
         EN: "Delayed\r\nscroll\r\ncard",
         CN: "延\r\n时\r\n锦\r\n囊\r\n牌"
     },
-    PLAYER_BOARD_TITLE: {
-        KEY: "PLAYER_BOARD_TITLE",
+    PLAYER_CARD_BOARD_TITLE: {
+        KEY: "PLAYER_CARD_BOARD_TITLE",
         EN: "{titleName} Choose a card from {playerName}",
         CN: "{titleName} 选择一张{playerName}的卡牌"
+    },
+    HERO_SELECT_BOARD_TITLE: {
+        EN: "Select your hero",
+        CN: "选将"
     },
 
     // PublicCardMessage
@@ -239,4 +237,6 @@ export const i18Config = {
         EN: "{name} dismantled",
         CN: "{name}被拆"
     },
+
+    // BoardPlayerThinkingHint
 }

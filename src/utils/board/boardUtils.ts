@@ -59,7 +59,7 @@ const getCardBoardTitle=(gameStatus: GameStatus, responseType: RESPONSE_TYPE_CON
         const scrollResponse = gameStatus.scrollResponses[0]!
         titleName = i18(scrollResponse.actualCard)
     }
-    return i18(i18Config.PLAYER_BOARD_TITLE, {
+    return i18(i18Config.PLAYER_CARD_BOARD_TITLE, {
         titleName,
         playerName: gameStatus.players[targetPlayer!.playerId].name
     })

@@ -7,6 +7,8 @@ import {EmitHeroSelectBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from './BaseBoard'
+import { i18 } from "../../i18n/i18nUtils";
+import { i18Config } from "../../i18n/i18Config";
 
 const boardSize = {
     height: 380,
@@ -88,7 +90,7 @@ export class HeroSelectBoard {
 
         if (!curheroId && !this.baseBoard.show) {
             this.baseBoard.showBoard();
-            this.baseBoard.setTitle('选将')
+            this.baseBoard.setTitle(i18(i18Config.HERO_SELECT_BOARD_TITLE))
 
             this.drawContent(gameStatus);
             this.baseBoard.addContent(this.boardContent);
