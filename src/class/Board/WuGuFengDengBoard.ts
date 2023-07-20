@@ -11,165 +11,131 @@ import {uuidv4} from "../../utils/uuid";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getPlayerDisplayName} from "../../utils/playerUtils";
-import {Card} from "../../types/card";
+import {Card, WugufengdengCard} from "../../types/card";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
+import {BaseBoard} from "./BaseBoard";
+import {cloneDeep, isEqual} from "lodash";
 
 const boardSize = {
     height: 380,
-    width: 420,
+    width: 440,
 }
 
 const gridOffset = {
     line1: {y: -55},
-    line2: {y: -55 + sizeConfig.controlCard.height + sizeConfig.controlCardMargin},
+    line2: {y: -55 + sizeConfig.controlCard.height + sizeConfig.boardCardMargin},
 }
 
 export class WuGuFengDengBoard {
     obId: string;
     gamingScene: GamingScene;
+    boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
+    cardIdMap: {
+        [key: string]: {
+            cardImgObj: Phaser.GameObjects.Image,
+            cardMessageObj: Phaser.GameObjects.Text
+        }
+    };
 
+    // innerState
+    _scrollResponse: object | undefined;
+
+    baseBoard: BaseBoard;
     initX: number;
     initY: number;
-
-    maskImg?: Phaser.GameObjects.Image;
-    boardImg?: Phaser.GameObjects.Image;
-    titleText?: Phaser.GameObjects.Text;
-    bottomText?: Phaser.GameObjects.Text;
-
-    cardMessageObjs: Phaser.GameObjects.Text[];
-    destoryObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text)[];
-
-    // innerState 联合主键
-    _isEffect: boolean | undefined;
 
     constructor(gamingScene: GamingScene) {
         this.obId = uuidv4();
         this.gamingScene = gamingScene
-        this.maskImg;
+        this.boardContent = []
+        this.cardIdMap = {};
 
-        this.initX = sizeConfig.playersArea.width / 2;
-        this.initY = sizeConfig.playersArea.height / 2;
+        this.baseBoard = new BaseBoard(gamingScene, {
+            boardSize,
+        });
+        this.initX = this.baseBoard.initX;
+        this.initY = this.baseBoard.initY;
 
-        this.maskImg;
-        this.boardImg;
-
-        this.cardMessageObjs = [];
-        this.destoryObjects = [];
-
-        this._isEffect = undefined;
-
-        this.drawBackground();
-        this.drawTitle();
-        this.drawBottomText();
+        this._scrollResponse = undefined;
 
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
-    drawBackground() {
-        this.maskImg = this.gamingScene.add.image(0, 0, 'white').setInteractive()
-        this.maskImg.displayHeight = sizeConfig.background.height;
-        this.maskImg.displayWidth = sizeConfig.background.width;
-        this.maskImg.setAlpha(0)
-        this.maskImg.setOrigin(0, 0)
-        this.maskImg.setDepth(DEPTH_CONFIG.BOARD)
-
-        this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
-        // @ts-ignore
-        this.boardImg.setTint("0x000000")
-        this.boardImg.displayHeight = boardSize.height;
-        this.boardImg.displayWidth = boardSize.width;
-        this.boardImg.setAlpha(0)
-        this.boardImg.setDepth(DEPTH_CONFIG.BOARD)
-    }
-
-    drawTitle() {
-        this.titleText = this.gamingScene.add.text(this.initX, this.initY - 158,
-            i18(CARD_CONFIG.WU_GU_FENG_DENG)
-        )
-        this.titleText.setOrigin(0.5, 0.5)
-        this.titleText.setAlpha(0)
-        this.titleText.setPadding(0, 2, 0, 0)
-        this.titleText.setDepth(DEPTH_CONFIG.BOARD)
-    }
-
-    drawBottomText() {
-        this.bottomText = this.gamingScene.add.text(this.initX, this.initY + 158, '', {align: "center"})
-        this.bottomText.setOrigin(0.5, 0.5)
-        this.bottomText.setAlpha(0)
-        this.bottomText.setPadding(0, 2, 0, 0)
-        this.bottomText.setDepth(DEPTH_CONFIG.BOARD)
-    }
-
     drawWugufengdengCards(gameStatus: GameStatus) {
+        this.boardContent.forEach((obj) => {
+            obj.destroy();
+        });
+
         gameStatus.wugufengdengCards.forEach((card, index) => {
             const offsetY = (index) > 3 ? gridOffset.line2.y : gridOffset.line1.y;
             const modIndex = index % 4;
-            const {cardNameObj, cardHuaseNumberObj, cardImgObj, cardMessageObj} = sharedDrawFrontCard(this.gamingScene, card, {
-                x: this.initX - 125 + modIndex * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
-                y: this.initY + offsetY,
-                depth: DEPTH_CONFIG.BOARD,
-                message: card.wugefengdengSelectedPlayerId ? gameStatus.players[card.wugefengdengSelectedPlayerId].name : '',
-            })
+            const {cardNameObj, cardHuaseNumberObj, cardImgObj, cardMessageObj} =
+                sharedDrawFrontCard(this.gamingScene, card, {
+                    x: this.initX - 142 + modIndex * (sizeConfig.controlCard.width + sizeConfig.boardCardMargin),
+                    y: this.initY + offsetY,
+                    depth: DEPTH_CONFIG.BOARD,
+                })
 
-            if (card.wugefengdengSelectedPlayerId) {
-                // @ts-ignore
-                cardImgObj.setTint(COLOR_CONFIG.disableCard)
+            this.boardContent.push(cardNameObj);
+            this.boardContent.push(cardHuaseNumberObj);
+            this.boardContent.push(cardImgObj);
+            this.boardContent.push(cardMessageObj);
+
+            this.cardIdMap[card.cardId] = {
+                cardImgObj,
+                cardMessageObj
             }
-            this.destoryObjects.push(cardNameObj);
-            this.destoryObjects.push(cardHuaseNumberObj);
-            this.destoryObjects.push(cardImgObj);
-            this.destoryObjects.push(cardMessageObj);
-
-            cardImgObj.on('pointerdown', () => {
-                    if (gameStatus.scrollResponses?.[0].originId !== getMyPlayerId()) {
-                        return;
-                    }
-                    if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0) {
-                        return
-                    }
-                    if (card.wugefengdengSelectedPlayerId) {
-                        return;
-                    }
-                    if (!gameStatus.scrollResponses?.[0].isEffect) {
-                        return;
-                    }
-                    this.gamingScene.socket.emit(
-                        EMIT_TYPE.WUGU_BOARD_ACTION,
-                        this.getEmitWugufengdengBoardData(card)
-                    )
-                }
-            )
         })
     }
 
-    showBoard(show: boolean, gameStatus: GameStatus) {
-        this.maskImg!.setAlpha(show ? 0.0001 : 0) // 配合setInteractive 阻止冒泡
-        this.boardImg!.setAlpha(show ? 1 : 0)
-        this.titleText!.setAlpha(show ? 1 : 0);
-        this.bottomText!.setAlpha(show ? 1 : 0);
+    bindEvent(gameStatus: GameStatus) {
+        gameStatus.wugufengdengCards.forEach((card) => {
 
+            this.cardIdMap[card.cardId].cardImgObj.removeAllListeners();
+            this.cardIdMap[card.cardId].cardImgObj.on("pointerdown", () => {
+                if (gameStatus.scrollResponses?.[0].originId !== getMyPlayerId()) {
+                    return;
+                }
+                if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0) {
+                    return
+                }
+                if (card.wugefengdengSelectedPlayerId) {
+                    return;
+                }
+                if (!gameStatus.scrollResponses?.[0].isEffect) {
+                    return;
+                }
+                this.gamingScene.socket.emit(
+                    EMIT_TYPE.WUGU_BOARD_ACTION,
+                    this.getEmitWugufengdengBoardData(card)
+                )
+            })
+        })
+    }
+
+    setBoardInteractive(gameStatus: GameStatus) {
         if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.includes(getMyPlayerId())) {
-            this.maskImg!.disableInteractive()
+            this.baseBoard.maskImg!.disableInteractive()
         } else {
-            this.maskImg!.setInteractive()
-        }
-
-        if (show) {
-            const hasWuxiePlayer = gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0;
-            const originId = gameStatus.scrollResponses?.[0]?.originId;
-            const bottomText = hasWuxiePlayer ?
-                i18(i18Config.WU_GU_FENG_DENG_WAIT_WU_XIE, {name: getPlayerDisplayName(gameStatus, originId)}) :
-                i18(i18Config.WU_GU_FENG_DENG_CHOOSING, {name: getPlayerDisplayName(gameStatus, originId)})
-            this.bottomText?.setText(bottomText)
+            this.baseBoard.maskImg!.setInteractive()
         }
     }
 
-    drawCards(gameStatus: GameStatus) {
-        this.drawWugufengdengCards(gameStatus);
+    setCardSelectedStatus(gameStatus: GameStatus) {
+        gameStatus.wugufengdengCards.forEach((card: WugufengdengCard) => {
+            if (card.wugefengdengSelectedPlayerId) {
+                this.cardIdMap[card.cardId].cardImgObj.setTint(Number(COLOR_CONFIG.disableCard))
+                this.cardIdMap[card.cardId].cardMessageObj.setText(gameStatus.players[card.wugefengdengSelectedPlayerId].name)
+            }
+        })
     }
 
-    destoryCards() {
-        this.destoryObjects.forEach((o) => o.destroy());
+    getBottomText(gameStatus: GameStatus) {
+        const hasWuxiePlayer = gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0;
+        const originId = gameStatus.scrollResponses?.[0]?.originId;
+        return hasWuxiePlayer ?
+            i18(i18Config.WU_GU_FENG_DENG_WAIT_WU_XIE, {name: getPlayerDisplayName(gameStatus, originId)}) :
+            i18(i18Config.WU_GU_FENG_DENG_CHOOSING, {name: getPlayerDisplayName(gameStatus, originId)})
     }
 
     getEmitWugufengdengBoardData(card: Card): EmitWugufengdengBoardData {
@@ -181,21 +147,29 @@ export class WuGuFengDengBoard {
 
     gameStatusNotify(gameStatus: GameStatus) {
         const curScrollResponse = gameStatus.scrollResponses?.[0];
-        const isEffect = curScrollResponse?.isEffect || undefined;
-        if (this._isEffect === isEffect) {
+        if (isEqual(this._scrollResponse, curScrollResponse)) {
             return;
         }
 
         const showBoard = curScrollResponse?.actualCard?.CN === SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
-
-        if (showBoard) {
-            this.showBoard(true, gameStatus);
-            this.drawCards(gameStatus);
-        } else {
-            this.showBoard(false, gameStatus);
-            this.destoryCards();
+        if (showBoard && !this.baseBoard.show) {
+            this.baseBoard.showBoard();
+            this.baseBoard.setTitle(i18(CARD_CONFIG.WU_GU_FENG_DENG))
+            this.drawWugufengdengCards(gameStatus)
+            this.baseBoard.addContent(this.boardContent);
+        } else if (!showBoard && this.baseBoard.show) {
+            this.baseBoard.hideBoard();
+            this.cardIdMap = {};
         }
 
-        this._isEffect = isEffect;
+        // curScrollResponse不同了 所以需要更新Mask和BoardCard状态 并且重新绑定事件
+        if (showBoard) {
+            this.baseBoard.setBottom(this.getBottomText(gameStatus))
+            this.setBoardInteractive(gameStatus);
+            this.setCardSelectedStatus(gameStatus);
+            this.bindEvent(gameStatus);
+        }
+
+        this._scrollResponse = cloneDeep(curScrollResponse);
     }
 }

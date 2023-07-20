@@ -15,7 +15,7 @@ const boardSize = {
 
 const gridOffset = {
     line1: {y: -55},
-    line2: {y: -55 + sizeConfig.selectHeroCard.height + sizeConfig.selectHeroCardMargin},
+    line2: {y: -55 + sizeConfig.selectHeroCard.height + sizeConfig.boardCardMargin},
 }
 
 export class HeroSelectBoard {
@@ -53,7 +53,7 @@ export class HeroSelectBoard {
             const modIndex = index % 4;
 
             const cardImgObj = this.gamingScene.add.image(
-                this.initX + -140 + modIndex * (sizeConfig.selectHeroCard.width + sizeConfig.selectHeroCardMargin),
+                this.initX + -140 + modIndex * (sizeConfig.selectHeroCard.width + sizeConfig.boardCardMargin),
                 this.initY + offsetY,
                 heroId).setInteractive({cursor: "pointer"});
             cardImgObj.displayHeight = sizeConfig.selectHeroCard.height;

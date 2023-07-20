@@ -21,6 +21,7 @@ export class BaseBoard {
     maskImg?: Phaser.GameObjects.Image;
     boardImg?: Phaser.GameObjects.Image;
     titleText?: Phaser.GameObjects.Text;
+    bottomText?: Phaser.GameObjects.Text;
     border?: Phaser.GameObjects.Graphics;
 
     dragObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
@@ -65,7 +66,7 @@ export class BaseBoard {
         this.border.strokeRoundedRect(this.boardImg.x - this.boardImg.displayWidth / 2 - lineWidth / 2,
             this.boardImg.y - this.boardImg.displayHeight / 2 - lineWidth / 2,
             this.boardImg.displayWidth + lineWidth,
-            this.boardImg.displayHeight + lineWidth,10);
+            this.boardImg.displayHeight + lineWidth, 10);
         this.border.setDepth(DEPTH_CONFIG.BOARD)
 
         this.dragObjects.push(this.border);
@@ -81,32 +82,46 @@ export class BaseBoard {
         this.dragObjects.push(this.titleText);
     }
 
+    drawBottom() {
+        this.bottomText = this.gamingScene.add.text(this.initX, this.initY + 158, '', {align: "center"})
+        this.bottomText.setOrigin(0.5, 0.5)
+        this.bottomText.setPadding(0, 2, 0, 0)
+        this.bottomText.setDepth(DEPTH_CONFIG.BOARD)
+
+        this.dragObjects.push(this.bottomText);
+    }
+
     addContent(boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[]) {
         boardContent.forEach((obj) => {
             this.dragObjects.push(obj);
         })
     }
 
-    setTitle(title: string) {
-        this.titleText?.setText(title)
+    setTitle(text: string) {
+        this.titleText?.setText(text)
+    }
+
+    setBottom(text: string) {
+        this.bottomText?.setText(text)
     }
 
     removeContent() {
-      this.dragObjects.forEach((obj) => {
+        this.dragObjects.forEach((obj) => {
             obj.destroy();
         })
         this.maskImg!.destroy()
     }
 
     showBoard() {
-        this.show=true;
+        this.show = true;
         this.drawBackground();
         this.drawTitle();
+        this.drawBottom();
         this.bindDragEvent();
     }
 
     hideBoard() {
-        this.show=false
+        this.show = false
         this.removeContent()
     }
 

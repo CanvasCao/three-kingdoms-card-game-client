@@ -7,7 +7,7 @@ const cardWidth = 85;
 const cardHeight = 116;
 
 const controlCardMargin = 2
-const selectHeroCardMargin = 10
+const boardCardMargin = 10
 const controlCardBgMargin = 15
 const controlEquipmentWidth = 140;
 const controlEquipmentHeight = 30;
@@ -39,6 +39,10 @@ const sizeConfig = {
     },
     controlCardSelectedOffsetX: controlCardSelectedOffsetX,
 
+
+    // board
+    boardCardMargin,
+
     // player
     player: {
         width: playerWeight,
@@ -54,7 +58,6 @@ const sizeConfig = {
         width: cardWidth,
         height: cardHeight
     },
-    selectHeroCardMargin,
     heroCardSource: {
         width: 350,
         height: 464
