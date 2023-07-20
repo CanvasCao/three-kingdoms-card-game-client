@@ -1,4 +1,5 @@
 import {Card, PandingSign} from "./card";
+import {Skill} from "./skill";
 
 export type GameStatusPlayers = { [key: string]: Player }
 export type Players = Player[]
@@ -11,6 +12,7 @@ export type Player = {
     playerName: string,
     heroName: string,
     location: number,
+    skills: Skill[],
 
     canSelectHeroIds: string[];
 

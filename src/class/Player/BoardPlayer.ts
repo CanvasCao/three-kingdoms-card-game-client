@@ -19,6 +19,7 @@ import {
     sharedDrawPlayerStroke
 } from "../../utils/draw/drawPlayerStrokeUtils";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
+import {Skill} from "../../types/skill";
 
 const reduceBloodOut = 50;
 const reduceBloodIn = 300;
@@ -35,9 +36,6 @@ export class BoardPlayer {
     positionX: number;
     positionY: number;
 
-    bloodImages?: Phaser.GameObjects.Image[];
-    pandingCardImages?: Phaser.GameObjects.Image[];
-    pandingCardTexts?: Phaser.GameObjects.Text[];
     maxPandingCardsNumber: number;
 
     _heroId: string;
@@ -58,9 +56,12 @@ export class BoardPlayer {
     cardNumObj?: Phaser.GameObjects.Text;
     tieSuoImage?: Phaser.GameObjects.Image;
     playerImage?: Phaser.GameObjects.Image;
-    isDeadText?: Phaser.GameObjects.Text;
     bloodsBgGraphics?: Phaser.GameObjects.Graphics;
-    wound?: Phaser.GameObjects.Image;
+    bloodImages?: Phaser.GameObjects.Image[];
+    pandingCardImages?: Phaser.GameObjects.Image[];
+    pandingCardTexts?: Phaser.GameObjects.Text[];
+    skillImages?: Phaser.GameObjects.Image[];
+    skillTexts?: Phaser.GameObjects.Text[];
 
     constructor(gamingScene: GamingScene, player: Player) {
         this.obId = uuidv4();
@@ -78,9 +79,12 @@ export class BoardPlayer {
         this.positionY = this?.playerPosition?.y;
 
         // phaser objects
+        this.phaserGroup = [];
         this.bloodImages = []; //从下往上
         this.pandingCardImages = []; //从右往左
         this.pandingCardTexts = []; //从右往左
+        this.skillImages = [];
+        this.skillTexts = [];
 
         // varible
         this.maxPandingCardsNumber = Object.keys(DELAY_SCROLL_CARDS_CONFIG).length;
@@ -94,8 +98,6 @@ export class BoardPlayer {
         this._isTieSuo = false;
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
-
-        this.phaserGroup = [];
 
         this.drawPlayer('xuanjiang');
         this.drawPlayerName();
@@ -116,13 +118,17 @@ export class BoardPlayer {
         this.drawPandingCards();
         this.drawTieSuo(player.isTieSuo);
         this.drawCardNumber();
-        this.drawWound();
 
         if (player.isDead) {
             this.drawIsDead();
             this._isDead = true;
         }
 
+        if (this.isMe) {
+            this.drawHeroSkills(player.skills);
+        }
+
+        this.drawWound();
         this.bindEvent();
     }
 
@@ -279,30 +285,60 @@ export class BoardPlayer {
         // @ts-ignore
         this.playerImage!.setTint(COLOR_CONFIG.disablePlayer);
 
-        this.isDeadText = this.gamingScene.add.text(
+        const isDeadText = this.gamingScene.add.text(
             this.positionX,
             this.positionY,
             "阵亡",
             // @ts-ignore
             {fill: "#cb0c0c", align: "center"}
         );
-        this.isDeadText.setOrigin(0.5, 0.5)
+        isDeadText.setOrigin(0.5, 0.5)
         const padding = 2;
-        this.isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        this.isDeadText.setFontSize(40)
-        this.isDeadText.setRotation(-3.14 / 10)
+        isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
+        isDeadText.setFontSize(40)
+        isDeadText.setRotation(-Math.PI / 10)
 
-        this.phaserGroup.push(this.isDeadText)
+        this.phaserGroup.push(isDeadText)
     }
 
     drawWound() {
-        this.wound = this.gamingScene.add.image(
+        const wound = this.gamingScene.add.image(
             this.positionX,
             this.positionY,
             "wound").setAlpha(0);
 
-        this.wound.setData('name', 'wound');
-        this.phaserGroup.push(this.wound);
+        wound.setData('name', 'wound');
+        this.phaserGroup.push(wound);
+    }
+
+    drawHeroSkills(skills: Skill[]) {
+        const skillMargin = 5;
+        const skillWidth = (sizeConfig.player.width - 40) / 2
+        const skillHeight = 24
+        skills.forEach((skill, index) => {
+            if (index > 1) {
+                return
+            }
+            const skillImage = this.gamingScene.add.image(
+                this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin,
+                this.positionY + sizeConfig.player.height / 2 - skillMargin,
+                "white").setTint(Number(COLOR_CONFIG.grey555));
+            skillImage.setDisplaySize(skillWidth, skillHeight)
+            skillImage.setOrigin(0, 1)
+            this.phaserGroup.push(skillImage);
+
+
+            const skillTextOffsetX = 6
+            const skillText = this.gamingScene.add.text(
+                this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin + skillTextOffsetX,
+                this.positionY + sizeConfig.player.height / 2 - skillMargin,
+                skill.CN,
+                {align: 'center', wordWrap: {width: skillWidth, useAdvancedWrap: true}})
+
+            skillText.setPadding(2)
+            skillText.setOrigin(0, 1)
+            this.phaserGroup.push(skillText);
+        })
     }
 
     setBloods(number: number) {
@@ -389,7 +425,6 @@ export class BoardPlayer {
 
     startReduceBloodMove() {
         this.phaserGroup.forEach((obj) => {
-            console.log(obj)
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {

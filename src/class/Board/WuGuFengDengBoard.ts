@@ -90,7 +90,6 @@ export class WuGuFengDengBoard {
 
     bindEvent(gameStatus: GameStatus) {
         gameStatus.wugufengdengCards.forEach((card) => {
-
             this.cardIdMap[card.cardId].cardImgObj.removeAllListeners();
             this.cardIdMap[card.cardId].cardImgObj.on("pointerdown", () => {
                 if (gameStatus.scrollResponses?.[0].originId !== getMyPlayerId()) {
