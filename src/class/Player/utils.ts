@@ -6,20 +6,21 @@ import {
 import {getCurrentPlayer} from "../../utils/playerUtils";
 import {getResponseType} from "../../utils/response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
-import {GAME_STAGE, STAGE_NAMES} from "../../config/gameConfig";
-import { i18 } from "../../i18n/i18nUtils";
+import {STAGE_NAME, STAGE_NAMES, STAGE_NAME_CONFIG} from "../../config/gameConfig";
+import {i18} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
 
 const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) => {
     const responseType = getResponseType(gameStatus);
     const currentPlayer = getCurrentPlayer(gameStatus)
-    const preText = "正在思考 "
+    const preText = i18(i18Config.IS_THINKING)
     let hintText = '';
 
     if (responseType) {
         switch (responseType) {
             case RESPONSE_TYPE_CONFIG.TAO:
                 if (gameStatus.taoResponses[0].originId == playerId) {
-                    hintText = BASIC_CARDS_CONFIG.TAO.CN;
+                    hintText = i18(BASIC_CARDS_CONFIG.TAO);
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.SHAN:
@@ -45,18 +46,18 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
             case RESPONSE_TYPE_CONFIG.SCROLL:
                 const curScrollResponse = gameStatus.scrollResponses[0]
                 if (curScrollResponse.originId == playerId) {
-                    hintText = curScrollResponse.actualCard.CN
+                    hintText = i18(curScrollResponse.actualCard)
                 }
                 break;
         }
-    } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === GAME_STAGE.PLAY && currentPlayer.playerId == playerId) {
-        hintText = "出牌"
-    } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === GAME_STAGE.THROW && currentPlayer.playerId == playerId) {
-        hintText = "弃牌"
+    } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === STAGE_NAME.PLAY && currentPlayer.playerId == playerId) {
+        hintText = i18(STAGE_NAME_CONFIG.PLAY)
+    } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === STAGE_NAME.THROW && currentPlayer.playerId == playerId) {
+        hintText =  i18(STAGE_NAME_CONFIG.THROW)
     }
 
     if (hintText) {
-        return preText + hintText
+        return preText + ' ' + hintText
     } else {
         return ''
     }
