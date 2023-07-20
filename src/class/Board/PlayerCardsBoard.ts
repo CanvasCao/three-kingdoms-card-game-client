@@ -145,7 +145,8 @@ export class PlayerCardsBoard {
             loopArray = ['plusHorseCard', 'minusHorseCard']
         }
 
-        loopArray.forEach((key, index) => {
+        let index = 0;
+        loopArray.forEach((key) => {
             const card = targetPlayer[key as keyof Player] as Card;
             if (!card) {
                 return
@@ -161,6 +162,8 @@ export class PlayerCardsBoard {
             this.boardContent.push(cardNameObj);
             this.boardContent.push(cardHuaseNumberObj);
             this.boardContent.push(cardImgObj);
+
+            index++
         })
 
     }

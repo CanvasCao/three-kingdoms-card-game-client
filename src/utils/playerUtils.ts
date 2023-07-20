@@ -188,7 +188,7 @@ const getCanPlayerPlaySha = (player: Player) => {
 const getPlayerDisplayName = (gameStatus: GameStatus, playerId: string) => {
     const isMe = playerId == getMyPlayerId();
     const s = getI18Lan() == I18LANS.EN ? " (you)" : "（你）"
-    return gameStatus.players[playerId].name + (isMe ? s : "");
+    return gameStatus.players[playerId].playerName + (isMe ? s : "");
 }
 
 const getCurrentPlayer = (gameStatus: GameStatus) => {

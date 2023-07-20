@@ -8,7 +8,8 @@ export type Player = {
     heroId: string,
     shaLimitTimes: number,
     playerId: string,
-    name: string,
+    playerName: string,
+    heroName: string,
     location: number,
 
     canSelectHeroIds: string[];

@@ -131,13 +131,10 @@ const tryRejoinRoom = () => {
     }
 }
 
-const bindPageEvent = () => {
-    bindLoginPageEvent();
-    bindRoomsPageEvent();
-    bindRoomPlayersPageEvent();
-}
 
 export {
-    bindPageEvent,
+    bindLoginPageEvent,
+    bindRoomsPageEvent,
+    bindRoomPlayersPageEvent,
     tryRejoinRoom
 }

@@ -125,7 +125,7 @@ export class WuGuFengDengBoard {
         gameStatus.wugufengdengCards.forEach((card: WugufengdengCard) => {
             if (card.wugefengdengSelectedPlayerId) {
                 this.cardIdMap[card.cardId].cardImgObj.setTint(Number(COLOR_CONFIG.disableCard))
-                this.cardIdMap[card.cardId].cardMessageObj.setText(gameStatus.players[card.wugefengdengSelectedPlayerId].name)
+                this.cardIdMap[card.cardId].cardMessageObj.setText(gameStatus.players[card.wugefengdengSelectedPlayerId].playerName)
             }
         })
     }

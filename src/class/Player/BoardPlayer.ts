@@ -28,7 +28,6 @@ export class BoardPlayer {
     gamingScene: GamingScene;
     playerId: string;
     playerName: string;
-    playerMaxBlood: number;
     linePosition: { x: number, y: number };
     playerPosition: { x: number, y: number };
     isMe: boolean;
@@ -69,8 +68,7 @@ export class BoardPlayer {
         // init
         this.gamingScene = gamingScene;
         this.playerId = player.playerId;
-        this.playerName = player.name;
-        this.playerMaxBlood = player.maxBlood;
+        this.playerName = player.playerName;
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
         this.isMe = this.playerId === getMyPlayerId();
@@ -91,9 +89,9 @@ export class BoardPlayer {
         this._heroId = '';
         this._disable = false;
         this._pandingCardsLength = 0;
-        this._blood = player.currentBlood;
-        this._cardNumber = player.cards.length;
-        this._isTieSuo = player.isTieSuo;
+        this._blood = 0;
+        this._cardNumber = 0;
+        this._isTieSuo = false;
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
 
@@ -111,12 +109,12 @@ export class BoardPlayer {
 
         this.drawStroke();
         this.drawPlayer(player.heroId);
-        this.drawBloodsBg();
-        this.drawBloods();
+        this.drawBloodsBg(player.maxBlood);
+        this.drawBloods(player.maxBlood);
         this.setBloods(player.currentBlood);
         this.drawPlayerName();
         this.drawPandingCards();
-        this.drawTieSuo();
+        this.drawTieSuo(player.isTieSuo);
         this.drawCardNumber();
         this.drawWound();
 
@@ -191,14 +189,14 @@ export class BoardPlayer {
         this.phaserGroup.push(nameText)
     }
 
-    drawTieSuo() {
+    drawTieSuo(isTieSuo: boolean) {
         this.tieSuoImage = this.gamingScene.add.image(
             this.positionX,
             this.positionY,
             "tiesuo");
         this.tieSuoImage.displayHeight = sizeConfig.player.height * 0.3;
         this.tieSuoImage.displayWidth = sizeConfig.player.width;
-        this.tieSuoImage.setAlpha(this._isTieSuo ? 1 : 0);
+        this.tieSuoImage.setAlpha(isTieSuo ? 1 : 0);
 
         this.phaserGroup.push(this.tieSuoImage)
     }
@@ -237,9 +235,13 @@ export class BoardPlayer {
         }
     }
 
-    drawBloodsBg() {
-        const graphicsW = this.isMe ? sizeConfig.player.width * 0.18 : sizeConfig.player.width * 0.18 * 0.8
-        const graphicsH = this.isMe ? sizeConfig.player.height * 0.62 : sizeConfig.player.height * 0.62 * 0.8
+    drawBloodsBg(maxBlood: number) {
+        const discount = maxBlood >= 4 ? 1 : 0.75;
+        const meWidth = sizeConfig.player.width * 0.18
+        const meHeight = sizeConfig.player.height * 0.62 * discount
+
+        const graphicsW = this.isMe ? meWidth : meWidth * 0.8
+        const graphicsH = this.isMe ? meHeight : meHeight * 0.8
         this.bloodsBgGraphics = this.gamingScene.add.graphics();
         this.bloodsBgGraphics.fillStyle(0x000, 1);
         this.bloodsBgGraphics.fillRoundedRect(
@@ -255,12 +257,12 @@ export class BoardPlayer {
         this.phaserGroup.push(this.bloodsBgGraphics)
     }
 
-    drawBloods() {
+    drawBloods(maxBlood: number) {
         const bloodHeight = this.isMe ? sizeConfig.player.height * 0.15 : sizeConfig.player.height * 0.15 * 0.8;
         const bloodWidth = bloodHeight * 1.5333;
         const marginBottom = this.isMe ? 4 : 0;
 
-        for (let i = 0; i < this.playerMaxBlood; i++) {
+        for (let i = 0; i < maxBlood; i++) {
             const bloodImage = this.gamingScene.add.image(
                 this.positionX + sizeConfig.player.width / 2 * 0.85,
                 this.positionY - marginBottom + sizeConfig.player.height / 2 * 0.86 - (bloodHeight * 0.9 * i),
@@ -440,7 +442,6 @@ export class BoardPlayer {
             }
             this._blood = player.currentBlood;
         }
-
     }
 
     onCardNumberChange(gameStatus: GameStatus) {

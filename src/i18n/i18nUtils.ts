@@ -42,7 +42,7 @@ export const i18 = (obj: I18Obj, replaceObj = {}) => {
     const lan = (window as { [key: string]: any })[i18WindowKey] || I18LANS.EN;
     try {
         // @ts-ignore
-        const returnString = obj[lan];
+        const returnString = obj[lan] || obj[CN];// 没有英文就返回中文
         const pattern = /\{(\w+)\}/g;
         // @ts-ignore
         return returnString.replace(pattern, (match, capture) => replaceObj[capture]);
