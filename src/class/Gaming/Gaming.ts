@@ -97,12 +97,13 @@ class Gaming extends Phaser.Scene {
             this.operateHint = new OperateHint(this);
             this.controlButtons = new ControlButtons(this);
             this.controlCardsManager = new ControlCardsManager(this);
-            this.equipmentmentCardsManager = new EquipmentmentCardsManager(this);
             this.notifyAnimationManager = new NofityAnimationManager(this);
 
             const players = getPlayersWithPosition(data.players);
             this.boardPlayerThinkHints = players.map((player) => new BoardPlayerThinkingHint(this, player));
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
+
+            this.equipmentmentCardsManager = new EquipmentmentCardsManager(this);
 
             this.gameStatusObserved.setGameStatus(data);
         });

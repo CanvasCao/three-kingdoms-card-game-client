@@ -1,6 +1,6 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
-import {DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {CARD_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
@@ -330,15 +330,19 @@ export class BoardPlayer {
             skillImage.setOrigin(0, 1)
             this.phaserGroup.push(skillImage);
 
-            const skillTextOffsetX = 6
+            let skillName = i18(SKILL_NAMES_CONFIG[this._heroId][skill.key]);
+            const fontSize = getI18Lan() == I18LANS.EN ? 9 : 16
+            const padding = getI18Lan() == I18LANS.EN ? 2 : 2
+            const skillTextOffsetX = getI18Lan() == I18LANS.EN ? 2 : 6
             const skillText = this.gamingScene.add.text(
                 this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin + skillTextOffsetX,
                 this.positionY + sizeConfig.player.height / 2 - skillMargin,
-                i18(SKILL_NAMES_CONFIG[this._heroId][skill.key]),
-                {align: 'center', wordWrap: {width: skillWidth, useAdvancedWrap: true}})
+                skillName,
+                {align: 'center', wordWrap: {width: skillWidth-skillTextOffsetX, useAdvancedWrap: true}})
 
-            skillText.setPadding(2)
+            skillText.setPadding(padding)
             skillText.setOrigin(0, 1)
+            skillText.setFontSize(fontSize)
             this.phaserGroup.push(skillText);
         })
     }
@@ -413,9 +417,10 @@ export class BoardPlayer {
         if (this._pandingCardsLength != player.pandingSigns.length) {
             for (let i = 0; i < this.maxPandingCardsNumber; i++) {
                 if (player.pandingSigns[i]) {
+                    const pandingCardText = i18(CARD_CONFIG[player.pandingSigns[i].actualCard.key])?.slice(0, 1);
                     this.pandingCardImages![i].setAlpha(1)
                     this.pandingCardTexts![i].setAlpha(1)
-                    this.pandingCardTexts![i].setText(player.pandingSigns[i].actualCard.key.slice(0, 1))
+                    this.pandingCardTexts![i].setText(pandingCardText)
                 } else {
                     this.pandingCardImages![i].setAlpha(0)
                     this.pandingCardTexts![i].setAlpha(0)
