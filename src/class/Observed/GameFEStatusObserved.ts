@@ -18,7 +18,7 @@ export class GameFEStatusObserved {
     }
 
     originSkillState: {
-        selectedSkillName: GameFEStatus['selectedSkillName']
+        selectedSkillNameKey: GameFEStatus['selectedSkillNameKey']
     }
 
     originPublicCardsState: {
@@ -41,7 +41,7 @@ export class GameFEStatusObserved {
             selectedTargetPlayers: [],
         }
         this.originSkillState = {
-            selectedSkillName: ""
+            selectedSkillNameKey: ""
         }
 
         // publicCardsState 是为了ToPublicCard对象 可以Observer并调整自己的位置
@@ -139,10 +139,10 @@ export class GameFEStatusObserved {
         this.resetSelectedStatus()
     }
 
-    selectSkill(skillName: string) {
+    selectSkill(skillNameKey: string) {
         const gameFEStatus = this.gameFEStatus;
         // @ts-ignore
-        gameFEStatus.selectedSkillName = skillName;
+        gameFEStatus.selectedSkillNameKey = skillNameKey;
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 

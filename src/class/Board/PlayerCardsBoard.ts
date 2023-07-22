@@ -225,14 +225,13 @@ export class PlayerCardsBoard {
             return PLAYER_BOARD_ACTION.MOVE
         } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
             const scrollResponse = gameStatus.scrollResponses[0]
-            if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+            if (scrollResponse?.actualCard?.key == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
                 return PLAYER_BOARD_ACTION.REMOVE
-            } else if (scrollResponse?.actualCard?.CN == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+            } else if (scrollResponse?.actualCard?.key == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
                 return PLAYER_BOARD_ACTION.MOVE
             }
         }
     }
-
 
     gameStatusNotify(gameStatus: GameStatus) {
         const responseType = getResponseType(gameStatus)

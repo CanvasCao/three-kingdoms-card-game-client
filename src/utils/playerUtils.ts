@@ -10,7 +10,7 @@ import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {getI18Lan, I18LANS} from "../i18n/i18nUtils";
 import {PandingSign} from "../types/card";
 import {Player} from "../types/player";
-import {SKILL_NAMES} from "../config/skillsConfig";
+import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
 import {getIsMyPlayTurn, getIsMyResponseTurn} from "./stage/stageUtils";
 import {getSelectedCardNumber, getSelectedTargetNumber} from "./validationUtils";
@@ -52,7 +52,7 @@ const getPlayerAttackRangeNumber = (gameFEStatus: GameFEStatus, player: Player) 
 }
 
 const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayer: Player) => {
-    const actualCardName = gameFEStatus?.actualCard?.CN || '';
+    const actualCardName = gameFEStatus?.actualCard?.key || '';
     const mePlayer = gameStatus.players[getMyPlayerId()];
     const myAttackDistance = getPlayerAttackRangeNumber(gameFEStatus, mePlayer)
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, mePlayer, targetPlayer)
@@ -63,7 +63,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     // 我响应技能
     if (isMyResponseTurn && responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         if (
-            gameStatus.skillResponse!.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
+            gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006.LIU_LI.key &&
             gameStatus.skillResponse!.chooseToReleaseSkill &&
             getSelectedCardNumber(gameFEStatus) == 1
         ) {
@@ -96,7 +96,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
         }
     }
     // 借刀杀人
-    else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) {
+    else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
         if (selectedTargetNumber == 0) {
             if (getIfPlayerHasWeapon(targetPlayer)) {
                 return true
@@ -118,15 +118,15 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
         }
     }
     // 乐不思蜀
-    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN) {
-        if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.CN == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN)) {
+    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key) {
+        if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.key == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
             return false
         } else {
             return true
         }
     }
     // 兵粮寸断
-    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN) {
+    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
         if (1 >= distanceBetweenMeAndTarget) {
             return true
         } else {
@@ -134,13 +134,13 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
         }
     }
     // 过河拆桥 顺手牵羊
-    else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN) {
+    else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
         if (getIfPlayerHasAnyCards(targetPlayer)) {
             return true
         } else {
             return false
         }
-    } else if (actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN) {
+    } else if (actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
         if (getIfPlayerHasAnyCards(targetPlayer) && 1 >= distanceBetweenMeAndTarget) {
             return true
         } else {
@@ -177,7 +177,7 @@ const getIfPlayerHasAnyHandCardsOrEquipmentCards = (player: Player) => {
 }
 
 const getCanPlayerPlaySha = (player: Player) => {
-    if (player.weaponCard && (player.weaponCard.CN == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.CN)) {
+    if (player.weaponCard && (player.weaponCard.key == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.key)) {
         return true
     } else {
         const shaLimitTimes = 1
@@ -200,14 +200,14 @@ const getNeedTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: 
     const responseType = getResponseType(gameStatus)
 
     if (responseType == RESPONSE_TYPE_CONFIG.SKILL &&
-        gameStatus.skillResponse!.skillName === SKILL_NAMES.WU["006"].LIU_LI &&
+        gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006.LIU_LI.key &&
         gameStatus.skillResponse!.chooseToReleaseSkill
     ) {
         return {min: 1, max: 1}
     }
-    if (getIsMyPlayTurn(gameStatus) && mePlayer.weaponCard?.CN == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.CN
+    if (getIsMyPlayTurn(gameStatus) && mePlayer.weaponCard?.key == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.key
         && mePlayer.cards.length == 1
-        && ALL_SHA_CARD_NAMES.includes(mePlayer.cards[0].CN)
+        && ALL_SHA_CARD_NAMES.includes(mePlayer.cards[0].key)
     ) {
         return {min: 1, max: 3}
     }

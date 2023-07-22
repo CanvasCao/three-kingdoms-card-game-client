@@ -76,9 +76,9 @@ export type EmitNotifyAddToPublicCardData = {
     targetId?: string,
     cards: Card[],
     pandingPlayerId: string,
-    pandingName: string,
+    pandingNameKey: string,
     type: string,
-    skillName?: string,
+    skillNameKey?: string,
 }
 
 export type EmitNotifyAddToPlayerCardData = {

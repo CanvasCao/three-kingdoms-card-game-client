@@ -33,11 +33,11 @@ const getIsMyResponseTurn = (gameStatus: GameStatus) => {
     if (responseType === RESPONSE_TYPE_CONFIG.SCROLL) {
         // 不需要判断isEffect 如果没有人想出无懈可击 锦囊肯定生效了
         return gameStatus.scrollResponses[0].originId == getMyPlayerId() &&
-            ([SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN,
-                SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN,
-                SCROLL_CARDS_CONFIG.JUE_DOU.CN,
-                SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN,
-            ].includes(gameStatus.scrollResponses[0].actualCard.CN))
+            ([SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key,
+                SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key,
+                SCROLL_CARDS_CONFIG.JUE_DOU.key,
+                SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key,
+            ].includes(gameStatus.scrollResponses[0].actualCard.key))
     }
     return false;
 }

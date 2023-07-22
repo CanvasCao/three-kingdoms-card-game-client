@@ -1,7 +1,7 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {GamingScene} from "../../types/phaser";
-import {CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfig";
+import {CARD_CONFIG, CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 import {getCardColor} from "../cardUtils";
@@ -64,7 +64,10 @@ const sharedDrawEquipment = (
     nameText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
     nameText.setFontSize(fontSize)
     nameText.setAlpha(1)
-    nameText.setText((getI18Lan() == I18LANS.EN ? card.EN.substring(0, 7) + '...' : card.CN))
+    nameText.setText((getI18Lan() == I18LANS.EN ?
+            CARD_CONFIG[card.key].EN.substring(0, 8) + '..' :
+            CARD_CONFIG[card.key].CN
+    ))
 
 
     const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.85, y, '',

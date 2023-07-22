@@ -1,15 +1,12 @@
-import { PLAYER_BOARD_ACTION } from "../config/boardConfig";
+import {PLAYER_BOARD_ACTION} from "../config/boardConfig";
 import {CARD_LOCATION, EQUIPMENT_TYPE} from "../config/cardConfig";
 
 export type Card = {
     huase: string,
     number: number,
     key: string,
-    KEY: string,
     cardId: string,
     cardNumDesc: string,
-    CN: string,
-    EN: string,
     type: string,
     attribute: string,
 
@@ -38,3 +35,13 @@ export type PandingSign = {
 export type WugufengdengCard = Card & { wugefengdengSelectedPlayerId: string }
 export type CardAreaType = keyof typeof CARD_LOCATION
 export type CardBoardActionType = keyof typeof PLAYER_BOARD_ACTION
+
+export type CardConfigValue = {
+    key: string,
+    CN: string,
+    EN: string,
+    type?: string,
+    equipmentType?: string,
+    distance?:number
+}
+export type CardConfig = { [key: string]: CardConfigValue }

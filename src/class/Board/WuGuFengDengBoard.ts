@@ -150,7 +150,7 @@ export class WuGuFengDengBoard {
             return;
         }
 
-        const showBoard = curScrollResponse?.actualCard?.CN === SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN
+        const showBoard = curScrollResponse?.actualCard?.key === SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.key
         if (showBoard && !this.baseBoard.show) {
             this.baseBoard.showBoard();
             this.baseBoard.setTitle(i18(CARD_CONFIG.WU_GU_FENG_DENG))

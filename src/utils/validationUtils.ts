@@ -3,7 +3,7 @@ import {GameFEStatus} from "../types/gameFEStatus";
 import {getCanPlayInMyTurn, getIsMyResponseTurn, getIsMyThrowTurn} from "./stage/stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
-import {SKILL_NAMES} from "../config/skillsConfig";
+import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 import {EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {getCanPlayerPlaySha} from "./playerUtils";
 import {getResponseType} from "./response/responseUtils";
@@ -56,22 +56,22 @@ const getCanSelectEquipment = (gameStatus: GameStatus, gameFEStatus: GameFEStatu
     if (isMyResponseTurn) {
         const responseType = getResponseType(gameStatus)
         if (responseType === RESPONSE_TYPE_CONFIG.SKILL &&
-            gameStatus.skillResponse!.skillName == SKILL_NAMES.WU["006"].LIU_LI &&
+            gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006.LIU_LI.key &&
             gameStatus.skillResponse!.chooseToReleaseSkill
         ) {
             return true
         }
 
         if (responseType === RESPONSE_TYPE_CONFIG.SCROLL &&
-            (gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN ||
-                gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.JUE_DOU.CN ||
-                gameStatus.scrollResponses[0].actualCard.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN) &&
-            eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN
+            (gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key ||
+                gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key ||
+                gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) &&
+            eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
             return true
         }
     } else if (canPlayInMyTurn) {
-        if (eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN &&
+        if (eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
             getCanPlayerPlaySha(gameStatus.players[getMyPlayerId()])
         ) {
             return true;

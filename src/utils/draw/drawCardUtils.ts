@@ -10,7 +10,7 @@ import {
 } from "../../config/cardContentOffsetConfig";
 import {getCardColor} from "../cardUtils";
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
-import {CARD_NUM_DESC} from "../../config/cardConfig";
+import {CARD_CONFIG, CARD_NUM_DESC} from "../../config/cardConfig";
 import {Card} from "../../types/card";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 
@@ -39,7 +39,7 @@ const sharedDrawFrontCard = (
     const cardNameObj = gamingScene.add.text(
         x + cardNameObjOffsetX,
         y + cardNameObjOffsetY,
-        i18(card),
+        i18(CARD_CONFIG[card.key]),
         {
             fontFamily: 'CustomFont',
             // @ts-ignore
@@ -107,7 +107,7 @@ const sharedDrawBackCard = (
     {
         x,
         y,
-        depth  = DEPTH_CONFIG.CARD,
+        depth = DEPTH_CONFIG.CARD,
         offsetX = 0,
         offsetY = 0,
     }: {

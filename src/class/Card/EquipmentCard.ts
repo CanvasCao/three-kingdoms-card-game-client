@@ -23,7 +23,7 @@ export class EquipmentCard {
     card: Card;
     equipmentType: keyof typeof EQUIPMENT_TYPE;
     playerId: string;
-    cardName: string;
+    cardNameKey: string;
     cardId: string;
     isMe: boolean;
 
@@ -43,7 +43,7 @@ export class EquipmentCard {
 
         this.gamingScene = gamingScene;
         this.card = card;
-        this.cardName = card.CN;
+        this.cardNameKey = card.key;
         this.cardId = card.cardId;
         this.equipmentType = card.equipmentType!;
         this.playerId = playerId;
@@ -127,14 +127,15 @@ export class EquipmentCard {
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
                 const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
-                const canSelectEquipment = getCanSelectEquipment(gameStatus, gameFEStatus, this.cardName);
+                const canSelectEquipment = getCanSelectEquipment(gameStatus, gameFEStatus, this.cardNameKey);
                 if (!canSelectEquipment) return;
 
                 const needSelectCardsNumber = getNeedSelectCardsNumber(gameStatus, gameFEStatus);
                 const haveSelectCardsNumber = getSelectedCardNumber(gameFEStatus);
                 const haveSelectedEnoughCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
-                const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillName && (gameFEStatus.selectedSkillName !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN)
+                const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillNameKey && 
+                    (gameFEStatus.selectedSkillNameKey !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key)
                 // 已经选中技能 或者 响应技能 的情况下 一定是要打出武器
                 if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {
                     if (gameFEStatus.selectedCards.map(c => c.cardId).includes(this.cardId)) { // 已经选中
@@ -148,10 +149,10 @@ export class EquipmentCard {
                 }
                 // 没有选中技能 或者响应技能 是要选中丈八蛇矛
                 else {
-                    if (gameFEStatus.selectedSkillName == this.cardName) {
+                    if (gameFEStatus.selectedSkillNameKey == this.cardNameKey) {
                         gameFEStatusObserved.unselectSkill()
                     } else {
-                        gameFEStatusObserved.selectSkill(this.cardName)
+                        gameFEStatusObserved.selectSkill(this.cardNameKey)
                     }
                 }
             }
@@ -184,8 +185,8 @@ export class EquipmentCard {
         }
 
         let isSelected = false;
-        if (gameFEStatus.selectedSkillName === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN &&
-            this.cardName === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
+        if (gameFEStatus.selectedSkillNameKey === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
+            this.cardNameKey === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
             isSelected = true
         }
         // @ts-ignore

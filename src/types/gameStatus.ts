@@ -69,9 +69,6 @@ export type ScrollResponse = {
     cards: Card[],
     actualCard: Card,
     isEffect: boolean,
-
-    // 顺拆 前端刷新Board的依据
-    boardObserveId?: string,
 }
 
 export type WuxieSimultaneousResponse = {
@@ -82,7 +79,7 @@ export type WuxieSimultaneousResponse = {
 export type WeaponResponse = {
     originId: string,
     targetId: string,
-    weaponCardName: string,
+    weaponCardKey: string,
 }
 
 

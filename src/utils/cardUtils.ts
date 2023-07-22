@@ -1,36 +1,44 @@
 import {GameStatus} from "../types/gameStatus";
-import {BASIC_CARDS_CONFIG, CARD_HUASE, CARD_LOCATION, CARD_TYPE, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {
+    BASIC_CARDS_CONFIG,
+    CARD_CONFIG,
+    CARD_HUASE,
+    CARD_LOCATION,
+    CARD_TYPE,
+    SCROLL_CARDS_CONFIG
+} from "../config/cardConfig";
 import {EmitNotifyAddToPublicCardData} from "../types/emit";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {i18Config} from "../i18n/i18Config";
 import {i18} from "../i18n/i18nUtils";
 import {Card, CardAreaType} from "../types/card";
 import {ADD_TO_PUBLIC_CARD_TYPE} from "../config/emitConfig";
+import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 
 const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {
         return
     }
 
-    if (card.CN == SCROLL_CARDS_CONFIG.HUO_GONG.CN || card.CN == SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.CN) {
+    if (card.key == SCROLL_CARDS_CONFIG.HUO_GONG.key || card.key == SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.key) {
         card.canClickMySelfAsFirstTarget = true
     } else {
         card.canClickMySelfAsFirstTarget = false
     }
 
-    if (card.CN == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN || card.CN == SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.CN) {
+    if (card.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key || card.key == SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.key) {
         card.canClickMySelfAsSecondTarget = true
     } else {
         card.canClickMySelfAsSecondTarget = false
     }
 
-    if (card.CN == BASIC_CARDS_CONFIG.SHA.CN ||
-        card.CN == BASIC_CARDS_CONFIG.LEI_SHA.CN ||
-        card.CN == BASIC_CARDS_CONFIG.HUO_SHA.CN ||
-        card.CN == BASIC_CARDS_CONFIG.TAO.CN ||
-        card.CN == BASIC_CARDS_CONFIG.JIU.CN ||
+    if (card.key == BASIC_CARDS_CONFIG.SHA.key ||
+        card.key == BASIC_CARDS_CONFIG.LEI_SHA.key ||
+        card.key == BASIC_CARDS_CONFIG.HUO_SHA.key ||
+        card.key == BASIC_CARDS_CONFIG.TAO.key ||
+        card.key == BASIC_CARDS_CONFIG.JIU.key ||
         card.type == CARD_TYPE.EQUIPMENT ||
-        (card.type == CARD_TYPE.SCROLL && card.CN !== SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN)
+        (card.type == CARD_TYPE.SCROLL && card.key !== SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key)
     ) {
         card.canPlayInMyTurn = true
     } else {
@@ -47,64 +55,64 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
         card.noNeedSetTargetDueToImDefaultTarget = true
     } else if ([
         // 2.
-        BASIC_CARDS_CONFIG.TAO.CN,
-        BASIC_CARDS_CONFIG.JIU.CN,
-        SCROLL_CARDS_CONFIG.SHAN_DIAN.CN,
-        SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
+        BASIC_CARDS_CONFIG.TAO.key,
+        BASIC_CARDS_CONFIG.JIU.key,
+        SCROLL_CARDS_CONFIG.SHAN_DIAN.key,
+        SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.key,
 
         // 6.
-        BASIC_CARDS_CONFIG.SHAN.CN,
-        SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.CN,
+        BASIC_CARDS_CONFIG.SHAN.key,
+        SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key,
 
         // 4.
-        SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN,
-        SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN,
-        SCROLL_CARDS_CONFIG.TAO_YUAN_JIE_YI.CN,
-        SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN,
-    ].includes(card.CN)) {
+        SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key,
+        SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key,
+        SCROLL_CARDS_CONFIG.TAO_YUAN_JIE_YI.key,
+        SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.key,
+    ].includes(card.key)) {
         card.targetMinMax = {min: 0, max: 0}
 
         // 2.
         if ([
-            BASIC_CARDS_CONFIG.TAO.CN,
-            BASIC_CARDS_CONFIG.JIU.CN,
-            SCROLL_CARDS_CONFIG.SHAN_DIAN.CN,
-            SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.CN,
-        ].includes(card.CN)) {
+            BASIC_CARDS_CONFIG.TAO.key,
+            BASIC_CARDS_CONFIG.JIU.key,
+            SCROLL_CARDS_CONFIG.SHAN_DIAN.key,
+            SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.key,
+        ].includes(card.key)) {
             card.noNeedSetTargetDueToImDefaultTarget = true
         }
 
         if ([
-            SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.CN,
-            SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.CN,
-            SCROLL_CARDS_CONFIG.TAO_YUAN_JIE_YI.CN,
-            SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.CN,
-        ].includes(card.CN)) {
+            SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key,
+            SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key,
+            SCROLL_CARDS_CONFIG.TAO_YUAN_JIE_YI.key,
+            SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.key,
+        ].includes(card.key)) {
             card.noNeedSetTargetDueToTargetAll = true
         }
 
     } else if ([
-        BASIC_CARDS_CONFIG.SHA.CN,
-        BASIC_CARDS_CONFIG.LEI_SHA.CN,
-        BASIC_CARDS_CONFIG.HUO_SHA.CN,
-        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
-        SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
+        BASIC_CARDS_CONFIG.SHA.key,
+        BASIC_CARDS_CONFIG.LEI_SHA.key,
+        BASIC_CARDS_CONFIG.HUO_SHA.key,
+        SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
+        SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key,
 
-        SCROLL_CARDS_CONFIG.JUE_DOU.CN,
-        SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.CN,
-        SCROLL_CARDS_CONFIG.HUO_GONG.CN,
-        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.CN,
-    ].includes(card.CN)) {
+        SCROLL_CARDS_CONFIG.JUE_DOU.key,
+        SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key,
+        SCROLL_CARDS_CONFIG.HUO_GONG.key,
+        SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key,
+    ].includes(card.key)) {
         card.targetMinMax = {min: 1, max: 1}
 
         // 1.
         if ([
-            BASIC_CARDS_CONFIG.SHA.CN,
-            BASIC_CARDS_CONFIG.LEI_SHA.CN,
-            BASIC_CARDS_CONFIG.HUO_SHA.CN,
-            SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.CN,
-            SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.CN,
-        ].includes(card.CN)) {
+            BASIC_CARDS_CONFIG.SHA.key,
+            BASIC_CARDS_CONFIG.LEI_SHA.key,
+            BASIC_CARDS_CONFIG.HUO_SHA.key,
+            SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
+            SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key,
+        ].includes(card.key)) {
             card.couldHaveMultiTarget = true
         }
         // 3.
@@ -112,13 +120,13 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
             card.canOnlyHaveOneTarget = true
         }
     } else if ([
-        SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.CN,
-        SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.CN,
-    ].includes(card.CN)) {
+        SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key,
+        SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.key,
+    ].includes(card.key)) {
         card.targetMinMax = {min: 2, max: 2}
         card.needAActionToB = true;
     } else {
-        throw new Error(card.CN + "未在attachFEInfoToCard设置")
+        throw new Error(card.key + "未在attachFEInfoToCard设置")
     }
     return card
 }
@@ -146,11 +154,13 @@ const getCardColor = (huase: string) => {
 
 const generatePublicCardMessage = (
     gameStatus: GameStatus,
-    {type, fromId, originId, targetId, pandingPlayerId, pandingName, skillName}:
+    {type, fromId, originId, targetId, pandingPlayerId, pandingNameKey, skillNameKey}:
         EmitNotifyAddToPublicCardData) => {
-    if (skillName) {
-        const originName = gameStatus.players[originId].playerName;
-        return `${originName}${skillName}`
+    if (skillNameKey) {
+        const player = gameStatus.players[originId]!
+        const skillName = i18(SKILL_NAMES_CONFIG[player.heroId][skillNameKey])
+        const originName = player.playerName;
+        return `${originName} ${skillName}`
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PLAY) {
         const originName = gameStatus.players[originId].playerName;
 
@@ -164,8 +174,10 @@ const generatePublicCardMessage = (
             return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET, {originName, targetName});
         }
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PANDING) {
+        const pandingPlayer = gameStatus.players[pandingPlayerId]
+        const pandingName = i18(CARD_CONFIG[pandingNameKey] || SKILL_NAMES_CONFIG[pandingPlayer.heroId][pandingNameKey])
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT, {
-            playerName: gameStatus.players[pandingPlayerId].playerName,
+            playerName: pandingPlayer.playerName,
             pandingName
         });
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.THROW) {

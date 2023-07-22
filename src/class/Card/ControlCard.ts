@@ -209,13 +209,13 @@ export class ControlCard {
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
         if (canPlayInMyTurn) {
-            if (gameFEStatus.selectedSkillName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.CN) {
+            if (gameFEStatus.selectedSkillNameKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
                 setCardAble()
                 return
             }
 
             const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
-            if (!canPlayCardNames.includes(this.card.CN)) {
+            if (!canPlayCardNames.includes(this.card.key)) {
                 setCardDisable()
                 return
             }

@@ -76,9 +76,9 @@ const generateActualCard = (gameFEStatus: GameFEStatus) => {
             huase: gameFEStatus.selectedCards[0].huase,
             huase2: gameFEStatus.selectedCards[1].huase,
             cardId: uuidv4(),
-            CN: configSha.CN,
+            CN: configSha.key,
             EN: configSha.EN,
-            type: configSha.KEY,
+            type: configSha.key,
         }
     } else {
         const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]))

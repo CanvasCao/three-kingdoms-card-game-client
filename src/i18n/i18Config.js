@@ -137,6 +137,23 @@ export const i18Config = {
         CN: "无懈可击询问中"
     },
 
+    // SKILL
+    RESPONSE_SKILL_OR_NOT: {
+        EN: "Do you activate the {skillName} skill?",
+        CN: "是否发动 {skillName}？"
+    },
+    RESPONSE_SKILL_GUI_CAI: {
+        EN: "Play a hand card to replace the judgment card",
+        CN: "打出一张手牌代替判定牌"
+    },
+    RESPONSE_SKILL_LIU_LI: {
+        EN: "Discard one card and transfer this [Strike] to another character within your attacking range (cannot be the character who used this [Strike])",
+        CN: '弃置一张牌并将此【杀】转移给你攻击范围内的一名其他角色（不能是使用此【杀】的角色）'
+    },
+    RESPONSE_SKILL_FAN_KUI: {
+        EN: "Obtain one card from the source of the damage",
+        CN: '获得伤害来源的一张牌'
+    },
     // 操作提示
     // 弃牌
     SELECT_THROW_CARDS: {
@@ -169,8 +186,8 @@ export const i18Config = {
         CN: "延\r\n时\r\n锦\r\n囊\r\n牌"
     },
     PLAYER_CARD_BOARD_TITLE: {
-        EN: "{titleName} Choose a card from {playerName}",
-        CN: "{titleName} 选择一张{playerName}的卡牌"
+        EN: "{titleName}  Choose a card from {playerName}",
+        CN: "{titleName}  选择一张{playerName}的卡牌"
     },
     HERO_SELECT_BOARD_TITLE: {
         EN: "Select your hero",
@@ -200,8 +217,12 @@ export const i18Config = {
     },
 
     // BoardPlayerThinkingHint
-    IS_THINKING:{
+    IS_THINKING: {
         EN: "Is thinking",
         CN: "正在思考"
+    },
+    IS_DEAD: {
+        EN: "Defeated",
+        CN: "阵亡"
     }
 }

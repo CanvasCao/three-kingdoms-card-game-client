@@ -19,7 +19,10 @@ import {
     sharedDrawPlayerStroke
 } from "../../utils/draw/drawPlayerStrokeUtils";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
+import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
+import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {Skill} from "../../types/skill";
+import {i18Config} from "../../i18n/i18Config";
 
 const reduceBloodOut = 50;
 const reduceBloodIn = 300;
@@ -288,14 +291,14 @@ export class BoardPlayer {
         const isDeadText = this.gamingScene.add.text(
             this.positionX,
             this.positionY,
-            "阵亡",
+            i18(i18Config.IS_DEAD),
             // @ts-ignore
             {fill: "#cb0c0c", align: "center"}
         );
         isDeadText.setOrigin(0.5, 0.5)
         const padding = 2;
         isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        isDeadText.setFontSize(40)
+        isDeadText.setFontSize(getI18Lan() == I18LANS.EN ? 30 : 40)
         isDeadText.setRotation(-Math.PI / 10)
 
         this.phaserGroup.push(isDeadText)
@@ -327,12 +330,11 @@ export class BoardPlayer {
             skillImage.setOrigin(0, 1)
             this.phaserGroup.push(skillImage);
 
-
             const skillTextOffsetX = 6
             const skillText = this.gamingScene.add.text(
                 this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin + skillTextOffsetX,
                 this.positionY + sizeConfig.player.height / 2 - skillMargin,
-                skill.CN,
+                i18(SKILL_NAMES_CONFIG[this._heroId][skill.key]),
                 {align: 'center', wordWrap: {width: skillWidth, useAdvancedWrap: true}})
 
             skillText.setPadding(2)
@@ -385,12 +387,12 @@ export class BoardPlayer {
 
             // 因为mePlayer的_disable 大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
             if (curGameFEStatus.selectedTargetPlayers.length == 0) {
-                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.isMe) {
+                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.key) && this.isMe) {
                     return;
                 }
             }
             if (curGameFEStatus.selectedTargetPlayers.length == 1) {
-                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.CN) && this.isMe) {
+                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.key) && this.isMe) {
                     return;
                 }
             }
@@ -413,7 +415,7 @@ export class BoardPlayer {
                 if (player.pandingSigns[i]) {
                     this.pandingCardImages![i].setAlpha(1)
                     this.pandingCardTexts![i].setAlpha(1)
-                    this.pandingCardTexts![i].setText(player.pandingSigns[i].actualCard.CN.slice(0, 1))
+                    this.pandingCardTexts![i].setText(player.pandingSigns[i].actualCard.key.slice(0, 1))
                 } else {
                     this.pandingCardImages![i].setAlpha(0)
                     this.pandingCardTexts![i].setAlpha(0)
@@ -555,13 +557,14 @@ export class BoardPlayer {
 
         if (this.isMe) { // 是我的话 我选完就要显示武将
             if (heroId && !this._heroId) {
+                this._heroId = heroId;
                 this.initHero(gameStatus);
                 this._heroId = heroId;
             }
         } else {
             if (heroId && !this._heroId && allSelectHeroDone) {
+                this._heroId = heroId
                 this.initHero(gameStatus);
-                this._heroId = heroId;
             }
         }
 

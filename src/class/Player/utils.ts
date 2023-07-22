@@ -1,6 +1,7 @@
 import {GameStatus} from "../../types/gameStatus";
 import {
     BASIC_CARDS_CONFIG,
+    CARD_CONFIG,
     SCROLL_CARDS_CONFIG
 } from "../../config/cardConfig";
 import {getCurrentPlayer} from "../../utils/playerUtils";
@@ -9,6 +10,7 @@ import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
 import {STAGE_NAME, STAGE_NAMES, STAGE_NAME_CONFIG} from "../../config/gameConfig";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
+import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 
 const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) => {
     const responseType = getResponseType(gameStatus);
@@ -30,7 +32,8 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                 break;
             case RESPONSE_TYPE_CONFIG.SKILL:
                 if (gameStatus.skillResponse!.playerId == playerId) {
-                    hintText = gameStatus.skillResponse?.skillName!
+                    const player = gameStatus.players[gameStatus.skillResponse!.playerId]
+                    hintText = i18(SKILL_NAMES_CONFIG[player.heroId][gameStatus.skillResponse?.skillNameKey!])
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.WUXIE:
@@ -40,20 +43,20 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                 break;
             case RESPONSE_TYPE_CONFIG.WEAPON:
                 if (gameStatus.weaponResponses[0].originId == playerId) {
-                    hintText = gameStatus.weaponResponses[0].weaponCardName
+                    hintText = i18(CARD_CONFIG[gameStatus.weaponResponses[0].weaponCardKey])
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.SCROLL:
                 const curScrollResponse = gameStatus.scrollResponses[0]
                 if (curScrollResponse.originId == playerId) {
-                    hintText = i18(curScrollResponse.actualCard)
+                    hintText = i18(CARD_CONFIG[curScrollResponse.actualCard.key])
                 }
                 break;
         }
     } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === STAGE_NAME.PLAY && currentPlayer.playerId == playerId) {
         hintText = i18(STAGE_NAME_CONFIG.PLAY)
     } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === STAGE_NAME.THROW && currentPlayer.playerId == playerId) {
-        hintText =  i18(STAGE_NAME_CONFIG.THROW)
+        hintText = i18(STAGE_NAME_CONFIG.THROW)
     }
 
     if (hintText) {

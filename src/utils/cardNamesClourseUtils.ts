@@ -8,21 +8,21 @@ const getInMyPlayTurnCanPlayCardNamesClourse = (player: Player) => {
     let canPlayInMyTurnCardNames: string[];
     return () => {
         if (!canPlayInMyTurnCardNames) {
-            canPlayInMyTurnCardNames = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canPlayInMyTurn).map((c) => c.CN!)
+            canPlayInMyTurnCardNames = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canPlayInMyTurn).map((c) => c.key!)
         }
 
         let amendCanPlayInMyTurnCardNames: string[] = canPlayInMyTurnCardNames;
         if (player.maxBlood <= player.currentBlood) {
-            amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != BASIC_CARDS_CONFIG.TAO.CN)
+            amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != BASIC_CARDS_CONFIG.TAO.key)
         }
 
-        if (player.pandingSigns.find((sign) => sign.actualCard.CN == SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)) {
-            amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != SCROLL_CARDS_CONFIG.SHAN_DIAN.CN)
+        if (player.pandingSigns.find((sign) => sign.actualCard.key == SCROLL_CARDS_CONFIG.SHAN_DIAN.key)) {
+            amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => n != SCROLL_CARDS_CONFIG.SHAN_DIAN.key)
         }
 
         if (!getCanPlayerPlaySha(player)) {
             amendCanPlayInMyTurnCardNames = amendCanPlayInMyTurnCardNames.filter((n) => {
-                return n != BASIC_CARDS_CONFIG.SHA.CN && n != BASIC_CARDS_CONFIG.LEI_SHA.CN && n != BASIC_CARDS_CONFIG.HUO_SHA.CN
+                return n != BASIC_CARDS_CONFIG.SHA.key && n != BASIC_CARDS_CONFIG.LEI_SHA.key && n != BASIC_CARDS_CONFIG.HUO_SHA.key
             })
         }
 
@@ -33,7 +33,7 @@ const getCanSelectMeAsFirstTargetCardNamesClosure = () => {
     let names: string[];
     return () => {
         if (!names) {
-            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsFirstTarget).map((c) => c.CN!)
+            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsFirstTarget).map((c) => c.key!)
         }
         return names
     }
@@ -42,7 +42,7 @@ const getCanSelectMeAsSecondTargetCardNamesClosure = () => {
     let names: string[];
     return () => {
         if (!names) {
-            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsSecondTarget).map((c) => c.CN!)
+            names = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Partial<Card>) => c.canClickMySelfAsSecondTarget).map((c) => c.key!)
         }
         return names
     }
