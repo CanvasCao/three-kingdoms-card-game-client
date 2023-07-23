@@ -213,10 +213,10 @@ export class BoardPlayer {
     drawPandingCards() {
         const stepX = sizeConfig.player.width / 4.5;
         for (let i = 0; i < this.maxPandingCardsNumber; i++) {
-            const pandingCardImage = this.gamingScene.add.image(
-                this.positionX + sizeConfig.player.width / 2 - 15 - stepX * i,
-                this.positionY + sizeConfig.player.height / 2 + 5,
-                "white");
+            const x = this.isMe ? sizeConfig.controlEquipment.width *1.1: this.positionX + sizeConfig.player.width / 2 + 5 - stepX * i
+            const y = this.isMe ? sizeConfig.playersArea.height : this.positionY + sizeConfig.player.height / 2 + 5
+
+            const pandingCardImage = this.gamingScene.add.image(x, y, "white");
             pandingCardImage.displayHeight = sizeConfig.player.width / 8;
             pandingCardImage.displayWidth = sizeConfig.player.width / 8;
             pandingCardImage.setRotation(Math.PI / 4)
@@ -228,10 +228,7 @@ export class BoardPlayer {
             this.phaserGroup.push(pandingCardImage)
 
 
-            const pandingCardText = this.gamingScene.add.text(
-                this.positionX + sizeConfig.player.width / 2 - 15 - stepX * i,
-                this.positionY + sizeConfig.player.height / 2 + 5,
-                "",
+            const pandingCardText = this.gamingScene.add.text(x, y, "",
                 // @ts-ignore
                 {fill: COLOR_CONFIG.black, align: "center"}
             );
@@ -338,7 +335,7 @@ export class BoardPlayer {
                 this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin + skillTextOffsetX,
                 this.positionY + sizeConfig.player.height / 2 - skillMargin,
                 skillName,
-                {align: 'left', wordWrap: {width: skillWidth-skillTextOffsetX, useAdvancedWrap: true}})
+                {align: 'left', wordWrap: {width: skillWidth - skillTextOffsetX, useAdvancedWrap: true}})
 
             skillText.setPadding(padding)
             skillText.setOrigin(0, 1)

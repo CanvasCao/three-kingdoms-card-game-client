@@ -37,7 +37,7 @@ export type CardAreaType = keyof typeof CARD_LOCATION
 export type CardBoardActionType = keyof typeof PLAYER_BOARD_ACTION
 
 export type CardConfigValue = {
-    key: string,
+    key?: string,
     CN: string,
     EN: string,
     type?: string,
@@ -45,3 +45,9 @@ export type CardConfigValue = {
     distance?:number
 }
 export type CardConfig = { [key: string]: CardConfigValue }
+
+export type CardDescValue = {
+    CN: string,
+    EN: string,
+}
+export type CardDescConfig = { [key: string]: CardDescValue }

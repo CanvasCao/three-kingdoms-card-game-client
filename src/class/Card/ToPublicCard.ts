@@ -151,9 +151,7 @@ export class ToPublicCard {
     }
 
     destoryAll() {
-        this.cardObjGroup.forEach((obj, index) => {
-            obj?.destroy();
-        })
+        this.cardObjGroup.forEach((obj) => {obj?.destroy()})
         this.removePublicCardsfromGameFEStatus()
         this.gamingScene.gameFEStatusObserved.removePublicCardsObserver(this);
     }

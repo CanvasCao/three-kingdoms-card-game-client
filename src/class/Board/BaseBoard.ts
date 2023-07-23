@@ -69,7 +69,6 @@ export class BaseBoard {
             this.boardImg.displayWidth + lineWidth,
             this.boardImg.displayHeight + lineWidth, 10);
         this.border.setDepth(DEPTH_CONFIG.BOARD)
-
         this.dragObjects.push(this.border);
     }
 

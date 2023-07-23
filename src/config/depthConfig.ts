@@ -3,6 +3,7 @@ const DEPTH_CONFIG = {
     PANDING_SIGN: 10,
     CARD: 20,
     BOARD: 100,
+    HOVER: 200,
 }
 
 export {

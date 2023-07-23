@@ -40,6 +40,13 @@ const sharedDrawFrontCard = (
     cardImgObj.setData("offsetY", 0)
     allCardObjects.push(cardImgObj)
 
+    cardImgObj.on('pointerover', () => {
+        gamingScene.hoverBoard?.hoverInStartToShowBoard({card, x: cardImgObj.x, y: cardImgObj.y});
+    })
+    cardImgObj.on('pointerout', () => {
+        gamingScene.hoverBoard?.clearAll();
+    })
+
     // cardName
     const cardNameObj = gamingScene.add.text(
         x + cardNameObjOffsetX,
@@ -74,7 +81,7 @@ const sharedDrawFrontCard = (
     cardHuaseNumberObj.setOrigin(0, 0);
     cardHuaseNumberObj.setFontSize(12)
     cardHuaseNumberObj.setDepth(depth)
-    cardHuaseNumberObj.setStroke(COLOR_CONFIG.whiteString,2)
+    cardHuaseNumberObj.setStroke(COLOR_CONFIG.whiteString, 2)
     cardHuaseNumberObj.setData("offsetX", cardHuaseNumberObjOffsetX)
     cardHuaseNumberObj.setData("offsetY", cardHuaseNumberObjOffsetY)
     allCardObjects.push(cardHuaseNumberObj)
@@ -110,7 +117,7 @@ const sharedDrawFrontCard = (
         cardDistanceObj.setOrigin(1, 1);
         cardDistanceObj.setFontSize((getI18Lan() == I18LANS.EN) ? 30 : 30);
         cardDistanceObj.setDepth(depth)
-        cardDistanceObj.setStroke(COLOR_CONFIG.whiteString,5)
+        cardDistanceObj.setStroke(COLOR_CONFIG.whiteString, 5)
         cardDistanceObj.setData("offsetX", cardDistanceObjOffsetX)
         cardDistanceObj.setData("offsetY", cardDistanceObjOffsetY)
         allCardObjects.push(cardDistanceObj)
@@ -129,7 +136,7 @@ const sharedDrawFrontCard = (
     cardMessageObj.setOrigin(0.5, 1);
     cardMessageObj.setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 12);
     cardMessageObj.setDepth(depth)
-    cardMessageObj.setStroke(COLOR_CONFIG.cardString, 5)
+    cardMessageObj.setStroke(COLOR_CONFIG.cardString, 2)
     cardMessageObj.setData("offsetX", 0)
     cardMessageObj.setData("offsetY", cardMessageObjOffsetY)
     allCardObjects.push(cardMessageObj)

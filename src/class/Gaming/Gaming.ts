@@ -20,11 +20,12 @@ import {
 } from '../../types/emit';
 import {WuGuFengDengBoard} from '../../class/Board/WuGuFengDengBoard';
 import {HeroSelectBoard} from '../../class/Board/HeroSelectBoard';
-import { tryRejoinRoom} from '../../bindPageEvent';
+import {tryRejoinRoom} from '../../bindPageEvent';
 import {OperateHint} from '../../class/OperateHint/OperateHint';
 import {Card} from '../../types/card';
 import {BoardPlayerThinkingHint} from '../../class/Player/BoardPlayerThinkingHint';
 import Phaser from 'phaser';
+import {HoverBoard} from '../Board/HoverBoard';
 
 
 class Gaming extends Phaser.Scene {
@@ -38,6 +39,7 @@ class Gaming extends Phaser.Scene {
     playerCardsBoard: PlayerCardsBoard | undefined;
     wuGuFengDengBoard: WuGuFengDengBoard | undefined;
     heroSelectBoard: HeroSelectBoard | undefined;
+    hoverBoard: HoverBoard | undefined;
     operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
@@ -104,6 +106,7 @@ class Gaming extends Phaser.Scene {
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
 
             this.equipmentmentCardsManager = new EquipmentmentCardsManager(this);
+            this.hoverBoard = new HoverBoard(this);
 
             this.gameStatusObserved.setGameStatus(data);
         });
