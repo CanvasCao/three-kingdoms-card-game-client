@@ -163,6 +163,6 @@ export const config = {
         },
         zoom: 1,  // Size of game canvas = game size * zoom
     },
-    autoRound: false,
+    autoRound: true,
     transparent: true
 };

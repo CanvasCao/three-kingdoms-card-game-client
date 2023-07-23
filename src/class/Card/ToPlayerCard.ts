@@ -26,7 +26,7 @@ export class ToPlayerCard {
 
     isMoving: boolean;
 
-    cardObjgroup: Phaser.GameObjects.GameObject[];
+    cardObjGroup: Phaser.GameObjects.GameObject[];
 
     constructor(gamingScene: GamingScene,
                 card: Card,
@@ -72,7 +72,7 @@ export class ToPlayerCard {
         this.isMoving = false;
 
         // phaser obj
-        this.cardObjgroup = [];
+        this.cardObjGroup = [];
 
         this.drawCard();
         this.fadeIn();
@@ -81,17 +81,11 @@ export class ToPlayerCard {
     drawCard() {
         if (this.isFaceFront) {
             const {
-                cardImgObj,
-                cardNameObj,
-                cardHuaseNumberObj,
-                cardMessageObj,
+                allCardObjects
             } = sharedDrawFrontCard(this.gamingScene,
                 this.card,
                 {x: this.fadeInStartX, y: this.fadeInStartY})
-            this.cardObjgroup.push(cardImgObj);
-            this.cardObjgroup.push(cardNameObj);
-            this.cardObjgroup.push(cardHuaseNumberObj);
-            this.cardObjgroup.push(cardMessageObj);
+            this.cardObjGroup = this.cardObjGroup.concat(allCardObjects)
         } else {
             // 摸牌||仁德
             for (let i = 0; i < this.repeatTimes!; i++) {
@@ -101,14 +95,14 @@ export class ToPlayerCard {
                 } = sharedDrawBackCard(this.gamingScene,
                     this.card,
                     {x: this.fadeInStartX + offsetX, y: this.fadeInStartY, offsetX})
-                this.cardObjgroup.push(cardImgObj);
+                this.cardObjGroup.push(cardImgObj);
             }
         }
     }
 
     fadeIn() {
         this.isMoving = true;
-        this.cardObjgroup.forEach((obj, index) => {
+        this.cardObjGroup.forEach((obj, index) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
@@ -128,7 +122,7 @@ export class ToPlayerCard {
     }
 
     destoryAll() {
-        this.cardObjgroup.forEach((obj, index) => {
+        this.cardObjGroup.forEach((obj, index) => {
             obj?.destroy();
         })
     }

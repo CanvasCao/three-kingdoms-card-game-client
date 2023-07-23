@@ -69,18 +69,14 @@ export class WuGuFengDengBoard {
         gameStatus.wugufengdengCards.forEach((card, index) => {
             const offsetY = (index) > 3 ? gridOffset.line2.y : gridOffset.line1.y;
             const modIndex = index % 4;
-            const {cardNameObj, cardHuaseNumberObj, cardImgObj, cardMessageObj} =
+            const {allCardObjects, cardImgObj, cardMessageObj} =
                 sharedDrawFrontCard(this.gamingScene, card, {
                     x: this.initX - 142 + modIndex * (sizeConfig.controlCard.width + sizeConfig.boardCardMargin),
                     y: this.initY + offsetY,
                     depth: DEPTH_CONFIG.BOARD,
                 })
 
-            this.boardContent.push(cardNameObj);
-            this.boardContent.push(cardHuaseNumberObj);
-            this.boardContent.push(cardImgObj);
-            this.boardContent.push(cardMessageObj);
-
+            this.boardContent = this.boardContent.concat(allCardObjects)
             this.cardIdMap[card.cardId] = {
                 cardImgObj,
                 cardMessageObj

@@ -28,14 +28,14 @@ export class ToPublicCard {
 
     isMoving: boolean;
 
-    cardObjgroup: Phaser.GameObjects.GameObject[];
+    cardObjGroup: Phaser.GameObjects.GameObject[];
 
     constructor(gamingScene: GamingScene,
                 card: Card,
                 message: string,
                 publicCards: Card[],
                 fromBoardPlayer: BoardPlayer | undefined,
-                originIndex: number , // 只出现在我打出的牌 number是手牌 -1是判定武器
+                originIndex: number, // 只出现在我打出的牌 number是手牌 -1是判定武器
     ) {
         this.obId = uuidv4();
 
@@ -58,7 +58,7 @@ export class ToPublicCard {
             this.fadeInStartX = this.fadeInEndX + 50;
             this.fadeInStartY = this.fadeInEndY
         } else if (fromBoardPlayer!.playerId == getMyPlayerId()) { // 我打出的牌
-            const position =  getMyCardPosition(originIndex);
+            const position = getMyCardPosition(originIndex);
             this.fadeInStartX = position.x;
             this.fadeInStartY = position.y;
         } else { // 别人打出的牌
@@ -74,7 +74,7 @@ export class ToPublicCard {
         this.isMoving = false;
 
         // phaser obj
-        this.cardObjgroup = [];
+        this.cardObjGroup = [];
 
         this.drawCard();
         this.fadeIn();
@@ -88,22 +88,16 @@ export class ToPublicCard {
 
     drawCard() {
         const {
-            cardImgObj,
-            cardNameObj,
-            cardHuaseNumberObj,
-            cardMessageObj,
+            allCardObjects
         } = sharedDrawFrontCard(this.gamingScene,
             this.card,
             {x: this.fadeInStartX, y: this.fadeInStartY, message: this.message})
-        this.cardObjgroup.push(cardImgObj);
-        this.cardObjgroup.push(cardNameObj);
-        this.cardObjgroup.push(cardHuaseNumberObj);
-        this.cardObjgroup.push(cardMessageObj);
+        this.cardObjGroup = this.cardObjGroup.concat(allCardObjects)
     }
 
     fadeIn() {
         this.isMoving = true;
-        this.cardObjgroup.forEach((obj, index) => {
+        this.cardObjGroup.forEach((obj, index) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
@@ -131,7 +125,7 @@ export class ToPublicCard {
         const diffDis = this.getDiffDistance(publicCards);
 
         // this.isMoving = true;
-        this.cardObjgroup.forEach((obj, index) => {
+        this.cardObjGroup.forEach((obj, index) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
@@ -152,12 +146,12 @@ export class ToPublicCard {
     getDiffDistance(publicCards: Card[]) {
         const middle = (publicCards.length - 1) / 2;
         const myindex = publicCards.findIndex((c) => c.cardId == this.card.cardId);
-        const diffDis = (myindex - middle) * sizeConfig.controlCard.width;
+        const diffDis = (myindex - middle) * (sizeConfig.controlCard.width+sizeConfig.controlCardMargin);
         return diffDis;
     }
 
     destoryAll() {
-        this.cardObjgroup.forEach((obj, index) => {
+        this.cardObjGroup.forEach((obj, index) => {
             obj?.destroy();
         })
         this.removePublicCardsfromGameFEStatus()

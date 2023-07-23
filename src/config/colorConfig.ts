@@ -1,6 +1,6 @@
 const COLOR_CONFIG = {
-    "card": "0xf9f1e0",
-    "cardString": "#f9f1e0",
+    "card": "0xF1E1CA",
+    "cardString": "#F1E1CA",
     "disablePlayer": "0x666666",
     "disableCard": "0x999999",
 
@@ -25,12 +25,15 @@ const COLOR_CONFIG = {
     boardBg: "0x111111",
 
     // pure color
-    "black": "0x000000",
     "grey111": "0x111111",
     "grey333": "0x333333",
     "grey555": "0x555555",
     "red": "0xff0000",
-    "white": "0xffffff"
+    "redString": "#ff0000",
+    "black": "0x000000",
+    "blackString": "#000000",
+    "white": "0xffffff",
+    "whiteString": "#ffffff"
 }
 
 export {

@@ -33,7 +33,7 @@ export class ControlCard {
     isMoving: boolean;
     isDestoryed: boolean;
 
-    cardObjgroup: Phaser.GameObjects.GameObject[];
+    cardObjGroup: Phaser.GameObjects.GameObject[];
     cardImgObj: Phaser.GameObjects.Image | null;
 
     _selected: boolean;
@@ -64,38 +64,31 @@ export class ControlCard {
         this.isDestoryed = false;
 
         // phaser obj
-        this.cardObjgroup = [];
+        this.cardObjGroup = [];
         this.cardImgObj = null;
 
         // prev state
         this._selected = false;
 
         this.drawCard();
-        this.fadeIn();
         this.bindEvent();
+        this.fadeIn();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
         this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
     }
 
     drawCard() {
-        const {
-            cardImgObj,
-            cardNameObj,
-            cardHuaseNumberObj
-        } = sharedDrawFrontCard(
+        const curFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+        const curStatus = this.gamingScene.gameStatusObserved.gameStatus!;
+        const {cardImgObj, allCardObjects} = sharedDrawFrontCard(
             this.gamingScene,
             this.card,
-            {
-                x: this.cardInitStartX,
-                y: this.cardInitStartY,
-            }
+            {x: this.cardInitStartX, y: this.cardInitStartY}
         )
         this.cardImgObj = cardImgObj;
-        this.cardObjgroup.push(cardImgObj);
-        this.cardObjgroup.push(cardNameObj);
-        this.cardObjgroup.push(cardHuaseNumberObj);
-        this.onCardDisableChange(this.gamingScene.gameStatusObserved.gameStatus!, this.gamingScene.gameFEStatusObserved.gameFEStatus!)
+        this.cardObjGroup = this.cardObjGroup.concat(allCardObjects)
+        this.onCardDisableChange(curStatus, curFEStatus)
     }
 
     bindEvent() {
@@ -155,7 +148,7 @@ export class ControlCard {
         }
 
         this.isMoving = true;
-        this.cardObjgroup.forEach((obj) => {
+        this.cardObjGroup.forEach((obj) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
@@ -173,7 +166,7 @@ export class ControlCard {
 
     fadeIn() {
         this.isMoving = true;
-        this.cardObjgroup.forEach((obj, index) => {
+        this.cardObjGroup.forEach((obj, index) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {
@@ -245,7 +238,7 @@ export class ControlCard {
         // })
         this.isDestoryed = true;
 
-        this.cardObjgroup.forEach((obj) => {
+        this.cardObjGroup.forEach((obj) => {
             obj?.destroy();
         })
         this.gamingScene.gameStatusObserved.removeObserver(this);
@@ -284,7 +277,7 @@ export class ControlCard {
         const whenSelectedMoveDistance = 20;
 
         this.isMoving = true;
-        this.cardObjgroup.forEach((obj) => {
+        this.cardObjGroup.forEach((obj) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 y: {

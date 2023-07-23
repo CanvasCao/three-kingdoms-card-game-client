@@ -14,6 +14,7 @@ import {i18} from "../i18n/i18nUtils";
 import {Card, CardAreaType} from "../types/card";
 import {ADD_TO_PUBLIC_CARD_TYPE} from "../config/emitConfig";
 import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
+import { COLOR_CONFIG } from "../config/colorConfig";
 
 const attachFEInfoToCard = (card: Card): Card | undefined => {
     if (!card) {
@@ -149,7 +150,7 @@ const getIsToOtherPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerI
 }
 
 const getCardColor = (huase: string) => {
-    return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? '#f00' : '#000'
+    return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? COLOR_CONFIG.redString :COLOR_CONFIG.blackString
 }
 
 const generatePublicCardMessage = (

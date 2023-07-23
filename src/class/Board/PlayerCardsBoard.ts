@@ -152,20 +152,16 @@ export class PlayerCardsBoard {
                 return
             }
 
-            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
+            const {allCardObjects, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column1.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.EQUIPMENT as CardAreaType))
 
-            this.boardContent.push(cardNameObj);
-            this.boardContent.push(cardHuaseNumberObj);
-            this.boardContent.push(cardImgObj);
-
+            this.boardContent = this.boardContent.concat(allCardObjects)
             index++
         })
-
     }
 
     drawTargetPandingCards(cardBoardDisplayArea: string[], targetPlayer: Player) {
@@ -175,16 +171,14 @@ export class PlayerCardsBoard {
 
         targetPlayer.pandingSigns.forEach((sign, index) => {
             const card = sign.card
-            const {cardNameObj, cardHuaseNumberObj, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
+            const {allCardObjects, cardImgObj} = sharedDrawFrontCard(this.gamingScene, card, {
                 x: this.initX + gridOffset.column2.x + index * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin),
                 y: this.initY + gridOffset.line2.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.PANDING as CardAreaType))
 
-            this.boardContent.push(cardNameObj);
-            this.boardContent.push(cardHuaseNumberObj);
-            this.boardContent.push(cardImgObj);
+            this.boardContent = this.boardContent.concat(allCardObjects)
         })
     }
 

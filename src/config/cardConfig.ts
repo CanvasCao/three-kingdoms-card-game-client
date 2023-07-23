@@ -1,7 +1,7 @@
 import {CardConfig} from "../types/card"
 
 // FE
-const CARD_NUM_DESC = {
+const CARD_NUM_DESC: { [key: number]: string } = {
     1: "A",
     2: "2",
     3: "3",
@@ -49,6 +49,24 @@ const EQUIPMENT_TYPE = {
     SHIELD: "SHIELD",
     PLUS_HORSE: "PLUS_HORSE",
     MINUS_HORSE: "MINUS_HORSE",
+}
+
+const CARD_TYPE_CONFIG = {
+    [CARD_TYPE.EQUIPMENT]: {
+        key: [CARD_TYPE.EQUIPMENT],
+        "CN": "装备",
+        "EN": "EQUIPMENT",
+    },
+    [CARD_TYPE.SCROLL]: {
+        key: [CARD_TYPE.SCROLL],
+        "CN": "锦囊",
+        "EN": "SCROLL",
+    },
+    [CARD_TYPE.BASIC]: {
+        key: [CARD_TYPE.BASIC],
+        "CN": "基本",
+        "EN": "BASIC",
+    },
 }
 
 const BASIC_CARDS_CONFIG = {
@@ -396,6 +414,9 @@ export {
     CARD_HUASE,
     CARD_TYPE,
     EQUIPMENT_TYPE,
+
+    // card configs
+    CARD_TYPE_CONFIG,
     CARD_CONFIG,
     BASIC_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG,

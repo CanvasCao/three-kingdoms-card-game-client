@@ -47,7 +47,7 @@ export class BoardPlayerThinkingHint {
             this.playerPosition.y + sizeConfig.player.height / 2 + 5,
             "",
             // @ts-ignore
-            {fill: "#fff", align: "center"}
+            {fill: COLOR_CONFIG.whiteString, align: "center"}
         )
         this.thinkingHint.setPadding(0, 5, 0, 0);
         this.thinkingHint.setOrigin(0.5, 0.5);
