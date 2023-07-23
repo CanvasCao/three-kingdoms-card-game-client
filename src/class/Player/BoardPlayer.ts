@@ -338,7 +338,7 @@ export class BoardPlayer {
                 this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin + skillTextOffsetX,
                 this.positionY + sizeConfig.player.height / 2 - skillMargin,
                 skillName,
-                {align: 'center', wordWrap: {width: skillWidth-skillTextOffsetX, useAdvancedWrap: true}})
+                {align: 'left', wordWrap: {width: skillWidth-skillTextOffsetX, useAdvancedWrap: true}})
 
             skillText.setPadding(padding)
             skillText.setOrigin(0, 1)

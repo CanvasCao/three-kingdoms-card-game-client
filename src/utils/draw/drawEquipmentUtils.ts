@@ -36,7 +36,6 @@ const sharedDrawEquipment = (
     background.setTint(COLOR_CONFIG.card);
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
-    background.setAlpha(1)
     background.setOrigin(0, 0)
 
     const distanceText = gamingScene.add.text(x, y, '',
@@ -45,30 +44,27 @@ const sharedDrawEquipment = (
     );
     distanceText.setPadding(padding + 5, paddingHorizontal, padding + 1, paddingHorizontal);
     distanceText.setFontSize(fontSize)
-    distanceText.setAlpha(1)
     if (card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
         distanceText.setText(card.distanceDesc!)
     } else if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
         distanceText.setText((getI18Lan() == I18LANS.EN ? card.distance?.toString() : card.distanceDesc)!)
     }
 
-
-    const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.23, y, '',
+    const text = (getI18Lan() == I18LANS.EN ?
+            CARD_CONFIG[card.key].EN.substring(0, 8) + '..' :
+            CARD_CONFIG[card.key].CN
+    )
+    const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.23, y, text,
         {
             // @ts-ignore
             fill: "#000",
-            align: "justify",
+            stroke: "#ff0000",
+            align: "left",
             wordWrap: {width: equipmentCardWidth * 0.7}
         }
     );
     nameText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
     nameText.setFontSize(fontSize)
-    nameText.setAlpha(1)
-    nameText.setText((getI18Lan() == I18LANS.EN ?
-            CARD_CONFIG[card.key].EN.substring(0, 8) + '..' :
-            CARD_CONFIG[card.key].CN
-    ))
-
 
     const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.85, y, '',
         // @ts-ignore
@@ -76,7 +72,6 @@ const sharedDrawEquipment = (
     );
     huaseNumText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
     huaseNumText.setFontSize(fontSize)
-    huaseNumText.setAlpha(1)
     // @ts-ignore
     huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
     huaseNumText.setColor(getCardColor(card.huase))

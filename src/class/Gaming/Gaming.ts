@@ -150,10 +150,6 @@ export const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
 
-        // Or put game size here
-        // width: 1024,
-        // height: 768,
-
         // Minimum size
         min: {
             width: 800,
