@@ -1,29 +1,28 @@
-import {CardConfig, CardDescConfig} from "../types/card"
-import {BASIC_CARDS_CONFIG, CARD_TYPE, EQUIPMENT_TYPE} from "./cardConfig"
+import {CardDescConfig} from "../types/card"
 
 const BASIC_CARDS_DESC_CONFIG = {
     "SHA": {
-        "CN": `使用时机：出牌阶段限一次。\r\n使用目标：你攻击范围内的一名角色。\r\n作用效果：你对目标角色造成1点伤害。`,
-        "EN": `Usage Timing: Once per turn during the Play Phase.\r\nTarget: One character within your attack range.\r\nEffect: Inflict 1 damage to the target character.`,
+        "CN": `使用时机：出牌阶段限一次。\n使用目标：你攻击范围内的一名角色。\n作用效果：你对目标角色造成1点伤害。`,
+        "EN": `Usage Timing: Once per turn during the Play Phase.\nTarget: One character within your attack range.\nEffect: Inflict 1 damage to the target character.`,
     },
     "SHAN": {
-        "CN": `使用时机：以你为目标的【杀】生效前。\r\n使用目标：以你为目标的【杀】。\r\n作用效果：抵消此【杀】。`,
-        "EN": `Usage Timing: Before a [Strike] card targeting you takes effect.\r\nTarget: A [Strike] card targeting you.\r\nEffect: Nullify the [Strike] card.`,
+        "CN": `使用时机：以你为目标的【杀】生效前。\n使用目标：以你为目标的【杀】。\n作用效果：抵消此【杀】。`,
+        "EN": `Usage Timing: Before a [Strike] card targeting you takes effect.\nTarget: A [Strike] card targeting you.\nEffect: Nullify the [Strike] card.`,
     },
     "TAO": {
-        "CN": "使用时机：出牌阶段。\r\n" +
-            "使用目标：包括你在内的一名已受伤的角色。\r\n" +
-            "作用效果：目标角色回复1点体力。\r\n" +
-            "\r\n" +
-            "使用时机：当一名角色处于濒死状态时。\r\n" +
-            "使用目标：一名处于濒死状态的角色。\r\n" +
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：包括你在内的一名已受伤的角色。\n" +
+            "作用效果：目标角色回复1点体力。\n" +
+            "\n" +
+            "使用时机：当一名角色处于濒死状态时。\n" +
+            "使用目标：一名处于濒死状态的角色。\n" +
             "作用效果：目标角色回复1点体力。",
-        "EN": "Usage Timing: Play Phase.\r\n" +
-            "Target: One injured character, including yourself.\r\n" +
-            "Effect: The target character restores 1 health point.\r\n" +
-            "\r\n" +
-            "Usage Timing: When a character is in a dying state.\r\n" +
-            "Target: One character in a dying state.\r\n" +
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: One injured character, including yourself.\n" +
+            "Effect: The target character restores 1 health point.\n" +
+            "\n" +
+            "Usage Timing: When a character is in a dying state.\n" +
+            "Target: One character in a dying state.\n" +
             "Effect: The target character restores 1 health point.",
     },
 }
@@ -31,102 +30,151 @@ const BASIC_CARDS_DESC_CONFIG = {
 const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
     // 锦囊
     "WAN_JIAN_QI_FA": {
-        key: "WAN_JIAN_QI_FA",
-        "CN": "万箭齐发",
-        "EN": "Arrow Barrage",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：所有其他角色。\n" +
+            "作用效果：目标角色需打出【闪】，否则受到你造成的1点伤害。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: All other characters.\n" +
+            "Effect: The target characters must play [Dodge], \n" +
+            "otherwise they receive 1 damage from you.",
     },
     "NAN_MAN_RU_QIN": {
-        key: "NAN_MAN_RU_QIN",
-        "CN": "南蛮入侵",
-        "EN": "Barbarian Invasion",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：所有其他角色。\n" +
+            "作用效果：目标角色需打出【杀】，否则受到你造成的1点伤害。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: All other characters.\n" +
+            "Effect: The target characters must play [Strike], \n" +
+            "otherwise they receive 1 damage from you.",
     },
     "TAO_YUAN_JIE_YI": {
-        key: "TAO_YUAN_JIE_YI",
-        "CN": "桃园结义",
-        "EN": "Peach Garden",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：所有角色。\n" +
+            "作用效果：目标角色回复1点体力。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: All characters.\n" +
+            "Effect: The target characters restore 1 health point.",
     },
     "WU_ZHONG_SHENG_YOU": {
-        key: "WU_ZHONG_SHENG_YOU",
-        "CN": "无中生有",
-        "EN": "Something for Nothing",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：包括你在内的一名角色。\n" +
+            "作用效果：目标角色摸两张牌。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: One character, including yourself.\n" +
+            "Effect: The target character draws two cards.",
     },
     "WU_GU_FENG_DENG": {
-        key: "WU_GU_FENG_DENG",
-        "CN": "五谷丰登",
-        "EN": "Bountiful Harvest",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：所有角色。\n" +
+            "执行动作：当此牌指定目标后，你亮出牌堆顶的X张牌（X为目标数）。\n" +
+            "作用效果：目标角色获得这些牌中（剩余）的一张牌。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: All characters.\n" +
+            "Action: After designating the targets for this card, \n" +
+            "reveal the top X cards of the deck (X equals the number of targets).\n" +
+            "Effect: The target characters each gain one card from the revealed cards (the remaining cards).",
     },
     "GUO_HE_CHAI_QIAO": {
-        key: "GUO_HE_CHAI_QIAO",
-        "CN": "过河拆桥",
-        "EN": "Dismantle",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：一名区域里有牌的其他角色。\n" +
+            "作用效果：你弃置目标角色的区域里的一张牌。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: Another character with cards in their area.\n" +
+            "Effect: Discard one card from the target character's area.",
     },
     "SHUN_SHOU_QIAN_YANG": {
-        key: "SHUN_SHOU_QIAN_YANG",
-        "CN": "顺手牵羊",
-        "EN": "Snatch",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：距离为1的一名区域里有牌的其他角色。\n" +
+            "作用效果：你获得目标角色的区域里的一张牌。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: Another character within a distance of 1 and with cards in their area.\n" +
+            "Effect: Obtain one card from the target character's area.",
     },
     "JIE_DAO_SHA_REN": {
-        key: "JIE_DAO_SHA_REN",
-        "CN": "借刀杀人",
-        "EN": "Borrowed Sword",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：一名装备区里有武器牌且攻击范围内有其使用【杀】的合法目标的其他角色An。\n" +
+            "执行动作：你在选择An为目标的同时选择An攻击范围内的一个An使用【杀】的合法目标Bn；\n" +
+            "你在An也成为目标的同时选择An攻击范围内的一个An使用【杀】的合法目标Bn。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: Another character (An) who has a weapon card equipped and \n" +
+            "has legal targets within their attack range to use [Strike].\n" +
+            "Action: While selecting An as a target, you also select a legal target (Bn) \n" +
+            "within An's attack range who can use [Strike]; \n" +
+            "While An is also a target, you also select a legal target (Bn)\n" +
+            "within An's attack range who can use [Strike].",
     },
     "JUE_DOU": {
-        key: "JUE_DOU",
-        "CN": "决斗",
-        "EN": "Duel",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：一名其他角色。\n" +
+            "作用效果：由目标角色开始，其与你轮流打出【杀】，直到其中的一名角色未打出【杀】。\n" +
+            "然后未打出【杀】的角色受到另一名角色造成的1点伤害。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: Another character.\n" +
+            "Effect: Starting from the target character, take turns with them\n" +
+            " to play [Strike] cards until one of the characters fails to play a [Strike]. \n" +
+            "Then, the character who did not play a [Strike] receives 1 damage from the other character.",
     },
     "WU_XIE_KE_JI": {
-        key: "WU_XIE_KE_JI",
-        "CN": "无懈可击",
-        "EN": "Cancel",
-        type: CARD_TYPE.SCROLL
+        "CN": "使用时机：一张锦囊牌对一个目标生效前。\n" +
+            "使用目标：一张对一个目标生效前的锦囊牌。\n" +
+            "作用效果：抵消此锦囊牌。",
+        "EN": "Usage Timing: Before a Scroll card takes effect on a target.\n" +
+            "Target: One Scroll card targeting a specific target before it takes effect.\n" +
+            "Effect: Nullify this Scroll card.",
     },
 
     // junzheng
     "HUO_GONG": {
-        key: "HUO_GONG",
-        "CN": "火攻",
-        "EN": "Fire Attack",
-        type: CARD_TYPE.SCROLL,
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：一名有手牌的角色。\n" +
+            "作用效果：目标角色展示一张手牌，然后你可以弃置与之花色相同的一张手牌，\n" +
+            "若如此做，其受到你造成的1点火焰伤害。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: One character with a hand of cards.\n" +
+            "Effect: The target character reveals one card from their hand, \n" +
+            "then you may discard one card of the same suit, if you do, deal 1 point of Fire damage to them.",
     },
     "TIE_SUO_LIAN_HUAN": {
-        key: "TIE_SUO_LIAN_HUAN",
-        "CN": "铁索连环",
-        "EN": "Chain",
-        type: CARD_TYPE.SCROLL,
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：一至两名角色。\n" +
+            "作用效果：目标角色选择一项：1.横置；2. 重置。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: One to two characters.\n" +
+            "Effect: The target character(s) choose one of the following options: \n" +
+            "1. Lay the character card horizontally; \n" +
+            "2. Reset the character card",
     },
 }
 
 const DELAY_SCROLL_CARDS_DESC_CONFIG = { // 延时锦囊
     "LE_BU_SI_SHU": {
-        key: "LE_BU_SI_SHU",
-        "CN": "乐不思蜀",
-        "EN": "Contentment",
-        type: CARD_TYPE.SCROLL,
-        isDelay: true,
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：一名其他角色。\n" +
+            "作用效果：目标角色判定，若结果不为红桃，其跳过出牌阶段。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: Another character.\n" +
+            "Effect: The target character judges. \n" +
+            "If the result is not Hearts, they skip the Play Phase.",
     },
     "BING_LIANG_CUN_DUAN": {
-        key: "BING_LIANG_CUN_DUAN",
-        "CN": "兵粮寸断",
-        "EN": "Supply Outage",
-        type: CARD_TYPE.SCROLL,
-        isDelay: true,
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：距离为1的一名其他角色。\n" +
+            "作用效果：目标角色判定，若结果不为梅花，其跳过摸牌阶段。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: Another character within a distance of 1.\n" +
+            "Effect: The target character judges. \n" +
+            "If the result is not Clubs, they skip the Draw Phase.",
     },
     "SHAN_DIAN": {
-        key: "SHAN_DIAN",
-        "CN": "闪电",
-        "EN": "Lightning",
-        type: CARD_TYPE.SCROLL,
-        isDelay: true,
+        "CN": "使用时机：出牌阶段。\n" +
+            "使用目标：你。\n" +
+            "作用效果：目标角色判定，若结果为黑桃2~9：\n" +
+            "其受到3点无来源的雷电伤害，将此【闪电】置入弃牌堆。",
+        "EN": "Usage Timing: Play Phase.\n" +
+            "Target: Yourself.\n" +
+            "Effect: The target character judges. If the result is Spades 2 to 9,\n" +
+            "they receive 3 Thunder damage with no specific source, \n" +
+            "and place this [Lightning] into the discard pile.",
     }
 }
 const SCROLL_CARDS_DESC_CONFIG = {
@@ -136,172 +184,137 @@ const SCROLL_CARDS_DESC_CONFIG = {
 const WEAPON_CARDS_DESC_CONFIG = {
     // 武器
     "ZHU_GE_LIAN_NU": {
-        key: "ZHU_GE_LIAN_NU",
-        "CN": "诸葛连弩",
-        "EN": "Crossbow",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 1
+        "CN": "攻击范围：1\n" +
+            "技能：你使用【杀】无次数限制。",
+        "EN": "Attack Range: 1\n" +
+            "Skill: You can use [Strike] without restriction on the number of times.",
     },
     "CI_XIONG_SHUANG_GU_JIAN": {
-        key: "CI_XIONG_SHUANG_GU_JIAN",
-        "CN": "雌雄双股剑",
-        "EN": "Binary Sword",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 2
+        "CN": "攻击范围：2\n" +
+            "技能：每当你使用【杀】指定与你性别不同的一个目标后，你可以令其选择一项：1.弃置一张手牌；2.令你摸一张牌。",
+        "EN": "Attack Range: 2\n" +
+            "Skill: Whenever you use [Strike] to designate a target of the opposite gender, \n" +
+            "you may have them choose one: \n" +
+            "1. Discard one card from their hand; \n" +
+            "2. Make you draw one card.",
     },
     "GU_DIN_DAO": {
-        key: "GU_DIN_DAO",
-        "CN": "古锭刀",
-        "EN": "Ancient Sword",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 2
-    },
-    "QING_LONG_YAN_YUE_DAO": {
-        key: "QING_LONG_YAN_YUE_DAO",
-        "CN": "青龙偃月刀",
-        "EN": "Green Dragon Sword",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 3
-    },
-    "FANG_TIAN_HUA_JI": {
-        key: "FANG_TIAN_HUA_JI",
-        "CN": "方天画戟",
-        "EN": "Halberd",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 4
-    },
-    "HAN_BIN_JIAN": {
-        key: "HAN_BIN_JIAN",
-        "CN": "寒冰剑",
-        "EN": "Ice Sword",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 2
-    },
-    "GUAN_SHI_FU": {
-        key: "GUAN_SHI_FU",
-        "CN": "贯石斧",
-        "EN": "Stone Axe",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 3
-    },
-    "QI_LIN_GONG": {
-        key: "QI_LIN_GONG",
-        "CN": "麒麟弓",
-        "EN": "Qilin Bow",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 5
-    },
-    "ZHU_QUE_YU_SHAN": {
-        key: "ZHU_QUE_YU_SHAN",
-        "CN": "朱雀羽扇",
-        "EN": "Fire Fan",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 4
+        "CN": "攻击范围：2\n" +
+            "技能：锁定技，每当你使用【杀】对目标角色造成伤害时，若其没有手牌，你令伤害值+1。",
+        "EN": "Attack Range: 2\n" +
+            "Skill: Locked Skill - Whenever you deal damage to the target character \n" +
+            "using [Strike], if they have no hand cards, you increase the damage value by 1.",
     },
     "QIN_GANG_JIAN": {
-        key: "QIN_GANG_JIAN",
-        "CN": "青釭剑",
-        "EN": "Green Steel Sword",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 2
+        "CN": "攻击范围：2\n" +
+            "技能：锁定技，每当你使用【杀】指定一个目标后，你无视其防具。\n",
+        "EN": "Attack Range: 2\n" +
+            "Skill: Locked Skill - Whenever you use [Strike] to designate a target, you ignore their shield.",
+    },
+    "HAN_BIN_JIAN": {
+        "CN": "攻击范围：2\n" +
+            "技能：每当你使用【杀】对目标角色造成伤害时，若其有牌，你可以防止此伤害，依次弃置其两张牌。",
+        "EN": "Attack Range: 2\n" +
+            "Skill: Whenever you deal damage to the target character using [Strike], \n" +
+            "if they have cards, you may prevent this damage and discard two cards from them.",
+    },
+    "GUAN_SHI_FU": {
+        "CN": "攻击范围：3\n" +
+            "技能：每当你使用的【杀】被目标角色使用的【闪】抵消时，你可以弃置两张牌，令此【杀】依然对其生效。",
+        "EN": "Attack Range: 3\n" +
+            "Skill: Whenever the [Strike] you use is negated by the target character \n" +
+            "using [Dodge], you may discard two cards to make this [Strike] still take effect on them.",
     },
     "ZHANG_BA_SHE_MAO": {
-        key: "ZHANG_BA_SHE_MAO",
-        "CN": "丈八蛇矛",
-        "EN": "Snake Spear",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.WEAPON,
-        distance: 3
+        "CN": "攻击范围：3\n" +
+            "技能：你可以将两张手牌当【杀】使用或打出。",
+        "EN": "Attack Range: 3\n" +
+            "Skill: You may use or play two hand cards as [Strike].",
+    },
+    "QING_LONG_YAN_YUE_DAO": {
+        "CN": "攻击范围：3\n" +
+            "技能：每当你使用的【杀】被目标角色使用的【闪】抵消时，你可以对其使用【杀】",
+        "EN": "Attack Range: 3\n" +
+            "Skill: Whenever the [Strike] you use is negated by \n" +
+            "the target character using [Dodge], you may use [Strike] against them",
+    },
+    "FANG_TIAN_HUA_JI": {
+        "CN": "攻击范围：4\n" +
+            "技能：若你使用的【杀】是最后的手牌，你使用此【杀】的额外目标数上限+2。",
+        "EN": "Attack Range: 4\n" +
+            "Skill: If the [Strike] you use is the last hand card, \n" +
+            "the maximum number of additional targets for this [Strike] is increased by 2.",
+    },
+    "ZHU_QUE_YU_SHAN": {
+        "CN": "攻击范围：4\n" +
+            "技能：你可以将一张普通【杀】当火【杀】使用；你可以将视为使用【杀】改为视为使用火【杀】。",
+        "EN": "Attack Range: 4\n" +
+            "Skill: You may use or play one regular [Strike] as a [Fire Strike]",
+    },
+    "QI_LIN_GONG": {
+        "CN": "攻击范围：5\n" +
+            "技能：每当你使用【杀】对目标角色造成伤害时，你可以弃置其装备区里的一张坐骑牌。",
+        "EN": "Attack Range: 5\n" +
+            "Skill: Whenever you deal damage to the target character using [Strike], \n" +
+            "you may discard one Horse card from their equipment area.",
     },
 }
 
 const SHIELD_CARDS_DESC_CONFIG = {
     // 防具
     "BA_GUA_ZHEN": {
-        key: "BA_GUA_ZHEN",
-        "CN": "八卦阵",
-        "EN": "Eight Diagrams",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.SHIELD,
+        "CN": "技能：每当你需要使用/打出【闪】时，你可以判定，若结果为红色，你视为使用/打出一张【闪】。",
+        "EN": "Skill: Whenever you need to use/play [Dodge], you may judge. \n" +
+            "If the result is red, you treat it as if you used/played a [Dodge].",
     },
     "REN_WANG_DUN": {
-        key: "REN_WANG_DUN",
-        "CN": "仁王盾",
-        "EN": "King's Shield",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.SHIELD,
+        "CN": "技能：锁定技，黑色【杀】对你无效。",
+        "EN": "Skill: Locked Skill - Black [Strike] has no effect on you.",
     },
     "TENG_JIA": {
-        key: "TENG_JIA",
-        "CN": "藤甲",
-        "EN": "Vine Armour",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.SHIELD,
+        "CN": "技能：锁定技，【南蛮入侵】、【万箭齐发】和普通【杀】对你无效；\n" +
+            "锁定技，每当你受到火焰伤害时，你令伤害值+1。",
+        "EN": "Skill: Locked Skill - [Barbarian Invasion], [Arrow Barrage], \n" +
+            "and regular [Strike] have no effect on you.\n" +
+            "Locked Skill - Whenever you take Fire damage, increase the damage value by 1.",
     },
     "BAI_YIN_SHI_ZI": {
-        key: "BAI_YIN_SHI_ZI",
-        "CN": "白银狮子",
-        "EN": "Silver Lion",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.SHIELD,
+        "CN": "技能：锁定技，每当你受到大于1点的伤害时，你将伤害值改为1点；\n" +
+            "锁定技，每当你失去装备区里的【白银狮子】后，你回复1点体力。",
+        "EN": "Skill: Locked Skill - Whenever you would take more \n" +
+            "than 1 damage, reduce the damage to 1.\n" +
+            "Locked Skill - Whenever you lose the [Silver Lion]\n" +
+            "from your equipment area, you regain 1 health point.",
     },
 }
 
 const PLUS_HORSE_CARDS_DESC_CONFIG = {
     // 马
     "DI_LU": {
-        key: "DI_LU",
-        "CN": "的卢",
-        "EN": "Plus horse",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
+        "CN": "技能：其他角色与你的距离+1。",
+        "EN": "Skill: The distance between other characters and you is increased by 1.",
     },
     "JUE_YING": {
-        key: "JUE_YING",
-        "CN": "绝影",
-        "EN": "Plus horse",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
+        "CN": "技能：其他角色与你的距离+1。",
+        "EN": "Skill: The distance between other characters and you is increased by 1.",
     },
     "ZHAO_HUANG_FEI_DIAN": {
-        key: "ZHAO_HUANG_FEI_DIAN",
-        "CN": "爪黄飞电",
-        "EN": "Plus horse",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
+        "CN": "技能：其他角色与你的距离+1。",
+        "EN": "Skill: The distance between other characters and you is increased by 1.",
     },
 }
 const MINUS_HORSE_CARDS_DESC_CONFIG = {
     "CHI_TU": {
-        key: "CHI_TU",
-        "CN": "赤兔",
-        "EN": "Minus horse",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.MINUS_HORSE,
+        "CN": "技能：你与其他角色的距离-1。",
+        "EN": "Skill: Your distance to other characters is reduced by 1.",
     },
     "DA_WAN": {
-        key: "DA_WAN",
-        "CN": "大宛",
-        "EN": "Minus horse",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.MINUS_HORSE,
+        "CN": "技能：你与其他角色的距离-1。",
+        "EN": "Skill: Your distance to other characters is reduced by 1.",
     },
     "ZI_XING": {
-        key: "ZI_XING",
-        "CN": "紫骍",
-        "EN": "Minus horse",
-        type: CARD_TYPE.EQUIPMENT,
-        equipmentType: EQUIPMENT_TYPE.MINUS_HORSE,
+        "CN": "技能：你与其他角色的距离-1。",
+        "EN": "Skill: Your distance to other characters is reduced by 1.",
     },
 }
 

@@ -7,11 +7,11 @@ import {ControlButtons} from "../class/Button/ControlButtons";
 import {ControlCardsManager} from "../class/Manager/ControlCardsManager";
 import {NofityAnimationManager} from "../class/Manager/NofityAnimationManager";
 import {Card} from "./card";
-import {PlayerCardsBoard } from "../class/Board/PlayerCardsBoard";
-import { OperateHint } from "../class/OperateHint/OperateHint";
-import { HeroSelectBoard } from "../class/Board/HeroSelectBoard";
-import { WuGuFengDengBoard } from "../class/Board/WuGuFengDengBoard";
-import { HoverBoard } from "../class/Board/HoverBoard";
+import {PlayerCardsBoard} from "../class/Board/PlayerCardsBoard";
+import {OperateHint} from "../class/OperateHint/OperateHint";
+import {HeroSelectBoard} from "../class/Board/HeroSelectBoard";
+import {WuGuFengDengBoard} from "../class/Board/WuGuFengDengBoard";
+import {HoverBoard} from "../class/Board/HoverBoard";
 
 export type BtnGroup = {
     img?: Phaser.GameObjects.Image,
@@ -34,4 +34,6 @@ export type GamingScene = Phaser.Scene &
         controlCardsManager: ControlCardsManager | undefined;
         notifyAnimationManager: NofityAnimationManager | undefined;
     }
+
+export type PhaserGameObject = (Phaser.GameObjects.Text | Phaser.GameObjects.Rectangle | Phaser.GameObjects.Graphics | Phaser.GameObjects.Image)
 

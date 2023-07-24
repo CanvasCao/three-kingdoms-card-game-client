@@ -1,5 +1,5 @@
 import {GameStatus} from "../../types/gameStatus";
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
@@ -29,7 +29,7 @@ const gridOffset = {
 export class WuGuFengDengBoard {
     obId: string;
     gamingScene: GamingScene;
-    boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
+    boardContent: PhaserGameObject[];
     cardIdMap: {
         [key: string]: {
             cardImgObj: Phaser.GameObjects.Image,

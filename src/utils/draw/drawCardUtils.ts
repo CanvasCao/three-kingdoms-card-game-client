@@ -41,7 +41,7 @@ const sharedDrawFrontCard = (
     allCardObjects.push(cardImgObj)
 
     cardImgObj.on('pointerover', () => {
-        gamingScene.hoverBoard?.hoverInStartToShowBoard({card, x: cardImgObj.x, y: cardImgObj.y});
+        gamingScene.hoverBoard?.hoverInStartToShowBoard({card, hoverType: 'card', x: cardImgObj.x, y: cardImgObj.y});
     })
     cardImgObj.on('pointerout', () => {
         gamingScene.hoverBoard?.clearAll();
@@ -53,7 +53,6 @@ const sharedDrawFrontCard = (
         y + cardNameObjOffsetY,
         i18(CARD_CONFIG[card.key]),
         {
-            fontFamily: 'CustomFont',
             // @ts-ignore
             fill: "#000",
             align: "center",

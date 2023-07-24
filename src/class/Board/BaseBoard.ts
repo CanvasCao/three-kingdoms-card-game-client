@@ -1,4 +1,4 @@
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
@@ -25,7 +25,7 @@ export class BaseBoard {
     bottomText?: Phaser.GameObjects.Text;
     border?: Phaser.GameObjects.Graphics;
 
-    dragObjects: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
+    dragObjects: PhaserGameObject[];
 
     constructor(gamingScene: GamingScene, {boardSize}: BaseBoardProps) {
         this.gamingScene = gamingScene
@@ -91,7 +91,7 @@ export class BaseBoard {
         this.dragObjects.push(this.bottomText);
     }
 
-    addContent(boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[]) {
+    addContent(boardContent: PhaserGameObject[]) {
         boardContent.forEach((obj) => {
             this.dragObjects.push(obj);
         })

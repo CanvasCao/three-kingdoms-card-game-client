@@ -23,6 +23,7 @@ export class HoverBoard {
     bgFill?: Phaser.GameObjects.Graphics;
     timer?: number;
     card?: Card | null;
+    hoverType: string;
 
     constructor(gamingScene: GamingScene) {
         this.obId = uuidv4();
@@ -40,6 +41,7 @@ export class HoverBoard {
         this.bgFill;
         this.timer;
         this.card;
+        this.hoverType = '';
 
         this.drawBackground();
         this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
@@ -63,8 +65,9 @@ export class HoverBoard {
         this.text.setDepth(DEPTH_CONFIG.HOVER)
     }
 
-    hoverInStartToShowBoard({card, x, y}: { card: Card, x: number, y: number }) {
+    hoverInStartToShowBoard({card, hoverType, x, y}: { card: Card, hoverType: string, x: number, y: number }) {
         this.card = card;
+        this.hoverType = hoverType;
         this._clearTimer();
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
 
@@ -77,7 +80,13 @@ export class HoverBoard {
             const fixedX = x; // 左Origin(0, 1); 右Origin(1, 1);
             fixedX <= sizeConfig.playersArea.width / 2 ? this.text?.setOrigin(0, 1) : this.text?.setOrigin(1, 1)
 
-            const fixedY = y - sizeConfig.controlCard.height / 2 - 10;
+            let offsetY = 0;
+            if (hoverType == 'card') {
+                offsetY = -sizeConfig.controlCard.height / 2 - 10
+            } else if (hoverType == 'equipment') {
+                offsetY = - 20
+            }
+            const fixedY = y + offsetY;
             this.text?.setAlpha(1)
             this.text?.setX(fixedX)
             this.text?.setY(fixedY)
@@ -123,10 +132,7 @@ export class HoverBoard {
         }
 
         // 手牌被选中/public card被清除
-        if (
-            gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId) ||
-            !gameFEStatus.publicCards.map((c) => c.cardId).includes(this.card.cardId)
-        ) {
+        if (gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId)) {
             this.clearAll()
         }
     }

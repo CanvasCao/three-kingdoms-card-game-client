@@ -1,5 +1,5 @@
 import {GameStatus} from "../../types/gameStatus";
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
@@ -42,7 +42,7 @@ const boardSize = {
 export class PlayerCardsBoard {
     obId: string;
     gamingScene: GamingScene;
-    boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
+    boardContent: PhaserGameObject[];
 
     // innerState
     _responseType: string | undefined;

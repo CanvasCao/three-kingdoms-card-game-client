@@ -4,7 +4,7 @@ import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {differenceBy} from "lodash";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {BoardPlayer} from "../Player/BoardPlayer";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
@@ -28,7 +28,7 @@ export class ToPublicCard {
 
     isMoving: boolean;
 
-    cardObjGroup: Phaser.GameObjects.GameObject[];
+    cardObjGroup: PhaserGameObject[];
 
     constructor(gamingScene: GamingScene,
                 card: Card,
@@ -87,10 +87,7 @@ export class ToPublicCard {
     }
 
     drawCard() {
-        const {
-            allCardObjects
-        } = sharedDrawFrontCard(this.gamingScene,
-            this.card,
+        const {allCardObjects} = sharedDrawFrontCard(this.gamingScene, this.card,
             {x: this.fadeInStartX, y: this.fadeInStartY, message: this.message})
         this.cardObjGroup = this.cardObjGroup.concat(allCardObjects)
     }
@@ -146,12 +143,14 @@ export class ToPublicCard {
     getDiffDistance(publicCards: Card[]) {
         const middle = (publicCards.length - 1) / 2;
         const myindex = publicCards.findIndex((c) => c.cardId == this.card.cardId);
-        const diffDis = (myindex - middle) * (sizeConfig.controlCard.width+sizeConfig.controlCardMargin);
+        const diffDis = (myindex - middle) * (sizeConfig.controlCard.width + sizeConfig.controlCardMargin);
         return diffDis;
     }
 
     destoryAll() {
-        this.cardObjGroup.forEach((obj) => {obj?.destroy()})
+        this.cardObjGroup.forEach((obj) => {
+            obj?.destroy()
+        })
         this.removePublicCardsfromGameFEStatus()
         this.gamingScene.gameFEStatusObserved.removePublicCardsObserver(this);
     }

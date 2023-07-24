@@ -30,13 +30,20 @@ const sharedDrawEquipment = (
         equipmentCardHeight);
     selectedStroke.setAlpha(0)
 
-    const background = gamingScene.add.image(x, y, 'white')
-    isMe && background.setInteractive();
+    const background = gamingScene.add.image(x + equipmentCardWidth / 2,
+        y + equipmentCardHeight / 2,
+        'white').setInteractive()
     // @ts-ignore
     background.setTint(COLOR_CONFIG.card);
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
-    background.setOrigin(0, 0)
+    background.on('pointerover', () => {
+        gamingScene.hoverBoard?.hoverInStartToShowBoard({card,hoverType:'equipment', x: background.x, y: background.y});
+    })
+    background.on('pointerout', () => {
+        gamingScene.hoverBoard?.clearAll();
+    })
+
 
     const distanceText = gamingScene.add.text(x, y, '',
         // @ts-ignore

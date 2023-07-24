@@ -1,5 +1,5 @@
 import {GameStatus} from "../../types/gameStatus";
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {EMIT_TYPE} from "../../config/emitConfig";
@@ -23,7 +23,7 @@ const gridOffset = {
 export class HeroSelectBoard {
     obId: string;
     gamingScene: GamingScene;
-    boardContent: (Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics)[];
+    boardContent: PhaserGameObject[];
 
     // innerState
     _heroId: string;
