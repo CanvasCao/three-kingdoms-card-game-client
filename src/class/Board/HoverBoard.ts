@@ -127,13 +127,7 @@ export class HoverBoard {
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
-        if (!this.card) {
-            return
-        }
-
         // 手牌被选中/public card被清除
-        if (gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId)) {
-            this.clearAll()
-        }
+        this.clearAll()
     }
 }

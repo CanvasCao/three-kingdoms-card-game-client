@@ -31,7 +31,7 @@ const sharedDrawFrontCard = (
     const allCardObjects = []
 
     // background
-    const cardImgObj = gamingScene.add.image(x, y, 'white').setInteractive();
+    const cardImgObj = gamingScene.add.image(x, y, 'card').setInteractive();
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
     cardImgObj.setTint(Number(COLOR_CONFIG.card));
@@ -56,12 +56,12 @@ const sharedDrawFrontCard = (
             // @ts-ignore
             fill: "#000",
             align: "center",
-            wordWrap: {width: sizeConfig.controlCard.width * 0.65, useAdvancedWrap: false}
+            wordWrap: {width: sizeConfig.controlCard.width * 0.6, useAdvancedWrap: false}
         }
     )
     cardNameObj.setPadding(0, 6, 0, 1);
     cardNameObj.setOrigin(0.5, 0.5);
-    cardNameObj.setFontSize((getI18Lan() == I18LANS.EN) ? 11 : 14)
+    cardNameObj.setFontSize((getI18Lan() == I18LANS.EN) ? 9 : 14)
     cardNameObj.setDepth(depth)
     cardNameObj.setData("offsetX", cardNameObjOffsetX)
     cardNameObj.setData("offsetY", cardNameObjOffsetY)

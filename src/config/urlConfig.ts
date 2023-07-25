@@ -10,7 +10,7 @@ const HERO_INDEXES = [
 const URL_CONFIG = {
     "baseUrl": "http://www.caoyuhao.top",
     "card": {
-        "sha": "card/sha.png",
+        "card": "card/card.png",
         "cardBg": "card/cardBg.png"
     },
     "other": {

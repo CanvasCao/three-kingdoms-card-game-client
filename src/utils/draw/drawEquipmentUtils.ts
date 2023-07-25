@@ -32,23 +32,25 @@ const sharedDrawEquipment = (
 
     const background = gamingScene.add.image(x + equipmentCardWidth / 2,
         y + equipmentCardHeight / 2,
-        'white').setInteractive()
+        'card').setInteractive()
     // @ts-ignore
     background.setTint(COLOR_CONFIG.card);
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
-    background.on('pointerover', () => {
-        gamingScene.hoverBoard?.hoverInStartToShowBoard({card,hoverType:'equipment', x: background.x, y: background.y});
+    background.on('pointerover', (e:any) => {
+        gamingScene.hoverBoard?.hoverInStartToShowBoard({
+            card,
+            hoverType: 'equipment',
+            x: background.x,
+            y: background.y
+        });
     })
     background.on('pointerout', () => {
         gamingScene.hoverBoard?.clearAll();
     })
 
-
-    const distanceText = gamingScene.add.text(x, y, '',
-        // @ts-ignore
-        {fill: "#000"}
-    );
+    // @ts-ignore
+    const distanceText = gamingScene.add.text(x + equipmentCardWidth * 0.02, y, '', {fill: COLOR_CONFIG.black});
     distanceText.setPadding(padding + 5, paddingHorizontal, padding + 1, paddingHorizontal);
     distanceText.setFontSize(fontSize)
     if (card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
@@ -61,11 +63,10 @@ const sharedDrawEquipment = (
             CARD_CONFIG[card.key].EN.substring(0, 8) + '..' :
             CARD_CONFIG[card.key].CN
     )
-    const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.23, y, text,
+    const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.2, y, text,
         {
             // @ts-ignore
             fill: "#000",
-            stroke: "#ff0000",
             align: "left",
             wordWrap: {width: equipmentCardWidth * 0.7}
         }
@@ -73,9 +74,9 @@ const sharedDrawEquipment = (
     nameText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
     nameText.setFontSize(fontSize)
 
-    const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.85, y, '',
+    const huaseNumText = gamingScene.add.text(x + equipmentCardWidth * 0.8, y, '',
         // @ts-ignore
-        {fill: "#000", align: "center"}
+        {fill: COLOR_CONFIG.black, align: "center"}
     );
     huaseNumText.setPadding(padding + 0, paddingHorizontal, padding + 0, paddingHorizontal);
     huaseNumText.setFontSize(fontSize)
