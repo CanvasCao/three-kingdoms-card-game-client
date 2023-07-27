@@ -25,7 +25,18 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
             EN: 'Demonic Talent'
         }
     },
-
+    "SHU003": {
+        PAO_XIAO: {
+            key: 'PAO_XIAO',
+            CN: '咆哮',
+            EN: 'Berserk'
+        },
+        TIE_JI: {
+            key: 'TIE_JI',
+            CN: '铁骑',
+            EN: 'Iron Cavalry'
+        },
+    },
     "SHU006": {
         MA_SHU: {
             key: 'MA_SHU',

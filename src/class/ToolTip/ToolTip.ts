@@ -3,7 +3,7 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
-import {BASIC_CARDS_DESC_CONFIG, CARD_DESC_CONFIG} from "../../config/cardDescConfig";
+import {CARD_DESC_CONFIG} from "../../config/cardDescConfig";
 import {uuidv4} from "../../utils/uuid";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {Card} from "../../types/card";

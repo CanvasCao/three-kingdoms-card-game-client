@@ -180,8 +180,7 @@ const getCanPlayerPlaySha = (player: Player) => {
     if (player.weaponCard && (player.weaponCard.key == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.key)) {
         return true
     } else {
-        const shaLimitTimes = 1
-        return player.shaTimes < shaLimitTimes
+        return player.shaTimes < (player.shaLimitTimes||1)
     }
 }
 

@@ -3,6 +3,7 @@ const HERO_INDEXES = [
     'WEI002',
     "SHU001",
     "SHU002",
+    "SHU003",
     "SHU006",
     "WU006"
 ]

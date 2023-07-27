@@ -212,7 +212,7 @@ export class BoardPlayer {
     drawPandingCards() {
         const stepX = sizeConfig.player.width / 4.5;
         for (let i = 0; i < this.maxPandingCardsNumber; i++) {
-            const x = this.isMe ? sizeConfig.controlEquipment.width *1.1: this.positionX + sizeConfig.player.width / 2 + 5 - stepX * i
+            const x = this.isMe ? sizeConfig.controlEquipment.width * 1.1 : this.positionX + sizeConfig.player.width / 2 + 5 - stepX * i
             const y = this.isMe ? sizeConfig.playersArea.height : this.positionY + sizeConfig.player.height / 2 + 5
 
             const pandingCardImage = this.gamingScene.add.image(x, y, "white");
@@ -312,32 +312,38 @@ export class BoardPlayer {
 
     drawHeroSkills(skills: Skill[]) {
         const skillMargin = 5;
-        const skillWidth = (sizeConfig.player.width - 40) / 2
+        const doubleSkillWidth = (sizeConfig.player.width - 40) / 2
+        const singleSkillWidth = (sizeConfig.player.width - 30)
+
+        const skillWidth = (skills.length > 1) ? doubleSkillWidth : singleSkillWidth;
         const skillHeight = 24
         skills.forEach((skill, index) => {
             if (index > 1) {
-                return
+                return // 超过三个技能先不写
             }
-            const skillImage = this.gamingScene.add.image(
-                this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin,
-                this.positionY + sizeConfig.player.height / 2 - skillMargin,
-                "white").setTint(Number(COLOR_CONFIG.grey555));
+
+            const x = this.positionX - sizeConfig.player.width / 2 + skillWidth / 2 + index * (skillWidth + skillMargin) + skillMargin
+            const y = this.positionY + sizeConfig.player.height / 2 - skillMargin
+            const skillImage = this.gamingScene.add.image(x, y, "white").setTint(Number(COLOR_CONFIG.grey555));
             skillImage.setDisplaySize(skillWidth, skillHeight)
-            skillImage.setOrigin(0, 1)
+            skillImage.setOrigin(0.5, 1)
             this.phaserGroup.push(skillImage);
 
             let skillName = i18(SKILL_NAMES_CONFIG[this._heroId][skill.key]);
-            const fontSize = getI18Lan() == I18LANS.EN ? 9 : 16
+            let fontSize = 16
+            if (getI18Lan() == I18LANS.EN) {
+                fontSize = (skills.length > 1) ? 9 : 16
+            }
+
             const padding = getI18Lan() == I18LANS.EN ? 2 : 2
-            const skillTextOffsetX = getI18Lan() == I18LANS.EN ? 2 : 6
-            const skillText = this.gamingScene.add.text(
-                this.positionX - sizeConfig.player.width / 2 + index * (skillWidth + skillMargin) + skillMargin + skillTextOffsetX,
-                this.positionY + sizeConfig.player.height / 2 - skillMargin,
-                skillName,
-                {align: 'left', wordWrap: {width: skillWidth - skillTextOffsetX, useAdvancedWrap: true}})
+            const skillText = this.gamingScene.add.text(x, y, skillName, {
+                    align: 'left',
+                    wordWrap: {width: skillWidth, useAdvancedWrap: true}
+                }
+            )
 
             skillText.setPadding(padding)
-            skillText.setOrigin(0, 1)
+            skillText.setOrigin(0.5, 1)
             skillText.setFontSize(fontSize)
             this.phaserGroup.push(skillText);
         })
