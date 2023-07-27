@@ -70,15 +70,12 @@ const generateThrowData = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
 }
 
 const generateActualCard = (gameFEStatus: GameFEStatus) => {
-    const configSha = CARD_CONFIG.SHA;
     if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
         return {
             huase: gameFEStatus.selectedCards[0].huase,
             huase2: gameFEStatus.selectedCards[1].huase,
             cardId: uuidv4(),
-            CN: configSha.key,
-            EN: configSha.EN,
-            type: configSha.key,
+            key: CARD_CONFIG.SHA.key,
         }
     } else {
         const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]))
