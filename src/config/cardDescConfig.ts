@@ -70,9 +70,10 @@ const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
             "作用效果：目标角色获得这些牌中（剩余）的一张牌。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: All characters.\n" +
-            "Action: After designating the targets for this card, \n" +
-            "reveal the top X cards of the deck (X equals the number of targets).\n" +
-            "Effect: The target characters each gain one card from the revealed cards (the remaining cards).",
+            "Action: After designating the targets for this card, reveal\n" +
+            "the top X cards of the deck (X equals the number of targets).\n" +
+            "Effect: The target characters each gain one card from the\n" +
+            "revealed cards (the remaining cards).",
     },
     "GUO_HE_CHAI_QIAO": {
         "CN": "使用时机：出牌阶段。\n" +

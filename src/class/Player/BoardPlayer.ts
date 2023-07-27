@@ -172,8 +172,7 @@ export class BoardPlayer {
             sizeConfig.player.width * (sizeConfig.playerSource.height / sizeConfig.playerSource.width))
         this.playerImage.setOrigin(0, 0)
 
-        var cropRect = new Phaser.Geom.Rectangle(0,
-            0,
+        var cropRect = new Phaser.Geom.Rectangle(0, 0,
             sizeConfig.playerSource.width,
             sizeConfig.playerSource.width * 1.2);
 

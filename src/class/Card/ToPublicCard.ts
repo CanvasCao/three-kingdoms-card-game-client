@@ -87,8 +87,15 @@ export class ToPublicCard {
     }
 
     drawCard() {
-        const {allCardObjects} = sharedDrawFrontCard(this.gamingScene, this.card,
-            {x: this.fadeInStartX, y: this.fadeInStartY, message: this.message})
+        const {allCardObjects} = sharedDrawFrontCard(
+            this.gamingScene,
+            this.card,
+            {
+                x: this.fadeInStartX,
+                y: this.fadeInStartY,
+                message: this.message,
+                isToPublic: true,
+            })
         this.cardObjGroup = this.cardObjGroup.concat(allCardObjects)
     }
 

@@ -5,7 +5,7 @@ const PLAYER_BOARD_ACTION = {
 
 const BOARD_TYPE = {
     SHUN_CHAI: "SHUN_CHAI",
-    FAN_KUI: "FANKUI",
+    FAN_KUI: "FAN_KUI",
     QI_LIN_GONG: "QI_LIN_GONG"
 }
 

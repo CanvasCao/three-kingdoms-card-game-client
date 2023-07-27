@@ -25,13 +25,13 @@ export class ControlCardsManager {
 
     drawBackground() {
         const bgHeight = sizeConfig.controlCard.height + sizeConfig.controlCardBgMargin * 2
-        const maskImg = this.gamingScene.add.image(0, sizeConfig.background.height - bgHeight, 'white')
-        maskImg.displayHeight = bgHeight;
-        maskImg.displayWidth = sizeConfig.background.width;
+        const bgImg = this.gamingScene.add.image(0, sizeConfig.background.height - bgHeight, 'white')
+        bgImg.displayHeight = bgHeight;
+        bgImg.displayWidth = sizeConfig.background.width;
         // @ts-ignore
-        maskImg.setTint("#000")
-        maskImg.setAlpha(0.4)
-        maskImg.setOrigin(0, 0)
+        bgImg.setTint("#000")
+        bgImg.setAlpha(0.4)
+        bgImg.setOrigin(0, 0)
     }
 
     gameStatusNotify(gameStatus: GameStatus) {

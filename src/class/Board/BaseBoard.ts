@@ -19,7 +19,6 @@ export class BaseBoard {
 
     boardSize: { height: number, width: number }
 
-    maskImg?: Phaser.GameObjects.Image;
     boardImg?: Phaser.GameObjects.Image;
     titleText?: Phaser.GameObjects.Text;
     bottomText?: Phaser.GameObjects.Text;
@@ -37,21 +36,12 @@ export class BaseBoard {
 
         this.boardSize = boardSize;
 
-        this.maskImg;
         this.boardImg;
 
         this.dragObjects = [];
     }
 
     drawBackground() {
-        this.maskImg = this.gamingScene.add.image(0, 0, 'white').setInteractive()
-        this.maskImg.displayHeight = sizeConfig.background.height;
-        this.maskImg.displayWidth = sizeConfig.background.width;
-        this.maskImg.setAlpha(0.0001)
-        this.maskImg.setOrigin(0, 0)
-        this.maskImg.setDepth(DEPTH_CONFIG.BOARD)
-
-
         this.boardImg = this.gamingScene.add.image(this.initX, this.initY, 'white')
         this.boardImg.setTint(Number(COLOR_CONFIG.boardBg))
         this.boardImg.displayHeight = this.boardSize.height;
@@ -109,7 +99,6 @@ export class BaseBoard {
         this.dragObjects.forEach((obj) => {
             obj.destroy();
         })
-        this.maskImg!.destroy()
     }
 
     showBoard() {

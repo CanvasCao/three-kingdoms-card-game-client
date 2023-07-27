@@ -5,6 +5,7 @@ import {CARD_CONFIG, CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfi
 import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 import {getCardColor} from "../cardUtils";
+import { TOOL_TIP_CARD_TYPE } from "../../config/toolTipConfig";
 
 const sharedDrawEquipment = (
     gamingScene: GamingScene,
@@ -38,15 +39,15 @@ const sharedDrawEquipment = (
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
     background.on('pointerover', (e:any) => {
-        gamingScene.hoverBoard?.hoverInStartToShowBoard({
+        gamingScene.toolTip?.hoverInToShowToolTip({
             card,
-            hoverType: 'equipment',
+            toolTipType:TOOL_TIP_CARD_TYPE.EQUIPMENT,
             x: background.x,
             y: background.y
         });
     })
     background.on('pointerout', () => {
-        gamingScene.hoverBoard?.clearAll();
+        gamingScene.toolTip?.clearAll();
     })
 
     // @ts-ignore

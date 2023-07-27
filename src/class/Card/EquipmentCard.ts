@@ -123,6 +123,8 @@ export class EquipmentCard {
                     return;
                 }
 
+                this.gamingScene.boardPlayers.find(p => p.playerId === this.playerId)?.playerImage?.emit('pointerdown');
+
                 const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved;
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
                 const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
@@ -134,7 +136,7 @@ export class EquipmentCard {
                 const haveSelectCardsNumber = getSelectedCardNumber(gameFEStatus);
                 const haveSelectedEnoughCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
-                const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillNameKey && 
+                const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillNameKey &&
                     (gameFEStatus.selectedSkillNameKey !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key)
                 // 已经选中技能 或者 响应技能 的情况下 一定是要打出武器
                 if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {

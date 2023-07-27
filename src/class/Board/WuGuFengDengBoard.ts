@@ -86,8 +86,9 @@ export class WuGuFengDengBoard {
 
     bindEvent(gameStatus: GameStatus) {
         gameStatus.wugufengdengCards.forEach((card) => {
-            this.cardIdMap[card.cardId].cardImgObj.removeAllListeners();
             this.cardIdMap[card.cardId].cardImgObj.on("pointerdown", () => {
+                // 不能用params里的gameStatus
+                const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
                 if (gameStatus.scrollResponses?.[0].originId !== getMyPlayerId()) {
                     return;
                 }
@@ -106,14 +107,6 @@ export class WuGuFengDengBoard {
                 )
             })
         })
-    }
-
-    setBoardInteractive(gameStatus: GameStatus) {
-        if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.includes(getMyPlayerId())) {
-            this.baseBoard.maskImg!.disableInteractive()
-        } else {
-            this.baseBoard.maskImg!.setInteractive()
-        }
     }
 
     setCardSelectedStatus(gameStatus: GameStatus) {
@@ -151,6 +144,7 @@ export class WuGuFengDengBoard {
             this.baseBoard.showBoard();
             this.baseBoard.setTitle(i18(CARD_CONFIG.WU_GU_FENG_DENG))
             this.drawWugufengdengCards(gameStatus)
+            this.bindEvent(gameStatus);
             this.baseBoard.addContent(this.boardContent);
         } else if (!showBoard && this.baseBoard.show) {
             this.baseBoard.hideBoard();
@@ -160,9 +154,7 @@ export class WuGuFengDengBoard {
         // curScrollResponse不同了 所以需要更新Mask和BoardCard状态 并且重新绑定事件
         if (showBoard) {
             this.baseBoard.setBottom(this.getBottomText(gameStatus))
-            this.setBoardInteractive(gameStatus);
             this.setCardSelectedStatus(gameStatus);
-            this.bindEvent(gameStatus);
         }
 
         this._scrollResponse = cloneDeep(curScrollResponse);

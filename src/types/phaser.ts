@@ -11,7 +11,7 @@ import {PlayerCardsBoard} from "../class/Board/PlayerCardsBoard";
 import {OperateHint} from "../class/OperateHint/OperateHint";
 import {HeroSelectBoard} from "../class/Board/HeroSelectBoard";
 import {WuGuFengDengBoard} from "../class/Board/WuGuFengDengBoard";
-import {HoverBoard} from "../class/Board/HoverBoard";
+import {ToolTip} from "../class/ToolTip/ToolTip";
 
 export type BtnGroup = {
     img?: Phaser.GameObjects.Image,
@@ -28,7 +28,7 @@ export type GamingScene = Phaser.Scene &
         playerCardsBoard: PlayerCardsBoard | undefined;
         wuGuFengDengBoard: WuGuFengDengBoard | undefined;
         heroSelectBoard: HeroSelectBoard | undefined;
-        hoverBoard: HoverBoard | undefined;
+        toolTip: ToolTip | undefined;
         operateHint: OperateHint | undefined;
         controlButtons: ControlButtons | undefined;
         controlCardsManager: ControlCardsManager | undefined;

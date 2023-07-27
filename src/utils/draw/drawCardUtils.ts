@@ -17,16 +17,17 @@ import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {CARD_CONFIG, CARD_NUM_DESC, CARD_TYPE, CARD_TYPE_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {Card} from "../../types/card";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
+import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 
 const sharedDrawFrontCard = (
     gamingScene: GamingScene,
     card: Card,
-    {x, y, message = '', depth = DEPTH_CONFIG.CARD}: {
+    {x, y, message = '', depth = DEPTH_CONFIG.CARD, isToPublic = false}: {
         x: number,
         y: number,
         message?: string,
         depth?: number,
-        alpha?: number
+        isToPublic?: boolean
     }) => {
     const allCardObjects = []
 
@@ -41,10 +42,16 @@ const sharedDrawFrontCard = (
     allCardObjects.push(cardImgObj)
 
     cardImgObj.on('pointerover', () => {
-        gamingScene.hoverBoard?.hoverInStartToShowBoard({card, hoverType: 'card', x: cardImgObj.x, y: cardImgObj.y});
+        gamingScene.toolTip?.hoverInToShowToolTip({
+            card,
+            toolTipType: TOOL_TIP_CARD_TYPE.CARD,
+            isToPublic,
+            x: cardImgObj.x,
+            y: cardImgObj.y
+        });
     })
     cardImgObj.on('pointerout', () => {
-        gamingScene.hoverBoard?.clearAll();
+        gamingScene.toolTip?.clearAll();
     })
 
     // cardName
@@ -61,7 +68,7 @@ const sharedDrawFrontCard = (
     )
     cardNameObj.setPadding(0, 6, 0, 1);
     cardNameObj.setOrigin(0.5, 0.5);
-    cardNameObj.setFontSize((getI18Lan() == I18LANS.EN) ? 9 : 14)
+    cardNameObj.setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 14)
     cardNameObj.setDepth(depth)
     cardNameObj.setData("offsetX", cardNameObjOffsetX)
     cardNameObj.setData("offsetY", cardNameObjOffsetY)

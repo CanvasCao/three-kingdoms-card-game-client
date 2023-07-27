@@ -82,9 +82,11 @@ export class ToPlayerCard {
         if (this.isFaceFront) {
             const {
                 allCardObjects
-            } = sharedDrawFrontCard(this.gamingScene,
+            } = sharedDrawFrontCard(
+                this.gamingScene,
                 this.card,
-                {x: this.fadeInStartX, y: this.fadeInStartY})
+                {x: this.fadeInStartX, y: this.fadeInStartY}
+            )
             this.cardObjGroup = this.cardObjGroup.concat(allCardObjects)
         } else {
             // 摸牌||仁德
