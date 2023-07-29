@@ -10,7 +10,6 @@ export type Player = {
     shaLimitTimes: number,
     playerId: string,
     playerName: string,
-    heroName: string,
     location: number,
     skills: Skill[],
 

@@ -13,14 +13,14 @@ const BASIC_CARDS_DESC_CONFIG = {
         "CN": "使用时机：出牌阶段。\n" +
             "使用目标：包括你在内的一名已受伤的角色。\n" +
             "作用效果：目标角色回复1点体力。\n" +
-            "\n" +
+            "\r"+
             "使用时机：当一名角色处于濒死状态时。\n" +
             "使用目标：一名处于濒死状态的角色。\n" +
             "作用效果：目标角色回复1点体力。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: One injured character, including yourself.\n" +
             "Effect: The target character restores 1 health point.\n" +
-            "\n" +
+            "\r"+
             "Usage Timing: When a character is in a dying state.\n" +
             "Target: One character in a dying state.\n" +
             "Effect: The target character restores 1 health point.",
@@ -35,8 +35,7 @@ const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
             "作用效果：目标角色需打出【闪】，否则受到你造成的1点伤害。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: All other characters.\n" +
-            "Effect: The target characters must play [Dodge], \n" +
-            "otherwise they receive 1 damage from you.",
+            "Effect: The target characters must play [Dodge], otherwise they receive 1 damage from you.",
     },
     "NAN_MAN_RU_QIN": {
         "CN": "使用时机：出牌阶段。\n" +
@@ -44,8 +43,7 @@ const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
             "作用效果：目标角色需打出【杀】，否则受到你造成的1点伤害。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: All other characters.\n" +
-            "Effect: The target characters must play [Strike], \n" +
-            "otherwise they receive 1 damage from you.",
+            "Effect: The target characters must play [Strike], otherwise they receive 1 damage from you.",
     },
     "TAO_YUAN_JIE_YI": {
         "CN": "使用时机：出牌阶段。\n" +
@@ -70,10 +68,8 @@ const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
             "作用效果：目标角色获得这些牌中（剩余）的一张牌。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: All characters.\n" +
-            "Action: After designating the targets for this card, reveal\n" +
-            "the top X cards of the deck (X equals the number of targets).\n" +
-            "Effect: The target characters each gain one card from the\n" +
-            "revealed cards (the remaining cards).",
+            "Action: After designating the targets for this card, reveal the top X cards of the deck (X equals the number of targets).\n" +
+            "Effect: The target characters each gain one card from the revealed cards (the remaining cards).",
     },
     "GUO_HE_CHAI_QIAO": {
         "CN": "使用时机：出牌阶段。\n" +
@@ -93,27 +89,19 @@ const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
     },
     "JIE_DAO_SHA_REN": {
         "CN": "使用时机：出牌阶段。\n" +
-            "使用目标：一名装备区里有武器牌且攻击范围内有其使用【杀】的合法目标的其他角色An。\n" +
-            "执行动作：你在选择An为目标的同时选择An攻击范围内的一个An使用【杀】的合法目标Bn；\n" +
-            "你在An也成为目标的同时选择An攻击范围内的一个An使用【杀】的合法目标Bn。",
+            "使用目标：一名装备区里有武器牌且攻击范围内有其使用【杀】的合法目标的其他角色An。你在选择An为目标的同时选择An攻击范围内的一个An使用【杀】的合法目标Bn。\n" +
+            "作用效果：目标角色An需对Bn使用【杀】，否则将其装备区里的武器牌交给你。",
         "EN": "Usage Timing: Play Phase.\n" +
-            "Target: Another character (An) who has a weapon card equipped and \n" +
-            "has legal targets within their attack range to use [Strike].\n" +
-            "Action: While selecting An as a target, you also select a legal target (Bn) \n" +
-            "within An's attack range who can use [Strike]; \n" +
-            "While An is also a target, you also select a legal target (Bn)\n" +
-            "within An's attack range who can use [Strike].",
+            "Target: Another character (An) who has a weapon card equipped and has legal targets within their attack range to use [Strike]. While selecting (An) as a target, you also select a legal target (Bn) within An's attack range who can use [Strike].\n" +
+            "Effect: Target player (An) must use [Strike] on player (Bn). If not, they must give you the weapon card in their equipment area."
     },
     "JUE_DOU": {
         "CN": "使用时机：出牌阶段。\n" +
             "使用目标：一名其他角色。\n" +
-            "作用效果：由目标角色开始，其与你轮流打出【杀】，直到其中的一名角色未打出【杀】。\n" +
-            "然后未打出【杀】的角色受到另一名角色造成的1点伤害。",
+            "作用效果：由目标角色开始，其与你轮流打出【杀】，直到其中的一名角色未打出【杀】。然后未打出【杀】的角色受到另一名角色造成的1点伤害。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: Another character.\n" +
-            "Effect: Starting from the target character, take turns with them\n" +
-            " to play [Strike] cards until one of the characters fails to play a [Strike]. \n" +
-            "Then, the character who did not play a [Strike] receives 1 damage from the other character.",
+            "Effect: Starting from the target character, take turns with them to play [Strike] cards until one of the characters fails to play a [Strike]. Then, the character who did not play a [Strike] receives 1 damage from the other character.",
     },
     "WU_XIE_KE_JI": {
         "CN": "使用时机：一张锦囊牌对一个目标生效前。\n" +
@@ -128,12 +116,10 @@ const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
     "HUO_GONG": {
         "CN": "使用时机：出牌阶段。\n" +
             "使用目标：一名有手牌的角色。\n" +
-            "作用效果：目标角色展示一张手牌，然后你可以弃置与之花色相同的一张手牌，\n" +
-            "若如此做，其受到你造成的1点火焰伤害。",
+            "作用效果：目标角色展示一张手牌，然后你可以弃置与之花色相同的一张手牌，若如此做，其受到你造成的1点火焰伤害。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: One character with a hand of cards.\n" +
-            "Effect: The target character reveals one card from their hand, \n" +
-            "then you may discard one card of the same suit, if you do, deal 1 point of Fire damage to them.",
+            "Effect: The target character reveals one card from their hand, then you may discard one card of the same suit, if you do, deal 1 point of Fire damage to them.",
     },
     "TIE_SUO_LIAN_HUAN": {
         "CN": "使用时机：出牌阶段。\n" +
@@ -141,9 +127,7 @@ const IMMEDIATE_SCROLL_CARDS_DESC_CONFIG = {
             "作用效果：目标角色选择一项：1.横置；2. 重置。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: One to two characters.\n" +
-            "Effect: The target character(s) choose one of the following options: \n" +
-            "1. Lay the character card horizontally; \n" +
-            "2. Reset the character card",
+            "Effect: The target character(s) choose one of the following options: 1. Lay the character card horizontally; 2. Reset the character card",
     },
 }
 
@@ -154,8 +138,7 @@ const DELAY_SCROLL_CARDS_DESC_CONFIG = { // 延时锦囊
             "作用效果：目标角色判定，若结果不为红桃，其跳过出牌阶段。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: Another character.\n" +
-            "Effect: The target character judges. \n" +
-            "If the result is not Hearts, they skip the Play Phase.",
+            "Effect: The target character judges. If the result is not Hearts, they skip the Play Phase.",
     },
     "BING_LIANG_CUN_DUAN": {
         "CN": "使用时机：出牌阶段。\n" +
@@ -163,8 +146,7 @@ const DELAY_SCROLL_CARDS_DESC_CONFIG = { // 延时锦囊
             "作用效果：目标角色判定，若结果不为梅花，其跳过摸牌阶段。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: Another character within a distance of 1.\n" +
-            "Effect: The target character judges. \n" +
-            "If the result is not Clubs, they skip the Draw Phase.",
+            "Effect: The target character judges. If the result is not Clubs, they skip the Draw Phase.",
     },
     "SHAN_DIAN": {
         "CN": "使用时机：出牌阶段。\n" +
@@ -173,9 +155,7 @@ const DELAY_SCROLL_CARDS_DESC_CONFIG = { // 延时锦囊
             "其受到3点无来源的雷电伤害，将此【闪电】置入弃牌堆。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: Yourself.\n" +
-            "Effect: The target character judges. If the result is Spades 2 to 9,\n" +
-            "they receive 3 Thunder damage with no specific source, \n" +
-            "and place this [Lightning] into the discard pile.",
+            "Effect: The target character judges. If the result is Spades 2 to 9, they receive 3 Thunder damage with no specific source, and place this [Lightning] into the discard pile.",
     }
 }
 const SCROLL_CARDS_DESC_CONFIG = {
@@ -194,17 +174,13 @@ const WEAPON_CARDS_DESC_CONFIG = {
         "CN": "攻击范围：2\n" +
             "技能：每当你使用【杀】指定与你性别不同的一个目标后，你可以令其选择一项：1.弃置一张手牌；2.令你摸一张牌。",
         "EN": "Attack Range: 2\n" +
-            "Skill: Whenever you use [Strike] to designate a target of the opposite gender, \n" +
-            "you may have them choose one: \n" +
-            "1. Discard one card from their hand; \n" +
-            "2. Make you draw one card.",
+            "Skill: Whenever you use [Strike] to designate a target of the opposite gender, you may have them choose one: 1. Discard one card from their hand; 2. Make you draw one card.",
     },
     "GU_DIN_DAO": {
         "CN": "攻击范围：2\n" +
             "技能：锁定技，每当你使用【杀】对目标角色造成伤害时，若其没有手牌，你令伤害值+1。",
         "EN": "Attack Range: 2\n" +
-            "Skill: Locked Skill - Whenever you deal damage to the target character \n" +
-            "using [Strike], if they have no hand cards, you increase the damage value by 1.",
+            "Skill: Locked Skill - Whenever you deal damage to the target character using [Strike], if they have no hand cards, you increase the damage value by 1.",
     },
     "QIN_GANG_JIAN": {
         "CN": "攻击范围：2\n" +
@@ -216,15 +192,13 @@ const WEAPON_CARDS_DESC_CONFIG = {
         "CN": "攻击范围：2\n" +
             "技能：每当你使用【杀】对目标角色造成伤害时，若其有牌，你可以防止此伤害，依次弃置其两张牌。",
         "EN": "Attack Range: 2\n" +
-            "Skill: Whenever you deal damage to the target character using [Strike], \n" +
-            "if they have cards, you may prevent this damage and discard two cards from them.",
+            "Skill: Whenever you deal damage to the target character using [Strike], if they have cards, you may prevent this damage and discard two cards from them.",
     },
     "GUAN_SHI_FU": {
         "CN": "攻击范围：3\n" +
             "技能：每当你使用的【杀】被目标角色使用的【闪】抵消时，你可以弃置两张牌，令此【杀】依然对其生效。",
         "EN": "Attack Range: 3\n" +
-            "Skill: Whenever the [Strike] you use is negated by the target character \n" +
-            "using [Dodge], you may discard two cards to make this [Strike] still take effect on them.",
+            "Skill: Whenever the [Strike] you use is negated by the target character using [Dodge], you may discard two cards to make this [Strike] still take effect on them.",
     },
     "ZHANG_BA_SHE_MAO": {
         "CN": "攻击范围：3\n" +
@@ -236,15 +210,13 @@ const WEAPON_CARDS_DESC_CONFIG = {
         "CN": "攻击范围：3\n" +
             "技能：每当你使用的【杀】被目标角色使用的【闪】抵消时，你可以对其使用【杀】",
         "EN": "Attack Range: 3\n" +
-            "Skill: Whenever the [Strike] you use is negated by \n" +
-            "the target character using [Dodge], you may use [Strike] against them",
+            "Skill: Whenever the [Strike] you use is negated by the target character using [Dodge], you can use another [Strike] card against them.",
     },
     "FANG_TIAN_HUA_JI": {
         "CN": "攻击范围：4\n" +
             "技能：若你使用的【杀】是最后的手牌，你使用此【杀】的额外目标数上限+2。",
         "EN": "Attack Range: 4\n" +
-            "Skill: If the [Strike] you use is the last hand card, \n" +
-            "the maximum number of additional targets for this [Strike] is increased by 2.",
+            "Skill: If the [Strike] you use is the last hand card, the maximum number of additional targets for this [Strike] is increased by 2.",
     },
     "ZHU_QUE_YU_SHAN": {
         "CN": "攻击范围：4\n" +
@@ -256,8 +228,7 @@ const WEAPON_CARDS_DESC_CONFIG = {
         "CN": "攻击范围：5\n" +
             "技能：每当你使用【杀】对目标角色造成伤害时，你可以弃置其装备区里的一张坐骑牌。",
         "EN": "Attack Range: 5\n" +
-            "Skill: Whenever you deal damage to the target character using [Strike], \n" +
-            "you may discard one Horse card from their equipment area.",
+            "Skill: Whenever you deal damage to the target character using [Strike], you may discard one Horse card from their equipment area.",
     },
 }
 
@@ -265,8 +236,7 @@ const SHIELD_CARDS_DESC_CONFIG = {
     // 防具
     "BA_GUA_ZHEN": {
         "CN": "技能：每当你需要使用/打出【闪】时，你可以判定，若结果为红色，你视为使用/打出一张【闪】。",
-        "EN": "Skill: Whenever you need to use/play [Dodge], you may judge. \n" +
-            "If the result is red, you treat it as if you used/played a [Dodge].",
+        "EN": "Skill: Whenever you need to use/play [Dodge], you can judge. If the judgment result is red, you treat it as if you used/played a [Dodge].",
     },
     "REN_WANG_DUN": {
         "CN": "技能：锁定技，黑色【杀】对你无效。",
@@ -275,17 +245,14 @@ const SHIELD_CARDS_DESC_CONFIG = {
     "TENG_JIA": {
         "CN": "技能：锁定技，【南蛮入侵】、【万箭齐发】和普通【杀】对你无效；\n" +
             "锁定技，每当你受到火焰伤害时，你令伤害值+1。",
-        "EN": "Skill: Locked Skill - [Barbarian Invasion], [Arrow Barrage], \n" +
-            "and regular [Strike] have no effect on you.\n" +
+        "EN": "Skill: Locked Skill - [Barbarian Invasion], [Arrow Barrage], and regular [Strike] have no effect on you.\n" +
             "Locked Skill - Whenever you take Fire damage, increase the damage value by 1.",
     },
     "BAI_YIN_SHI_ZI": {
         "CN": "技能：锁定技，每当你受到大于1点的伤害时，你将伤害值改为1点；\n" +
             "锁定技，每当你失去装备区里的【白银狮子】后，你回复1点体力。",
-        "EN": "Skill: Locked Skill - Whenever you would take more \n" +
-            "than 1 damage, reduce the damage to 1.\n" +
-            "Locked Skill - Whenever you lose the [Silver Lion]\n" +
-            "from your equipment area, you regain 1 health point.",
+        "EN": "Skill: Locked Skill - Whenever you would take more than 1 damage, reduce the damage to 1.\n" +
+            "Locked Skill - Whenever you lose the [Silver Lion] from your equipment area, you regain 1 health point.",
     },
 }
 
@@ -326,7 +293,7 @@ const EQUIPMENT_CARDS_DESC_CONFIG = {
     ...MINUS_HORSE_CARDS_DESC_CONFIG,
 }
 
-const CARD_DESC_CONFIG :CardDescConfig= {
+const CARD_DESC_CONFIG: CardDescConfig = {
     ...BASIC_CARDS_DESC_CONFIG,
     ...SCROLL_CARDS_DESC_CONFIG,
     ...EQUIPMENT_CARDS_DESC_CONFIG,

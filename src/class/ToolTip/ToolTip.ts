@@ -2,8 +2,7 @@ import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
-import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
-import {CARD_DESC_CONFIG} from "../../config/cardDescConfig";
+import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 import {uuidv4} from "../../utils/uuid";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {Card} from "../../types/card";
@@ -23,9 +22,8 @@ export class ToolTip {
     bgLine?: Phaser.GameObjects.Graphics;
     bgFill?: Phaser.GameObjects.Graphics;
     timer?: number;
-    card?: Card | null;
+    card?: Card;
     toolTipType: string;
-    isToPublic: boolean;
 
     constructor(gamingScene: GamingScene) {
         this.obId = uuidv4();
@@ -44,7 +42,6 @@ export class ToolTip {
         this.timer;
         this.card;
         this.toolTipType = '';
-        this.isToPublic = false;
 
         this.drawBackground();
         this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
@@ -64,24 +61,28 @@ export class ToolTip {
         this.text.setDepth(DEPTH_CONFIG.HOVER)
     }
 
-    hoverInToShowToolTip({card, toolTipType, isToPublic = false, x, y}: { card: Card, toolTipType: string, isToPublic?: boolean, x: number, y: number }) {
+    hoverInToShowToolTip({card, text, toolTipType, x, y}: { card?: Card, text: string, toolTipType: string, x: number, y: number }) {
         this.card = card;
         this.toolTipType = toolTipType;
-        this.isToPublic = isToPublic;
         this._clearTimer();
 
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
-        // 选中的牌 hover不可以有提示
-        if (gameFEStatus.selectedCards.map((c) => c.cardId).includes(card.cardId)) {
+        // 选中的牌/装备 hover不可以有提示
+        if ([TOOL_TIP_CARD_TYPE.CARD, TOOL_TIP_CARD_TYPE.EQUIPMENT].includes(toolTipType) &&
+            gameFEStatus.selectedCards.map((c) => c.cardId).includes(card!.cardId)) {
             return
         }
 
         this.timer = setTimeout(() => {
             const fixedX = x; // 左Origin(0, 1); 右Origin(1, 1);
-            fixedX <= sizeConfig.playersArea.width / 2 ? this.text?.setOrigin(0, 1) : this.text?.setOrigin(1, 1)
+            (fixedX <= sizeConfig.playersArea.width / 2) ? this.text?.setOrigin(0, 1) : this.text?.setOrigin(1, 1)
+            if (toolTipType === TOOL_TIP_CARD_TYPE.HERO) {
+                this.text?.setOrigin(0.5, 1)
+            }
+
 
             let offsetY = 0;
-            if (toolTipType == TOOL_TIP_CARD_TYPE.CARD) {
+            if ([TOOL_TIP_CARD_TYPE.CARD, TOOL_TIP_CARD_TYPE.PUBLIC_CARD].includes(toolTipType)) {
                 offsetY = -sizeConfig.controlCard.height / 2 - 10
             } else if (toolTipType == TOOL_TIP_CARD_TYPE.EQUIPMENT) {
                 offsetY = -20
@@ -90,7 +91,7 @@ export class ToolTip {
             this.text?.setAlpha(1)
             this.text?.setX(fixedX)
             this.text?.setY(fixedY)
-            this.text?.setText(i18(CARD_DESC_CONFIG[card.key]))
+            this.text?.setText(text)
 
             const bound = this.text?.getBounds()!
             const margin = 5
@@ -122,14 +123,13 @@ export class ToolTip {
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
-        if (this.isToPublic) {
-            if (!gameFEStatus.publicCards.map((c) => c.cardId).includes(this.card?.cardId!)) {
-                this.clearAll()
-            }
-        } else {
-            if (gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card?.cardId!)) {
-                this.clearAll()
-            }
+        if (this.toolTipType == TOOL_TIP_CARD_TYPE.PUBLIC_CARD &&
+            !gameFEStatus.publicCards.map((c) => c.cardId).includes(this.card!.cardId)) {
+            this.clearAll()
+        } else if ([TOOL_TIP_CARD_TYPE.CARD, TOOL_TIP_CARD_TYPE.EQUIPMENT].includes(this.toolTipType) &&
+            gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card!.cardId)) {
+            this.clearAll()
         }
+
     }
 }

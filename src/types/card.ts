@@ -2,9 +2,9 @@ import {PLAYER_BOARD_ACTION} from "../config/boardConfig";
 import {CARD_LOCATION, EQUIPMENT_TYPE} from "../config/cardConfig";
 
 export type Card = {
+    key: string,
     huase: string,
     number: number,
-    key: string,
     cardId: string,
     cardNumDesc: string,
     type: string,

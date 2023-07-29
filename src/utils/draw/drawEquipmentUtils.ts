@@ -5,7 +5,9 @@ import {CARD_CONFIG, CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfi
 import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 import {getCardColor} from "../cardUtils";
-import { TOOL_TIP_CARD_TYPE } from "../../config/toolTipConfig";
+import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
+import {getCardText, splitText} from "../string/stringUtils";
+import {TOOL_TIP_CARD_MAX_LENGTH} from "../../config/stringConfig";
 
 const sharedDrawEquipment = (
     gamingScene: GamingScene,
@@ -34,14 +36,13 @@ const sharedDrawEquipment = (
     const background = gamingScene.add.image(x + equipmentCardWidth / 2,
         y + equipmentCardHeight / 2,
         'card').setInteractive()
-    // @ts-ignore
-    background.setTint(COLOR_CONFIG.card);
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
-    background.on('pointerover', (e:any) => {
+    background.on('pointerover', () => {
         gamingScene.toolTip?.hoverInToShowToolTip({
             card,
-            toolTipType:TOOL_TIP_CARD_TYPE.EQUIPMENT,
+            text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
+            toolTipType: TOOL_TIP_CARD_TYPE.EQUIPMENT,
             x: background.x,
             y: background.y
         });

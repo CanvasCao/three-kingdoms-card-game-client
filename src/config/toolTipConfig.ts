@@ -1,6 +1,8 @@
 const TOOL_TIP_CARD_TYPE = {
     CARD: "CARD",
+    PUBLIC_CARD: "PUBLIC_CARD",
     EQUIPMENT: "EQUIPMENT",
+    HERO: "HERO"
 }
 
 export {

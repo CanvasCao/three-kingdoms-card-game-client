@@ -26,7 +26,7 @@ const CARD_LOCATION = {
     PANDING: "PANDING"
 }
 
-const CARD_HUASE = {
+const CARD_HUASE= {
     HEITAO: "♠",
     CAOHUA: '♣',
     FANGKUAI: '♦',

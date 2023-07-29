@@ -23,6 +23,9 @@ import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {Skill} from "../../types/skill";
 import {i18Config} from "../../i18n/i18Config";
+import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
+import {getHeroSkillsText, splitText} from "../../utils/string/stringUtils";
+import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
 
 const reduceBloodOut = 50;
 const reduceBloodIn = 300;
@@ -177,7 +180,6 @@ export class BoardPlayer {
             sizeConfig.playerSource.width * 1.2);
 
         this.playerImage.setCrop(cropRect);
-
         this.phaserGroup.push(this.playerImage)
     }
 
@@ -411,6 +413,20 @@ export class BoardPlayer {
 
             gameFEStatusObserved.selectPlayer(player)
         });
+
+
+        this.playerImage!.on('pointerover', () => {
+            const player = this.gamingScene.gameStatusObserved.gameStatus!.players[this.playerId]
+            this.gamingScene.toolTip?.hoverInToShowToolTip({
+                text: splitText(getHeroSkillsText(player), TOOL_TIP_HERO_MAX_LENGTH),
+                toolTipType: TOOL_TIP_CARD_TYPE.HERO,
+                x: sizeConfig.playersArea.width / 2,
+                y: sizeConfig.playersArea.height * 0.9
+            });
+        })
+        this.playerImage!.on('pointerout', () => {
+            this.gamingScene.toolTip?.clearAll();
+        })
     }
 
     onPandingCardsChange(gameStatus: GameStatus) {
@@ -566,7 +582,6 @@ export class BoardPlayer {
             if (heroId && !this._heroId) {
                 this._heroId = heroId;
                 this.initHero(gameStatus);
-                this._heroId = heroId;
             }
         } else {
             if (heroId && !this._heroId && allSelectHeroDone) {

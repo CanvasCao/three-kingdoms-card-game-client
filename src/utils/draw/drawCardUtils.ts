@@ -18,6 +18,8 @@ import {CARD_CONFIG, CARD_NUM_DESC, CARD_TYPE, CARD_TYPE_CONFIG, EQUIPMENT_TYPE}
 import {Card} from "../../types/card";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
+import {getCardText, splitText} from "../string/stringUtils";
+import {TOOL_TIP_CARD_MAX_LENGTH} from "../../config/stringConfig";
 
 const sharedDrawFrontCard = (
     gamingScene: GamingScene,
@@ -35,7 +37,6 @@ const sharedDrawFrontCard = (
     const cardImgObj = gamingScene.add.image(x, y, 'card').setInteractive();
     cardImgObj.displayHeight = sizeConfig.controlCard.height;
     cardImgObj.displayWidth = sizeConfig.controlCard.width;
-    cardImgObj.setTint(Number(COLOR_CONFIG.card));
     cardImgObj.setDepth(depth)
     cardImgObj.setData("offsetX", 0)
     cardImgObj.setData("offsetY", 0)
@@ -44,8 +45,8 @@ const sharedDrawFrontCard = (
     cardImgObj.on('pointerover', () => {
         gamingScene.toolTip?.hoverInToShowToolTip({
             card,
-            toolTipType: TOOL_TIP_CARD_TYPE.CARD,
-            isToPublic,
+            text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
+            toolTipType: isToPublic ? TOOL_TIP_CARD_TYPE.PUBLIC_CARD : TOOL_TIP_CARD_TYPE.CARD,
             x: cardImgObj.x,
             y: cardImgObj.y
         });

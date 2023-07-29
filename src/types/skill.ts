@@ -8,3 +8,9 @@ export type SkillNameConfigValue = {
     EN: string,
 }
 export type SkillNameConfig = { [key: string]: { [key: string]: SkillNameConfigValue } }
+
+export type SkillDescConfigValue = {
+    CN: string,
+    EN: string,
+}
+export type SkillDescConfig = { [key: string]: { [key: string]: SkillDescConfigValue } }
