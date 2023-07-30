@@ -16,7 +16,6 @@ export type GameStatus = {
     taoResponses: TaoResponse[],
     scrollResponses: ScrollResponse[],
     wuxieSimultaneousResponse: WuxieSimultaneousResponse,
-    weaponResponses: WeaponResponse[],
 
     wugufengdengCards: WugufengdengCard[]
 

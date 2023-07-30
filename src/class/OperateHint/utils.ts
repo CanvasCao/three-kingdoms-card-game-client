@@ -146,11 +146,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         } else {
             return i18(i18Config.WAIT_WU_XIE)
         }
-    } else if (responseType == RESPONSE_TYPE_CONFIG.WEAPON) {
-        if (gameStatus.weaponResponses[0].weaponCardKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
-            return i18(i18Config.RESPONSE_QING_LONG_YAN_YUE_DAO)
-        }
-    } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+    }else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
         const curScrollResponse = gameStatus.scrollResponses[0]
         if (!curScrollResponse.isEffect) {
             throw new Error(curScrollResponse.actualCard.key + "未生效")

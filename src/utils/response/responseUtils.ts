@@ -21,8 +21,6 @@ const getResponseType = (gameStatus: GameStatus): RESPONSE_TYPE_CONFIG_VALUES | 
         return RESPONSE_TYPE_CONFIG.SKILL;
     } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
         return RESPONSE_TYPE_CONFIG.WUXIE;
-    } else if (gameStatus.weaponResponses.length > 0) {
-        return RESPONSE_TYPE_CONFIG.WEAPON;
     } else if (gameStatus.scrollResponses.length > 0) {
         return RESPONSE_TYPE_CONFIG.SCROLL;
     }
@@ -78,14 +76,6 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             wuxieTargetCardId: lastChainItem.actualCard.cardId,// 为了校验无懈可击是否冲突
             cardIsAbleValidate: (card) => [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key].includes(card?.key!),
             okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.key === SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key
-        }
-    } else if (responseType == RESPONSE_TYPE_CONFIG.WEAPON) {
-        if (gameStatus.weaponResponses[0].weaponCardKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
-            return {
-                targetId: gameStatus.weaponResponses[0].targetId,
-                cardIsAbleValidate: (card) => ALL_SHA_CARD_NAMES.includes(card?.key!),
-                okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_NAMES.includes(gameFEStatus.actualCard?.key!)
-            }
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
         const curScrollResponse = gameStatus.scrollResponses[0]

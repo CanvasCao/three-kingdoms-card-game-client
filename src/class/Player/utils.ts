@@ -42,11 +42,6 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                     hintText = i18(SCROLL_CARDS_CONFIG.WU_XIE_KE_JI)
                 }
                 break;
-            case RESPONSE_TYPE_CONFIG.WEAPON:
-                if (gameStatus.weaponResponses[0].originId == playerId) {
-                    hintText = i18(CARD_CONFIG[gameStatus.weaponResponses[0].weaponCardKey])
-                }
-                break;
             case RESPONSE_TYPE_CONFIG.SCROLL:
                 const curScrollResponse = gameStatus.scrollResponses[0]
                 if (curScrollResponse.originId == playerId) {

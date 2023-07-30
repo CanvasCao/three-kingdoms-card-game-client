@@ -27,9 +27,6 @@ const getIsMyResponseTurn = (gameStatus: GameStatus) => {
     if (responseType === RESPONSE_TYPE_CONFIG.WUXIE) {
         return gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.includes(getMyPlayerId())
     }
-    if (responseType === RESPONSE_TYPE_CONFIG.WEAPON) {
-        return gameStatus.weaponResponses[0]?.originId == getMyPlayerId();
-    }
     if (responseType === RESPONSE_TYPE_CONFIG.SCROLL) {
         // 不需要判断isEffect 如果没有人想出无懈可击 锦囊肯定生效了
         return gameStatus.scrollResponses[0].originId == getMyPlayerId() &&
@@ -48,7 +45,6 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
         gameStatus.taoResponses.length <= 0 &&
         gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length <= 0 &&
         gameStatus.scrollResponses.length <= 0 &&
-        gameStatus.weaponResponses.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 
