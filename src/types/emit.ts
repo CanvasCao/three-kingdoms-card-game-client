@@ -93,6 +93,5 @@ export type EmitNotifyAddToPlayerCardData = {
 export type EmitNotifyAddLinesData = {
     fromId: string,
     toIds?: string[],
-    cards: Card[],
     actualCard: Card,
 }

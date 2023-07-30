@@ -24,14 +24,15 @@ export class NofityAnimationManager {
 
     addLines(data: EmitNotifyAddLinesData) {
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
+        const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
         const fromId = data.fromId;
+        const actualCard = data.actualCard;
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.playerId == fromId)!;
         let toIds = data.toIds || [];
 
-        //借刀杀人 貂蝉决斗
-        if (toIds && attachFEInfoToCard(data?.actualCard)?.needAActionToB) {
+        // 借刀杀人 貂蝉决斗
+        if (toIds && actualCard && attachFEInfoToCard(actualCard)?.needAActionToB) {
             const targetBoardPlayer1 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[0])!;
             const targetBoardPlayer2 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[1])!;
 
@@ -49,7 +50,7 @@ export class NofityAnimationManager {
         }
 
         // AOE
-        if (attachFEInfoToCard(data?.actualCard)?.noNeedSetTargetDueToTargetAll) {
+        if (actualCard && attachFEInfoToCard(actualCard)?.noNeedSetTargetDueToTargetAll) {
             toIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
         }
         // 其他正确指定目标的情况
@@ -73,7 +74,7 @@ export class NofityAnimationManager {
 
         if (isMe) {
             data.cards.forEach((card) => {
-                const originIndex= prevGameStatus.players[getMyPlayerId()].cards.findIndex((prev_card) => prev_card.cardId === card.cardId)
+                const originIndex = prevGameStatus.players[getMyPlayerId()].cards.findIndex((prev_card) => prev_card.cardId === card.cardId)
                 handCardsWithOrder.push({card, originIndex})
                 handCardsWithOrder = handCardsWithOrder.sort((a, b) => a.originIndex - b.originIndex)
             })
