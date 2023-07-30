@@ -15,7 +15,6 @@ export interface WuXieResponseInfo extends BaseResponseInfo {
 }
 
 export interface SkillResponseInfo extends BaseResponseInfo {
-    skillTargetIds?: string[]
 }
 
 export type ResponseInfo = BasicCardResponseInfo | WuXieResponseInfo | SkillResponseInfo | undefined

@@ -154,6 +154,11 @@ export const i18Config = {
         EN: "Obtain one card from the source of the damage",
         CN: '获得伤害来源的一张牌'
     },
+    RESPONSE_SKILL_CI_XIONG_SHUANG_GU_JIAN: {
+        EN: "{name} activates the Binary Sword. Please discard one card or click Cancel to allow {name} to draw one card.",
+        CN: '{name}发动雌雄双股剑，请弃置一张牌或点取消让{name}摸一张牌'
+    },
+
     // 操作提示
     // 弃牌
     SELECT_THROW_CARDS: {

@@ -16,6 +16,7 @@ import {getCurrentPlayer, getPlayerDisplayName, getNeedTargetPlayersNumberMinMax
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {getResponseType} from "../../utils/response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
+import {findOnGoingUseStrikeEvent} from "../../utils/event/eventUtils";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
@@ -93,7 +94,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
 
         const skillNameKey = gameStatus.skillResponse!.skillNameKey;
         const player = gameStatus.players[gameStatus.skillResponse!.playerId];
-        const skillName = i18(SKILL_NAMES_CONFIG[player.heroId][skillNameKey])
+        const skillName = i18(SKILL_NAMES_CONFIG[player.heroId][skillNameKey]) || i18(CARD_CONFIG[skillNameKey])
         const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
 
         if (chooseToReleaseSkill === undefined) {
@@ -105,6 +106,10 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_SKILL_LIU_LI)
             } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI002.FAN_KUI.key) {
                 return i18(i18Config.RESPONSE_SKILL_FAN_KUI)
+            } else if (skillNameKey == CARD_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
+                const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
+                const player = gameStatus.players[onGoingUseStrikeEvent.originId]!
+                return i18(i18Config.RESPONSE_SKILL_CI_XIONG_SHUANG_GU_JIAN, {name: getPlayerDisplayName(gameStatus, player.playerId)})
             }
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {

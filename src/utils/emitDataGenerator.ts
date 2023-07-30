@@ -53,7 +53,6 @@ const generateNoResponse = () => {
 
 const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitResponseData => {
     const info = getMyResponseInfo(gameStatus, gameFEStatus)
-
     return {
         chooseToResponse: true,
         cards: gameFEStatus.selectedCards,
@@ -61,7 +60,7 @@ const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus)
         originId: getMyPlayerId(),
         targetId: (info as BasicCardResponseInfo).targetId,
         wuxieTargetCardId: (info as WuXieResponseInfo)?.wuxieTargetCardId,
-        skillTargetIds: (info as SkillResponseInfo)?.skillTargetIds
+        skillTargetIds: gameFEStatus.selectedTargetPlayers?.map(p => p.playerId)
     }
 }
 

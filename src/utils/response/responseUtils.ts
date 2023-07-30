@@ -48,24 +48,28 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
         let cardIsAbleValidate = (card: Card) => false
         let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => true
 
-        if (skillNameKey == SKILL_NAMES_CONFIG.SHU006.TIE_JI.key) {
-        } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI002.GUI_CAI.key) {
-            if (chooseToReleaseSkill == undefined) { // 是否发动鬼才
-            } else if (chooseToReleaseSkill) { // 发动鬼才 选择手牌
-                cardIsAbleValidate = (card: Card) => true
-                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
+        if (chooseToReleaseSkill == undefined) {
+            return {
+                cardIsAbleValidate,
+                okButtonIsAbleValidate,
             }
+        }
+
+        if (skillNameKey == SKILL_NAMES_CONFIG.WEI002.GUI_CAI.key) {
+            cardIsAbleValidate = (card: Card) => true
+            okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
         } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006.LIU_LI.key) {
-            if (chooseToReleaseSkill == undefined) {
-            } else if (chooseToReleaseSkill) {
-                cardIsAbleValidate = (card: Card) => true
-                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1 && getSelectedTargetNumber(gameFEStatus) === 1
-            }
+            cardIsAbleValidate = (card: Card) => true
+            okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) =>
+                getSelectedCardNumber(gameFEStatus) === 1 &&
+                getSelectedTargetNumber(gameFEStatus) === 1
+        } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
+            cardIsAbleValidate = (card: Card) => true
+            okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
         }
         return {
             cardIsAbleValidate,
             okButtonIsAbleValidate,
-            skillTargetIds: gameFEStatus.selectedTargetPlayers.map(p => p.playerId)
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
         const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain
