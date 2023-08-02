@@ -3,11 +3,15 @@ import {CARD_DESC_CONFIG} from "../../config/cardDescConfig";
 import {HERO_NAMES_CONFIG} from "../../config/heroConfig";
 import {SKILL_DESC_CONFIG, SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
-import {i18} from "../../i18n/i18nUtils";
+import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 import {Player} from "../../types/player";
 
 function truncateStringIntoArray(inputString: string, maxLength: number) {
+    return getI18Lan() == I18LANS.EN ? truncateEnIntoArray(inputString, maxLength) : truncateCnIntoArray(inputString, maxLength)
+}
+
+function truncateEnIntoArray(inputString: string, maxLength: number) {
     const words = inputString.split(' ');
     const truncatedArray = [];
     let currentChunk = '';
@@ -26,6 +30,14 @@ function truncateStringIntoArray(inputString: string, maxLength: number) {
     }
 
     return truncatedArray;
+}
+
+function truncateCnIntoArray(inputString: string, maxLength: number) {
+    const result = [];
+    for (let i = 0; i < inputString.length; i += maxLength) {
+        result.push(inputString.slice(i, i + maxLength));
+    }
+    return result;
 }
 
 function generateEmptyString(length: number) {
@@ -59,6 +71,7 @@ const getCardText = (card: Card) => {
     resArr.push(i18(CARD_DESC_CONFIG[card.key]))
     return resArr.join('\n');
 }
+
 const getHeroSkillsText = (player: Player) => {
     const {skills, heroId} = player
     const resArr: string[] = []
@@ -73,6 +86,7 @@ const getHeroSkillsText = (player: Player) => {
             resArr.push('\r')
         }
     })
+    console.log(resArr)
     return resArr.join('\n');
 }
 
