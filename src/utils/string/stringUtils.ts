@@ -67,8 +67,8 @@ const getHeroSkillsText = (player: Player) => {
     resArr.push('\r')
 
     skills.forEach((skill, index) => {
-        resArr.push(i18(SKILL_NAMES_CONFIG[heroId][skill.key]))
-        resArr.push(i18(SKILL_DESC_CONFIG[heroId][skill.key]))
+        resArr.push(i18(SKILL_NAMES_CONFIG[skill.key]))
+        resArr.push(i18(SKILL_DESC_CONFIG[skill.key]))
         if (index !== skills.length - 1) {
             resArr.push('\r')
         }

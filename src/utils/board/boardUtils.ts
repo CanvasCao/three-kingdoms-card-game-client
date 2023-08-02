@@ -13,7 +13,7 @@ const getCardBoardType = (gameStatus: GameStatus, responseType: RESPONSE_TYPE_CO
         const skillResponse = gameStatus.skillResponse;
         if (skillResponse &&
             skillResponse.playerId === getMyPlayerId() &&
-            skillResponse.skillNameKey == SKILL_NAMES_CONFIG.WEI002.FAN_KUI.key &&
+            skillResponse.skillNameKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key &&
             skillResponse.chooseToReleaseSkill) {
             return BOARD_TYPE.FAN_KUI;
         }
@@ -54,8 +54,7 @@ const getCardBoardTitle = (gameStatus: GameStatus, responseType: RESPONSE_TYPE_C
 
     // 反馈
     if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
-        const originPlayer = gameStatus.players[gameStatus.skillResponse?.playerId!]
-        titleName = i18(SKILL_NAMES_CONFIG[originPlayer.heroId][gameStatus.skillResponse!.skillNameKey])
+        titleName = i18(SKILL_NAMES_CONFIG[gameStatus.skillResponse!.skillNameKey])
     } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
         const scrollResponse = gameStatus.scrollResponses[0]!
         titleName = i18(CARD_CONFIG[scrollResponse.actualCard.key])

@@ -63,7 +63,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     // 我响应技能
     if (isMyResponseTurn && responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         if (
-            gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006.LIU_LI.key &&
+            gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
             gameStatus.skillResponse!.chooseToReleaseSkill &&
             getSelectedCardNumber(gameFEStatus) == 1
         ) {
@@ -199,7 +199,7 @@ const getNeedTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: 
     const responseType = getResponseType(gameStatus)
 
     if (responseType == RESPONSE_TYPE_CONFIG.SKILL &&
-        gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006.LIU_LI.key &&
+        gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
         gameStatus.skillResponse!.chooseToReleaseSkill
     ) {
         return {min: 1, max: 1}

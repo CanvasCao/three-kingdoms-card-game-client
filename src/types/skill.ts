@@ -7,10 +7,10 @@ export type SkillNameConfigValue = {
     CN: string,
     EN: string,
 }
-export type SkillNameConfig = { [key: string]: { [key: string]: SkillNameConfigValue } }
+export type SkillNameConfig = { [key: string]: SkillNameConfigValue }
 
 export type SkillDescConfigValue = {
     CN: string,
     EN: string,
 }
-export type SkillDescConfig = { [key: string]: { [key: string]: SkillDescConfigValue } }
+export type SkillDescConfig = { [key: string]: SkillDescConfigValue }

@@ -159,7 +159,7 @@ const generatePublicCardMessage = (
         EmitNotifyAddToPublicCardData) => {
     if (skillNameKey) {
         const player = gameStatus.players[originId]!
-        const skillName = i18(SKILL_NAMES_CONFIG[player.heroId][skillNameKey]) || i18(CARD_CONFIG[skillNameKey])
+        const skillName = i18(SKILL_NAMES_CONFIG[skillNameKey]) || i18(CARD_CONFIG[skillNameKey])
         const originName = player.playerName;
         return `${originName} ${skillName}`
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PLAY) {
@@ -176,7 +176,7 @@ const generatePublicCardMessage = (
         }
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PANDING) {
         const pandingPlayer = gameStatus.players[pandingPlayerId]
-        const pandingName = i18(CARD_CONFIG[pandingNameKey] || SKILL_NAMES_CONFIG[pandingPlayer.heroId][pandingNameKey])
+        const pandingName = i18(CARD_CONFIG[pandingNameKey] || SKILL_NAMES_CONFIG[pandingNameKey])
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT, {
             playerName: pandingPlayer.playerName,
             pandingName

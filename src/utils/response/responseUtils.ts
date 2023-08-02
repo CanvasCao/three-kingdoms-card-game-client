@@ -53,10 +53,10 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             }
         }
 
-        if (skillNameKey == SKILL_NAMES_CONFIG.WEI002.GUI_CAI.key) {
+        if (skillNameKey == SKILL_NAMES_CONFIG.WEI002_GUI_CAI.key) {
             cardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
-        } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006.LIU_LI.key) {
+        } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
             cardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) =>
                 getSelectedCardNumber(gameFEStatus) === 1 &&

@@ -331,7 +331,7 @@ export class BoardPlayer {
             skillImage.setOrigin(0.5, 1)
             this.phaserGroup.push(skillImage);
 
-            let skillName = i18(SKILL_NAMES_CONFIG[this._heroId][skill.key]);
+            let skillName = i18(SKILL_NAMES_CONFIG[skill.key]);
             let fontSize = 16
             if (getI18Lan() == I18LANS.EN) {
                 fontSize = (skills.length > 1) ? 9 : 16

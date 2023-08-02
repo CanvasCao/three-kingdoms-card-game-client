@@ -1,6 +1,6 @@
-import { HeroNameConfig } from "../types/hero"
+import {HeroNameConfig} from "../types/hero"
 
-const HERO_NAMES_CONFIG:HeroNameConfig = {
+const HERO_NAMES_CONFIG: HeroNameConfig = {
     "WEI001": {
         CN: '曹操',
         EN: 'Cao Cao'

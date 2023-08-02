@@ -56,7 +56,7 @@ const getCanSelectEquipment = (gameStatus: GameStatus, gameFEStatus: GameFEStatu
     if (isMyResponseTurn) {
         const responseType = getResponseType(gameStatus)
         if (responseType === RESPONSE_TYPE_CONFIG.SKILL &&
-            gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006.LIU_LI.key &&
+            gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
             gameStatus.skillResponse!.chooseToReleaseSkill
         ) {
             return true
