@@ -232,8 +232,8 @@ export class PlayerCardsBoard {
         this._responseType = responseType;
 
         const cardBoardType = getCardBoardType(gameStatus, responseType)
-
-        if (cardBoardType && !this.baseBoard.show) {
+        const needShowBoard = !!cardBoardType;
+        if (needShowBoard && !this.baseBoard.show) {
             const cardBoardDisplayArea = getCardBoardDisplayArea(cardBoardType);
             const targetPlayer = getCardBoardTargetPlayer(gameStatus, responseType)
             const title = getCardBoardTitle(gameStatus, responseType, targetPlayer!)
@@ -243,7 +243,7 @@ export class PlayerCardsBoard {
 
             this.drawTargetCards(gameStatus, cardBoardDisplayArea, targetPlayer!)
             this.baseBoard.addContent(this.boardContent);
-        } else if (!cardBoardType && this.baseBoard.show) {
+        } else if (!needShowBoard && this.baseBoard.show) {
             this.baseBoard.hideBoard();
         }
     }

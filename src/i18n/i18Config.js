@@ -104,6 +104,10 @@ export const i18Config = {
         EN: "{name} played [Strike] on you, please play 1 [Dodge]",
         CN: "{name}对你出杀，请打出1张闪"
     },
+    RESPONSE_MULTI_SHAN: {
+        EN: "{name} played [Strike] on you, need play {number} [Dodge] to dodge",
+        CN: "{name}对你出杀，需要打出{number}张闪才能闪避"
+    },
     RESPONSE_QING_LONG_YAN_YUE_DAO: {
         EN: "Do you want to launch the special effects of the Green Dragon Sword and continue to strike",
         CN: "是否发动青龙偃月刀，继续出杀"

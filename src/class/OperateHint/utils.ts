@@ -88,10 +88,10 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         return i18(i18Config.RESPONSE_TAO, {number, name})
     } else if (responseType == RESPONSE_TYPE_CONFIG.SHAN) {
         const targetId = gameStatus.shanResponse!.targetId;
+        const number = gameStatus.shanResponse!.cardNumber;
         const name = getPlayerDisplayName(gameStatus, targetId);
-        return i18(i18Config.RESPONSE_SHAN, {name})
+        return (number == 1) ? i18(i18Config.RESPONSE_SHAN, {name}) : i18(i18Config.RESPONSE_MULTI_SHAN, {name, number})
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
-
         const skillNameKey = gameStatus.skillResponse!.skillNameKey;
         const skillName = i18(SKILL_NAMES_CONFIG[skillNameKey]) || i18(CARD_CONFIG[skillNameKey])
         const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
@@ -145,7 +145,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         } else {
             return i18(i18Config.WAIT_WU_XIE)
         }
-    }else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+    } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
         const curScrollResponse = gameStatus.scrollResponses[0]
         if (!curScrollResponse.isEffect) {
             throw new Error(curScrollResponse.actualCard.key + "未生效")
