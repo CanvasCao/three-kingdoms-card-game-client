@@ -1,4 +1,4 @@
-import {sizeConfig} from "../../config/sizeConfig";
+ import {sizeConfig} from "../../config/sizeConfig";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";

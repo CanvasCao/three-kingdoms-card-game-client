@@ -64,7 +64,7 @@ const getCanSelectEquipment = (gameStatus: GameStatus, gameFEStatus: GameFEStatu
 
         if (responseType === RESPONSE_TYPE_CONFIG.CARD &&
             (gameStatus.cardResponse?.actionCardKey == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key ||
-                gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key) &&
+                gameStatus.cardResponse?.actionCardKey == SCROLL_CARDS_CONFIG.JUE_DOU.key) &&
             eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
             return true
