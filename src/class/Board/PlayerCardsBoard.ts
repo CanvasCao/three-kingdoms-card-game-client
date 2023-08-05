@@ -19,9 +19,8 @@ import {
     getCardBoardTitle,
     getCardBoardType,
 } from "../../utils/board/boardUtils";
-import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
+import {BOARD_TYPE, PLAYER_BOARD_ACTION} from "../../config/boardConfig";
 import {getResponseType} from "../../utils/response/responseUtils";
-import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from "./BaseBoard";
 
@@ -45,7 +44,7 @@ export class PlayerCardsBoard {
     boardContent: PhaserGameObject[];
 
     // innerState
-    _responseType: string | undefined;
+    _cardBoardType: string | undefined;
 
     baseBoard: BaseBoard;
     initX: number;
@@ -63,7 +62,7 @@ export class PlayerCardsBoard {
         this.initX = this.baseBoard.initX;
         this.initY = this.baseBoard.initY;
 
-        this._responseType = '';
+        this._cardBoardType = '';
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
@@ -203,40 +202,34 @@ export class PlayerCardsBoard {
         card: Card,
         cardAreaType: CardAreaType, // NofityAnimationManager判断正反
     ): EmitCardBoardData {
-        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-
         return {
             originId: getMyPlayerId(),
             targetId: targetPlayer.playerId,
             card: card,
-            type: this._getEmitType(gameStatus) as CardBoardActionType,
+            type: this._getEmitType() as CardBoardActionType,
             cardAreaType,
         }
     }
 
-    _getEmitType(gameStatus: GameStatus) {
-        if (this._responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+    _getEmitType() {
+        if (this._cardBoardType == BOARD_TYPE.SHUN || this._cardBoardType == BOARD_TYPE.FAN_KUI) {
             return PLAYER_BOARD_ACTION.MOVE
-        } else if (this._responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
-            const scrollResponse = gameStatus.scrollResponses[0]
-            if (scrollResponse?.actualCard?.key == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
-                return PLAYER_BOARD_ACTION.REMOVE
-            } else if (scrollResponse?.actualCard?.key == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
-                return PLAYER_BOARD_ACTION.MOVE
-            }
+        } else if (this._cardBoardType == BOARD_TYPE.CHAI || this._cardBoardType == BOARD_TYPE.QI_LIN_GONG) {
+            return PLAYER_BOARD_ACTION.REMOVE
         }
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
         const responseType = getResponseType(gameStatus)
-        this._responseType = responseType;
-
         const cardBoardType = getCardBoardType(gameStatus, responseType)
+        this._cardBoardType = cardBoardType;
+
         const needShowBoard = !!cardBoardType;
+
         if (needShowBoard && !this.baseBoard.show) {
             const cardBoardDisplayArea = getCardBoardDisplayArea(cardBoardType);
-            const targetPlayer = getCardBoardTargetPlayer(gameStatus, responseType)
-            const title = getCardBoardTitle(gameStatus, responseType, targetPlayer!)
+            const targetPlayer = getCardBoardTargetPlayer(gameStatus, cardBoardType)
+            const title = getCardBoardTitle(gameStatus, cardBoardType, targetPlayer!)
 
             this.baseBoard.showBoard();
             this.baseBoard.setTitle(title)
@@ -247,5 +240,4 @@ export class PlayerCardsBoard {
             this.baseBoard.hideBoard();
         }
     }
-
 }

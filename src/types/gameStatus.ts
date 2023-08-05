@@ -77,13 +77,6 @@ export type WuxieSimultaneousResponse = {
     wuxieChain: WuxieChain,
 }
 
-export type WeaponResponse = {
-    originId: string,
-    targetId: string,
-    weaponCardKey: string,
-}
-
-
 export type WuxieChain = {
     cards: Card[],
     actualCard: Card,
