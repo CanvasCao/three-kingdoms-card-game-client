@@ -62,10 +62,16 @@ const getCanSelectEquipment = (gameStatus: GameStatus, gameFEStatus: GameFEStatu
             return true
         }
 
+        if (responseType === RESPONSE_TYPE_CONFIG.CARD &&
+            (gameStatus.cardResponse?.actionCardKey == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key ||
+                gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key) &&
+            eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
+        ) {
+            return true
+        }
+
         if (responseType === RESPONSE_TYPE_CONFIG.SCROLL &&
-            (gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key ||
-                gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key ||
-                gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) &&
+            gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key &&
             eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
             return true

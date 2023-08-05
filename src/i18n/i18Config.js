@@ -143,7 +143,7 @@ export const i18Config = {
 
     // SKILL
     RESPONSE_SKILL_OR_NOT: {
-        EN: "Do you activate the {skillName} skill?",
+        EN: "Do you activate the {skillName}?",
         CN: "是否发动 {skillName}？"
     },
     RESPONSE_SKILL_GUI_CAI: {

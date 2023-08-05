@@ -20,7 +20,7 @@ import {findOnGoingUseStrikeEvent} from "../../utils/event/eventUtils";
 
 const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const actualCard = gameFEStatus.actualCard
-    const actualCardCNName = actualCard?.key || ''
+    const actualCardKey = actualCard?.key || ''
     const actualCardName = actualCard ? i18(CARD_CONFIG[actualCard.key]) : '';
     const equipmentType = actualCard?.equipmentType;
     const selectedSkillNameKey = gameFEStatus.selectedSkillNameKey;
@@ -30,11 +30,11 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
         return (i18(i18Config.PLEASE_SELECT_A_CARD))
     }
     // 基本牌
-    else if (ALL_SHA_CARD_KEYS.includes(actualCardCNName)) {
+    else if (ALL_SHA_CARD_KEYS.includes(actualCardKey)) {
         const minMax = getNeedTargetPlayersNumberMinMax(gameStatus, gameFEStatus)
         const replaceNumber = (minMax.min == minMax.max) ? minMax.min : `${minMax.min}-${minMax.max}`;
         return (i18(i18Config.SELECT_SHA, {number: replaceNumber}))
-    } else if (actualCardCNName == CARD_CONFIG.TAO.key) {
+    } else if (actualCardKey == CARD_CONFIG.TAO.key) {
         return (i18(i18Config.SELECT_TAO))
     }
     // 装备牌
@@ -46,30 +46,30 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
         return (i18(i18Config.SELECT_PLUS_HORSE, {name: actualCardName}))
     }
     // 即时锦囊
-    else if (actualCardCNName == SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.key) {
+    else if (actualCardKey == SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.key) {
         return (i18(i18Config.SELECT_WU_ZHONG_SHENG_YOU))
-    } else if (actualCardCNName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
+    } else if (actualCardKey == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
         return (i18(i18Config.SELECT_JIE_DAO_SHA_REN))
-    } else if (actualCardCNName == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
+    } else if (actualCardKey == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
         return (i18(i18Config.SELECT_JUE_DOU))
     } else if ([
         SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key,
         SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key,
         SCROLL_CARDS_CONFIG.TAO_YUAN_JIE_YI.key,
         SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.key,
-    ].includes(actualCardCNName)) {
+    ].includes(actualCardKey)) {
         return (i18(i18Config.SELECT_AOE, {name: actualCardName}))
-    } else if (actualCardCNName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
+    } else if (actualCardKey == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
         return (i18(i18Config.SELECT_GUO_HE_CHAI_QIAO))
-    } else if (actualCardCNName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
+    } else if (actualCardKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
         return (i18(i18Config.SELECT_SHUN_SHOU_QIAN_YANG))
     }
     // 延时锦囊
-    else if (actualCardCNName == SCROLL_CARDS_CONFIG.SHAN_DIAN.key) {
+    else if (actualCardKey == SCROLL_CARDS_CONFIG.SHAN_DIAN.key) {
         return (i18(i18Config.SELECT_SHAN_DIAN))
-    } else if (actualCardCNName == SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key) {
+    } else if (actualCardKey == SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key) {
         return (i18(i18Config.SELECT_LE_BU_SI_SHU))
-    } else if (actualCardCNName == SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
+    } else if (actualCardKey == SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
         return (i18(i18Config.SELECT_BING_LIANG_CUN_DUAN))
     } else if (selectedSkillNameKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
         return (i18(i18Config.SELECT_ZHANG_BA_SHE_MAO))
@@ -88,18 +88,21 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         return i18(i18Config.RESPONSE_TAO, {number, name})
     } else if (responseType == RESPONSE_TYPE_CONFIG.CARD) {
         const cardResponse = gameStatus.cardResponse!
+        const actionCardKey = cardResponse.actionCardKey
         const targetId = cardResponse.targetId;
         const name = getPlayerDisplayName(gameStatus, targetId);
 
-        if (ALL_SHA_CARD_KEYS.includes(cardResponse.actionCardKey)) {
+        if (ALL_SHA_CARD_KEYS.includes(actionCardKey)) {
             const number = cardResponse.cardNumber;
             return (number == 1) ?
                 i18(i18Config.RESPONSE_SHAN, {name}) :
                 i18(i18Config.RESPONSE_MULTI_SHAN, {name, number})
-        } else if (cardResponse.actionCardKey == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key) {
+        } else if (actionCardKey == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key) {
             return i18(i18Config.RESPONSE_WAN_JIAN_QI_FA, {name})
-        } else if (cardResponse.actionCardKey == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key) {
+        } else if (actionCardKey == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key) {
             return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN, {name})
+        } else if (actionCardKey == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
+            return i18(i18Config.RESPONSE_JUE_DOU, {name})
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         const skillNameKey = gameStatus.skillResponse!.skillNameKey;
@@ -159,10 +162,8 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         const curScrollResponse = gameStatus.scrollResponses[0]
         if (!curScrollResponse.isEffect) {
             throw new Error(curScrollResponse.actualCard.key + "未生效")
-        } else if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
-            const name = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
-            return i18(i18Config.RESPONSE_JUE_DOU, {name})
-        } else if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
+        }
+        if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
             const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus).playerId)
             const targetName = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN, {originName, targetName})
