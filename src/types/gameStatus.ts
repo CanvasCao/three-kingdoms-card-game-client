@@ -1,5 +1,5 @@
 import {Card, WugufengdengCard} from "./card";
-import {DamageEvent, EventTimingSkill, PandingEvent, UseStrikeEvent} from "./event";
+import {DamageEvent, EventTimingSkill, PandingEvent, ResponseCardEvent, UseStrikeEvent} from "./event";
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
@@ -11,7 +11,7 @@ export type GameStatus = {
     action: OneTargetAction | MultiTargetsAction,
 
     // Response
-    shanResponse: ShanResponse | undefined, // shanResponse不为undefined就需要出闪
+    cardResponse: CardResponse | undefined,
     skillResponse: SkillResponse | undefined,
     taoResponses: TaoResponse[],
     scrollResponses: ScrollResponse[],
@@ -21,6 +21,7 @@ export type GameStatus = {
 
     // events
     useStrikeEvents: UseStrikeEvent[],
+    responseCardEvents: ResponseCardEvent[],
     pandingEvent: PandingEvent,
     damageEvent: DamageEvent,
 
@@ -44,22 +45,23 @@ export type OneTargetAction = {
 }
 
 export type MultiTargetsAction = {
-    cards:Card[],
+    cards: Card[],
     actualCard: Card,
     originId: string,
     targetIds: string[],
 }
 
 // response
-export type ShanResponse = {
+export type CardResponse = {
     originId: string,
     targetId: string,
     cardNumber: number,
+    actionCardKey: string,
+    responseCardKeys: string[],
 }
+export type TaoResponse = CardResponse
 
 export type SkillResponse = EventTimingSkill
-
-export type TaoResponse = ShanResponse
 
 export type ScrollResponse = {
     originId: string,

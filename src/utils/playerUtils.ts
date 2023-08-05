@@ -1,7 +1,7 @@
 import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {
-    ALL_SHA_CARD_NAMES,
+    ALL_SHA_CARD_KEYS,
     DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
@@ -87,7 +87,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
 
     // 使用牌的时候
     // 杀
-    if (ALL_SHA_CARD_NAMES.includes(actualCardName)) {
+    if (ALL_SHA_CARD_KEYS.includes(actualCardName)) {
         let myAttackDistance = mePlayer?.weaponCard?.distance || 1
         if (myAttackDistance >= distanceBetweenMeAndTarget) {
             return true
@@ -206,7 +206,7 @@ const getNeedTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: 
     }
     if (getIsMyPlayTurn(gameStatus) && mePlayer.weaponCard?.key == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.key
         && mePlayer.cards.length == 1
-        && ALL_SHA_CARD_NAMES.includes(mePlayer.cards[0].key)
+        && ALL_SHA_CARD_KEYS.includes(mePlayer.cards[0].key)
     ) {
         return {min: 1, max: 3}
     }

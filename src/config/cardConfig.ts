@@ -400,14 +400,14 @@ const CARD_CONFIG: CardConfig = {
     ...EQUIPMENT_CARDS_CONFIG,
 }
 
-const ALL_SHA_CARD_NAMES = [
+const ALL_SHA_CARD_KEYS = [
     CARD_CONFIG.SHA.key,
     CARD_CONFIG.LEI_SHA.key,
     CARD_CONFIG.HUO_SHA.key,
 ]
 
 export {
-    ALL_SHA_CARD_NAMES,
+    ALL_SHA_CARD_KEYS,
 
     CARD_NUM_DESC,
     CARD_LOCATION,

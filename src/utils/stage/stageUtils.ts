@@ -18,8 +18,8 @@ const getIsMyResponseTurn = (gameStatus: GameStatus) => {
     if (responseType === RESPONSE_TYPE_CONFIG.TAO) {
         return gameStatus.taoResponses[0]?.originId == getMyPlayerId();
     }
-    if (responseType === RESPONSE_TYPE_CONFIG.SHAN) {
-        return gameStatus.shanResponse!.originId == getMyPlayerId();
+    if (responseType === RESPONSE_TYPE_CONFIG.CARD) {
+        return gameStatus.cardResponse!.originId == getMyPlayerId();
     }
     if (responseType === RESPONSE_TYPE_CONFIG.SKILL) {
         return gameStatus.skillResponse!.playerId == getMyPlayerId();
@@ -40,7 +40,7 @@ const getIsMyResponseTurn = (gameStatus: GameStatus) => {
 }
 
 const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
-    return !gameStatus.shanResponse &&
+    return !gameStatus.cardResponse &&
         !gameStatus.skillResponse &&
         gameStatus.taoResponses.length <= 0 &&
         gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length <= 0 &&

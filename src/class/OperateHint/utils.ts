@@ -3,7 +3,7 @@ import {GameFEStatus} from "../../types/gameFEStatus";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {
-    ALL_SHA_CARD_NAMES,
+    ALL_SHA_CARD_KEYS,
     CARD_CONFIG,
     DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
@@ -30,7 +30,7 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
         return (i18(i18Config.PLEASE_SELECT_A_CARD))
     }
     // 基本牌
-    else if (ALL_SHA_CARD_NAMES.includes(actualCardCNName)) {
+    else if (ALL_SHA_CARD_KEYS.includes(actualCardCNName)) {
         const minMax = getNeedTargetPlayersNumberMinMax(gameStatus, gameFEStatus)
         const replaceNumber = (minMax.min == minMax.max) ? minMax.min : `${minMax.min}-${minMax.max}`;
         return (i18(i18Config.SELECT_SHA, {number: replaceNumber}))
@@ -86,11 +86,21 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         const number = gameStatus.taoResponses[0].cardNumber;
         const name = getPlayerDisplayName(gameStatus, targetId);
         return i18(i18Config.RESPONSE_TAO, {number, name})
-    } else if (responseType == RESPONSE_TYPE_CONFIG.SHAN) {
-        const targetId = gameStatus.shanResponse!.targetId;
-        const number = gameStatus.shanResponse!.cardNumber;
+    } else if (responseType == RESPONSE_TYPE_CONFIG.CARD) {
+        const cardResponse = gameStatus.cardResponse!
+        const targetId = cardResponse.targetId;
         const name = getPlayerDisplayName(gameStatus, targetId);
-        return (number == 1) ? i18(i18Config.RESPONSE_SHAN, {name}) : i18(i18Config.RESPONSE_MULTI_SHAN, {name, number})
+
+        if (ALL_SHA_CARD_KEYS.includes(cardResponse.actionCardKey)) {
+            const number = cardResponse.cardNumber;
+            return (number == 1) ?
+                i18(i18Config.RESPONSE_SHAN, {name}) :
+                i18(i18Config.RESPONSE_MULTI_SHAN, {name, number})
+        } else if (cardResponse.actionCardKey == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key) {
+            return i18(i18Config.RESPONSE_WAN_JIAN_QI_FA, {name})
+        } else if (cardResponse.actionCardKey == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key) {
+            return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN, {name})
+        }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         const skillNameKey = gameStatus.skillResponse!.skillNameKey;
         const skillName = i18(SKILL_NAMES_CONFIG[skillNameKey]) || i18(CARD_CONFIG[skillNameKey])
@@ -149,13 +159,6 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         const curScrollResponse = gameStatus.scrollResponses[0]
         if (!curScrollResponse.isEffect) {
             throw new Error(curScrollResponse.actualCard.key + "未生效")
-        }
-        if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key) {
-            const name = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
-            return i18(i18Config.RESPONSE_WAN_JIAN_QI_FA, {name})
-        } else if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key) {
-            const name = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
-            return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN, {name})
         } else if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
             const name = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_JUE_DOU, {name})

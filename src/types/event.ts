@@ -28,6 +28,17 @@ export type DamageEvent = {
     done: boolean
 }
 
+export type ResponseCardEvent = {
+    originId: string,
+    targetId: string,
+    cardNumber: number,
+    responseCardKeys: string[],
+    useOrPlay: string,
+    playStatus: boolean | undefined,
+    eventTimingsWithSkills: EventTimingsWithSkill[],
+    done: boolean,
+}
+
 export type EventTimingsWithSkill = {
     eventTimingName: string,
     eventTimingSkills: EventTimingSkill[],

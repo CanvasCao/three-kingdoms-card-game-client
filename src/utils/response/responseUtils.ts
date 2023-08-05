@@ -2,8 +2,9 @@ import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {ResponseInfo} from "../../types/responseInfo";
 import {
-    ALL_SHA_CARD_NAMES,
+    ALL_SHA_CARD_KEYS,
     BASIC_CARDS_CONFIG,
+    CARD_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
 } from "../../config/cardConfig";
@@ -15,8 +16,8 @@ import {RESPONSE_TYPE_CONFIG, RESPONSE_TYPE_CONFIG_VALUES} from "../../config/re
 const getResponseType = (gameStatus: GameStatus): RESPONSE_TYPE_CONFIG_VALUES | undefined => {
     if (gameStatus.taoResponses.length > 0) {
         return RESPONSE_TYPE_CONFIG.TAO;
-    } else if (gameStatus.shanResponse) {
-        return RESPONSE_TYPE_CONFIG.SHAN;
+    } else if (gameStatus.cardResponse) {
+        return RESPONSE_TYPE_CONFIG.CARD;
     } else if (gameStatus.skillResponse) {
         return RESPONSE_TYPE_CONFIG.SKILL;
     } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
@@ -34,11 +35,30 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             cardIsAbleValidate: (card) => [BASIC_CARDS_CONFIG.TAO.key].includes(card?.key!),
             okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.key === BASIC_CARDS_CONFIG.TAO.key
         }
-    } else if (responseType == RESPONSE_TYPE_CONFIG.SHAN) {
+    } else if (responseType == RESPONSE_TYPE_CONFIG.CARD) {
+        const cardResponse = gameStatus.cardResponse!
+        let cardIsAbleValidate = (card: Card) => false
+        let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => false
+
+        switch (cardResponse.actionCardKey) {
+            case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key:
+            case BASIC_CARDS_CONFIG.SHA.key:
+            case BASIC_CARDS_CONFIG.LEI_SHA.key:
+            case BASIC_CARDS_CONFIG.HUO_SHA.key:
+                cardIsAbleValidate = (card) => [BASIC_CARDS_CONFIG.SHAN.key].includes(card?.key!)
+                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.key === BASIC_CARDS_CONFIG.SHAN.key
+                break;
+            case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key:
+            case SCROLL_CARDS_CONFIG.JUE_DOU.key:
+                cardIsAbleValidate = (card) => ALL_SHA_CARD_KEYS.includes(card?.key!)
+                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key!)
+                break;
+        }
+
         return {
-            targetId: gameStatus.shanResponse!.targetId,
-            cardIsAbleValidate: (card) => [BASIC_CARDS_CONFIG.SHAN.key].includes(card?.key!),
-            okButtonIsAbleValidate: (gameFEStatus) => gameFEStatus.actualCard?.key === BASIC_CARDS_CONFIG.SHAN.key
+            targetId: cardResponse.targetId,
+            cardIsAbleValidate,
+            okButtonIsAbleValidate
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         const skillNameKey = gameStatus.skillResponse!.skillNameKey;
@@ -87,15 +107,9 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
         let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => false
 
         switch (curScrollResponse.actualCard.key) {
-            case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key:
-                cardIsAbleValidate = (card) => [BASIC_CARDS_CONFIG.SHAN.key].includes(card?.key!)
-                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.key === BASIC_CARDS_CONFIG.SHAN.key
-                break;
-            case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key:
-            case SCROLL_CARDS_CONFIG.JUE_DOU.key:
             case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key:
-                cardIsAbleValidate = (card) => ALL_SHA_CARD_NAMES.includes(card?.key!)
-                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_NAMES.includes(gameFEStatus.actualCard?.key!)
+                cardIsAbleValidate = (card) => ALL_SHA_CARD_KEYS.includes(card?.key!)
+                okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key!)
                 break;
         }
         return {
