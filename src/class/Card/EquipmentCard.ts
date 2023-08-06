@@ -1,4 +1,4 @@
- import {sizeConfig} from "../../config/sizeConfig";
+import {sizeConfig} from "../../config/sizeConfig";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
@@ -36,7 +36,7 @@ export class EquipmentCard {
     distanceText: Phaser.GameObjects.Text | null;
     nameText: Phaser.GameObjects.Text | null;
     huaseNumText: Phaser.GameObjects.Text | null;
-    cardObjgroup: Phaser.GameObjects.GameObject[]
+    cardObjGroup: Phaser.GameObjects.GameObject[]
 
     constructor(gamingScene: GamingScene, card: Card, playerId: string) {
         this.obId = uuidv4();
@@ -60,7 +60,7 @@ export class EquipmentCard {
         this.distanceText = null;
         this.nameText = null;
         this.huaseNumText = null;
-        this.cardObjgroup = [];
+        this.cardObjGroup = [];
 
         this.drawEquipmentCard(card);
         this.bindEvent();
@@ -111,10 +111,10 @@ export class EquipmentCard {
         this.nameText = nameText;
         this.huaseNumText = huaseNumText;
 
-        this.cardObjgroup.push(background)
-        this.cardObjgroup.push(distanceText)
-        this.cardObjgroup.push(nameText)
-        this.cardObjgroup.push(huaseNumText)
+        this.cardObjGroup.push(background)
+        this.cardObjGroup.push(distanceText)
+        this.cardObjGroup.push(nameText)
+        this.cardObjGroup.push(huaseNumText)
     }
 
     bindEvent() {
@@ -138,6 +138,7 @@ export class EquipmentCard {
 
                 const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillNameKey &&
                     (gameFEStatus.selectedSkillNameKey !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key)
+
                 // 已经选中技能 或者 响应技能 的情况下 一定是要打出武器
                 if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {
                     if (gameFEStatus.selectedCards.map(c => c.cardId).includes(this.cardId)) { // 已经选中
@@ -149,7 +150,7 @@ export class EquipmentCard {
                         }
                     }
                 }
-                // 没有选中技能 或者响应技能 是要选中丈八蛇矛
+                // 没有选中技能/响应技能/已经选中的是丈八蛇矛 是要选择/反选丈八蛇矛
                 else {
                     if (gameFEStatus.selectedSkillNameKey == this.cardNameKey) {
                         gameFEStatusObserved.unselectSkill()
@@ -164,7 +165,7 @@ export class EquipmentCard {
     destoryAll() {
         this.isDestoryed = true;
 
-        this.cardObjgroup.forEach((obj) => {
+        this.cardObjGroup.forEach((obj) => {
             obj?.destroy();
         })
         this.gamingScene.gameStatusObserved.removeObserver(this);
@@ -198,7 +199,7 @@ export class EquipmentCard {
 
         if (this._isSelected == isSelected) return;
 
-        this.cardObjgroup.forEach((obj) => {
+        this.cardObjGroup.forEach((obj) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {

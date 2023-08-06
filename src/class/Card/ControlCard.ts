@@ -215,8 +215,8 @@ export class ControlCard {
         }
 
         if (isMyResponseTurn) {
-            const {cardIsAbleValidate} = (getMyResponseInfo(gameStatus, gameFEStatus) as BasicCardResponseInfo)
-            if (!cardIsAbleValidate(this.card)) {
+            const {controlCardIsAbleValidate} = (getMyResponseInfo(gameStatus, gameFEStatus) as BasicCardResponseInfo)
+            if (!controlCardIsAbleValidate(this.card)) {
                 setCardDisable()
                 return
             }

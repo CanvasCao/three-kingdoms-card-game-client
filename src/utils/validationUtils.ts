@@ -34,9 +34,14 @@ const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFESt
             return 2;
         }
 
-        if (responseType == RESPONSE_TYPE_CONFIG.SKILL &&
-            gameStatus.skillResponse!.chooseToReleaseSkill === undefined) {
-            return 0
+        if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+            if (gameStatus.skillResponse!.chooseToReleaseSkill === undefined) {
+                return 0
+            } else if (gameStatus.skillResponse!.chooseToReleaseSkill == true) {
+                if (gameStatus.skillResponse?.skillNameKey === EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
+                    return 2;
+                }
+            }
         }
 
         return 1;
@@ -55,11 +60,13 @@ const getCanSelectEquipment = (gameStatus: GameStatus, gameFEStatus: GameFEStatu
 
     if (isMyResponseTurn) {
         const responseType = getResponseType(gameStatus)
-        if (responseType === RESPONSE_TYPE_CONFIG.SKILL &&
-            gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
-            gameStatus.skillResponse!.chooseToReleaseSkill
-        ) {
-            return true
+        if (responseType === RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
+            if (gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
+                return true
+            } else if (gameStatus.skillResponse!.skillNameKey == EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key &&
+                eqCardName !== EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
+                return true
+            }
         }
 
         if (responseType === RESPONSE_TYPE_CONFIG.CARD &&

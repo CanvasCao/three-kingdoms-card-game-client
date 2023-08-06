@@ -166,6 +166,10 @@ export const i18Config = {
         EN: "Please discard one horse card.",
         CN: '请弃置一张坐骑牌'
     },
+    RESPONSE_SKILL_GUAN_SHI_FU: {
+        EN: "You may discard two cards to make this [Strike] still take effect.",
+        CN: '你可以弃置两张牌，令此【杀】依然对其生效。'
+    },
 
     // 操作提示
     // 弃牌

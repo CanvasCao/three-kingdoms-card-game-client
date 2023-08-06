@@ -4,6 +4,7 @@ export type UseStrikeEvent = {
     originId: string,
     targetId: string,
     cantShan: boolean,
+    dodgeStatus: boolean,
     eventTimingsWithSkills: EventTimingsWithSkill[],
 
     // UseStrikeEvents的所有事件done UseStrikeEvents才能被删除 所以需要一个标记记录单个UseStrikeEvent的情况

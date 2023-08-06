@@ -32,12 +32,12 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
     if (responseType == RESPONSE_TYPE_CONFIG.TAO) {
         return {
             targetId: gameStatus.taoResponses[0].targetId,
-            cardIsAbleValidate: (card) => [BASIC_CARDS_CONFIG.TAO.key].includes(card?.key!),
+            controlCardIsAbleValidate: (card) => [BASIC_CARDS_CONFIG.TAO.key].includes(card?.key!),
             okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.key === BASIC_CARDS_CONFIG.TAO.key
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.CARD) {
         const cardResponse = gameStatus.cardResponse!
-        let cardIsAbleValidate = (card: Card) => false
+        let controlCardIsAbleValidate = (card: Card) => false
         let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => false
 
         switch (cardResponse.actionCardKey) {
@@ -45,48 +45,51 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             case BASIC_CARDS_CONFIG.SHA.key:
             case BASIC_CARDS_CONFIG.LEI_SHA.key:
             case BASIC_CARDS_CONFIG.HUO_SHA.key:
-                cardIsAbleValidate = (card) => [BASIC_CARDS_CONFIG.SHAN.key].includes(card?.key!)
+                controlCardIsAbleValidate = (card) => [BASIC_CARDS_CONFIG.SHAN.key].includes(card?.key!)
                 okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.key === BASIC_CARDS_CONFIG.SHAN.key
                 break;
             case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key:
             case SCROLL_CARDS_CONFIG.JUE_DOU.key:
-                cardIsAbleValidate = (card) => ALL_SHA_CARD_KEYS.includes(card?.key!)
+                controlCardIsAbleValidate = (card) => ALL_SHA_CARD_KEYS.includes(card?.key!)
                 okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key!)
                 break;
         }
 
         return {
             targetId: cardResponse.targetId,
-            cardIsAbleValidate,
+            controlCardIsAbleValidate,
             okButtonIsAbleValidate
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         const skillNameKey = gameStatus.skillResponse!.skillNameKey;
         const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
-        let cardIsAbleValidate = (card: Card) => false
+        let controlCardIsAbleValidate = (card: Card) => false
         let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => true
 
         if (chooseToReleaseSkill == undefined) {
             return {
-                cardIsAbleValidate,
+                controlCardIsAbleValidate,
                 okButtonIsAbleValidate,
             }
         }
 
         if (skillNameKey == SKILL_NAMES_CONFIG.WEI002_GUI_CAI.key) {
-            cardIsAbleValidate = (card: Card) => true
+            controlCardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
         } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
-            cardIsAbleValidate = (card: Card) => true
+            controlCardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) =>
                 getSelectedCardNumber(gameFEStatus) === 1 &&
                 getSelectedTargetNumber(gameFEStatus) === 1
         } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
-            cardIsAbleValidate = (card: Card) => true
+            controlCardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
+        }else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
+            controlCardIsAbleValidate = (card: Card) => true
+            okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 2
         }
         return {
-            cardIsAbleValidate,
+            controlCardIsAbleValidate,
             okButtonIsAbleValidate,
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
@@ -94,7 +97,7 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
         const lastChainItem = wuxieChain[wuxieChain.length - 1]
         return {
             wuxieTargetCardId: lastChainItem.actualCard.cardId,// 为了校验无懈可击是否冲突
-            cardIsAbleValidate: (card) => [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key].includes(card?.key!),
+            controlCardIsAbleValidate: (card) => [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key].includes(card?.key!),
             okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => gameFEStatus.actualCard?.key === SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
@@ -103,18 +106,18 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             throw new Error(curScrollResponse.actualCard.key + "未生效")
         }
 
-        let cardIsAbleValidate = (card: Card) => false
+        let controlCardIsAbleValidate = (card: Card) => false
         let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => false
 
         switch (curScrollResponse.actualCard.key) {
             case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key:
-                cardIsAbleValidate = (card) => ALL_SHA_CARD_KEYS.includes(card?.key!)
+                controlCardIsAbleValidate = (card) => ALL_SHA_CARD_KEYS.includes(card?.key!)
                 okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key!)
                 break;
         }
         return {
             targetId: curScrollResponse.targetId,
-            cardIsAbleValidate,
+            controlCardIsAbleValidate,
             okButtonIsAbleValidate
         }
     }

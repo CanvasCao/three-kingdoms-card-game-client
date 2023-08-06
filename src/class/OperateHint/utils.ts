@@ -118,10 +118,12 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_SKILL_LIU_LI)
             } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key) {
                 return i18(i18Config.RESPONSE_SKILL_FAN_KUI)
-            } else if (skillNameKey == CARD_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
+            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
                 const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
                 const player = gameStatus.players[onGoingUseStrikeEvent.originId]!
                 return i18(i18Config.RESPONSE_SKILL_CI_XIONG_SHUANG_GU_JIAN, {name: getPlayerDisplayName(gameStatus, player.playerId)})
+            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
+                return i18(i18Config.RESPONSE_SKILL_GUAN_SHI_FU)
             }
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {

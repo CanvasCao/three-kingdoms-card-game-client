@@ -2,7 +2,7 @@ import {Card} from "./card"
 import {GameFEStatus} from "./gameFEStatus"
 
 export type BaseResponseInfo = {
-    cardIsAbleValidate: (card: Card) => boolean,
+    controlCardIsAbleValidate: (card: Card) => boolean,
     okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => boolean
 }
 
