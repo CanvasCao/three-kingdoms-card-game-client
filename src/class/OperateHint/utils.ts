@@ -124,6 +124,8 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_SKILL_CI_XIONG_SHUANG_GU_JIAN, {name: getPlayerDisplayName(gameStatus, player.playerId)})
             } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
                 return i18(i18Config.RESPONSE_SKILL_GUAN_SHI_FU)
+            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
+                return i18(i18Config.RESPONSE_SKILL_QING_LONG_YAN_YUE_DAO)
             }
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {

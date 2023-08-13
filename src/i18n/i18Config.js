@@ -108,10 +108,6 @@ export const i18Config = {
         EN: "{name} played [Strike] on you, need play {number} [Dodge] to dodge",
         CN: "{name}对你出杀，需要打出{number}张闪才能闪避"
     },
-    RESPONSE_QING_LONG_YAN_YUE_DAO: {
-        EN: "Do you want to launch the special effects of the Green Dragon Sword and continue to strike",
-        CN: "是否发动青龙偃月刀，继续出杀"
-    },
     RESPONSE_WU_XIE: {
         EN: "Play [Cancel] on {name}?",
         CN: "对{name}使用无懈可击？"
@@ -170,7 +166,10 @@ export const i18Config = {
         EN: "You may discard two cards to make this [Strike] still take effect.",
         CN: '你可以弃置两张牌，令此【杀】依然对其生效。'
     },
-
+    RESPONSE_SKILL_QING_LONG_YAN_YUE_DAO: {
+        EN: "Do you want to activate the Green Dragon Sword and continue to strike",
+        CN: '是否发动青龙偃月刀 继续出杀？'
+    },
     // 操作提示
     // 弃牌
     SELECT_THROW_CARDS: {
