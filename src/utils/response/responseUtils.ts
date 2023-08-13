@@ -4,7 +4,6 @@ import {ResponseInfo} from "../../types/responseInfo";
 import {
     ALL_SHA_CARD_KEYS,
     BASIC_CARDS_CONFIG,
-    CARD_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
 } from "../../config/cardConfig";
@@ -20,6 +19,8 @@ const getResponseType = (gameStatus: GameStatus): RESPONSE_TYPE_CONFIG_VALUES | 
         return RESPONSE_TYPE_CONFIG.CARD;
     } else if (gameStatus.skillResponse) {
         return RESPONSE_TYPE_CONFIG.SKILL;
+    } else if (gameStatus.cardBoardResponses.length > 0) {
+        return RESPONSE_TYPE_CONFIG.CARD_BOARD;
     } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
         return RESPONSE_TYPE_CONFIG.WUXIE;
     } else if (gameStatus.scrollResponses.length > 0) {
@@ -88,7 +89,7 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             controlCardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 2
         } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
-            controlCardIsAbleValidate = (card: Card) =>  ALL_SHA_CARD_KEYS.includes(card?.key!)
+            controlCardIsAbleValidate = (card: Card) => ALL_SHA_CARD_KEYS.includes(card?.key!)
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
         }
         return {

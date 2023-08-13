@@ -14,6 +14,7 @@ export type GameStatus = {
     cardResponse: CardResponse | undefined,
     skillResponse: SkillResponse | undefined,
     taoResponses: TaoResponse[],
+    cardBoardResponses: CardBoardResponse[],
     scrollResponses: ScrollResponse[],
     wuxieSimultaneousResponse: WuxieSimultaneousResponse,
 
@@ -60,6 +61,12 @@ export type CardResponse = {
     responseCardKeys: string[],
 }
 export type TaoResponse = CardResponse
+
+export type CardBoardResponse = {
+    originId: string,
+    targetId: string,
+    cardBoardContentKey: string,
+}
 
 export type SkillResponse = EventTimingSkill
 

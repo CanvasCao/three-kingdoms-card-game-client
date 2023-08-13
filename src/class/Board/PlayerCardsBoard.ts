@@ -1,9 +1,8 @@
 import {GameStatus} from "../../types/gameStatus";
 import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
-import {COLOR_CONFIG} from "../../config/colorConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {CARD_LOCATION, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {CARD_LOCATION, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {shuffle} from "lodash";
 import {EMIT_TYPE} from "../../config/emitConfig";
@@ -13,16 +12,11 @@ import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {Card, CardAreaType, CardBoardActionType} from "../../types/card";
 import {Player} from "../../types/player";
-import {
-    getCardBoardDisplayArea,
-    getCardBoardTargetPlayer,
-    getCardBoardTitle,
-    getCardBoardType,
-} from "../../utils/board/boardUtils";
-import {BOARD_TYPE, PLAYER_BOARD_ACTION} from "../../config/boardConfig";
-import {getResponseType} from "../../utils/response/responseUtils";
+import {getCardBoardDisplayArea, getCardBoardTitle} from "../../utils/board/boardUtils";
+import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from "./BaseBoard";
+import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 
 const gridOffset = {
     line1: {y: -55},
@@ -212,24 +206,26 @@ export class PlayerCardsBoard {
     }
 
     _getEmitType() {
-        if (this._cardBoardType == BOARD_TYPE.SHUN || this._cardBoardType == BOARD_TYPE.FAN_KUI) {
+        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
+        const curCardBoardResponse = gameStatus.cardBoardResponses[0];
+        const cardBoardContentKey = curCardBoardResponse.cardBoardContentKey;
+
+        if (cardBoardContentKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key ||
+            cardBoardContentKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key) {
             return PLAYER_BOARD_ACTION.MOVE
-        } else if (this._cardBoardType == BOARD_TYPE.CHAI || this._cardBoardType == BOARD_TYPE.QI_LIN_GONG) {
+        } else if (cardBoardContentKey == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key ||
+            cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key) {
             return PLAYER_BOARD_ACTION.REMOVE
         }
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const responseType = getResponseType(gameStatus)
-        const cardBoardType = getCardBoardType(gameStatus, responseType)
-        this._cardBoardType = cardBoardType;
-
-        const needShowBoard = !!cardBoardType;
+        const needShowBoard = !!gameStatus.cardBoardResponses.length;
 
         if (needShowBoard && !this.baseBoard.show) {
-            const cardBoardDisplayArea = getCardBoardDisplayArea(cardBoardType);
-            const targetPlayer = getCardBoardTargetPlayer(gameStatus, cardBoardType)
-            const title = getCardBoardTitle(gameStatus, cardBoardType, targetPlayer!)
+            const cardBoardDisplayArea = getCardBoardDisplayArea(gameStatus);
+            const targetPlayer = gameStatus.players[gameStatus.cardBoardResponses[0].targetId]
+            const title = getCardBoardTitle(gameStatus, targetPlayer!)
 
             this.baseBoard.showBoard();
             this.baseBoard.setTitle(title)
