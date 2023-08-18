@@ -88,7 +88,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         return i18(i18Config.RESPONSE_TAO, {number, name})
     } else if (responseType == RESPONSE_TYPE_CONFIG.CARD) {
         const cardResponse = gameStatus.cardResponse!
-        const actionCardKey = cardResponse.actionCardKey
+        const actionCardKey = cardResponse.actionActualCard.key
         const targetId = cardResponse.targetId;
         const name = getPlayerDisplayName(gameStatus, targetId);
 
@@ -133,35 +133,28 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
     } else if (responseType == RESPONSE_TYPE_CONFIG.CARD_BOARD) {
         return ''
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
-        const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain;
 
         if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
             const scrollResponse = gameStatus.scrollResponses?.[0];
+            let name, cardName;
+
             if (scrollResponse) { // 锦囊的无懈可击
-                let name;
-                if (wuxieChain?.length == 1) {
-                    name = getPlayerDisplayName(gameStatus, scrollResponse.cardTakeEffectOnPlayerId);
-                } else if (wuxieChain?.length > 1) {
-                    const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
-                    name = getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId);
-                }
-                return i18(i18Config.RESPONSE_WU_XIE, {name})
+                name = getPlayerDisplayName(gameStatus, scrollResponse.cardTakeEffectOnPlayerId);
+                cardName = i18(CARD_CONFIG[scrollResponse.actualCard.key])
             } else { // 判定牌的无懈可击
                 const currentPlayer = getCurrentPlayer(gameStatus);
                 const needPandingSigns = currentPlayer.judgedShandian ?
                     currentPlayer.pandingSigns.filter((sign) => sign.actualCard.key !== DELAY_SCROLL_CARDS_CONFIG.SHAN_DIAN.key) :
                     currentPlayer.pandingSigns;
+                name = getPlayerDisplayName(gameStatus, currentPlayer.playerId)
+                cardName = i18(CARD_CONFIG[needPandingSigns[0].card.key])
+            }
 
-                if (wuxieChain?.length == 1) {
-                    return i18(i18Config.RESPONSE_PANDING_WU_XIE, {
-                        name: getPlayerDisplayName(gameStatus, currentPlayer.playerId),
-                        cardName: i18(CARD_CONFIG[needPandingSigns[0].card.key])
-                    })
-                } else if (wuxieChain?.length > 1) {
-                    const lastWuxieChainItem = wuxieChain[wuxieChain.length - 1];
-                    return i18(i18Config.RESPONSE_WU_XIE,
-                        {name: getPlayerDisplayName(gameStatus, lastWuxieChainItem.cardFromPlayerId)})
-                }
+            const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain;
+            if (wuxieChain?.length % 2 == 0) {
+                return i18(i18Config.RESPONSE_WU_XIE_TO_MAKE_IT_INEFFECTIVE, {name, cardName})
+            } else {
+                return i18(i18Config.RESPONSE_WU_XIE_TO_MAKE_IT_EFFECTIVE, {name, cardName})
             }
         } else {
             return i18(i18Config.WAIT_WU_XIE)

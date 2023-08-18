@@ -41,7 +41,7 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
         let controlCardIsAbleValidate = (card: Card) => false
         let okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => false
 
-        switch (cardResponse.actionCardKey) {
+        switch (cardResponse.actionActualCard.key) {
             case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key:
             case BASIC_CARDS_CONFIG.SHA.key:
             case BASIC_CARDS_CONFIG.LEI_SHA.key:

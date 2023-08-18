@@ -1,6 +1,8 @@
 import {Card} from "./card"
 
 export type UseStrikeEvent = {
+    cards: Card[],
+    actualCard: Card,
     originId: string,
     targetId: string,
     cantShan: boolean,

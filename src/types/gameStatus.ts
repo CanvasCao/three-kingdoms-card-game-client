@@ -57,7 +57,8 @@ export type CardResponse = {
     originId: string,
     targetId: string,
     cardNumber: number,
-    actionCardKey: string,
+    actionCards: Card[],
+    actionActualCard: Card,
     responseCardKeys: string[],
 }
 export type TaoResponse = CardResponse

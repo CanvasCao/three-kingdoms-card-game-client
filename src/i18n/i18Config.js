@@ -108,13 +108,13 @@ export const i18Config = {
         EN: "{name} played [Strike] on you, need play {number} [Dodge] to dodge",
         CN: "{name}对你出杀，需要打出{number}张闪才能闪避"
     },
-    RESPONSE_WU_XIE: {
-        EN: "Play [Cancel] on {name}?",
-        CN: "对{name}使用无懈可击？"
+    RESPONSE_WU_XIE_TO_MAKE_IT_INEFFECTIVE: {
+        EN: "{cardName} is going to become ineffective for {name}, do you want to play [Cancel] to make it effective?",
+        CN: "{cardName}即将对{name}失效，是否使用【无懈可击】令其生效？"
     },
-    RESPONSE_PANDING_WU_XIE: {
-        EN: "{name}'s {cardName} is going to take effect, do you want to play [Cancel]?",
-        CN: "{name}的{cardName}即将生效，是否使用无懈可击？"
+    RESPONSE_WU_XIE_TO_MAKE_IT_EFFECTIVE: {
+        EN: "{cardName} is going to take effect on {name}, do you want to play [Cancel] to make it ineffective?",
+        CN: "{cardName}即将对{name}生效，是否使用【无懈可击】令其失效？"
     },
     RESPONSE_WAN_JIAN_QI_FA: {
         EN: "{name} played [Arrow Barrage], please play a [Dodge]",

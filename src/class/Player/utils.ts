@@ -27,7 +27,7 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                 break;
             case RESPONSE_TYPE_CONFIG.CARD:
                 if (gameStatus.cardResponse!.originId == playerId) {
-                    hintText = i18(CARD_CONFIG[gameStatus.cardResponse!.actionCardKey!]);
+                    hintText = i18(CARD_CONFIG[gameStatus.cardResponse!.actionActualCard.key!]);
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.SKILL:
