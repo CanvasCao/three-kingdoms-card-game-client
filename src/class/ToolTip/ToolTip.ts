@@ -7,6 +7,8 @@ import {uuidv4} from "../../utils/uuid";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {Card} from "../../types/card";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
+import {GameStatus} from "../../types/gameStatus";
+import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 
 export class ToolTip {
     obId: string;
@@ -24,6 +26,9 @@ export class ToolTip {
     timer?: number;
     card?: Card;
     toolTipType: string;
+
+    // innerState
+    _heroId: string
 
     constructor(gamingScene: GamingScene) {
         this.obId = uuidv4();
@@ -43,7 +48,10 @@ export class ToolTip {
         this.card;
         this.toolTipType = '';
 
+        this._heroId = ''
+
         this.drawBackground();
+        this.gamingScene.gameStatusObserved.addObserver(this);
         this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
         this.gamingScene.gameFEStatusObserved.addPublicCardsObserver(this);
     }
@@ -76,16 +84,17 @@ export class ToolTip {
         this.timer = setTimeout(() => {
             const fixedX = x; // 左Origin(0, 1); 右Origin(1, 1);
             (fixedX <= sizeConfig.playersArea.width / 2) ? this.text?.setOrigin(0, 1) : this.text?.setOrigin(1, 1)
-            if (toolTipType === TOOL_TIP_CARD_TYPE.HERO) {
+            if (toolTipType === TOOL_TIP_CARD_TYPE.PLAYER) {
                 this.text?.setOrigin(0.5, 1)
             }
-
 
             let offsetY = 0;
             if ([TOOL_TIP_CARD_TYPE.CARD, TOOL_TIP_CARD_TYPE.PUBLIC_CARD].includes(toolTipType)) {
                 offsetY = -sizeConfig.controlCard.height / 2 - 10
             } else if (toolTipType == TOOL_TIP_CARD_TYPE.EQUIPMENT) {
                 offsetY = -20
+            } else if (toolTipType == TOOL_TIP_CARD_TYPE.SELECTING_HERO) {
+                offsetY = -sizeConfig.selectHeroCard.height / 2 - 10
             }
             const fixedY = y + offsetY;
             this.text?.setAlpha(1)
@@ -122,6 +131,19 @@ export class ToolTip {
         }
     }
 
+    gameStatusNotify(gameStatus: GameStatus) {
+        if (this._heroId) {
+            return
+        }
+
+        const curheroId = gameStatus.players[getMyPlayerId()].heroId;
+        if (curheroId) {
+            this.clearAll()
+        }
+
+        this._heroId = curheroId
+    }
+
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
         if (this.toolTipType == TOOL_TIP_CARD_TYPE.PUBLIC_CARD &&
             !gameFEStatus.publicCards.map((c) => c.cardId).includes(this.card!.cardId)) {
@@ -130,6 +152,5 @@ export class ToolTip {
             gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card!.cardId)) {
             this.clearAll()
         }
-
     }
 }

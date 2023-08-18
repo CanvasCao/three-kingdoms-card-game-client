@@ -7,8 +7,11 @@ import {EmitHeroSelectBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from './BaseBoard'
-import { i18 } from "../../i18n/i18nUtils";
-import { i18Config } from "../../i18n/i18Config";
+import {i18} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
+import {getHeroText, splitText} from "../../utils/string/stringUtils";
+import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
+import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 
 const boardSize = {
     height: 380,
@@ -48,9 +51,10 @@ export class HeroSelectBoard {
     }
 
     drawContent(gameStatus: GameStatus) {
-        const heroList = gameStatus.players[getMyPlayerId()].canSelectHeroIds;
+        const heros = gameStatus.players[getMyPlayerId()].canSelectHeros;
 
-        [...heroList].forEach((heroId, index) => {
+        [...heros].forEach((hero, index) => {
+            const {heroId} = hero
             const offsetY = (index) > 3 ? gridOffset.line2.y : gridOffset.line1.y;
             const modIndex = index % 4;
 
@@ -69,6 +73,19 @@ export class HeroSelectBoard {
                     )
                 }
             )
+
+            cardImgObj.on('pointerover', () => {
+                this.gamingScene.toolTip?.hoverInToShowToolTip({
+                    text: splitText(getHeroText(hero), TOOL_TIP_HERO_MAX_LENGTH),
+                    toolTipType: TOOL_TIP_CARD_TYPE.SELECTING_HERO,
+                    x: cardImgObj.x,
+                    y: cardImgObj.y
+                });
+            })
+            cardImgObj.on('pointerout', () => {
+                this.gamingScene.toolTip?.clearAll();
+            })
+
             this.boardContent.push(cardImgObj);
         })
     }

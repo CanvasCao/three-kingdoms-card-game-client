@@ -24,7 +24,7 @@ import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
 import {Skill} from "../../types/skill";
 import {i18Config} from "../../i18n/i18Config";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
-import {getHeroSkillsText, splitText} from "../../utils/string/stringUtils";
+import {getHeroText, splitText} from "../../utils/string/stringUtils";
 import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
 
 const reduceBloodOut = 50;
@@ -418,8 +418,8 @@ export class BoardPlayer {
         this.playerImage!.on('pointerover', () => {
             const player = this.gamingScene.gameStatusObserved.gameStatus!.players[this.playerId]
             this.gamingScene.toolTip?.hoverInToShowToolTip({
-                text: splitText(getHeroSkillsText(player), TOOL_TIP_HERO_MAX_LENGTH),
-                toolTipType: TOOL_TIP_CARD_TYPE.HERO,
+                text: splitText(getHeroText(player), TOOL_TIP_HERO_MAX_LENGTH),
+                toolTipType: TOOL_TIP_CARD_TYPE.PLAYER,
                 x: sizeConfig.playersArea.width / 2,
                 y: sizeConfig.playersArea.height * 0.9
             });

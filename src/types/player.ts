@@ -1,19 +1,14 @@
 import {Card, PandingSign} from "./card";
-import { Skill } from "./skill";
+import {Hero} from "./hero";
+import {Skill} from "./skill";
 
 export type GameStatusPlayers = { [key: string]: Player }
 export type Players = Player[]
 export type Player = {
-    maxBlood: number,
     currentBlood: number,
-    heroId: string,
-    shaLimitTimes: number,
     playerId: string,
     playerName: string,
     location: number,
-    skills: Skill[],
-
-    canSelectHeroIds: string[];
 
     // cards
     cards: Card[],
@@ -38,4 +33,7 @@ export type Player = {
     // FE
     linePosition: { x: number, y: number },
     playerPosition: { x: number, y: number },
-}
+
+    // 选将
+    canSelectHeros: Hero[];
+} & Hero

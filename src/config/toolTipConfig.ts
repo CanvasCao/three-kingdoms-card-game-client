@@ -2,7 +2,9 @@ const TOOL_TIP_CARD_TYPE = {
     CARD: "CARD",
     PUBLIC_CARD: "PUBLIC_CARD",
     EQUIPMENT: "EQUIPMENT",
-    HERO: "HERO"
+
+    SELECTING_HERO: "SELECTING_HERO",
+    PLAYER: "PLAYER"
 }
 
 export {
