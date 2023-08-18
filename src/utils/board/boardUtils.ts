@@ -16,6 +16,8 @@ const getCardBoardDisplayArea = (gameStatus: GameStatus) => {
         return [CARD_LOCATION.HAND, CARD_LOCATION.EQUIPMENT,]
     } else if (cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key) {
         return [CARD_LOCATION.HORSE]
+    } else if (cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.HAN_BIN_JIAN.key) {
+        return [CARD_LOCATION.HAND, CARD_LOCATION.EQUIPMENT,]
     }
     return allLocation;
 }
@@ -23,15 +25,7 @@ const getCardBoardDisplayArea = (gameStatus: GameStatus) => {
 const getCardBoardTitle = (gameStatus: GameStatus, targetPlayer: Player) => {
     const curCardBoardResponse = gameStatus.cardBoardResponses[0];
     const cardBoardContentKey = curCardBoardResponse.cardBoardContentKey;
-    let titleName;
-
-    if (cardBoardContentKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key) {
-        titleName = i18(SKILL_NAMES_CONFIG[gameStatus.skillResponse!.skillNameKey])
-    } else if (cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key) {
-        titleName = i18(CARD_CONFIG[gameStatus.skillResponse!.skillNameKey])
-    } else if ([SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key, SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key].includes(cardBoardContentKey)) {
-        titleName = i18(CARD_CONFIG[curCardBoardResponse.cardBoardContentKey])
-    }
+    let titleName = i18(CARD_CONFIG[cardBoardContentKey]) || i18(SKILL_NAMES_CONFIG[cardBoardContentKey])
     return i18(i18Config.PLAYER_CARD_BOARD_TITLE, {
         titleName,
         playerName: gameStatus.players[targetPlayer!.playerId].playerName

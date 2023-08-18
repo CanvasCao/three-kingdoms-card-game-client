@@ -96,6 +96,11 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             controlCardIsAbleValidate,
             okButtonIsAbleValidate,
         }
+    } else if (responseType == RESPONSE_TYPE_CONFIG.CARD_BOARD) {
+        return {
+            controlCardIsAbleValidate: (card) => false,
+            okButtonIsAbleValidate: (gameFEStatus: GameFEStatus) => false
+        }
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
         const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain
         const lastChainItem = wuxieChain[wuxieChain.length - 1]

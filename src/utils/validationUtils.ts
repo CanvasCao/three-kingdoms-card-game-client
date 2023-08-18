@@ -1,6 +1,6 @@
 import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
-import {getCanPlayInMyTurn, getIsMyResponseTurn, getIsMyThrowTurn} from "./stage/stageUtils";
+import {getCanPlayInMyTurn, getIsMyResponseCardOrSkillTurn, getIsMyThrowTurn} from "./stage/stageUtils";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
@@ -19,7 +19,7 @@ const getSelectedTargetNumber = (gameFEStatus: GameFEStatus) => {
 
 const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-    const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
+    const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
     const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
     const responseType = getResponseType(gameStatus);
 
@@ -29,7 +29,7 @@ const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFESt
         }
 
         return 1;
-    } else if (isMyResponseTurn) {
+    } else if (isMyResponseCardOrSkillTurn) {
         if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
             return 2;
         }
@@ -55,10 +55,9 @@ const getNeedSelectCardsNumber = (gameStatus: GameStatus, gameFEStatus: GameFESt
 
 const getCanSelectEquipment = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, eqCardName: string) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-    const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
-    // const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
+    const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
 
-    if (isMyResponseTurn) {
+    if (isMyResponseCardOrSkillTurn) {
         const responseType = getResponseType(gameStatus)
         if (responseType === RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
             if (gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {

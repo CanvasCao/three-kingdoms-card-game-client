@@ -4,7 +4,7 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {CARD_LOCATION, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
-import {shuffle} from "lodash";
+import {cloneDeep, isEqual, shuffle} from "lodash";
 import {EMIT_TYPE} from "../../config/emitConfig";
 import {EmitCardBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
@@ -38,7 +38,7 @@ export class PlayerCardsBoard {
     boardContent: PhaserGameObject[];
 
     // innerState
-    _cardBoardType: string | undefined;
+    _cardBoardResponses: object[] | undefined;
 
     baseBoard: BaseBoard;
     initX: number;
@@ -56,7 +56,6 @@ export class PlayerCardsBoard {
         this.initX = this.baseBoard.initX;
         this.initY = this.baseBoard.initY;
 
-        this._cardBoardType = '';
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
 
@@ -213,27 +212,41 @@ export class PlayerCardsBoard {
         if (cardBoardContentKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key ||
             cardBoardContentKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key) {
             return PLAYER_BOARD_ACTION.MOVE
-        } else if (cardBoardContentKey == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key ||
-            cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key) {
+        } else if ([SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
+            EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key,
+            EQUIPMENT_CARDS_CONFIG.HAN_BIN_JIAN.key].includes(cardBoardContentKey)
+        ) {
             return PLAYER_BOARD_ACTION.REMOVE
         }
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const needShowBoard = !!gameStatus.cardBoardResponses.length;
+        const cardBoardResponses = gameStatus.cardBoardResponses;
 
-        if (needShowBoard && !this.baseBoard.show) {
+        if (isEqual(this._cardBoardResponses, gameStatus.cardBoardResponses)) {
+            return;
+        }
+
+        const showBoard = !!gameStatus.cardBoardResponses.length && gameStatus.cardBoardResponses[0].originId == getMyPlayerId();
+
+        if (showBoard) {
+            this.boardContent = []
+            this.baseBoard.hideBoard();
+
             const cardBoardDisplayArea = getCardBoardDisplayArea(gameStatus);
             const targetPlayer = gameStatus.players[gameStatus.cardBoardResponses[0].targetId]
             const title = getCardBoardTitle(gameStatus, targetPlayer!)
 
             this.baseBoard.showBoard();
-            this.baseBoard.setTitle(title)
 
+            this.baseBoard.setTitle(title)
             this.drawTargetCards(gameStatus, cardBoardDisplayArea, targetPlayer!)
             this.baseBoard.addContent(this.boardContent);
-        } else if (!needShowBoard && this.baseBoard.show) {
+        } else if (!showBoard && this.baseBoard.show) {
+            this.boardContent = []
             this.baseBoard.hideBoard();
         }
+
+        this._cardBoardResponses = cloneDeep(cardBoardResponses);
     }
 }

@@ -170,6 +170,11 @@ export const i18Config = {
         EN: "Do you want to activate the Green Dragon Sword and continue to strike",
         CN: '是否发动青龙偃月刀 继续出杀？'
     },
+    RESPONSE_SKILL_HAN_BIN_JIAN: {
+        EN: "Please discard two cards",
+        CN: '请依次弃置其两张牌'
+    },
+
     // 操作提示
     // 弃牌
     SELECT_THROW_CARDS: {

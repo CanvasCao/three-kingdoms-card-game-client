@@ -12,7 +12,11 @@ const getIsMyThrowTurn = (gameStatus: GameStatus) => {
     return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == STAGE_NAME.THROW;
 }
 
-const getIsMyResponseTurn = (gameStatus: GameStatus) => {
+const getIsMyResponseCardBoardTurn = (gameStatus: GameStatus) => {
+    return gameStatus.cardBoardResponses[0]?.originId == getMyPlayerId();
+}
+
+const getIsMyResponseCardOrSkillTurn = (gameStatus: GameStatus) => {
     const responseType = getResponseType(gameStatus)
 
     if (responseType === RESPONSE_TYPE_CONFIG.TAO) {
@@ -43,17 +47,17 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
     return !gameStatus.cardResponse &&
         !gameStatus.skillResponse &&
         gameStatus.taoResponses.length <= 0 &&
+        gameStatus.cardBoardResponses.length <= 0 &&
         gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length <= 0 &&
         gameStatus.scrollResponses.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 
 export {
-    // my turn for UI and getCanPlayInMyTurn
     getIsMyPlayTurn,
-
-    // 我需要出牌的状态
-    getIsMyResponseTurn, // response 包括闪桃无懈可击和技能 不包括弃牌
+    getCanPlayInMyTurn,
+    getIsMyResponseCardOrSkillTurn,
+    getIsMyResponseCardBoardTurn,
     getIsMyThrowTurn,
-    getCanPlayInMyTurn
+
 }

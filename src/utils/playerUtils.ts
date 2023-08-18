@@ -12,7 +12,7 @@ import {PandingSign} from "../types/card";
 import {Player} from "../types/player";
 import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 import {findOnGoingUseStrikeEvent} from "./event/eventUtils";
-import {getIsMyPlayTurn, getIsMyResponseTurn} from "./stage/stageUtils";
+import {getIsMyPlayTurn, getIsMyResponseCardOrSkillTurn} from "./stage/stageUtils";
 import {getSelectedCardNumber, getSelectedTargetNumber} from "./validationUtils";
 import {attachFEInfoToCard} from "./cardUtils";
 import {getResponseType} from "./response/responseUtils";
@@ -58,7 +58,7 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, mePlayer, targetPlayer)
     const selectedTargetNumber = getSelectedTargetNumber(gameFEStatus)
     const responseType = getResponseType(gameStatus)
-    const isMyResponseTurn = getIsMyResponseTurn(gameStatus)
+    const isMyResponseTurn = getIsMyResponseCardOrSkillTurn(gameStatus)
 
     // 我响应技能
     if (isMyResponseTurn && responseType == RESPONSE_TYPE_CONFIG.SKILL) {

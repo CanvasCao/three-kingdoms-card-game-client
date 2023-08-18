@@ -7,7 +7,7 @@ import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
-import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseTurn} from "../../utils/stage/stageUtils";
+import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseCardOrSkillTurn} from "../../utils/stage/stageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/validationUtils";
 import {getInMyPlayTurnCanPlayCardNamesClourse} from "../../utils/cardNamesClourseUtils";
@@ -102,18 +102,18 @@ export class ControlCard {
                 const curStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
                 const canPlayInMyTurn = getCanPlayInMyTurn(curStatus);
-                const isMyResponseTurn = getIsMyResponseTurn(curStatus);
+                const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(curStatus);
                 const isMyThrowTurn = getIsMyThrowTurn(curStatus);
 
                 const needSelectCardsNumber = getNeedSelectCardsNumber(curStatus, curFEStatus);
                 const haveSelectCardsNumber = getSelectedCardNumber(curFEStatus);
                 const haveSelectedEnoughThrowCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
-                if (!canPlayInMyTurn && !isMyResponseTurn && !isMyThrowTurn) {
+                if (!canPlayInMyTurn && !isMyResponseCardOrSkillTurn && !isMyThrowTurn) {
                     return
                 }
 
-                if (canPlayInMyTurn || isMyResponseTurn) {
+                if (canPlayInMyTurn || isMyResponseCardOrSkillTurn) {
                     // 选中再点击就是反选
                     if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
                         gameFEStatusObserved.unselectCard(this.card)
@@ -198,7 +198,7 @@ export class ControlCard {
         }
 
         const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-        const isMyResponseTurn = getIsMyResponseTurn(gameStatus);
+        const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
         const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
         if (gameFEStatus.selectedSkillNameKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
@@ -214,7 +214,7 @@ export class ControlCard {
             }
         }
 
-        if (isMyResponseTurn) {
+        if (isMyResponseCardOrSkillTurn) {
             const {controlCardIsAbleValidate} = (getMyResponseInfo(gameStatus, gameFEStatus) as BasicCardResponseInfo)
             if (!controlCardIsAbleValidate(this.card)) {
                 setCardDisable()

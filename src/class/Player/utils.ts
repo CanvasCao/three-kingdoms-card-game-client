@@ -36,6 +36,12 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                     hintText = i18(SKILL_NAMES_CONFIG[skillKeyName]) || i18(CARD_CONFIG[skillKeyName])
                 }
                 break;
+            case RESPONSE_TYPE_CONFIG.CARD_BOARD:
+                if (gameStatus.cardBoardResponses[0].originId == playerId) {
+                    const cardBoardContentKey = gameStatus.cardBoardResponses[0].cardBoardContentKey!
+                    hintText = i18(SKILL_NAMES_CONFIG[cardBoardContentKey]) || i18(CARD_CONFIG[cardBoardContentKey])
+                }
+                break;
             case RESPONSE_TYPE_CONFIG.WUXIE:
                 if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length) {
                     hintText = i18(SCROLL_CARDS_CONFIG.WU_XIE_KE_JI)

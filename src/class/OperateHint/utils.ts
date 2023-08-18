@@ -126,8 +126,12 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_SKILL_GUAN_SHI_FU)
             } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
                 return i18(i18Config.RESPONSE_SKILL_QING_LONG_YAN_YUE_DAO)
+            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.HAN_BIN_JIAN.key) {
+                return i18(i18Config.RESPONSE_SKILL_HAN_BIN_JIAN)
             }
         }
+    } else if (responseType == RESPONSE_TYPE_CONFIG.CARD_BOARD) {
+        return ''
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
         const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain;
 
