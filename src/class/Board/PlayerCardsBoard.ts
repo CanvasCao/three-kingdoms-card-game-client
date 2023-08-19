@@ -209,8 +209,9 @@ export class PlayerCardsBoard {
         const curCardBoardResponse = gameStatus.cardBoardResponses[0];
         const cardBoardContentKey = curCardBoardResponse.cardBoardContentKey;
 
-        if (cardBoardContentKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key ||
-            cardBoardContentKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key) {
+        if ([SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key,
+            SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key,
+            SKILL_NAMES_CONFIG.WEI004_TU_XI.key].includes(cardBoardContentKey)) {
             return PLAYER_BOARD_ACTION.MOVE
         } else if ([SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
             EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key,

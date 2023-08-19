@@ -317,8 +317,10 @@ export class BoardPlayer {
         const doubleSkillWidth = (sizeConfig.player.width - 40) / 2
         const singleSkillWidth = (sizeConfig.player.width - 30)
 
-        const skillWidth = (skills.length > 1) ? doubleSkillWidth : singleSkillWidth;
+        const isSingleSkill = (skills.length === 1)
+        const skillWidth = isSingleSkill ? singleSkillWidth : doubleSkillWidth;
         const skillHeight = 24
+
         skills.forEach((skill, index) => {
             if (index > 1) {
                 return // 超过三个技能先不写
@@ -334,13 +336,16 @@ export class BoardPlayer {
             let skillName = i18(SKILL_NAMES_CONFIG[skill.key]);
             let fontSize = 16
             if (getI18Lan() == I18LANS.EN) {
-                fontSize = (skills.length > 1) ? 9 : 16
+                fontSize = isSingleSkill ? 16 : 9
             }
 
             const padding = getI18Lan() == I18LANS.EN ? 2 : 2
             const skillText = this.gamingScene.add.text(x, y, skillName, {
                     align: 'left',
-                    wordWrap: {width: skillWidth, useAdvancedWrap: true}
+                    wordWrap: {
+                        width: isSingleSkill ? Number.MAX_VALUE : skillWidth,
+                        useAdvancedWrap: true
+                    }
                 }
             )
 

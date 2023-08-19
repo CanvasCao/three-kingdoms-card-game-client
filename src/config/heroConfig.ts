@@ -9,6 +9,10 @@ const HERO_NAMES_CONFIG: HeroNameConfig = {
         CN: '司马懿',
         EN: 'Sima Yi'
     },
+    "WEI004": {
+        CN: '张辽',
+        EN: 'Zhang Liao'
+    },
 
     "SHU003": {
         CN: '张飞',

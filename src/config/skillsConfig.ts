@@ -21,6 +21,12 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
         CN: '鬼才',
         EN: 'Demonic Talent'
     },
+    WEI004_TU_XI: {
+        key: 'WEI004_TU_XI',
+        CN: '突袭',
+        EN: 'Sudden Strike'
+    },
+
     SHU003_PAO_XIAO: {
         key: 'SHU003_PAO_XIAO',
         CN: '咆哮',
@@ -64,6 +70,10 @@ const SKILL_DESC_CONFIG: SkillDescConfig = {
     WEI002_GUI_CAI: {
         CN: '当一名角色的判定牌生效前，你可以打出一张手牌代替之。',
         EN: "Before a character's judgment card takes effect, you can play a hand card to replace it."
+    },
+    WEI004_TU_XI: {
+        CN: '摸牌阶段，你可以放弃摸牌，改为获得最多两名其他角色的各一张手牌。',
+        EN: "During the draw phase, you can choose to forgo drawing cards and instead obtain one card from up to two other characters."
     },
 
     SHU003_PAO_XIAO: {

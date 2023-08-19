@@ -116,8 +116,6 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_SKILL_GUI_CAI)
             } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
                 return i18(i18Config.RESPONSE_SKILL_LIU_LI)
-            } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key) {
-                return i18(i18Config.RESPONSE_SKILL_FAN_KUI)
             } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
                 const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
                 const player = gameStatus.players[onGoingUseStrikeEvent.originId]!
@@ -126,12 +124,19 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_SKILL_GUAN_SHI_FU)
             } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
                 return i18(i18Config.RESPONSE_SKILL_QING_LONG_YAN_YUE_DAO)
-            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.HAN_BIN_JIAN.key) {
-                return i18(i18Config.RESPONSE_SKILL_HAN_BIN_JIAN)
             }
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.CARD_BOARD) {
-        return ''
+        const cardBoardContentKey = gameStatus.cardBoardResponses[0].cardBoardContentKey
+        if (cardBoardContentKey == SKILL_NAMES_CONFIG.WEI002_FAN_KUI.key) {
+            return i18(i18Config.RESPONSE_SKILL_FAN_KUI)
+        } else if (cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.HAN_BIN_JIAN.key) {
+            return i18(i18Config.RESPONSE_SKILL_HAN_BIN_JIAN)
+        } else if (cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key) {
+            return i18(i18Config.RESPONSE_SKILL_QI_LIN_GONG)
+        } else if (cardBoardContentKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+            return i18(i18Config.RESPONSE_SKILL_TU_XI)
+        }
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
 
         if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds.includes(getMyPlayerId())) {

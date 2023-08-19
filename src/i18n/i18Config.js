@@ -150,17 +150,9 @@ export const i18Config = {
         EN: "Discard one card and transfer this [Strike] to another character within your attacking range (cannot be the character who used this [Strike])",
         CN: '弃置一张牌并将此【杀】转移给你攻击范围内的一名其他角色（不能是使用此【杀】的角色）'
     },
-    RESPONSE_SKILL_FAN_KUI: {
-        EN: "Obtain one card from the source of the damage",
-        CN: '获得伤害来源的一张牌'
-    },
     RESPONSE_SKILL_CI_XIONG_SHUANG_GU_JIAN: {
         EN: "{name} activates the Binary Sword. Please discard one card or click Cancel to allow {name} to draw one card.",
         CN: '{name}发动雌雄双股剑，请弃置一张牌或点取消让{name}摸一张牌'
-    },
-    RESPONSE_SKILL_QI_LIN_GONG: {
-        EN: "Please discard one horse card.",
-        CN: '请弃置一张坐骑牌'
     },
     RESPONSE_SKILL_GUAN_SHI_FU: {
         EN: "You may discard two cards to make this [Strike] still take effect.",
@@ -170,9 +162,23 @@ export const i18Config = {
         EN: "Do you want to activate the Green Dragon Sword and continue to strike",
         CN: '是否发动青龙偃月刀 继续出杀？'
     },
+
+    // cardBoard
+    RESPONSE_SKILL_FAN_KUI: {
+        EN: "Obtain one card from the source of the damage",
+        CN: '获得伤害来源的一张牌'
+    },
     RESPONSE_SKILL_HAN_BIN_JIAN: {
         EN: "Please discard two cards",
         CN: '请依次弃置其两张牌'
+    },
+    RESPONSE_SKILL_QI_LIN_GONG: {
+        EN: "Please discard one horse card",
+        CN: '请弃置一张坐骑牌'
+    },
+    RESPONSE_SKILL_TU_XI: {
+        EN: "Obtain one card",
+        CN: '获得其一张牌'
     },
 
     // 操作提示

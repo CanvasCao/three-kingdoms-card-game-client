@@ -18,6 +18,8 @@ const getCardBoardDisplayArea = (gameStatus: GameStatus) => {
         return [CARD_LOCATION.HORSE]
     } else if (cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.HAN_BIN_JIAN.key) {
         return [CARD_LOCATION.HAND, CARD_LOCATION.EQUIPMENT,]
+    } else if (cardBoardContentKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+        return [CARD_LOCATION.HAND]
     }
     return allLocation;
 }
