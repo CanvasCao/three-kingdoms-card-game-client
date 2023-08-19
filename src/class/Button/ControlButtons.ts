@@ -194,7 +194,7 @@ export class ControlButtons {
         });
 
         this.endBtnImg!.on('pointerdown', () => {
-            this.gamingScene.socket.emit(EMIT_TYPE.GO_NEXT_STAGE)
+            this.gamingScene.socket.emit(EMIT_TYPE.END_PLAY)
         });
     }
 
