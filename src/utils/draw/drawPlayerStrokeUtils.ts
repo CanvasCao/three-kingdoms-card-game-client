@@ -61,8 +61,8 @@ const getPlayerStrokeAlphaAndColor = (gameStatus: GameStatus, gameFEStatus: Game
         gameStatus.cardResponse?.originId == targetPlayerId
     ) {
         return {
-            alpha: 1,
-            lineWidth: 2,
+            alpha: 0.7,
+            lineWidth: 10,
             color: COLOR_CONFIG.inDangerStroke
         }
     }

@@ -97,8 +97,8 @@ export const getPlayersWithPosition = (gameStatusPlayers: GameStatusPlayers): Pl
         y: playersAreaH
     }
     myPlayer.playerPosition = {
-        x: (sizeConfig.background.width - sizeConfig.player.width / 2),
-        y: (sizeConfig.background.height - sizeConfig.player.height / 2)
+        x: (sizeConfig.background.width - sizeConfig.player.width / 2) - 2,
+        y: (sizeConfig.background.height - sizeConfig.player.height / 2) - 2
     }
 
     playersWithPosition.push(myPlayer)
