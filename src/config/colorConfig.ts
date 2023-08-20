@@ -12,6 +12,7 @@ const COLOR_CONFIG = {
     "myTurnStroke": "0x00ff00",
     "selectedPlayerStroke": "0xffe20c",
     "defaultStroke": "0x000000",
+    "inDangerStroke": "0xff0000",
     "selectedCardStroke": "0xffff00",
 
     // line
