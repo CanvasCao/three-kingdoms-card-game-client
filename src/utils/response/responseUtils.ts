@@ -77,6 +77,10 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
         if (skillNameKey == SKILL_NAMES_CONFIG.WEI002_GUI_CAI.key) {
             controlCardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
+        } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+            controlCardIsAbleValidate = (card: Card) => true
+            okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedTargetNumber(gameFEStatus) <= 2 &&
+                getSelectedTargetNumber(gameFEStatus) >= 1
         } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
             controlCardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) =>

@@ -162,6 +162,10 @@ export const i18Config = {
         EN: "Do you want to activate the Green Dragon Sword and continue to strike",
         CN: '是否发动青龙偃月刀 继续出杀？'
     },
+    RESPONSE_SKILL_TU_XI: {
+        EN: "Obtain one hand card from up to two other characters",
+        CN: '获得最多两名其他角色的各一张手牌'
+    },
 
     // cardBoard
     RESPONSE_SKILL_FAN_KUI: {
@@ -175,10 +179,6 @@ export const i18Config = {
     RESPONSE_SKILL_QI_LIN_GONG: {
         EN: "Please discard one horse card",
         CN: '请弃置一张坐骑牌'
-    },
-    RESPONSE_SKILL_TU_XI: {
-        EN: "Obtain one card",
-        CN: '获得其一张牌'
     },
 
     // 操作提示

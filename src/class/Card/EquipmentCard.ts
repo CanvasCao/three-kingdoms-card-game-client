@@ -123,7 +123,10 @@ export class EquipmentCard {
                     return;
                 }
 
-                this.gamingScene.boardPlayers.find(p => p.playerId === this.playerId)?.playerImage?.emit('pointerdown');
+                // 除了点击我的武器 其他都要触发点击用户
+                if (this.playerId != getMyPlayerId()) {
+                    this.gamingScene.boardPlayers.find(p => p.playerId === this.playerId)?.playerImage?.emit('pointerdown');
+                }
 
                 const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved;
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;

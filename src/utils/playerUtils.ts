@@ -61,10 +61,11 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
     const isMyResponseTurn = getIsMyResponseCardOrSkillTurn(gameStatus)
 
     // 我响应技能
-    if (isMyResponseTurn && responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+    if (isMyResponseTurn &&
+        responseType == RESPONSE_TYPE_CONFIG.SKILL &&
+        gameStatus.skillResponse!.chooseToReleaseSkill) {
         if (
             gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
-            gameStatus.skillResponse!.chooseToReleaseSkill &&
             getSelectedCardNumber(gameFEStatus) == 1
         ) {
             const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
@@ -76,6 +77,8 @@ const getIfPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, tar
             if (myAttackDistance < distanceBetweenMeAndTarget) {
                 return false
             }
+        } else if (gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+            return targetPlayer.cards.length
         }
         return true
     }
@@ -180,7 +183,7 @@ const getCanPlayerPlaySha = (player: Player) => {
     if (player.weaponCard && (player.weaponCard.key == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.key)) {
         return true
     } else {
-        return player.shaTimes < (player.shaLimitTimes||1)
+        return player.shaTimes < (player.shaLimitTimes || 1)
     }
 }
 
@@ -198,19 +201,25 @@ const getNeedTargetPlayersNumberMinMax = (gameStatus: GameStatus, gameFEStatus: 
     const mePlayer = gameStatus.players[getMyPlayerId()]
     const responseType = getResponseType(gameStatus)
 
-    if (responseType == RESPONSE_TYPE_CONFIG.SKILL &&
-        gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
-        gameStatus.skillResponse!.chooseToReleaseSkill
-    ) {
-        return {min: 1, max: 1}
-    }
-    if (getIsMyPlayTurn(gameStatus) && mePlayer.weaponCard?.key == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.key
+    if (responseType == RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
+        if (gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
+            return {min: 1, max: 1}
+        } else if (gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+            return {min: 1, max: 2}
+        }
+    } else if (ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key)
+        && mePlayer.weaponCard?.key == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.key
         && mePlayer.cards.length == 1
         && ALL_SHA_CARD_KEYS.includes(mePlayer.cards[0].key)
     ) {
         return {min: 1, max: 3}
     }
-    return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+
+    if (gameFEStatus.actualCard) {
+        return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+    }
+
+    return {min: 0, max: 0}
 }
 
 let isAllSelectHeroDone = false

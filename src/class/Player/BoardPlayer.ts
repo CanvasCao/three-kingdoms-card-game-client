@@ -37,6 +37,7 @@ export class BoardPlayer {
     playerName: string;
     linePosition: { x: number, y: number };
     playerPosition: { x: number, y: number };
+    isDead?: boolean;
     isMe: boolean;
 
     positionX: number;
@@ -50,9 +51,10 @@ export class BoardPlayer {
     _blood: number;
     _cardNumber: number;
     _isTieSuo: boolean;
+    // player disable inner state
     _actualCardId?: string;
     _selectedTargetPlayersLength?: number;
-    _isDead?: boolean;
+    _chooseToReleaseSkill?: boolean;
 
     phaserGroup: (Phaser.GameObjects.Graphics |
         Phaser.GameObjects.Text |
@@ -102,8 +104,10 @@ export class BoardPlayer {
         this._blood = 0;
         this._cardNumber = 0;
         this._isTieSuo = false;
+        // player disable inner state
         this._actualCardId = '';
         this._selectedTargetPlayersLength = 0;
+        this._chooseToReleaseSkill = undefined;
 
         this.drawPlayer('xuanjiang');
         this.drawPlayerName();
@@ -127,7 +131,7 @@ export class BoardPlayer {
 
         if (player.isDead) {
             this.drawIsDead();
-            this._isDead = true;
+            this.isDead = true;
         }
 
         if (this.isMe) {
@@ -380,11 +384,7 @@ export class BoardPlayer {
             const curGameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
             const player = curGameStatus.players[this.playerId]
 
-            if (this._isDead) {
-                return;
-            }
-
-            if (!curGameFEStatus.actualCard) {
+            if (this.isDead) {
                 return;
             }
 
@@ -398,15 +398,17 @@ export class BoardPlayer {
                 return;
             }
 
-            // 因为mePlayer的_disable 大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
-            if (curGameFEStatus.selectedTargetPlayers.length == 0) {
-                if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.key) && this.isMe) {
-                    return;
+            if (curGameFEStatus.actualCard) {
+                // 因为mePlayer的_disable 大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
+                if (curGameFEStatus.selectedTargetPlayers.length == 0) {
+                    if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard.key) && this.isMe) {
+                        return;
+                    }
                 }
-            }
-            if (curGameFEStatus.selectedTargetPlayers.length == 1) {
-                if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard!.key) && this.isMe) {
-                    return;
+                if (curGameFEStatus.selectedTargetPlayers.length == 1) {
+                    if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard.key) && this.isMe) {
+                        return;
+                    }
                 }
             }
 
@@ -542,7 +544,9 @@ export class BoardPlayer {
         }
 
         if (this._actualCardId == gameFEStatus?.actualCard?.cardId &&
-            this._selectedTargetPlayersLength == gameFEStatus?.selectedTargetPlayers?.length) {
+            this._selectedTargetPlayersLength == gameFEStatus?.selectedTargetPlayers?.length &&
+            this._chooseToReleaseSkill == gameStatus.skillResponse?.chooseToReleaseSkill
+        ) {
             return
         }
 
@@ -551,7 +555,8 @@ export class BoardPlayer {
         playerAble ? setPlayerAble() : setPlayerDisable()
 
         this._actualCardId = gameFEStatus?.actualCard?.cardId
-        this._selectedTargetPlayersLength = gameFEStatus?.selectedTargetPlayers?.length
+        this._selectedTargetPlayersLength = gameFEStatus?.selectedTargetPlayers?.length //借刀杀人
+        this._chooseToReleaseSkill = gameStatus.skillResponse?.chooseToReleaseSkill
     }
 
 
@@ -571,12 +576,12 @@ export class BoardPlayer {
         const player = gameStatus.players[this.playerId]
         if (player.isDead) {
             this.drawIsDead();
-            this._isDead = true;
+            this.isDead = true;
         }
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        if (this._isDead)
+        if (this.isDead)
             return
 
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!
@@ -607,7 +612,7 @@ export class BoardPlayer {
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
-        if (this._isDead)
+        if (this.isDead)
             return
 
         const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!
