@@ -14,11 +14,15 @@ import {getCanPlayInMyTurn} from "../../utils/stage/stageUtils";
 import {getIsMyResponseCardOrSkillTurn} from "../../utils/stage/stageUtils";
 import {getIsMyThrowTurn} from "../../utils/stage/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectCardsNumber, getSelectedCardNumber, getSelectedTargetNumber} from "../../utils/validationUtils";
+import {
+    getNeedSelectCardsMinMax,
+    getNeedSelectPlayersMinMax,
+    getSelectedCardNumber,
+    getSelectedTargetNumber
+} from "../../utils/validation/validationUtils";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {BaseResponseInfo} from "../../types/responseInfo";
-import {getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
 import {getMyResponseInfo} from "../../utils/response/responseUtils";
 
 export class ControlButtons {
@@ -233,7 +237,7 @@ export class ControlButtons {
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard) {
-            const needTargetMinMaxNumber = getNeedTargetPlayersNumberMinMax(gameStatus, gameFEStatus);
+            const needTargetMinMaxNumber = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus);
             const ifSelectedTargetsQualified = getSelectedTargetNumber(gameFEStatus) >= needTargetMinMaxNumber.min
                 && getSelectedTargetNumber(gameFEStatus) <= needTargetMinMaxNumber.max;
             return ifSelectedTargetsQualified;
@@ -247,7 +251,7 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        return getSelectedCardNumber(gameFEStatus) == getNeedSelectCardsNumber(gameStatus, gameFEStatus)
+        return getSelectedCardNumber(gameFEStatus) == getNeedSelectCardsMinMax(gameStatus, gameFEStatus).min
     }
 
     showAllBtns() {
@@ -277,7 +281,7 @@ export class ControlButtons {
 
             this.showBtn(this.endBtnGroup)
         } else if (this._isMyResponseCardOrSkillTurn) {
-            const needSelectCardsNumber = getNeedSelectCardsNumber(gameStatus, gameFEStatus)
+            const needSelectCardsNumber = getNeedSelectCardsMinMax(gameStatus, gameFEStatus).min
             if (needSelectCardsNumber) { // 我的响应回合需要选牌
                 this.disableBtn(this.okBtnGroup)
             }

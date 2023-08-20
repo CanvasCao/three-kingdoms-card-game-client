@@ -1,20 +1,19 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
-import differenceBy from "lodash/differenceBy";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {EQUIPMENT_CARDS_CONFIG} from "../../config/cardConfig";
 import {getIsMyThrowTurn, getCanPlayInMyTurn, getIsMyResponseCardOrSkillTurn} from "../../utils/stage/stageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/validationUtils";
-import {getInMyPlayTurnCanPlayCardNamesClourse} from "../../utils/cardNamesClourseUtils";
+import {
+    getIsControlCardAble,
+    getNeedSelectCardsMinMax,
+    getSelectedCardNumber
+} from "../../utils/validation/validationUtils";
 import {Card} from "../../types/card";
-import {BasicCardResponseInfo} from "../../types/responseInfo";
 import {getMyCardPosition} from "../../utils/position/cardPositionUtils";
-import {getMyResponseInfo} from "../../utils/response/responseUtils";
 
 export class ControlCard {
     obId: string;
@@ -93,7 +92,7 @@ export class ControlCard {
 
     bindEvent() {
         this.cardImgObj!.on('pointerdown', () => {
-                if (this._cardDisable) { // 弃牌阶段 ControlCard 不set _cardDisable 只在点击时做数量判断
+                if (this._cardDisable) {
                     return
                 }
 
@@ -105,31 +104,18 @@ export class ControlCard {
                 const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(curStatus);
                 const isMyThrowTurn = getIsMyThrowTurn(curStatus);
 
-                const needSelectCardsNumber = getNeedSelectCardsNumber(curStatus, curFEStatus);
+                const needSelectCardsNumber = getNeedSelectCardsMinMax(curStatus, curFEStatus).max;
                 const haveSelectCardsNumber = getSelectedCardNumber(curFEStatus);
                 const haveSelectedEnoughThrowCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
-                if (!canPlayInMyTurn && !isMyResponseCardOrSkillTurn && !isMyThrowTurn) {
-                    return
-                }
-
-                if (canPlayInMyTurn || isMyResponseCardOrSkillTurn) {
-                    // 选中再点击就是反选
-                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectCard(this.card)
-                    } else { // 选中
-                        if (!haveSelectedEnoughThrowCard) {
-                            const needGenerateActualCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
-                            gameFEStatusObserved.selectCard(this.card, this._index, {needGenerateActualCard})
-                        }
-                    }
-                } else if (isMyThrowTurn) {
-                    if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
-                        gameFEStatusObserved.unselectCard(this.card)
-                    } else {
-                        if (!haveSelectedEnoughThrowCard) {
-                            gameFEStatusObserved.selectCard(this.card, this._index)
-                        }
+                // 选中再点击就是反选
+                if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
+                    gameFEStatusObserved.unselectCard(this.card)
+                } else { // 选中
+                    if (!haveSelectedEnoughThrowCard) {
+                        const selectEnoughCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
+                        const needGenerateActualCard = (selectEnoughCard && !isMyThrowTurn)
+                        gameFEStatusObserved.selectCard(this.card, {needGenerateActualCard})
                     }
                 }
             }
@@ -197,37 +183,8 @@ export class ControlCard {
             this._cardDisable = false
         }
 
-        const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
-        const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
-        const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
-
-        if (gameFEStatus.selectedSkillNameKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
-            setCardAble()
-            return
-        }
-
-        if (canPlayInMyTurn) {
-            const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
-            if (!canPlayCardNames.includes(this.card.key)) {
-                setCardDisable()
-                return
-            }
-        }
-
-        if (isMyResponseCardOrSkillTurn) {
-            const {controlCardIsAbleValidate} = (getMyResponseInfo(gameStatus, gameFEStatus) as BasicCardResponseInfo)
-            if (!controlCardIsAbleValidate(this.card)) {
-                setCardDisable()
-                return
-            }
-        }
-
-        if (isMyThrowTurn) {
-            setCardAble()
-            return
-        }
-
-        setCardAble()
+        const isAble = getIsControlCardAble(gameStatus, gameFEStatus, this.card)
+        isAble ? setCardAble() : setCardDisable()
     }
 
     destoryAll() {

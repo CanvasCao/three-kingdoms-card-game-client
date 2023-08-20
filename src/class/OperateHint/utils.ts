@@ -10,9 +10,9 @@ import {
     EQUIPMENT_TYPE,
     SCROLL_CARDS_CONFIG
 } from "../../config/cardConfig";
-import {getNeedSelectCardsNumber} from "../../utils/validationUtils";
+import {getNeedSelectCardsMinMax, getNeedSelectPlayersMinMax} from "../../utils/validation/validationUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {getCurrentPlayer, getPlayerDisplayName, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
+import {getCurrentPlayer, getPlayerDisplayName} from "../../utils/playerUtils";
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {getResponseType} from "../../utils/response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
@@ -31,7 +31,7 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
     }
     // 基本牌
     else if (ALL_SHA_CARD_KEYS.includes(actualCardKey)) {
-        const minMax = getNeedTargetPlayersNumberMinMax(gameStatus, gameFEStatus)
+        const minMax = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus)
         const replaceNumber = (minMax.min == minMax.max) ? minMax.min : `${minMax.min}-${minMax.max}`;
         return (i18(i18Config.SELECT_SHA, {number: replaceNumber}))
     } else if (actualCardKey == CARD_CONFIG.TAO.key) {
@@ -180,7 +180,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
 }
 
 const getIsMyThrowTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    const number = getNeedSelectCardsNumber(gameStatus, gameFEStatus)
+    const number = getNeedSelectCardsMinMax(gameStatus, gameFEStatus).min
     return i18(i18Config.SELECT_THROW_CARDS, {number})
 }
 

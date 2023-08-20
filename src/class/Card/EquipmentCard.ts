@@ -7,7 +7,7 @@ import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
-import {getCanSelectEquipment, getNeedSelectCardsNumber, getSelectedCardNumber} from "../../utils/validationUtils";
+import {getCanSelectEquipmentInTheory, getNeedSelectCardsMinMax, getSelectedCardNumber} from "../../utils/validation/validationUtils";
 
 
 const EQ_TYPE_CARD_NAME_MAP = {
@@ -132,10 +132,10 @@ export class EquipmentCard {
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
                 const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
-                const canSelectEquipment = getCanSelectEquipment(gameStatus, gameFEStatus, this.cardNameKey);
+                const canSelectEquipment = getCanSelectEquipmentInTheory(gameStatus, gameFEStatus, this.cardNameKey);
                 if (!canSelectEquipment) return;
 
-                const needSelectCardsNumber = getNeedSelectCardsNumber(gameStatus, gameFEStatus);
+                const needSelectCardsNumber = getNeedSelectCardsMinMax(gameStatus, gameFEStatus).max;
                 const haveSelectCardsNumber = getSelectedCardNumber(gameFEStatus);
                 const haveSelectedEnoughCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
@@ -149,7 +149,7 @@ export class EquipmentCard {
                     } else { // 还没选中
                         if (!haveSelectedEnoughCard) {
                             const needGenerateActualCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
-                            gameFEStatusObserved.selectCard(this.card, this.equipmentType, {needGenerateActualCard})
+                            gameFEStatusObserved.selectCard(this.card, {needGenerateActualCard})
                         }
                     }
                 }

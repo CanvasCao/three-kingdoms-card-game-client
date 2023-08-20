@@ -124,7 +124,7 @@ export class GameFEStatusObserved {
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 
-    selectCard(card: Card, indexOrEqName: number | string, {needGenerateActualCard}: { needGenerateActualCard?: boolean } = {}) {
+    selectCard(card: Card, {needGenerateActualCard}: { needGenerateActualCard?: boolean } = {}) {
         const gameFEStatus = this.gameFEStatus;
         gameFEStatus.selectedCards.push(card);
         if (needGenerateActualCard) {

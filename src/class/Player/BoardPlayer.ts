@@ -4,14 +4,9 @@ import {CARD_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {GamingScene} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
-import differenceBy from "lodash/differenceBy";
-import {getIfPlayerAble, getIsAllSelectHeroDone, getNeedTargetPlayersNumberMinMax} from "../../utils/playerUtils";
+import {getIsAllSelectHeroDone} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
-import {
-    getCanSelectMeAsFirstTargetCardNamesClosure,
-    getCanSelectMeAsSecondTargetCardNamesClosure
-} from "../../utils/cardNamesClourseUtils";
 import {Player} from "../../types/player";
 import {
     getPlayerStrokeAlphaAndColor,
@@ -26,6 +21,11 @@ import {i18Config} from "../../i18n/i18Config";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 import {getHeroText, splitText} from "../../utils/string/stringUtils";
 import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
+import {
+    getCanISelectMySelfAsTarget,
+    getIsBoardPlayerAble,
+    getNeedSelectPlayersMinMax
+} from "../../utils/validation/validationUtils";
 
 const reduceBloodOut = 50;
 const reduceBloodIn = 300;
@@ -398,23 +398,16 @@ export class BoardPlayer {
                 return;
             }
 
-            if (curGameFEStatus.actualCard) {
-                // 因为mePlayer的_disable 大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
-                if (curGameFEStatus.selectedTargetPlayers.length == 0) {
-                    if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(curGameFEStatus.actualCard.key) && this.isMe) {
-                        return;
-                    }
-                }
-                if (curGameFEStatus.selectedTargetPlayers.length == 1) {
-                    if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(curGameFEStatus.actualCard.key) && this.isMe) {
-                        return;
-                    }
+            // 检查是否指定我自己为目标
+            if (this.isMe) {
+                const canISelectMySelfAsTarget = getCanISelectMySelfAsTarget(curGameStatus, curGameFEStatus)
+                if (!canISelectMySelfAsTarget) {
+                    return;
                 }
             }
 
             // validate是否选择了足够目标
-            const minMax = getNeedTargetPlayersNumberMinMax(curGameStatus, curGameFEStatus)
-            if (curGameFEStatus.selectedTargetPlayers.length >= minMax.max) {
+            if (curGameFEStatus.selectedTargetPlayers.length >= getNeedSelectPlayersMinMax(curGameStatus, curGameFEStatus).max) {
                 return;
             }
 
@@ -551,7 +544,7 @@ export class BoardPlayer {
         }
 
         const targetPlayer = gameStatus.players[this.playerId];
-        const playerAble = getIfPlayerAble(gameStatus, gameFEStatus, targetPlayer)
+        const playerAble = getIsBoardPlayerAble(gameStatus, gameFEStatus, targetPlayer)
         playerAble ? setPlayerAble() : setPlayerDisable()
 
         this._actualCardId = gameFEStatus?.actualCard?.cardId

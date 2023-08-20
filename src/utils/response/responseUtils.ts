@@ -9,7 +9,7 @@ import {
 } from "../../config/cardConfig";
 import {Card} from "../../types/card";
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
-import {getSelectedCardNumber, getSelectedTargetNumber} from "../validationUtils";
+import {getSelectedCardNumber, getSelectedTargetNumber} from "../validation/validationUtils";
 import {RESPONSE_TYPE_CONFIG, RESPONSE_TYPE_CONFIG_VALUES} from "../../config/responseTypeConfig";
 
 const getResponseType = (gameStatus: GameStatus): RESPONSE_TYPE_CONFIG_VALUES | undefined => {
@@ -78,7 +78,7 @@ const getMyResponseInfo = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): 
             controlCardIsAbleValidate = (card: Card) => true
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedCardNumber(gameFEStatus) === 1
         } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
-            controlCardIsAbleValidate = (card: Card) => true
+            controlCardIsAbleValidate = (card: Card) => false
             okButtonIsAbleValidate = (gameFEStatus: GameFEStatus) => getSelectedTargetNumber(gameFEStatus) <= 2 &&
                 getSelectedTargetNumber(gameFEStatus) >= 1
         } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
