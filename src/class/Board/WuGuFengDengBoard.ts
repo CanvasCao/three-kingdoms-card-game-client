@@ -109,7 +109,7 @@ export class WuGuFengDengBoard {
         })
     }
 
-    setCardSelectedStatus(gameStatus: GameStatus) {
+    appendCardSelectedStatus(gameStatus: GameStatus) {
         gameStatus.wugufengdengCards.forEach((card: WugufengdengCard) => {
             if (card.wugefengdengSelectedPlayerId) {
                 this.cardIdMap[card.cardId].cardImgObj.setTint(Number(COLOR_CONFIG.disableCard))
@@ -154,7 +154,7 @@ export class WuGuFengDengBoard {
         // curScrollResponse不同了 所以需要更新Mask和BoardCard状态 并且重新绑定事件
         if (showBoard) {
             this.baseBoard.setBottom(this.getBottomText(gameStatus))
-            this.setCardSelectedStatus(gameStatus);
+            this.appendCardSelectedStatus(gameStatus);
         }
 
         this._scrollResponse = cloneDeep(curScrollResponse);

@@ -236,7 +236,7 @@ const SHIELD_CARDS_DESC_CONFIG = {
     // 防具
     "BA_GUA_ZHEN": {
         "CN": "技能：每当你需要使用/打出【闪】时，你可以判定，若结果为红色，你视为使用/打出一张【闪】。",
-        "EN": "Skill: Whenever you need to use/play [Dodge], you can judge. If the judgment result is red, you treat it as if you used/played a [Dodge].",
+        "EN": "Skill: Whenever you need to use/play [Dodge], you can judge. If the judgment result is red, you treat it as you used/played a [Dodge].",
     },
     "REN_WANG_DUN": {
         "CN": "技能：锁定技，黑色【杀】对你无效。",

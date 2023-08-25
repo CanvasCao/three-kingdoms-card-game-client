@@ -156,9 +156,9 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
 
             const wuxieChain = gameStatus.wuxieSimultaneousResponse.wuxieChain;
             if (wuxieChain?.length % 2 == 0) {
-                return i18(i18Config.RESPONSE_WU_XIE_TO_MAKE_IT_INEFFECTIVE, {name, cardName})
-            } else {
                 return i18(i18Config.RESPONSE_WU_XIE_TO_MAKE_IT_EFFECTIVE, {name, cardName})
+            } else {
+                return i18(i18Config.RESPONSE_WU_XIE_TO_MAKE_IT_INEFFECTIVE, {name, cardName})
             }
         } else {
             return i18(i18Config.WAIT_WU_XIE)

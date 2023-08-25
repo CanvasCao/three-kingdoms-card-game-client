@@ -3,6 +3,7 @@ import {Players} from "./player";
 
 export type GameFEStatus = {
     selectedCards: Card[],
+
     actualCard: Card | null,
 
     selectedTargetPlayers: Players,

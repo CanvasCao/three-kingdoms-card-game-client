@@ -14,6 +14,8 @@ export type UseStrikeEvent = {
 }
 
 export type PandingEvent = {
+    pandingNameKey: string,
+    pandingResultCard: Card,
     originId: string,
     eventTimingsWithSkills: EventTimingsWithSkill[],
     done: boolean

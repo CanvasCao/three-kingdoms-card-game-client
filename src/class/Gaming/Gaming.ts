@@ -26,6 +26,7 @@ import {Card} from '../../types/card';
 import {BoardPlayerThinkingHint} from '../../class/Player/BoardPlayerThinkingHint';
 import Phaser from 'phaser';
 import {ToolTip} from '../ToolTip/ToolTip';
+import {PandingBoard} from '../Board/PandingBoard';
 
 
 class Gaming extends Phaser.Scene {
@@ -39,6 +40,7 @@ class Gaming extends Phaser.Scene {
     playerCardsBoard: PlayerCardsBoard | undefined;
     wuGuFengDengBoard: WuGuFengDengBoard | undefined;
     heroSelectBoard: HeroSelectBoard | undefined;
+    pandingBoard: PandingBoard | undefined;
     toolTip: ToolTip | undefined;
     operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
@@ -95,6 +97,7 @@ class Gaming extends Phaser.Scene {
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.wuGuFengDengBoard = new WuGuFengDengBoard(this);
             this.heroSelectBoard = new HeroSelectBoard(this);
+            this.pandingBoard = new PandingBoard(this);
 
             this.operateHint = new OperateHint(this);
             this.controlButtons = new ControlButtons(this);

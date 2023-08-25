@@ -218,7 +218,7 @@ export class BoardPlayer {
     drawPandingCards() {
         const stepX = sizeConfig.player.width / 4.5;
         for (let i = 0; i < this.maxPandingCardsNumber; i++) {
-            const x = this.isMe ? sizeConfig.controlEquipment.width * 1.1 : this.positionX + sizeConfig.player.width / 2 + 5 - stepX * i
+            const x = this.isMe ? sizeConfig.controlEquipment.width * 1.1 - stepX * i : this.positionX + sizeConfig.player.width / 2 + 5 - stepX * i
             const y = this.isMe ? sizeConfig.playersArea.height : this.positionY + sizeConfig.player.height / 2 + 5
 
             const pandingCardImage = this.gamingScene.add.image(x, y, "white");

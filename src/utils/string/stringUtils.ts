@@ -46,11 +46,10 @@ function generateEmptyString(length: number) {
 }
 
 const verticalRotationString = (s: string) => {
+    if (getI18Lan() == I18LANS.EN) {
+        return s.split(' ').join('\r\n')
+    }
     return s.split('').join('\r\n')
-}
-
-const verticalRotationEnString = (s: string) => {
-    return s.split(' ').join('\r\n')
 }
 
 const splitText = (text: string, maxLineLength: number): string => {
@@ -95,7 +94,7 @@ const getHeroText = (hero: Hero) => {
 
 export {
     verticalRotationString,
-    verticalRotationEnString,
+
     splitText,
     getHeroText,
     getCardText
