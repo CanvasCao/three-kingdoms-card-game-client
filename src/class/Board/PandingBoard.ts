@@ -10,6 +10,8 @@ import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {HERO_NAMES_CONFIG} from "../../config/heroConfig";
 import {verticalRotationString} from "../../utils/string/stringUtils";
 import {PANDING_EFFECT_CONFIG} from "../../config/pandingConfig";
+import {cloneDeep, isBoolean, isEqual} from "lodash";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 
 const boardSize = {
     height: 380,
@@ -22,8 +24,7 @@ export class PandingBoard {
     boardContent: PhaserGameObject[];
 
     // innerState
-    _pandingNameKey: string | undefined;
-    _pandingResultCardId: string | undefined;
+    _pandingEvent: object | undefined;
 
     baseBoard: BaseBoard;
     initX: number;
@@ -52,12 +53,17 @@ export class PandingBoard {
             return
         }
 
-        const {allCardObjects} =
+        const takeEffect = gameStatus.pandingEvent.takeEffect
+        const {allCardObjects, cardPandingEffectObj} =
             sharedDrawFrontCard(this.gamingScene, pandingResultCard, {
                 x: this.initX - 102,
                 y: this.initY,
                 depth: DEPTH_CONFIG.BOARD,
             })
+        if (isBoolean(takeEffect)) {
+            cardPandingEffectObj.setText(takeEffect ? "✓" : "✕")
+            cardPandingEffectObj.setFill(takeEffect ? COLOR_CONFIG.greenString : COLOR_CONFIG.redString)
+        }
 
         this.boardContent = this.boardContent.concat(allCardObjects)
     }
@@ -101,16 +107,13 @@ export class PandingBoard {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const pandingEvent = gameStatus.pandingEvent;
-        const pandingNameKey = pandingEvent?.pandingNameKey
-        const pandingResultCardId = pandingEvent?.pandingResultCard?.cardId
-
-        if (this._pandingNameKey == pandingNameKey && this._pandingResultCardId == pandingResultCardId) {
+        const pandingEvent = gameStatus?.pandingEvent;
+        if (isEqual(this._pandingEvent, pandingEvent)) {
             return;
         }
 
-        const showBoard = pandingNameKey && pandingResultCardId
-
+        const pandingNameKey = pandingEvent?.pandingNameKey
+        const showBoard = !!pandingNameKey
         if (showBoard) {
             this.boardContent = []
             this.baseBoard.hideBoard();
@@ -123,19 +126,15 @@ export class PandingBoard {
             this.drawPandingResultCards(gameStatus)
 
             this.baseBoard.addContent(this.boardContent);
-            if (this.timer) {
-                clearTimeout(this.timer)
-            }
         } else if (!showBoard && this.baseBoard.show) {
             if (this.timer) {
                 clearTimeout(this.timer)
             }
             this.timer = setTimeout(() => {
                 this.baseBoard.hideBoard();
-            }, 2000) as unknown as number
+            }, 1000) as unknown as number
         }
 
-        this._pandingNameKey = pandingNameKey;
-        this._pandingResultCardId = pandingResultCardId;
+        this._pandingEvent = cloneDeep(pandingEvent);
     }
 }

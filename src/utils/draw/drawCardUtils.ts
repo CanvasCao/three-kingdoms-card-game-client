@@ -93,6 +93,7 @@ const sharedDrawFrontCard = (
     cardHuaseNumberObj.setData("offsetY", cardHuaseNumberObjOffsetY)
     allCardObjects.push(cardHuaseNumberObj)
 
+    // card type message
     const cardTypeObjMessage = (card.type == CARD_TYPE.BASIC) ? "" : i18(CARD_TYPE_CONFIG[card.type])
     if (cardTypeObjMessage) {
         const cardTypeObj = gamingScene.add.text(x + cardTypeObjOffsetX, y + cardTypeObjOffsetY, cardTypeObjMessage,
@@ -137,22 +138,35 @@ const sharedDrawFrontCard = (
             fill: COLOR_CONFIG.blackString,
             align: "center",
             wordWrap: {width: sizeConfig.controlCard.width * 1, useAdvancedWrap: true}
-        }
-    )
-    cardMessageObj.setPadding(0, 5, 0, 0);
-    cardMessageObj.setOrigin(0.5, 1);
-    cardMessageObj.setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 12);
-    cardMessageObj.setDepth(depth)
-    cardMessageObj.setStroke(COLOR_CONFIG.cardString, 2)
-    cardMessageObj.setData("offsetX", 0)
-    cardMessageObj.setData("offsetY", cardMessageObjOffsetY)
+        }).setPadding(0, 5, 0, 0)
+        .setOrigin(0.5, 1)
+        .setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 12)
+        .setDepth(depth)
+        .setStroke(COLOR_CONFIG.cardString, 2)
+        .setData("offsetX", 0)
+        .setData("offsetY", cardMessageObjOffsetY)
     allCardObjects.push(cardMessageObj)
+
+    // cardPandingEffect  ✓✕
+    const cardPandingEffectObj = gamingScene.add.text(x, y, "",
+        {
+            // @ts-ignore
+            fill: COLOR_CONFIG.greenString,
+        }).setPadding(0, 5, 0, 0)
+        .setOrigin(0.5, 0.5)
+        .setFontSize(60)
+        .setDepth(depth)
+        .setData("offsetX", 0)
+        .setData("offsetY", 0)
+    allCardObjects.push(cardPandingEffectObj)
 
     return {
         cardImgObj,
         cardNameObj,
         cardHuaseNumberObj,
         cardMessageObj,
+        cardPandingEffectObj,
+
         allCardObjects
     }
 }

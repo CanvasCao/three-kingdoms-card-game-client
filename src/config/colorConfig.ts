@@ -31,6 +31,8 @@ const COLOR_CONFIG = {
     "grey555": "0x555555",
     "red": "0xff0000",
     "redString": "#ff0000",
+    "green": "0x00ff00",
+    "greenString": "#00ff00",
     "black": "0x000000",
     "blackString": "#000000",
     "white": "0xffffff",
