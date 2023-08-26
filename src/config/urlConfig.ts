@@ -17,7 +17,8 @@ const HERO_INDEXES = [
     ...generateHeroIndexes(KINGDOM_CONFIG.WEI.EN, 7),
     ...generateHeroIndexes(KINGDOM_CONFIG.SHU.EN, 7),
     ...generateHeroIndexes(KINGDOM_CONFIG.WU.EN, 7),
-    ...generateHeroIndexes(KINGDOM_CONFIG.QUN.EN, 3)
+    ...generateHeroIndexes(KINGDOM_CONFIG.QUN.EN, 3),
+    ...generateHeroIndexes(KINGDOM_CONFIG.SP.EN, 1)
 ]
 
 const URL_CONFIG = {

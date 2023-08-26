@@ -58,6 +58,12 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
         CN: '无双',
         EN: 'Without Equal'
     },
+
+    SP001_CHONG_SHENG:{
+        key: 'SP001_CHONG_SHENG',
+        CN: '重生',
+        EN: 'Rebirth'
+    }
 }
 
 const SKILL_DESC_CONFIG: SkillDescConfig = {
@@ -107,6 +113,11 @@ const SKILL_DESC_CONFIG: SkillDescConfig = {
     QUN002_WU_SHUANG: {
         CN: '锁定技，你的【杀】需要两张【闪】才能抵消；与你【决斗】的角色每次需要打出两张【杀】。',
         EN: 'Locked skill: Your [Strike] require two [Dodge] to negate. The character dueling with you needs to play two [Strike] each time.'
+    },
+
+    SP001_CHONG_SHENG: {
+        CN: '锁定技，当你第一次死亡后，你弃置你的区域里的所有牌，然后摸三张牌，将体力回复至3点。',
+        EN: 'Locked skill: After your first death, discard all cards in your area, draw 3 cards and restore your health to 3 points.'
     },
 }
 

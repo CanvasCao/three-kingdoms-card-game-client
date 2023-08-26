@@ -15,6 +15,10 @@ const KINGDOM_CONFIG:any = {
         CN: '群',
         EN: 'QUN'
     },
+    "SP": {
+        CN: 'SP',
+        EN: 'SP'
+    },
 }
 
 export {

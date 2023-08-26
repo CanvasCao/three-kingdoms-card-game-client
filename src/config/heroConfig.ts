@@ -32,6 +32,11 @@ const HERO_NAMES_CONFIG: HeroNameConfig = {
         CN: '吕布',
         EN: 'Lv Bu'
     },
+
+    "SP001": {
+        CN: 'Sravanthi',
+        EN: 'Sravanthi'
+    },
 }
 
 export {
