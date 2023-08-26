@@ -27,6 +27,11 @@ const HERO_NAMES_CONFIG: HeroNameConfig = {
         CN: '大乔',
         EN: 'Da Qiao'
     },
+
+    "QUN002": {
+        CN: '吕布',
+        EN: 'Lv Bu'
+    },
 }
 
 export {

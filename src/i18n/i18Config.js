@@ -125,8 +125,8 @@ export const i18Config = {
         CN: "{name}使用了南蛮入侵，请出一张杀"
     },
     RESPONSE_JUE_DOU: {
-        EN: "{name} duel with you, please play a [Strike]",
-        CN: "{name}与你决斗，请出一张杀"
+        EN: "{name} duel with you, please play {number} [Strike]",
+        CN: "{name}与你决斗，请出{number}张杀"
     },
     RESPONSE_JIE_DAO_SHA_REN: {
         EN: "Play a [Strike] on {targetName} or give your weapon to {originName}",

@@ -52,6 +52,12 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
         CN: '流离',
         EN: 'Displacement'
     },
+
+    QUN002_WU_SHUANG: {
+        key: 'QUN002_WU_SHUANG',
+        CN: '无双',
+        EN: 'Without Equal'
+    },
 }
 
 const SKILL_DESC_CONFIG: SkillDescConfig = {
@@ -96,6 +102,11 @@ const SKILL_DESC_CONFIG: SkillDescConfig = {
     WU006_LIU_LI: {
         CN: '当你成为【杀】的目标时，你可以弃置一张牌并将此【杀】转移给你攻击范围内的一名其他角色（不能是使用此【杀】的角色）。',
         EN: 'When you become the target of a [Strike], you may discard a card and transfer this [Strike] to another character within your attack range (excluding the player who used this [Strike]).'
+    },
+
+    QUN002_WU_SHUANG: {
+        CN: '锁定技，你的【杀】需要两张【闪】才能抵消；与你【决斗】的角色每次需要打出两张【杀】。',
+        EN: 'Locked skill: Your [Strike] require two [Dodge] to negate. The character dueling with you needs to play two [Strike] each time.'
     },
 }
 

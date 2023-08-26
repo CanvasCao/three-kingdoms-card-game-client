@@ -88,12 +88,11 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         return i18(i18Config.RESPONSE_TAO, {number, name})
     } else if (responseType == RESPONSE_TYPE_CONFIG.CARD) {
         const cardResponse = gameStatus.cardResponse!
-        const actionCardKey = cardResponse.actionActualCard.key
-        const targetId = cardResponse.targetId;
+        const {cardNumber: number, targetId, actionActualCard} = cardResponse
+        const actionCardKey = actionActualCard?.key
         const name = getPlayerDisplayName(gameStatus, targetId);
 
         if (ALL_SHA_CARD_KEYS.includes(actionCardKey)) {
-            const number = cardResponse.cardNumber;
             return (number == 1) ?
                 i18(i18Config.RESPONSE_SHAN, {name}) :
                 i18(i18Config.RESPONSE_MULTI_SHAN, {name, number})
@@ -102,7 +101,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         } else if (actionCardKey == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key) {
             return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN, {name})
         } else if (actionCardKey == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
-            return i18(i18Config.RESPONSE_JUE_DOU, {name})
+            return i18(i18Config.RESPONSE_JUE_DOU, {name, number})
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         const skillNameKey = gameStatus.skillResponse!.skillNameKey;

@@ -37,7 +37,6 @@ export type ResponseCardEvent = {
     originId: string,
     targetId: string,
     cardNumber: number,
-    responseCardKeys: string[],
     useOrPlay: string,
     playStatus: boolean | undefined,
     eventTimingsWithSkills: EventTimingsWithSkill[],

@@ -13,7 +13,7 @@ const KINGDOM_CONFIG:any = {
     },
     "QUN": {
         CN: '群',
-        EN: 'Kingdomless'
+        EN: 'QUN'
     },
 }
 
