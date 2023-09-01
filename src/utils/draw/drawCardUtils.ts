@@ -14,7 +14,14 @@ import {
 } from "../../config/cardContentOffsetConfig";
 import {getCardColor} from "../cardUtils";
 import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
-import {CARD_CONFIG, CARD_NUM_DESC, CARD_TYPE, CARD_TYPE_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
+import {
+    CARD_CONFIG,
+    CARD_NUM_DESC,
+    CARD_TYPE,
+    CARD_TYPE_CONFIG,
+    EQUIPMENT_TYPE,
+    EQUIPMENT_TYPE_CONFIG
+} from "../../config/cardConfig";
 import {Card} from "../../types/card";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
@@ -94,18 +101,22 @@ const sharedDrawFrontCard = (
     allCardObjects.push(cardHuaseNumberObj)
 
     // card type message
-    const cardTypeObjMessage = (card.type == CARD_TYPE.BASIC) ? "" : i18(CARD_TYPE_CONFIG[card.type])
+    let cardTypeObjMessage = '';
+    if (card.type == CARD_TYPE.EQUIPMENT) {
+        cardTypeObjMessage = `${i18(CARD_TYPE_CONFIG[card.type])}/${i18(EQUIPMENT_TYPE_CONFIG[card.equipmentType!])}`
+    } else if (card.type == CARD_TYPE.SCROLL) {
+        cardTypeObjMessage = `${i18(CARD_TYPE_CONFIG[card.type])}`
+    }
     if (cardTypeObjMessage) {
         const cardTypeObj = gamingScene.add.text(x + cardTypeObjOffsetX, y + cardTypeObjOffsetY, cardTypeObjMessage,
             // @ts-ignore
             {fill: COLOR_CONFIG.redString}
-        )
-        cardTypeObj.setPadding(0, 5, 0, 0);
-        cardTypeObj.setOrigin(0, 1);
-        cardTypeObj.setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 12);
-        cardTypeObj.setDepth(depth)
-        cardTypeObj.setData("offsetX", cardTypeObjOffsetX)
-        cardTypeObj.setData("offsetY", cardTypeObjOffsetY)
+        ).setPadding(0, 5, 0, 0)
+            .setOrigin(0, 1)
+            .setFontSize((getI18Lan() == I18LANS.EN) ? 9 : 12)
+            .setDepth(depth)
+            .setData("offsetX", cardTypeObjOffsetX)
+            .setData("offsetY", cardTypeObjOffsetY)
         allCardObjects.push(cardTypeObj)
     }
 

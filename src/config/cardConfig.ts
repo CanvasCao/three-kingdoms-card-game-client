@@ -26,7 +26,7 @@ const CARD_LOCATION = {
     PANDING: "PANDING"
 }
 
-const CARD_HUASE= {
+const CARD_HUASE = {
     HEITAO: "♠",
     CAOHUA: '♣',
     FANGKUAI: '♦',
@@ -55,7 +55,7 @@ const CARD_TYPE_CONFIG = {
     [CARD_TYPE.EQUIPMENT]: {
         key: [CARD_TYPE.EQUIPMENT],
         "CN": "装备",
-        "EN": "EQUIPMENT",
+        "EN": "EQUIP",
     },
     [CARD_TYPE.SCROLL]: {
         key: [CARD_TYPE.SCROLL],
@@ -66,6 +66,29 @@ const CARD_TYPE_CONFIG = {
         key: [CARD_TYPE.BASIC],
         "CN": "基本",
         "EN": "BASIC",
+    },
+}
+
+const EQUIPMENT_TYPE_CONFIG = {
+    [EQUIPMENT_TYPE.WEAPON]: {
+        key: [EQUIPMENT_TYPE.WEAPON],
+        "CN": "武器",
+        "EN": "WEAPON",
+    },
+    [EQUIPMENT_TYPE.SHIELD]: {
+        key: [EQUIPMENT_TYPE.SHIELD],
+        "CN": "防具",
+        "EN": "SHIELD",
+    },
+    [EQUIPMENT_TYPE.PLUS_HORSE]: {
+        key: [EQUIPMENT_TYPE.PLUS_HORSE],
+        "CN": "+1马",
+        "EN": "+1HORSE",
+    },
+    [EQUIPMENT_TYPE.MINUS_HORSE]: {
+        key: [EQUIPMENT_TYPE.MINUS_HORSE],
+        "CN": "-1马",
+        "EN": "-1HORSE",
     },
 }
 
@@ -417,6 +440,7 @@ export {
 
     // card configs
     CARD_TYPE_CONFIG,
+    EQUIPMENT_TYPE_CONFIG,
     CARD_CONFIG,
     BASIC_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG,
