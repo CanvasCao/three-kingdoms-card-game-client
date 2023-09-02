@@ -7,11 +7,25 @@ import {
     setRoomIdAndTimestamp
 } from "./utils/localstorage/localStorageUtils";
 import {EMIT_TYPE} from "./config/emitConfig";
-import {EmitJoinRoomData, EmitRefreshRoomPlayers, EmitRefreshRooms, EmitRejoinRoomData} from "./types/emit";
+import {
+    EmitJoinRoomData,
+    EmitRefreshRoomPlayers,
+    EmitRefreshRooms,
+    EmitRejoinRoomData,
+    EmitSwitchTeamMemberData
+} from "./types/emit";
 import {i18Config} from "./i18n/i18Config";
 import {i18} from "./i18n/i18nUtils";
 import {GAME_STATUS} from "./config/gameConfig";
 import {isWithinMinutes} from "./utils/time/timeUtils";
+import {
+    fullPLayersTipTemplate,
+    joinRoomButtonTemplate,
+    playingTipTemplate,
+    roomMemberContainerTemplate,
+    startGameButtonDisableTemplate,
+    startGameButtonTemplate
+} from "./htmlTemplate/htmlTemplate";
 
 const bindLoginPageEvent = () => {
     $('#joinPage h2').text(i18(i18Config.TITLE))
@@ -41,29 +55,19 @@ const bindRoomsPageEvent = () => {
             `<div style="width: 40rem" class="flex w-full justify-center">
         <ul class="space-y-8 rounded-lg w-full text-gray-900">` +
             data.map(room => {
-                const joinButton = `<button data-roomid=${room.roomId} class="justify-center rounded-md py-2 px-4 text-white bg-yellow-600 hover:bg-yellow-700">
-                    ${i18(i18Config.JOIN)}
-                    </button>`
-                const playingTip = `<span class="justify-center rounded-md py-2 px-4 text-white bg-gray-600">
-                    ${i18(i18Config.PLAYING)}
-                    <span/>`
-                const fullPlayersButton = `<span class="justify-center rounded-md py-2 px-4 text-white bg-gray-600">
-                    ${i18(i18Config.JOIN)}
-                    </span>`
-
-                let display;
-                if (room.players.length > 8) {
-                    display = fullPlayersButton;
+                let roomAction;
+                if (room.roomPlayers.length >= 8) {
+                    roomAction = fullPLayersTipTemplate()
                 } else if (room.status == GAME_STATUS.IDLE) {
-                    display = joinButton;
+                    roomAction = joinRoomButtonTemplate(room.roomId)
                 } else {
-                    display = playingTip
+                    roomAction = playingTipTemplate()
                 }
 
                 return `<li class="rounded-md flex items-center justify-between bg-white px-6 py-6 border-b border-gray-200 w-full">
                         <span>${i18(i18Config.ROOM)} ${room.roomId} </span> 
-                        <span>${room.players.length} ${i18(i18Config.PLAYERS)}</span>
-                       ${display}
+                        <span>${room.roomPlayers.length} ${i18(i18Config.PLAYERS)}</span>
+                       ${roomAction}
                     </li>`
             }).join('')
             + `</ul></div>`
@@ -87,32 +91,35 @@ const bindRoomPlayersPageEvent = () => {
         $('.page').hide();
         $('#roomPlayersPage').css('display', 'flex');
 
-        const isHost = data?.[0]?.playerId == getMyPlayerId()
-        let btnString
-        if (!isHost) {
-            btnString = `<button class="w-full justify-center rounded-md py-2 px-4 text-white
-                bg-gray-600">${i18(i18Config.WAIT_FOR_START)}</button>`
-        } else if (data?.length > 1) {
-            btnString = `<button id="startButton" class="w-full justify-center rounded-md py-2 px-4 text-white
-                bg-yellow-600 hover:bg-yellow-700">${i18(i18Config.START)}</button>`
-        } else {
-            btnString = `<button class="w-full justify-center rounded-md py-2 px-4 text-white
-                bg-gray-600">${i18(i18Config.START)}</button>`
+        const roomPlayers = data.roomPlayers || [];
+        const teamMembers = data.teamMembers || [];
+        const hostPlayerId = roomPlayers[0]?.playerId
+        const isHost = roomPlayers[0]?.playerId == getMyPlayerId()
+        let startButton = ''
+        if (isHost) {
+            startButton = (roomPlayers?.length > 1) ? startGameButtonTemplate() : startGameButtonDisableTemplate()
         }
 
         $('#roomPlayersPage').html(
-            `<div style="width: 40rem" class="space-y-8">` +
-            data.map((player, index) => {
-                return `<span class="rounded-md flex items-center justify-between bg-white px-6 py-6 border-b border-gray-200 w-full">
-                    <span>${player.playerName}</span>
-                    <span>${index == 0 ? i18(i18Config.HOST) : ""}</span>
-                </span> `
+            `<div style="width: 40rem;" class="grid grid-cols-4 gap-8 relative">` +
+            teamMembers.map((teamMember) => {
+                const player = roomPlayers.find(player => player.teamMember == teamMember)
+                const showHost = player?.playerId == hostPlayerId;
+                return roomMemberContainerTemplate(player, showHost, teamMember);
             }).join('') +
-            btnString +
+            startButton +
             `</div>`
         )
         $("#startButton").click(() => {
             socket.emit(EMIT_TYPE.INIT);
+        })
+        $(".emptySlot").click(function () {
+            const teamMember = $(this).attr('data-teammember');
+            socket.emit(EMIT_TYPE.SWITCH_TEAM_MEMBER, {
+                playerId: getMyPlayerId(),
+                roomId: data.roomId,
+                teamMember,
+            } as EmitSwitchTeamMemberData);
         })
     })
 }

@@ -12,14 +12,13 @@ export const i18Config = {
 
     // ROOM Players Page
     START: {EN: "START", CN: "开始游戏"},
-    WAIT_FOR_START: {EN: "Please wait for host to start the game", CN: "请等待房主开始游戏"},
     HOST: {EN: "Host", CN: "房主"},
+    EMPTY: {EN: "Empty", CN: "空位"},
 
     // button
     OK: {EN: "OK", CN: "确定"},
     CANCEL: {EN: "CANCEL", CN: "取消"},
     END: {EN: "END", CN: "结束"},
-
 
     // 操作提示
     // play phase

@@ -83,12 +83,12 @@ const EQUIPMENT_TYPE_CONFIG = {
     [EQUIPMENT_TYPE.PLUS_HORSE]: {
         key: [EQUIPMENT_TYPE.PLUS_HORSE],
         "CN": "+1马",
-        "EN": "+1HORSE",
+        "EN": "HORSE",
     },
     [EQUIPMENT_TYPE.MINUS_HORSE]: {
         key: [EQUIPMENT_TYPE.MINUS_HORSE],
         "CN": "-1马",
-        "EN": "-1HORSE",
+        "EN": "HORSE",
     },
 }
 

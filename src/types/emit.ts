@@ -14,6 +14,12 @@ export type EmitJoinRoomData = {
     roomId: string
 }
 
+export type EmitSwitchTeamMemberData = {
+    playerId: string,
+    roomId: string,
+    teamMember: string,
+}
+
 // 游戏开始中
 export type EmitActionData = OneTargetAction | MultiTargetsAction
 
@@ -59,16 +65,18 @@ export type EmitHeroSelectBoardData = {
 
 // 后端=>前端
 export type RoomStatus = "PLAYING" | "IDLE";
+export type RoomPlayer = { playerId: string, playerName: string, teamMember: string }
 export type EmitRefreshRooms = {
     roomId: string | number,
-    players: { playerId: string, playerName: string }[],
+    roomPlayers: RoomPlayer[],
     status: RoomStatus,
 }[]
 
 export type EmitRefreshRoomPlayers = {
-    playerId: string,
-    playerName: string
-}[];
+    roomId: string | number,
+    roomPlayers: RoomPlayer[],
+    teamMembers: string[],
+}
 
 export type EmitNotifyAddToPublicCardData = {
     fromId: string,
