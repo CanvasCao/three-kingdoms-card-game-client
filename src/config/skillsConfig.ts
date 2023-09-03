@@ -26,6 +26,11 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
         CN: '突袭',
         EN: 'Sudden Strike'
     },
+    WEI005_LUO_YI: {
+        key: 'WEI005_LUO_YI',
+        CN: '裸衣',
+        EN: 'Bare-Chested'
+    },
 
     SHU003_PAO_XIAO: {
         key: 'SHU003_PAO_XIAO',
@@ -85,7 +90,11 @@ const SKILL_DESC_CONFIG: SkillDescConfig = {
     },
     WEI004_TU_XI: {
         CN: '摸牌阶段，你可以放弃摸牌，改为获得最多两名其他角色的各一张手牌。',
-        EN: "During the draw phase, you can choose to forgo drawing cards and instead obtain one card from up to two other characters."
+        EN: "During the draw phase, you can choose to forgo drawing cards and instead obtain one hand card from up to two other characters."
+    },
+    WEI005_LUO_YI: {
+        CN: '摸牌阶段，你可以少摸一张牌，然后本回合你为伤害来源的【杀】或【决斗】造成的伤害+1。',
+        EN: "During the draw phase, you may draw one less card. If you to do so, any [Strike] and [Duel] that you use in the play phase results in 1 additional damage to your opponent. "
     },
 
     SHU003_PAO_XIAO: {
