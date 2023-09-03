@@ -35,6 +35,7 @@ export class BoardPlayer {
     gamingScene: GamingScene;
     playerId: string;
     playerName: string;
+    teamName: string;
     linePosition: { x: number, y: number };
     playerPosition: { x: number, y: number };
     isDead?: boolean;
@@ -64,6 +65,7 @@ export class BoardPlayer {
     cardNumObj?: Phaser.GameObjects.Text;
     tieSuoImage?: Phaser.GameObjects.Image;
     playerImage?: Phaser.GameObjects.Image;
+    teamImage?: Phaser.GameObjects.Image;
     bloodsBgGraphics?: Phaser.GameObjects.Graphics;
     bloodImages?: Phaser.GameObjects.Image[];
     pandingCardImages?: Phaser.GameObjects.Image[];
@@ -78,6 +80,7 @@ export class BoardPlayer {
         this.gamingScene = gamingScene;
         this.playerId = player.playerId;
         this.playerName = player.playerName;
+        this.teamName = player.teamMember.split('-')[0];
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
         this.isMe = this.playerId === getMyPlayerId();
@@ -111,6 +114,7 @@ export class BoardPlayer {
 
         this.drawPlayer('xuanjiang');
         this.drawPlayerName();
+        this.drawTeamTag();
 
         this.gamingScene.gameStatusObserved.addObserver(this);
         this.gamingScene.gameFEStatusObserved.addSelectedStatusObserver(this);
@@ -125,6 +129,7 @@ export class BoardPlayer {
         this.drawBloods(player.maxBlood);
         this.setBloods(player.currentBlood);
         this.drawPlayerName();
+        this.drawTeamTag();
         this.drawPandingCards();
         this.drawTieSuo(player.isTieSuo);
         this.drawCardNumber();
@@ -193,7 +198,7 @@ export class BoardPlayer {
             this.positionY - sizeConfig.player.height / 2,
             " " + this.playerName,
             // @ts-ignore
-            {fill: "#fff", align: "left", fixedWidth: sizeConfig.player.width}
+            {fill: COLOR_CONFIG.whiteString, fixedWidth: sizeConfig.player.width}
         );
 
         const padding = 2;
@@ -201,6 +206,17 @@ export class BoardPlayer {
         nameText.setBackgroundColor("rgba(0,0,0,0.7)")
 
         this.phaserGroup.push(nameText)
+    }
+
+    drawTeamTag() {
+        this.teamImage = this.gamingScene.add.image(
+            this.positionX + sizeConfig.player.width / 2 - sizeConfig.teamTag.width + 2,
+            this.positionY - sizeConfig.player.height / 2 + 20,
+            this.teamName)
+        this.teamImage.setDisplaySize(sizeConfig.teamTag.width, sizeConfig.teamTag.height)
+        this.teamImage.setOrigin(0, 0)
+
+        this.phaserGroup.push(this.teamImage)
     }
 
     drawTieSuo(isTieSuo: boolean) {

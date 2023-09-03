@@ -64,6 +64,12 @@ const sizeConfig = {
     },
 
     //blood
+    teamTag: {
+        height: 36,
+        width: 36
+    },
+
+    //blood
     blood: {
         height: 30,
         width: 45.6

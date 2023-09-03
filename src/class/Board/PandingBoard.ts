@@ -126,6 +126,9 @@ export class PandingBoard {
             this.drawPandingResultCards(gameStatus)
 
             this.baseBoard.addContent(this.boardContent);
+            if (this.timer) {
+                clearTimeout(this.timer)
+            }
         } else if (!showBoard && this.baseBoard.show) {
             if (this.timer) {
                 clearTimeout(this.timer)

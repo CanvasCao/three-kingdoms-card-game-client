@@ -7,7 +7,11 @@ import {sharedDrawEquipment} from "../../utils/draw/drawEquipmentUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
-import {getCanSelectEquipmentInTheory, getNeedSelectCardsMinMax, getSelectedCardNumber} from "../../utils/validation/validationUtils";
+import {
+    getCanSelectEquipmentInTheory,
+    getNeedSelectCardsMinMax,
+    getSelectedCardNumber
+} from "../../utils/validation/validationUtils";
 
 
 const EQ_TYPE_CARD_NAME_MAP = {
@@ -115,17 +119,17 @@ export class EquipmentCard {
         this.cardObjGroup.push(distanceText)
         this.cardObjGroup.push(nameText)
         this.cardObjGroup.push(huaseNumText)
+
+        // 点击我的武器才触发点击
+        if (this.playerId == getMyPlayerId()) {
+            this.background.setInteractive()
+        }
     }
 
     bindEvent() {
         this.background!.on('pointerdown', () => {
                 if (this.isDestoryed) {
                     return;
-                }
-
-                // 除了点击我的武器 其他都要触发点击用户
-                if (this.playerId != getMyPlayerId()) {
-                    this.gamingScene.boardPlayers.find(p => p.playerId === this.playerId)?.playerImage?.emit('pointerdown');
                 }
 
                 const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved;
