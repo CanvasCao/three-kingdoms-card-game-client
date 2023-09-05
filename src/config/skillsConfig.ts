@@ -74,7 +74,7 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
 const SKILL_DESC_CONFIG: SkillDescConfig = {
     WEI001_JIAN_XIONG: {
         CN: '当你受到伤害后，你可以获得造成伤害的牌。',
-        EN: 'After you take damage, you can obtain the card that caused the damage.'
+        EN: 'After you take damage, you can obtain the cards that caused the damage.'
     },
     WEI001_HU_JIA: {
         CN: '主公技，你可以令其他魏势力角色选择是否替你使用或打出【闪】。',

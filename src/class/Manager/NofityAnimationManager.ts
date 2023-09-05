@@ -113,7 +113,7 @@ export class NofityAnimationManager {
             return
         }
 
-        // 从自己手里给出去需要一张一张给
+        // 从自己手里给出去需要一张一张给 因为手里的牌不一定连在一起
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((bp) => bp.playerId == data.fromId)
         if (fromBoardPlayer?.playerId == getMyPlayerId()) {
             data.cards.forEach((card, index) => {

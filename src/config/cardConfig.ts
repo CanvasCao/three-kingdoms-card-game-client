@@ -20,6 +20,8 @@ const CARD_NUM_DESC: { [key: number]: string } = {
 // BE
 const CARD_LOCATION = {
     PAIDUI: "PAIDUI",
+    TABLE: "TABLE",
+
     HAND: "HAND",
     EQUIPMENT: "EQUIPMENT",
     HORSE: "HORSE",

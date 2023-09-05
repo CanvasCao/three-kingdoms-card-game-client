@@ -138,15 +138,21 @@ const getIsToOtherPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerI
         return false
     }
 
-    // 我给别人 别人给我 FaceFront true
-    if (getMyPlayerId() == fromPlayerId || getMyPlayerId() == toPlayerId) {
+    if (fromPlayerId == CARD_LOCATION.TABLE) {
         return true
     }
 
-    // 顺手牵羊/借刀杀人
-    // 是手牌FaceFront false
-    // 武器/判定 FaceFront true
-    return (cardAreaType !== CARD_LOCATION.HAND)
+    // 我给别人 别人给我 FaceFront true
+    if ([fromPlayerId, toPlayerId].includes(getMyPlayerId())) {
+        return true
+    }
+
+    // 除了我的卡牌移动
+    if (cardAreaType == CARD_LOCATION.EQUIPMENT || cardAreaType == CARD_LOCATION.PANDING || cardAreaType == CARD_LOCATION.HORSE) {
+        return true
+    } else {
+        return false
+    }
 }
 
 const getCardColor = (huase: string) => {

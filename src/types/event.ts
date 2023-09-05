@@ -7,7 +7,7 @@ export type UseStrikeEvent = {
     targetId: string,
     cantShan: boolean,
     dodgeStatus: boolean,
-    eventTimingsWithSkills: EventTimingsWithSkill[],
+    eventTimingTracker: eventTimingOneTimingTracker[],
 
     // UseStrikeEvents的所有事件done UseStrikeEvents才能被删除 所以需要一个标记记录单个UseStrikeEvent的情况
     done: boolean
@@ -18,7 +18,7 @@ export type PandingEvent = {
     pandingResultCard: Card,
     takeEffect: boolean | undefined,
     originId: string,
-    eventTimingsWithSkills: EventTimingsWithSkill[],
+    eventTimingTracker: eventTimingOneTimingTracker[],
     done: boolean
 }
 
@@ -30,7 +30,7 @@ export type DamageEvent = {
     originId: string,
     targetId: string,
     damageNumber: number,
-    eventTimingsWithSkills: EventTimingsWithSkill[],
+    eventTimingTracker: eventTimingOneTimingTracker[],
     done: boolean
 }
 
@@ -40,11 +40,11 @@ export type ResponseCardEvent = {
     cardNumber: number,
     useOrPlay: string,
     playStatus: boolean | undefined,
-    eventTimingsWithSkills: EventTimingsWithSkill[],
+    eventTimingTracker: eventTimingOneTimingTracker[],
     done: boolean,
 }
 
-export type EventTimingsWithSkill = {
+export type eventTimingOneTimingTracker = {
     eventTimingName: string,
     eventTimingSkills: EventTimingSkill[],
 }
