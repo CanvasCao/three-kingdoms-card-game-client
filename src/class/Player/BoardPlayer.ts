@@ -15,11 +15,11 @@ import {
 } from "../../utils/draw/drawPlayerStrokeUtils";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
-import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
+import {isLanEn, i18} from "../../i18n/i18nUtils";
 import {Skill} from "../../types/skill";
 import {i18Config} from "../../i18n/i18Config";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
-import {getHeroText, splitText} from "../../utils/string/stringUtils";
+import {getHeroText, limitStringLengthWithEllipsis, splitText} from "../../utils/string/stringUtils";
 import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
 import {
     getCanISelectMySelfAsTarget,
@@ -316,7 +316,7 @@ export class BoardPlayer {
         isDeadText.setOrigin(0.5, 0.5)
         const padding = 2;
         isDeadText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
-        isDeadText.setFontSize(getI18Lan() == I18LANS.EN ? 30 : 40)
+        isDeadText.setFontSize(isLanEn() ? 30 : 40)
         isDeadText.setRotation(-Math.PI / 10)
 
         this.phaserGroup.push(isDeadText)
@@ -353,13 +353,12 @@ export class BoardPlayer {
             skillImage.setOrigin(0.5, 1)
             this.phaserGroup.push(skillImage);
 
-            let skillName = i18(SKILL_NAMES_CONFIG[skill.key]).slice(0, 10);
+            let skillName = limitStringLengthWithEllipsis(i18(SKILL_NAMES_CONFIG[skill.key]), isSingleSkill ? 10 : 16)
             let fontSize = 16
-            if (getI18Lan() == I18LANS.EN) {
-                fontSize = isSingleSkill ? 16 : 9
+            if (isLanEn()) {
+                fontSize = isSingleSkill ? 16 : 10
             }
 
-            const padding = getI18Lan() == I18LANS.EN ? 2 : 2
             const skillText = this.gamingScene.add.text(x, y, skillName, {
                     align: 'left',
                     wordWrap: {
@@ -369,7 +368,7 @@ export class BoardPlayer {
                 }
             )
 
-            skillText.setPadding(padding)
+            skillText.setPadding(2)
             skillText.setOrigin(0.5, 1)
             skillText.setFontSize(fontSize)
             this.phaserGroup.push(skillText);

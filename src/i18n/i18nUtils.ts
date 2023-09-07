@@ -1,13 +1,19 @@
-import {i18Config} from "./i18Config";
-
-export type I18Obj = {
+type I18Obj = {
     CN: string,
     EN: string,
 }
-export const i18WindowKey = 'three-kingdom-i18n';
-export const I18LANS = {
+
+const i18WindowKey = 'three-kingdom-i18n';
+const I18LANS = {
     'CN': 'CN',
     'EN': 'EN',
+}
+const getI18Lan = () => {
+    return (window as { [key: string]: any })[i18WindowKey] || I18LANS.EN
+}
+
+export const isLanEn = () => {
+    return getI18Lan() == I18LANS.EN
 }
 
 export const setI18nLan = () => {
@@ -22,20 +28,16 @@ export const setI18nLan = () => {
         }
     }
 
-    if (['CN', 'EN'].includes(params.LAN)) {
+    if ([I18LANS.CN, I18LANS.EN].includes(params.LAN)) {
         (window as { [key: string]: any })[i18WindowKey] = params.LAN
     } else {
         const languages = navigator.languages || [];
         if (languages.includes("zh-CN")) {
-            (window as { [key: string]: any })[i18WindowKey] = 'CN'
+            (window as { [key: string]: any })[i18WindowKey] = I18LANS.CN
         } else {
-            (window as { [key: string]: any })[i18WindowKey] = 'EN'
+            (window as { [key: string]: any })[i18WindowKey] = I18LANS.EN
         }
     }
-}
-
-export const getI18Lan = () => {
-    return (window as { [key: string]: any })[i18WindowKey] || I18LANS.EN
 }
 
 export const i18 = (obj: I18Obj, replaceObj = {}) => {

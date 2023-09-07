@@ -2,11 +2,11 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {GamingScene} from "../../types/phaser";
 import {CARD_CONFIG, CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfig";
-import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
+import {i18, isLanEn} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 import {getCardColor} from "../cardUtils";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
-import {getCardText, splitText} from "../string/stringUtils";
+import {getCardText, limitStringLengthWithEllipsis, splitText} from "../string/stringUtils";
 import {TOOL_TIP_CARD_MAX_LENGTH} from "../../config/stringConfig";
 
 const sharedDrawEquipment = (
@@ -58,13 +58,10 @@ const sharedDrawEquipment = (
     if (card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE) {
         distanceText.setText(card.distanceDesc!)
     } else if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
-        distanceText.setText((getI18Lan() == I18LANS.EN ? card.distance?.toString() : card.distanceDesc)!)
+        distanceText.setText((isLanEn() ? card.distance?.toString() : card.distanceDesc)!)
     }
 
-    const text = (getI18Lan() == I18LANS.EN ?
-            CARD_CONFIG[card.key].EN.substring(0, 8) + '..' :
-            CARD_CONFIG[card.key].CN
-    )
+    const text = limitStringLengthWithEllipsis(i18(CARD_CONFIG[card.key]), 10)
     const nameText = gamingScene.add.text(x + equipmentCardWidth * 0.2, y, text,
         {
             // @ts-ignore

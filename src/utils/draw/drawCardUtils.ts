@@ -13,7 +13,7 @@ import {
     cardTypeObjOffsetY
 } from "../../config/cardContentOffsetConfig";
 import {getCardColor} from "../cardUtils";
-import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
+import {i18, isLanEn} from "../../i18n/i18nUtils";
 import {
     CARD_CONFIG,
     CARD_NUM_DESC,
@@ -76,7 +76,7 @@ const sharedDrawFrontCard = (
     )
     cardNameObj.setPadding(0, 6, 0, 1);
     cardNameObj.setOrigin(0.5, 0.5);
-    cardNameObj.setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 14)
+    cardNameObj.setFontSize(isLanEn() ? 10 : 14)
     cardNameObj.setDepth(depth)
     cardNameObj.setData("offsetX", cardNameObjOffsetX)
     cardNameObj.setData("offsetY", cardNameObjOffsetY)
@@ -113,7 +113,7 @@ const sharedDrawFrontCard = (
             {fill: COLOR_CONFIG.redString}
         ).setPadding(0, 5, 0, 0)
             .setOrigin(0, 1)
-            .setFontSize((getI18Lan() == I18LANS.EN) ? 9 : 12)
+            .setFontSize(isLanEn() ? 9 : 12)
             .setDepth(depth)
             .setData("offsetX", cardTypeObjOffsetX)
             .setData("offsetY", cardTypeObjOffsetY)
@@ -134,7 +134,7 @@ const sharedDrawFrontCard = (
         )
         cardDistanceObj.setPadding(0, 5, 0, 0);
         cardDistanceObj.setOrigin(1, 1);
-        cardDistanceObj.setFontSize((getI18Lan() == I18LANS.EN) ? 30 : 30);
+        cardDistanceObj.setFontSize(30);
         cardDistanceObj.setDepth(depth)
         cardDistanceObj.setStroke(COLOR_CONFIG.whiteString, 5)
         cardDistanceObj.setData("offsetX", cardDistanceObjOffsetX)
@@ -151,7 +151,7 @@ const sharedDrawFrontCard = (
             wordWrap: {width: sizeConfig.controlCard.width * 1, useAdvancedWrap: true}
         }).setPadding(0, 5, 0, 0)
         .setOrigin(0.5, 1)
-        .setFontSize((getI18Lan() == I18LANS.EN) ? 10 : 12)
+        .setFontSize(isLanEn() ? 10 : 12)
         .setDepth(depth)
         .setStroke(COLOR_CONFIG.cardString, 2)
         .setData("offsetX", 0)

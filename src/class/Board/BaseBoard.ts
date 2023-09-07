@@ -2,7 +2,7 @@ import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
-import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
+import {isLanEn} from "../../i18n/i18nUtils";
 
 
 type BaseBoardProps = {
@@ -67,7 +67,7 @@ export class BaseBoard {
         this.titleText.setOrigin(0.5, 0.5)
         this.titleText.setPadding(0, 2, 0, 0)
         this.titleText.setDepth(DEPTH_CONFIG.BOARD)
-        this.titleText.setFontSize(getI18Lan() == I18LANS.EN ? 18 : 24)
+        this.titleText.setFontSize(isLanEn() ? 18 : 24)
 
         this.dragObjects.push(this.titleText);
     }

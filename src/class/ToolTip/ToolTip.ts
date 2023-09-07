@@ -2,7 +2,6 @@ import {GamingScene} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
-import {getI18Lan, I18LANS} from "../../i18n/i18nUtils";
 import {uuidv4} from "../../utils/uuid";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {Card} from "../../types/card";
@@ -65,7 +64,7 @@ export class ToolTip {
         this.text = this.gamingScene.add.text(this.initX, this.initY, '')
         this.text.setPadding(0, 6, 0, 1);
         this.text.setAlpha(0);
-        this.text.setFontSize((getI18Lan() == I18LANS.EN) ? 14 : 14)
+        this.text.setFontSize(14)
         this.text.setDepth(DEPTH_CONFIG.HOVER)
     }
 

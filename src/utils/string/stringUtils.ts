@@ -4,12 +4,12 @@ import {HERO_NAMES_CONFIG} from "../../config/heroConfig";
 import {KINGDOM_CONFIG} from "../../config/kingdomConfig";
 import {SKILL_DESC_CONFIG, SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
-import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
+import {isLanEn, i18} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 import {Hero} from "../../types/hero";
 
 function truncateStringIntoArray(inputString: string, maxLength: number) {
-    return getI18Lan() == I18LANS.EN ? truncateEnIntoArray(inputString, maxLength) : truncateCnIntoArray(inputString, maxLength)
+    return isLanEn() ? truncateEnIntoArray(inputString, maxLength) : truncateCnIntoArray(inputString, maxLength)
 }
 
 function truncateEnIntoArray(inputString: string, maxLength: number) {
@@ -46,7 +46,7 @@ function generateEmptyString(length: number) {
 }
 
 const verticalRotationString = (s: string) => {
-    if (getI18Lan() == I18LANS.EN) {
+    if (isLanEn()) {
         return s.split(' ').join('\r\n')
     }
     return s.split('').join('\r\n')
@@ -63,6 +63,15 @@ const splitText = (text: string, maxLineLength: number): string => {
     return resArr.join('\n');
 };
 
+
+const limitStringLengthWithEllipsis = (inputString: string, maxLength: number) => {
+    if (inputString.length <= maxLength) {
+        return inputString;
+    } else {
+        return inputString.slice(0, maxLength - 2) + '..';
+    }
+}
+
 const getCardText = (card: Card) => {
     const resArr: string[] = []
 
@@ -77,7 +86,7 @@ const getHeroText = (hero: Hero) => {
     const resArr: string[] = []
     const heroName = i18(HERO_NAMES_CONFIG[heroId])
 
-    const firstLine = `${heroName}  ${i18(KINGDOM_CONFIG[kingdom])}  ${getI18Lan() == I18LANS.EN ? "health point" : '体力'}${maxBlood}`
+    const firstLine = `${heroName}  ${i18(KINGDOM_CONFIG[kingdom])}  ${isLanEn() ? "health point" : '体力'}${maxBlood}`
     resArr.push(firstLine + generateEmptyString(TOOL_TIP_HERO_MAX_LENGTH - firstLine.length))
 
     resArr.push('\r')
@@ -96,6 +105,9 @@ export {
     verticalRotationString,
 
     splitText,
+
+    limitStringLengthWithEllipsis,
+
     getHeroText,
     getCardText
 }

@@ -2,7 +2,7 @@ import {GameStatus} from "../types/gameStatus";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {EQUIPMENT_CARDS_CONFIG} from "../config/cardConfig";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
-import {getI18Lan, I18LANS} from "../i18n/i18nUtils";
+import {isLanEn} from "../i18n/i18nUtils";
 import {Player} from "../types/player";
 
 const getPlayersDistanceFromAToB = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, APlayer: Player, BPlayer: Player) => {
@@ -73,7 +73,7 @@ const getCanPlayerPlaySha = (player: Player) => {
 
 const getPlayerDisplayName = (gameStatus: GameStatus, playerId: string) => {
     const isMe = playerId == getMyPlayerId();
-    const s = getI18Lan() == I18LANS.EN ? " (you)" : "（你）"
+    const s = isLanEn() ? " (you)" : "（你）"
     return gameStatus.players[playerId].playerName + (isMe ? s : "");
 }
 

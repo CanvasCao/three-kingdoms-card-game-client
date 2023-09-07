@@ -3,7 +3,7 @@ import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {CARD_CONFIG} from "../../config/cardConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {uuidv4} from "../../utils/uuid";
-import {getI18Lan, i18, I18LANS} from "../../i18n/i18nUtils";
+import {i18, isLanEn} from "../../i18n/i18nUtils";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from "./BaseBoard";
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
@@ -90,7 +90,7 @@ export class PandingBoard {
             return
         }
 
-        const effectTitle = getI18Lan() == I18LANS.EN ? "Effect" : '判定效果'
+        const effectTitle = isLanEn() ? "Effect" : '判定效果'
         const text2 = this.gamingScene.add.text(
             this.initX + 20,
             this.initY,
