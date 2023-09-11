@@ -129,7 +129,7 @@ export class NofityAnimationManager {
                 )
             })
         } else {
-            let isFaceFront = getIsToOtherPlayerCardFaceFront(data.cardAreaType, data.fromId, data.toId)
+            let isFaceFront = getIsToOtherPlayerCardFaceFront(data.fromId, data.toId, data.isPublic)
             new ToPlayerCard(
                 this.gamingScene,
                 data.cards[0],
