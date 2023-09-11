@@ -17,15 +17,19 @@ const CARD_NUM_DESC: { [key: number]: string } = {
     13: "K",
 }
 
+const PLAYER_CARD_AREA = {
+    HAND: "HAND",
+    WEAPON: "WEAPON",
+    SHEILD: "SHEILD",
+    HORSE: "HORSE",
+    PANDING: "PANDING"
+}
+
 // BE
 const CARD_LOCATION = {
     PAIDUI: "PAIDUI",
     TABLE: "TABLE",
-
-    HAND: "HAND",
-    EQUIPMENT: "EQUIPMENT",
-    HORSE: "HORSE",
-    PANDING: "PANDING"
+    PLAYER: "PLAYER",
 }
 
 const CARD_HUASE = {
@@ -434,8 +438,13 @@ const ALL_SHA_CARD_KEYS = [
 export {
     ALL_SHA_CARD_KEYS,
 
+    // FE
     CARD_NUM_DESC,
+    PLAYER_CARD_AREA,
+
+    // BE
     CARD_LOCATION,
+
     CARD_HUASE,
     CARD_TYPE,
     EQUIPMENT_TYPE,

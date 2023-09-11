@@ -1,5 +1,5 @@
 import {MultiTargetsAction, OneTargetAction} from "./gameStatus";
-import {Card, CardAreaType, CardBoardActionType} from "./card";
+import {Card, PlayerBoardAction} from "./card";
 
 // 前端=>后端
 // 游戏开始前
@@ -48,8 +48,7 @@ export type EmitCardBoardData = {
     originId: string,
     targetId: string,
     card: Card,
-    cardAreaType: CardAreaType,
-    type: CardBoardActionType,
+    action: PlayerBoardAction,
 }
 
 export type EmitWugufengdengBoardData = {
@@ -93,9 +92,8 @@ export type EmitNotifyAddToPlayerCardData = {
     fromId: string,
     toId: string,
     cards: Card[],
+    isPublic: boolean, // isPublic false的情况 有可能因为fromId/toId是自己而变成isPublic true
     message: never,
-
-    cardAreaType: CardAreaType,
 }
 
 export type EmitNotifyAddLinesData = {

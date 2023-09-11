@@ -29,6 +29,7 @@ const getInMyPlayTurnCanPlayCardNamesClourse = (player: Player) => {
         return amendCanPlayInMyTurnCardNames
     }
 }
+
 const getCanSelectMeAsFirstTargetCardNamesClosure = () => {
     let names: string[];
     return () => {
@@ -38,6 +39,7 @@ const getCanSelectMeAsFirstTargetCardNamesClosure = () => {
         return names
     }
 }
+
 const getCanSelectMeAsSecondTargetCardNamesClosure = () => {
     let names: string[];
     return () => {

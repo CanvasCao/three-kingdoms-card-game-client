@@ -2,7 +2,7 @@ import {GameStatus} from "../../types/gameStatus";
 import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {sizeConfig} from "../../config/sizeConfig";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
-import {CARD_LOCATION, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {PLAYER_CARD_AREA, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 import {sharedDrawBackCard, sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
 import {cloneDeep, isEqual, shuffle} from "lodash";
 import {EMIT_TYPE} from "../../config/emitConfig";
@@ -10,7 +10,7 @@ import {EmitCardBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
-import {Card, CardAreaType, CardBoardActionType} from "../../types/card";
+import {Card, PlayerBoardAction} from "../../types/card";
 import {Player} from "../../types/player";
 import {getCardBoardDisplayArea, getCardBoardTitle} from "../../utils/board/boardUtils";
 import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
@@ -64,7 +64,7 @@ export class PlayerCardsBoard {
         const categoryFontSize = 16
         const textObjs = []
 
-        if (cardBoardDisplayArea.includes(CARD_LOCATION.HAND)) {
+        if (cardBoardDisplayArea.includes(PLAYER_CARD_AREA.HAND)) {
             const handCardsCategoryText = this.gamingScene.add.text(
                 this.initX + gridOffset.column1.x + categoryDiffX,
                 this.initY + gridOffset.line1.y,
@@ -75,8 +75,9 @@ export class PlayerCardsBoard {
             textObjs.push(handCardsCategoryText)
         }
 
-        if (cardBoardDisplayArea.includes(CARD_LOCATION.EQUIPMENT) ||
-            cardBoardDisplayArea.includes(CARD_LOCATION.HORSE)) {
+        if (cardBoardDisplayArea.includes(PLAYER_CARD_AREA.WEAPON) ||
+            cardBoardDisplayArea.includes(PLAYER_CARD_AREA.SHEILD) ||
+            cardBoardDisplayArea.includes(PLAYER_CARD_AREA.HORSE)) {
             const equipmentCardsCategoryText = this.gamingScene.add.text(
                 this.initX + gridOffset.column1.x + categoryDiffX,
                 this.initY + gridOffset.line2.y,
@@ -87,7 +88,7 @@ export class PlayerCardsBoard {
             textObjs.push(equipmentCardsCategoryText)
         }
 
-        if (cardBoardDisplayArea.includes(CARD_LOCATION.PANDING)) {
+        if (cardBoardDisplayArea.includes(PLAYER_CARD_AREA.PANDING)) {
             const pandingCardsCategoryText = this.gamingScene.add.text(
                 this.initX + gridOffset.column2.x + categoryDiffX,
                 this.initY + gridOffset.line2.y,
@@ -107,7 +108,7 @@ export class PlayerCardsBoard {
     }
 
     drawTargetPlayerCards(cardBoardDisplayArea: string[], targetPlayer: Player) {
-        if (!cardBoardDisplayArea.includes(CARD_LOCATION.HAND)) {
+        if (!cardBoardDisplayArea.includes(PLAYER_CARD_AREA.HAND)) {
             return
         }
 
@@ -119,22 +120,28 @@ export class PlayerCardsBoard {
                 depth: DEPTH_CONFIG.BOARD,
             })
             cardImgObj.on('pointerdown',
-                this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.HAND as CardAreaType)
+                this.getCardClickHandler(targetPlayer, card)
             )
             this.boardContent.push(cardImgObj);
         })
     }
 
     drawTargetEquipmentCards(cardBoardDisplayArea: string[], targetPlayer: Player) {
-        if (!cardBoardDisplayArea.includes(CARD_LOCATION.EQUIPMENT) && !cardBoardDisplayArea.includes(CARD_LOCATION.HORSE)) {
+        if (!cardBoardDisplayArea.includes(PLAYER_CARD_AREA.WEAPON) &&
+            !cardBoardDisplayArea.includes(PLAYER_CARD_AREA.SHEILD) &&
+            !cardBoardDisplayArea.includes(PLAYER_CARD_AREA.HORSE)) {
             return
         }
 
         let loopArray: string[] = [];
-        if (cardBoardDisplayArea.includes(CARD_LOCATION.EQUIPMENT)) {
-            loopArray = ['weaponCard', 'shieldCard', 'plusHorseCard', 'minusHorseCard']
-        } else if (cardBoardDisplayArea.includes(CARD_LOCATION.HORSE)) {
-            loopArray = ['plusHorseCard', 'minusHorseCard']
+        if (cardBoardDisplayArea.includes(PLAYER_CARD_AREA.WEAPON)) {
+            loopArray = loopArray.concat('weaponCard')
+        }
+        if (cardBoardDisplayArea.includes(PLAYER_CARD_AREA.SHEILD)) {
+            loopArray = loopArray.concat('shieldCard')
+        }
+        if (cardBoardDisplayArea.includes(PLAYER_CARD_AREA.HORSE)) {
+            loopArray = loopArray.concat(['plusHorseCard', 'minusHorseCard'])
         }
 
         let index = 0;
@@ -149,7 +156,7 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.EQUIPMENT as CardAreaType))
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card))
 
             this.boardContent = this.boardContent.concat(allCardObjects)
             index++
@@ -157,7 +164,7 @@ export class PlayerCardsBoard {
     }
 
     drawTargetPandingCards(cardBoardDisplayArea: string[], targetPlayer: Player) {
-        if (!cardBoardDisplayArea.includes(CARD_LOCATION.PANDING)) {
+        if (!cardBoardDisplayArea.includes(PLAYER_CARD_AREA.PANDING)) {
             return
         }
 
@@ -168,17 +175,17 @@ export class PlayerCardsBoard {
                 y: this.initY + gridOffset.line2.y,
                 depth: DEPTH_CONFIG.BOARD,
             })
-            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card, CARD_LOCATION.PANDING as CardAreaType))
+            cardImgObj.on('pointerdown', this.getCardClickHandler(targetPlayer, card))
 
             this.boardContent = this.boardContent.concat(allCardObjects)
         })
     }
 
-    getCardClickHandler(targetPlayer: Player, card: Card, cardAreaType: CardAreaType) {
+    getCardClickHandler(targetPlayer: Player, card: Card) {
         return () => {
             this.gamingScene.socket.emit(
                 EMIT_TYPE.CARD_BOARD_ACTION,
-                this.getEmitCardBoardActionData(targetPlayer, card, cardAreaType)
+                this.getEmitCardBoardActionData(targetPlayer, card)
             )
         }
     }
@@ -193,14 +200,12 @@ export class PlayerCardsBoard {
     getEmitCardBoardActionData(
         targetPlayer: Player,
         card: Card,
-        cardAreaType: CardAreaType, // NofityAnimationManager判断正反
     ): EmitCardBoardData {
         return {
             originId: getMyPlayerId(),
             targetId: targetPlayer.playerId,
             card: card,
-            type: this._getEmitType() as CardBoardActionType,
-            cardAreaType,
+            action: this._getEmitType() as PlayerBoardAction,
         }
     }
 

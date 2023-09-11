@@ -52,7 +52,7 @@ export class ToPlayerCard {
         this.fadeInEndY = toBoardPlayer!.playerPosition.y
 
         // fadeInStart
-        if (!fromBoardPlayer) { // 牌堆出的牌 到player（摸牌 五谷丰登）
+        if (!fromBoardPlayer) { // 牌堆/桌面 到player（摸牌 五谷丰登 奸雄）
             this.fadeInStartX = sizeConfig.playersArea.width / 2;
             this.fadeInStartY = sizeConfig.background.height / 2;
         } else if (fromBoardPlayer!.playerId == getMyPlayerId()) { // 我打出的牌

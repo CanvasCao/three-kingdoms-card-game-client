@@ -3,15 +3,14 @@ import {
     BASIC_CARDS_CONFIG,
     CARD_CONFIG,
     CARD_HUASE,
-    CARD_LOCATION,
     CARD_TYPE,
-    SCROLL_CARDS_CONFIG
+    SCROLL_CARDS_CONFIG,
 } from "../config/cardConfig";
 import {EmitNotifyAddToPublicCardData} from "../types/emit";
 import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {i18Config} from "../i18n/i18Config";
 import {i18} from "../i18n/i18nUtils";
-import {Card, CardAreaType} from "../types/card";
+import {Card} from "../types/card";
 import {ADD_TO_PUBLIC_CARD_TYPE} from "../config/emitConfig";
 import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 import {COLOR_CONFIG} from "../config/colorConfig";
@@ -132,27 +131,12 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
     return card
 }
 
-const getIsToOtherPlayerCardFaceFront = (cardAreaType: CardAreaType, fromPlayerId: string, toPlayerId: string,) => {
-    // 别人摸牌 FaceFront false
-    if (fromPlayerId == CARD_LOCATION.PAIDUI) {
-        return false
-    }
-
-    if (fromPlayerId == CARD_LOCATION.TABLE) {
-        return true
-    }
-
-    // 我给别人 别人给我 FaceFront true
+const getIsToOtherPlayerCardFaceFront = (fromPlayerId: string, toPlayerId: string, isPublic: boolean) => {
     if ([fromPlayerId, toPlayerId].includes(getMyPlayerId())) {
         return true
     }
 
-    // 除了我的卡牌移动
-    if (cardAreaType == CARD_LOCATION.EQUIPMENT || cardAreaType == CARD_LOCATION.PANDING || cardAreaType == CARD_LOCATION.HORSE) {
-        return true
-    } else {
-        return false
-    }
+    return isPublic
 }
 
 const getCardColor = (huase: string) => {
