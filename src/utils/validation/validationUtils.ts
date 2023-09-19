@@ -62,7 +62,8 @@ const getNeedSelectCardsMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
             if (gameStatus.skillResponse!.chooseToReleaseSkill === undefined) {
                 return {min: 0, max: 0};
             } else if (gameStatus.skillResponse!.chooseToReleaseSkill == true) {
-                if (gameStatus.skillResponse?.skillNameKey === EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
+                if (gameStatus.skillResponse?.skillNameKey === EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key ||
+                    gameStatus.skillResponse?.skillNameKey === SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key) {
                     return {min: 2, max: 2};
                 }
             }

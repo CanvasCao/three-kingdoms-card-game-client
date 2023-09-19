@@ -1,5 +1,3 @@
-import {CardConfig} from "../types/card"
-
 // FE
 const CARD_NUM_DESC: { [key: number]: string } = {
     1: "A",
@@ -423,7 +421,7 @@ const EQUIPMENT_CARDS_CONFIG = {
     ...MINUS_HORSE_CARDS_CONFIG,
 }
 
-const CARD_CONFIG: CardConfig = {
+const CARD_CONFIG: any = {
     ...BASIC_CARDS_CONFIG,
     ...SCROLL_CARDS_CONFIG,
     ...EQUIPMENT_CARDS_CONFIG,

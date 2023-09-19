@@ -38,6 +38,18 @@ const PANDING_EFFECT_CONFIG = {
             '♠ ♣：Iron Cavalry\n' +
             'has no effect',
     },
+    [SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key]: {
+        CN: '♦ ♠ ♣：伤害来源弃置\n' +
+            '两张手牌或受到1点伤害\n' +
+            '♥：刚烈未生效',
+        EN: '♦ ♠ ♣：Damage source\n' +
+            'must discard two hand\n' +
+            'cards or take 1\n' +
+            'point of damage\n' +
+            '\n' +
+            '♦ ♠ ♣：Unyielding\n' +
+            'has no effect',
+    },
 }
 
 export {

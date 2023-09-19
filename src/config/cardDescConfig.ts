@@ -1,5 +1,3 @@
-import {CardDescConfig} from "../types/card"
-
 const BASIC_CARDS_DESC_CONFIG = {
     "SHA": {
         "CN": `使用时机：出牌阶段限一次。\n使用目标：你攻击范围内的一名角色。\n作用效果：你对目标角色造成1点伤害。`,
@@ -13,14 +11,14 @@ const BASIC_CARDS_DESC_CONFIG = {
         "CN": "使用时机：出牌阶段。\n" +
             "使用目标：包括你在内的一名已受伤的角色。\n" +
             "作用效果：目标角色回复1点体力。\n" +
-            "\r"+
+            "\r" +
             "使用时机：当一名角色处于濒死状态时。\n" +
             "使用目标：一名处于濒死状态的角色。\n" +
             "作用效果：目标角色回复1点体力。",
         "EN": "Usage Timing: Play Phase.\n" +
             "Target: One injured character, including yourself.\n" +
             "Effect: The target character restores 1 health point.\n" +
-            "\r"+
+            "\r" +
             "Usage Timing: When a character is in a dying state.\n" +
             "Target: One character in a dying state.\n" +
             "Effect: The target character restores 1 health point.",
@@ -293,7 +291,7 @@ const EQUIPMENT_CARDS_DESC_CONFIG = {
     ...MINUS_HORSE_CARDS_DESC_CONFIG,
 }
 
-const CARD_DESC_CONFIG: CardDescConfig = {
+const CARD_DESC_CONFIG: any = {
     ...BASIC_CARDS_DESC_CONFIG,
     ...SCROLL_CARDS_DESC_CONFIG,
     ...EQUIPMENT_CARDS_DESC_CONFIG,

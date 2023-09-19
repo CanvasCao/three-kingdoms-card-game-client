@@ -1,6 +1,4 @@
-import {SkillDescConfig, SkillNameConfig} from "../types/skill"
-
-const SKILL_NAMES_CONFIG: SkillNameConfig = {
+const SKILL_NAMES_CONFIG: any = {
     WEI001_JIAN_XIONG: {
         key: 'WEI001_JIAN_XIONG',
         CN: '奸雄',
@@ -20,6 +18,11 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
         key: 'WEI002_GUI_CAI',
         CN: '鬼才',
         EN: 'Demonic Talent'
+    },
+    WEI003_GANG_LIE: {
+        key: 'WEI003_GANG_LIE',
+        CN: '刚烈',
+        EN: 'Unyielding'
     },
     WEI004_TU_XI: {
         key: 'WEI004_TU_XI',
@@ -64,14 +67,14 @@ const SKILL_NAMES_CONFIG: SkillNameConfig = {
         EN: 'Without Equal'
     },
 
-    SP001_CHONG_SHENG:{
+    SP001_CHONG_SHENG: {
         key: 'SP001_CHONG_SHENG',
         CN: '重生',
         EN: 'Rebirth'
     }
 }
 
-const SKILL_DESC_CONFIG: SkillDescConfig = {
+const SKILL_DESC_CONFIG: any = {
     WEI001_JIAN_XIONG: {
         CN: '当你受到伤害后，你可以获得造成伤害的牌。',
         EN: 'After you take damage, you can obtain the cards that caused the damage.'
@@ -87,6 +90,12 @@ const SKILL_DESC_CONFIG: SkillDescConfig = {
     WEI002_GUI_CAI: {
         CN: '当一名角色的判定牌生效前，你可以打出一张手牌代替之。',
         EN: "Before a character's judgment card takes effect, you can play a hand card to replace it."
+    },
+    WEI003_GANG_LIE: {
+        CN: '当你受到伤害后，你可以进行判定，若结果不为♥，则伤害来源选择一项：\n' +
+            '1. 弃置两张手牌；\n' +
+            '2. 受到你造成的1点伤害。',
+        EN: "After damage taken, you may reveal a judgment draw. If the result is not hearts, then the damage source must discard two hand cards or take 1 point of damage from you."
     },
     WEI004_TU_XI: {
         CN: '摸牌阶段，你可以放弃摸牌，改为获得最多两名其他角色的各一张手牌。',

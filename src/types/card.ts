@@ -34,19 +34,3 @@ export type PandingSign = {
 }
 export type WugufengdengCard = Card & { wugefengdengSelectedPlayerId: string }
 export type PlayerBoardAction = keyof typeof PLAYER_BOARD_ACTION
-
-export type CardConfigValue = {
-    key?: string,
-    CN: string,
-    EN: string,
-    type?: string,
-    equipmentType?: string,
-    distance?:number
-}
-export type CardConfig = { [key: string]: CardConfigValue }
-
-export type CardDescValue = {
-    CN: string,
-    EN: string,
-}
-export type CardDescConfig = { [key: string]: CardDescValue }

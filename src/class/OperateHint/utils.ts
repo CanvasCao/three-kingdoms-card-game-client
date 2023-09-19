@@ -113,6 +113,8 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         } else if (chooseToReleaseSkill) {
             if (skillNameKey == SKILL_NAMES_CONFIG.WEI002_GUI_CAI.key) {
                 return i18(i18Config.RESPONSE_SKILL_GUI_CAI)
+            } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key) {
+                return i18(i18Config.RESPONSE_SKILL_GANG_LIE)
             } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
                 return i18(i18Config.RESPONSE_SKILL_TU_XI)
             } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
