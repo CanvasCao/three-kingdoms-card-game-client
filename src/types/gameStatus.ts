@@ -23,8 +23,8 @@ export type GameStatus = {
     // events
     useStrikeEvents: UseStrikeEvent[],
     responseCardEvents: ResponseCardEvent[],
+    damageEvents: DamageEvent[],
     pandingEvent: PandingEvent,
-    damageEvent: DamageEvent,
 
     tieSuoTempStorage: TieSuoTempStorageItem[],
 
