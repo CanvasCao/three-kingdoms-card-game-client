@@ -196,7 +196,7 @@ const IMMEDIATE_SCROLL_CARDS_CONFIG = {
     "WU_XIE_KE_JI": {
         key: "WU_XIE_KE_JI",
         "CN": "无懈可击",
-        "EN": "Cancel",
+        "EN": "Ward",
         type: CARD_TYPE.SCROLL
     },
 
@@ -247,7 +247,7 @@ const WEAPON_CARDS_CONFIG = {
     "ZHU_GE_LIAN_NU": {
         key: "ZHU_GE_LIAN_NU",
         "CN": "诸葛连弩",
-        "EN": "Crossbow",
+        "EN": "Chu Ko Nu",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 1
@@ -255,7 +255,7 @@ const WEAPON_CARDS_CONFIG = {
     "CI_XIONG_SHUANG_GU_JIAN": {
         key: "CI_XIONG_SHUANG_GU_JIAN",
         "CN": "雌雄双股剑",
-        "EN": "Binary Sword",
+        "EN": "Yin-Yang Swords",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 2
@@ -271,7 +271,7 @@ const WEAPON_CARDS_CONFIG = {
     "QING_LONG_YAN_YUE_DAO": {
         key: "QING_LONG_YAN_YUE_DAO",
         "CN": "青龙偃月刀",
-        "EN": "Green Dragon Sword",
+        "EN": "Green Dragon Crescent Blade",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 3
@@ -279,7 +279,7 @@ const WEAPON_CARDS_CONFIG = {
     "FANG_TIAN_HUA_JI": {
         key: "FANG_TIAN_HUA_JI",
         "CN": "方天画戟",
-        "EN": "Halberd",
+        "EN": "Heavenly Double Halberd",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 4
@@ -287,7 +287,7 @@ const WEAPON_CARDS_CONFIG = {
     "HAN_BIN_JIAN": {
         key: "HAN_BIN_JIAN",
         "CN": "寒冰剑",
-        "EN": "Ice Sword",
+        "EN": "Frost Sword",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 2
@@ -295,7 +295,7 @@ const WEAPON_CARDS_CONFIG = {
     "GUAN_SHI_FU": {
         key: "GUAN_SHI_FU",
         "CN": "贯石斧",
-        "EN": "Stone Axe",
+        "EN": "Stone Piercing Axe",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 3
@@ -319,7 +319,7 @@ const WEAPON_CARDS_CONFIG = {
     "QIN_GANG_JIAN": {
         key: "QIN_GANG_JIAN",
         "CN": "青釭剑",
-        "EN": "Green Steel Sword",
+        "EN": "Black Pommel",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 2
@@ -327,7 +327,7 @@ const WEAPON_CARDS_CONFIG = {
     "ZHANG_BA_SHE_MAO": {
         key: "ZHANG_BA_SHE_MAO",
         "CN": "丈八蛇矛",
-        "EN": "Snake Spear",
+        "EN": "Eighteen-span Viper Spear",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.WEAPON,
         distance: 3
@@ -339,14 +339,14 @@ const SHIELD_CARDS_CONFIG = {
     "BA_GUA_ZHEN": {
         key: "BA_GUA_ZHEN",
         "CN": "八卦阵",
-        "EN": "Eight Diagrams",
+        "EN": "Eight Diagram Formation",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.SHIELD,
     },
     "REN_WANG_DUN": {
         key: "REN_WANG_DUN",
         "CN": "仁王盾",
-        "EN": "King's Shield",
+        "EN": "Sage King Shield",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.SHIELD,
     },
@@ -371,21 +371,21 @@ const PLUS_HORSE_CARDS_CONFIG = {
     "DI_LU": {
         key: "DI_LU",
         "CN": "的卢",
-        "EN": "Plus horse",
+        "EN": "Hex Mark",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
     },
     "JUE_YING": {
         key: "JUE_YING",
         "CN": "绝影",
-        "EN": "Plus horse",
+        "EN": "Shadowrunner",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
     },
     "ZHAO_HUANG_FEI_DIAN": {
         key: "ZHAO_HUANG_FEI_DIAN",
         "CN": "爪黄飞电",
-        "EN": "Plus horse",
+        "EN": "Yellow Flash",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
     },
@@ -394,21 +394,21 @@ const MINUS_HORSE_CARDS_CONFIG = {
     "CHI_TU": {
         key: "CHI_TU",
         "CN": "赤兔",
-        "EN": "Minus horse",
+        "EN": "Red Hare",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.MINUS_HORSE,
     },
     "DA_WAN": {
         key: "DA_WAN",
         "CN": "大宛",
-        "EN": "Minus horse",
+        "EN": "Ferghana Horse",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.MINUS_HORSE,
     },
     "ZI_XING": {
         key: "ZI_XING",
         "CN": "紫骍",
-        "EN": "Minus horse",
+        "EN": "Violet Stallion",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.MINUS_HORSE,
     },
