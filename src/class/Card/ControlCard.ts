@@ -14,6 +14,7 @@ import {
 } from "../../utils/validation/validationUtils";
 import {Card} from "../../types/card";
 import {getMyCardPosition} from "../../utils/position/cardPositionUtils";
+import { cardDuration } from "../../config/animationConfig";
 
 export class ControlCard {
     obId: string;
@@ -157,11 +158,11 @@ export class ControlCard {
                 targets: obj,
                 x: {
                     value: this.cardInitEndX + (obj?.getData("offsetX")),
-                    duration: 400,
+                    duration: cardDuration,
                 },
                 y: {
                     value: this.cardInitEndY + (obj?.getData("offsetY")),
-                    duration: 400,
+                    duration: cardDuration,
                 },
                 onComplete: () => {
                     this.isMoving = false;

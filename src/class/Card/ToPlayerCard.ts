@@ -8,6 +8,7 @@ import {BoardPlayer} from "../Player/BoardPlayer";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
 import {getMyCardPosition} from "../../utils/position/cardPositionUtils";
+import { cardDuration } from "../../config/animationConfig";
 
 export class ToPlayerCard {
     obId: string;
@@ -109,11 +110,11 @@ export class ToPlayerCard {
                 targets: obj,
                 x: {
                     value: this.fadeInEndX + (obj?.getData("offsetX")),
-                    duration: 400,
+                    duration: cardDuration,
                 },
                 y: {
                     value: this.fadeInEndY + (obj?.getData("offsetY")),
-                    duration: 400,
+                    duration: cardDuration,
                 },
                 onComplete: () => {
                     this.isMoving = false;

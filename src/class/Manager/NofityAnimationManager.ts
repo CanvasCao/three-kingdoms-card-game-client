@@ -10,7 +10,7 @@ import {attachFEInfoToCard, generatePublicCardMessage, getIsToOtherPlayerCardFac
 import {PublicLine} from "../Line/PublicLine";
 import {ToPlayerCard} from "../Card/ToPlayerCard";
 import {Card} from "../../types/card";
-import {isNumber} from "lodash";
+import {cardDuration} from "../../config/animationConfig";
 
 export class NofityAnimationManager {
     // obId: string;
@@ -45,7 +45,7 @@ export class NofityAnimationManager {
                     startPosition: targetBoardPlayer1.linePosition,
                     endPosition: targetBoardPlayer2.linePosition,
                 });
-            }, 400)
+            }, cardDuration)
             return
         }
 

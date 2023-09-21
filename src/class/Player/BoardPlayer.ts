@@ -353,12 +353,8 @@ export class BoardPlayer {
             skillImage.setOrigin(0.5, 1)
             this.phaserGroup.push(skillImage);
 
-            let skillName = limitStringLengthWithEllipsis(i18(SKILL_NAMES_CONFIG[skill.key]), isSingleSkill ? 10 : 16)
-            let fontSize = 16
-            if (isLanEn()) {
-                fontSize = isSingleSkill ? 16 : 10
-            }
-
+            let skillName = limitStringLengthWithEllipsis(i18(SKILL_NAMES_CONFIG[skill.key]), isSingleSkill ? 10 : 5)
+            const fontSize = (isLanEn() && !isSingleSkill) ? 14 : 16
             const skillText = this.gamingScene.add.text(x, y, skillName, {
                     align: 'left',
                     wordWrap: {

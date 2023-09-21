@@ -22,7 +22,6 @@ export class PublicLine {
         this.graphics = null;
 
         this.drawLine();
-
     }
 
     drawLine() {
@@ -41,14 +40,15 @@ export class PublicLine {
                 startX + (endX - startX) * startPointPercent,
                 startY + (endY - startY) * startPointPercent,
                 startX + (endX - startX) * endPointPercent,
-                startY + (endY - startY) * endPointPercent);
+                startY + (endY - startY) * endPointPercent
+            );
 
             if (endPointPercent < 1) {
-                endPointPercent += 0.1;
+                endPointPercent += (1 / 20);
             } else if (loopIndex < 20) {
                 loopIndex++
             } else {
-                startPointPercent += 0.1;
+                startPointPercent += (1 / 20);
             }
 
             this.graphics!.clear();

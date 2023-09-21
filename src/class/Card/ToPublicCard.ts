@@ -9,6 +9,7 @@ import {BoardPlayer} from "../Player/BoardPlayer";
 import {uuidv4} from "../../utils/uuid";
 import {Card} from "../../types/card";
 import {getMyCardPosition} from "../../utils/position/cardPositionUtils";
+import { cardDuration } from "../../config/animationConfig";
 
 export class ToPublicCard {
     obId: string;
@@ -106,11 +107,11 @@ export class ToPublicCard {
                 targets: obj,
                 x: {
                     value: this.fadeInEndX + (obj?.getData("offsetX") || 0),
-                    duration: 400,
+                    duration: cardDuration,
                 },
                 y: {
                     value: this.fadeInEndY + (obj?.getData("offsetY") || 0),
-                    duration: 400,
+                    duration: cardDuration,
                 },
                 onComplete: () => {
                     this.isMoving = false;
@@ -134,7 +135,7 @@ export class ToPublicCard {
                 targets: obj,
                 x: {
                     value: sizeConfig.playersArea.width / 2 + diffDis + (obj?.getData("offsetX")),
-                    duration: 400,
+                    duration: cardDuration,
                 },
             });
         })
