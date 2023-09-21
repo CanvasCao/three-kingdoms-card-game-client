@@ -35,7 +35,7 @@ const sharedDrawEquipment = (
 
     const background = gamingScene.add.image(x + equipmentCardWidth / 2,
         y + equipmentCardHeight / 2,
-        'card')
+        'card').setInteractive()
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
     background.on('pointerover', () => {

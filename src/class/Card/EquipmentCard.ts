@@ -119,11 +119,6 @@ export class EquipmentCard {
         this.cardObjGroup.push(distanceText)
         this.cardObjGroup.push(nameText)
         this.cardObjGroup.push(huaseNumText)
-
-        // 点击我的武器才触发点击
-        if (this.playerId == getMyPlayerId()) {
-            this.background.setInteractive()
-        }
     }
 
     bindEvent() {
@@ -131,6 +126,8 @@ export class EquipmentCard {
                 if (this.isDestoryed) {
                     return;
                 }
+
+                this.gamingScene.boardPlayers.find(p => p.playerId === this.playerId)?.playerImage?.emit('pointerdown');
 
                 const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved;
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
