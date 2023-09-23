@@ -75,8 +75,8 @@ export class ToolTip {
 
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus;
         // 选中的牌/装备 hover不可以有提示
-        if ([TOOL_TIP_CARD_TYPE.CARD, TOOL_TIP_CARD_TYPE.EQUIPMENT].includes(toolTipType) &&
-            gameFEStatus.selectedCards.map((c) => c.cardId).includes(card!.cardId)) {
+        if ([TOOL_TIP_CARD_TYPE.CONTROL_CARD, TOOL_TIP_CARD_TYPE.EQUIPMENT].includes(toolTipType) &&
+            gameFEStatus.selectedCards.map((c) => c.cardId).includes(card?.cardId!)) {
             return
         }
 
@@ -88,9 +88,9 @@ export class ToolTip {
             }
 
             let offsetY = 0;
-            if ([TOOL_TIP_CARD_TYPE.CARD, TOOL_TIP_CARD_TYPE.PUBLIC_CARD].includes(toolTipType)) {
+            if ([TOOL_TIP_CARD_TYPE.CONTROL_CARD, TOOL_TIP_CARD_TYPE.PUBLIC_CARD].includes(toolTipType)) {
                 offsetY = -sizeConfig.controlCard.height / 2 - 10
-            } else if (toolTipType == TOOL_TIP_CARD_TYPE.EQUIPMENT) {
+            } else if ([TOOL_TIP_CARD_TYPE.EQUIPMENT, TOOL_TIP_CARD_TYPE.PANDING_CARD].includes(toolTipType)) {
                 offsetY = -20
             } else if (toolTipType == TOOL_TIP_CARD_TYPE.SELECTING_HERO) {
                 offsetY = -sizeConfig.selectHeroCard.height / 2 - 10
@@ -113,7 +113,7 @@ export class ToolTip {
             this.bgFill?.fillStyle(Number(COLOR_CONFIG.black), 0.7);
             this.bgFill?.fillRoundedRect(boundx, boundy, boundw, boundh, 2);
             this.show = true;
-        }, 1000) as unknown as number
+        }, 500) as unknown as number
     }
 
     clearAll() {
@@ -144,11 +144,15 @@ export class ToolTip {
     }
 
     gameFEStatusNotify(gameFEStatus: GameFEStatus) {
+        if (!this.card) {
+            return
+        }
+
         if (this.toolTipType == TOOL_TIP_CARD_TYPE.PUBLIC_CARD &&
-            !gameFEStatus.publicCards.map((c) => c.cardId).includes(this.card!.cardId)) {
+            !gameFEStatus.publicCards.map((c) => c.cardId).includes(this.card.cardId)) {
             this.clearAll()
-        } else if ([TOOL_TIP_CARD_TYPE.CARD, TOOL_TIP_CARD_TYPE.EQUIPMENT].includes(this.toolTipType) &&
-            gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card!.cardId)) {
+        } else if ([TOOL_TIP_CARD_TYPE.CONTROL_CARD, TOOL_TIP_CARD_TYPE.EQUIPMENT].includes(this.toolTipType) &&
+            gameFEStatus.selectedCards.map((c) => c.cardId).includes(this.card.cardId)) {
             this.clearAll()
         }
     }

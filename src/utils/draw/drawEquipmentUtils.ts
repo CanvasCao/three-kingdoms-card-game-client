@@ -38,17 +38,10 @@ const sharedDrawEquipment = (
         'card').setInteractive()
     background.displayHeight = equipmentCardHeight;
     background.displayWidth = equipmentCardWidth;
-    background.on('pointerover', () => {
-        gamingScene.toolTip?.hoverInToShowToolTip({
-            card,
-            text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
-            toolTipType: TOOL_TIP_CARD_TYPE.EQUIPMENT,
-            x: background.x,
-            y: background.y
-        });
-    })
-    background.on('pointerout', () => {
-        gamingScene.toolTip?.clearAll();
+    background.setData('hoverData', {
+        card,
+        text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
+        toolTipType: TOOL_TIP_CARD_TYPE.EQUIPMENT,
     })
 
     // @ts-ignore

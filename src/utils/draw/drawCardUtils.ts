@@ -47,20 +47,13 @@ const sharedDrawFrontCard = (
     cardImgObj.setDepth(depth)
     cardImgObj.setData("offsetX", 0)
     cardImgObj.setData("offsetY", 0)
+    cardImgObj.setData("hoverData", {
+        card,
+        text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
+        toolTipType: isToPublic ? TOOL_TIP_CARD_TYPE.PUBLIC_CARD : TOOL_TIP_CARD_TYPE.CONTROL_CARD,
+    })
     allCardObjects.push(cardImgObj)
 
-    cardImgObj.on('pointerover', () => {
-        gamingScene.toolTip?.hoverInToShowToolTip({
-            card,
-            text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
-            toolTipType: isToPublic ? TOOL_TIP_CARD_TYPE.PUBLIC_CARD : TOOL_TIP_CARD_TYPE.CARD,
-            x: cardImgObj.x,
-            y: cardImgObj.y
-        });
-    })
-    cardImgObj.on('pointerout', () => {
-        gamingScene.toolTip?.clearAll();
-    })
 
     // cardName
     const cardNameObj = gamingScene.add.text(

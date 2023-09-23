@@ -19,13 +19,14 @@ import {
 } from '../../types/emit';
 import {WuGuFengDengBoard} from '../../class/Board/WuGuFengDengBoard';
 import {HeroSelectBoard} from '../../class/Board/HeroSelectBoard';
-import {tryRejoinRoom} from '../../bindPageEvent';
+import {tryRejoinRoom} from '../../event/bindPageEvent';
 import {OperateHint} from '../../class/OperateHint/OperateHint';
 import {Card} from '../../types/card';
 import {BoardPlayerThinkingHint} from '../../class/Player/BoardPlayerThinkingHint';
 import Phaser from 'phaser';
 import {ToolTip} from '../ToolTip/ToolTip';
 import {PandingBoard} from '../Board/PandingBoard';
+import {bindGlobalHoverEvent} from '../../event/globalEvent';
 
 
 class Gaming extends Phaser.Scene {
@@ -109,6 +110,9 @@ class Gaming extends Phaser.Scene {
             this.toolTip = new ToolTip(this);
 
             this.gameStatusObserved.setGameStatus(data);
+
+            // global hover
+            bindGlobalHoverEvent(this);
         });
 
         socket.on(EMIT_TYPE.REFRESH_STATUS, (data: GameStatus) => {

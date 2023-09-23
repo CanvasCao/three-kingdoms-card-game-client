@@ -18,8 +18,12 @@ import {isLanEn, i18} from "../../i18n/i18nUtils";
 import {Skill} from "../../types/skill";
 import {i18Config} from "../../i18n/i18Config";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
-import {getHeroText, splitText} from "../../utils/string/stringUtils";
-import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
+import {getCardText, getHeroText, splitText} from "../../utils/string/stringUtils";
+import {
+    TOOL_TIP_CARD_MAX_LENGTH,
+    TOOL_TIP_HERO_MAX_LENGTH_CN,
+    TOOL_TIP_HERO_MAX_LENGTH_EN
+} from "../../config/stringConfig";
 import {
     getCanISelectMySelfAsTarget,
     getIsBoardPlayerAble,
@@ -115,7 +119,7 @@ export class BoardPlayer {
         this._selectedTargetPlayersLength = 0;
         this._chooseToReleaseSkill = undefined;
 
-        this.drawPlayer('xuanjiang');
+        this.drawPlayer(this.gamingScene.gameStatusObserved.gameStatus!);
         this.drawPlayerName();
         this.drawTeamTag();
 
@@ -127,7 +131,7 @@ export class BoardPlayer {
         const player = gameStatus.players[this.playerId]
 
         this.drawStroke();
-        this.drawPlayer(player.heroId);
+        this.drawPlayer(gameStatus);
         this.drawBloodsBg(player.maxBlood);
         this.drawBloods(player.maxBlood);
         this.setBloods(player.currentBlood);
@@ -178,7 +182,10 @@ export class BoardPlayer {
         this.phaserGroup.push(this.cardNumObj)
     }
 
-    drawPlayer(playerImage: string) {
+    drawPlayer(gameStatus: GameStatus) {
+        const player = gameStatus?.players[this.playerId]
+        const playerImage = player?.heroId || 'xuanjiang';
+
         this.playerImage = this.gamingScene.add.image(
             this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
@@ -192,7 +199,14 @@ export class BoardPlayer {
             sizeConfig.playerSource.width * 1.2);
 
         this.playerImage.setCrop(cropRect);
-        this.phaserGroup.push(this.playerImage)
+
+        if (player?.heroId) {
+            this.playerImage.setData("hoverData", {
+                text: splitText(getHeroText(player), isLanEn() ? TOOL_TIP_HERO_MAX_LENGTH_EN : TOOL_TIP_HERO_MAX_LENGTH_CN),
+                toolTipType: TOOL_TIP_CARD_TYPE.PLAYER,
+            })
+            this.phaserGroup.push(this.playerImage);
+        }
     }
 
     drawPlayerName() {
@@ -393,20 +407,6 @@ export class BoardPlayer {
 
             gameFEStatusObserved.selectPlayer(player)
         });
-
-
-        this.playerImage!.on('pointerover', () => {
-            const player = this.gamingScene.gameStatusObserved.gameStatus!.players[this.playerId]
-            this.gamingScene.toolTip?.hoverInToShowToolTip({
-                text: splitText(getHeroText(player), TOOL_TIP_HERO_MAX_LENGTH),
-                toolTipType: TOOL_TIP_CARD_TYPE.PLAYER,
-                x: sizeConfig.playersArea.width / 2,
-                y: sizeConfig.playersArea.height * 0.9
-            });
-        })
-        this.playerImage!.on('pointerout', () => {
-            this.gamingScene.toolTip?.clearAll();
-        })
     }
 
     onPandingCardsChange(gameStatus: GameStatus) {
@@ -415,10 +415,16 @@ export class BoardPlayer {
         if (this._pandingCardsLength != player.pandingSigns.length) {
             for (let i = 0; i < this.maxPandingCardsNumber; i++) {
                 if (player.pandingSigns[i]) {
-                    const pandingCardText = i18(CARD_CONFIG[player.pandingSigns[i].actualCard.key])?.slice(0, 1);
-                    this.pandingCardImages![i].setAlpha(1)
-                    this.pandingCardTexts![i].setAlpha(1)
-                    this.pandingCardTexts![i].setText(pandingCardText)
+                    const pandingSign = player.pandingSigns[i]
+                    const {card, actualCard} = pandingSign
+                    const pandingCardText = i18(CARD_CONFIG[actualCard.key])?.slice(0, 1);
+                    this.pandingCardTexts![i].setAlpha(1).setText(pandingCardText)
+
+                    this.pandingCardImages![i].setData('hoverData', {
+                        card,
+                        text: splitText(getCardText(actualCard), TOOL_TIP_CARD_MAX_LENGTH),
+                        toolTipType: TOOL_TIP_CARD_TYPE.PANDING_CARD,
+                    }).setInteractive().setAlpha(1);
                 } else {
                     this.pandingCardImages![i].setAlpha(0)
                     this.pandingCardTexts![i].setAlpha(0)

@@ -7,10 +7,10 @@ import {EmitHeroSelectBoardData} from "../../types/emit";
 import {uuidv4} from "../../utils/uuid";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from './BaseBoard'
-import {i18} from "../../i18n/i18nUtils";
+import {i18, isLanEn} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {getHeroText, splitText} from "../../utils/string/stringUtils";
-import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
+import {TOOL_TIP_HERO_MAX_LENGTH_CN, TOOL_TIP_HERO_MAX_LENGTH_EN} from "../../config/stringConfig";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 
 const boardSize = {
@@ -66,6 +66,10 @@ export class HeroSelectBoard {
             cardImgObj.displayWidth = sizeConfig.selectHeroCard.width;
             cardImgObj.setDepth(DEPTH_CONFIG.BOARD)
 
+            cardImgObj.setData('hoverData', {
+                text: splitText(getHeroText(hero), isLanEn() ? TOOL_TIP_HERO_MAX_LENGTH_EN : TOOL_TIP_HERO_MAX_LENGTH_CN),
+                toolTipType: TOOL_TIP_CARD_TYPE.SELECTING_HERO,
+            })
             cardImgObj.on('pointerdown', () => {
                     this.gamingScene.socket.emit(
                         EMIT_TYPE.HERO_SELECT_BOARD_ACTION,
@@ -73,18 +77,6 @@ export class HeroSelectBoard {
                     )
                 }
             )
-
-            cardImgObj.on('pointerover', () => {
-                this.gamingScene.toolTip?.hoverInToShowToolTip({
-                    text: splitText(getHeroText(hero), TOOL_TIP_HERO_MAX_LENGTH),
-                    toolTipType: TOOL_TIP_CARD_TYPE.SELECTING_HERO,
-                    x: cardImgObj.x,
-                    y: cardImgObj.y
-                });
-            })
-            cardImgObj.on('pointerout', () => {
-                this.gamingScene.toolTip?.clearAll();
-            })
 
             this.boardContent.push(cardImgObj);
         })

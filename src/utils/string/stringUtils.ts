@@ -3,7 +3,7 @@ import {CARD_DESC_CONFIG} from "../../config/cardDescConfig";
 import {HERO_NAMES_CONFIG} from "../../config/heroConfig";
 import {KINGDOM_CONFIG} from "../../config/kingdomConfig";
 import {SKILL_DESC_CONFIG, SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
-import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
+import {TOOL_TIP_HERO_MAX_LENGTH_CN, TOOL_TIP_HERO_MAX_LENGTH_EN} from "../../config/stringConfig";
 import {isLanEn, i18} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
 import {Hero} from "../../types/hero";
@@ -87,7 +87,7 @@ const getHeroText = (hero: Hero) => {
     const heroName = i18(HERO_NAMES_CONFIG[heroId])
 
     const firstLine = `${heroName}  ${i18(KINGDOM_CONFIG[kingdom])}  ${isLanEn() ? "health point" : '体力'}${maxBlood}`
-    resArr.push(firstLine + generateEmptyString(TOOL_TIP_HERO_MAX_LENGTH - firstLine.length))
+    resArr.push(firstLine + generateEmptyString((isLanEn() ? TOOL_TIP_HERO_MAX_LENGTH_EN : TOOL_TIP_HERO_MAX_LENGTH_CN) - firstLine.length))
 
     resArr.push('\r')
 
