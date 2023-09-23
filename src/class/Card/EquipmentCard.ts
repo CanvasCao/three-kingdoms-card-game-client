@@ -1,5 +1,5 @@
 import {sizeConfig} from "../../config/sizeConfig";
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {EQUIPMENT_CARDS_CONFIG, EQUIPMENT_TYPE} from "../../config/cardConfig";
@@ -40,7 +40,7 @@ export class EquipmentCard {
     distanceText: Phaser.GameObjects.Text | null;
     nameText: Phaser.GameObjects.Text | null;
     huaseNumText: Phaser.GameObjects.Text | null;
-    cardObjGroup: Phaser.GameObjects.GameObject[]
+    phaserGroup: PhaserGameObject[]
 
     constructor(gamingScene: GamingScene, card: Card, playerId: string) {
         this.obId = uuidv4();
@@ -64,7 +64,7 @@ export class EquipmentCard {
         this.distanceText = null;
         this.nameText = null;
         this.huaseNumText = null;
-        this.cardObjGroup = [];
+        this.phaserGroup = [];
 
         this.drawEquipmentCard(card);
         this.bindEvent();
@@ -115,10 +115,10 @@ export class EquipmentCard {
         this.nameText = nameText;
         this.huaseNumText = huaseNumText;
 
-        this.cardObjGroup.push(background)
-        this.cardObjGroup.push(distanceText)
-        this.cardObjGroup.push(nameText)
-        this.cardObjGroup.push(huaseNumText)
+        this.phaserGroup.push(background)
+        this.phaserGroup.push(distanceText)
+        this.phaserGroup.push(nameText)
+        this.phaserGroup.push(huaseNumText)
     }
 
     bindEvent() {
@@ -169,7 +169,7 @@ export class EquipmentCard {
     destoryAll() {
         this.isDestoryed = true;
 
-        this.cardObjGroup.forEach((obj) => {
+        this.phaserGroup.forEach((obj) => {
             obj?.destroy();
         })
         this.gamingScene.gameStatusObserved.removeObserver(this);
@@ -203,7 +203,7 @@ export class EquipmentCard {
 
         if (this._isSelected == isSelected) return;
 
-        this.cardObjGroup.forEach((obj) => {
+        this.phaserGroup.forEach((obj) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {

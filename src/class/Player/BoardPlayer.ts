@@ -26,6 +26,9 @@ import {
     getNeedSelectPlayersMinMax
 } from "../../utils/validation/validationUtils";
 import {BoardPlayerSkills} from "./BoardPlayerSkills";
+import {Card} from "../../types/card";
+import {EquipmentCard} from "../Card/EquipmentCard";
+import differenceBy from "lodash/differenceBy";
 
 const reduceBloodOut = 50;
 const reduceBloodIn = 300;
@@ -49,6 +52,7 @@ export class BoardPlayer {
     _heroId: string;
     _disable: boolean;
     _pandingCardsLength: number;
+    _playerEquipmentCards: Card[];
     _blood: number;
     _cardNumber: number;
     _isTieSuo: boolean;
@@ -102,6 +106,7 @@ export class BoardPlayer {
         this._heroId = '';
         this._disable = false;
         this._pandingCardsLength = 0;
+        this._playerEquipmentCards = [];
         this._blood = 0;
         this._cardNumber = 0;
         this._isTieSuo = false;
@@ -423,6 +428,19 @@ export class BoardPlayer {
         }
     }
 
+    onEquipmentCardsChange(gameStatus: GameStatus) {
+        const player = gameStatus.players[this.playerId];
+        const playerEquipmentCards = [player.weaponCard, player.shieldCard, player.minusHorseCard, player.plusHorseCard].filter(Boolean)
+
+        const needNewCards = differenceBy(playerEquipmentCards, this._playerEquipmentCards, 'cardId');
+        needNewCards.forEach((card) => {
+            const equipmentCard = new EquipmentCard(this.gamingScene, card, this.playerId);
+            this.phaserGroup = this.phaserGroup.concat(equipmentCard.phaserGroup)
+        })
+
+        this._playerEquipmentCards = playerEquipmentCards
+    }
+
     startReduceBloodMove() {
         this.phaserGroup.forEach((obj) => {
             this.gamingScene.tweens.add({
@@ -575,6 +593,7 @@ export class BoardPlayer {
             this.onTieSuoChange(gameStatus);
             this.onPlayerBloodChange(gameStatus);
             this.onPandingCardsChange(gameStatus);
+            this.onEquipmentCardsChange(gameStatus);
             this.onPlayerDieChange(gameStatus)
         }
     }

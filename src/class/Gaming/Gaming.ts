@@ -2,7 +2,6 @@ import {HERO_INDEXES, HERO_URL_PREFIX, URL_CONFIG} from '../../config/urlConfig'
 import {sizeConfig} from '../../config/sizeConfig'
 import {socket} from '../../socket';
 import {ControlCardsManager} from '../../class/Manager/ControlCardsManager';
-import {EquipmentmentCardsManager} from '../../class/Manager/EquipmentCardsManager';
 import {ControlButtons} from '../../class/Button/ControlButtons';
 import {GameStatusObserved} from '../../class/Observed/GameStatusObserved';
 import {GameFEStatusObserved} from '../../class/Observed/GameFEStatusObserved';
@@ -45,7 +44,6 @@ class Gaming extends Phaser.Scene {
     operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
-    equipmentmentCardsManager: EquipmentmentCardsManager | undefined;
     notifyAnimationManager: NofityAnimationManager | undefined;
 
     constructor() {
@@ -108,7 +106,6 @@ class Gaming extends Phaser.Scene {
             this.boardPlayerThinkHints = players.map((player) => new BoardPlayerThinkingHint(this, player));
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
 
-            this.equipmentmentCardsManager = new EquipmentmentCardsManager(this);
             this.toolTip = new ToolTip(this);
 
             this.gameStatusObserved.setGameStatus(data);
