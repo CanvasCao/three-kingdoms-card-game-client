@@ -1,7 +1,7 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {CARD_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getIsAllSelectHeroDone} from "../../utils/playerUtils";
@@ -14,18 +14,18 @@ import {
     sharedDrawPlayerStroke
 } from "../../utils/draw/drawPlayerStrokeUtils";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
-import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {isLanEn, i18} from "../../i18n/i18nUtils";
 import {Skill} from "../../types/skill";
 import {i18Config} from "../../i18n/i18Config";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
-import {getHeroText, limitStringLengthWithEllipsis, splitText} from "../../utils/string/stringUtils";
+import {getHeroText, splitText} from "../../utils/string/stringUtils";
 import {TOOL_TIP_HERO_MAX_LENGTH} from "../../config/stringConfig";
 import {
     getCanISelectMySelfAsTarget,
     getIsBoardPlayerAble,
     getNeedSelectPlayersMinMax
 } from "../../utils/validation/validationUtils";
+import {BoardPlayerSkills} from "./BoardPlayerSkills";
 
 const reduceBloodOut = 50;
 const reduceBloodIn = 300;
@@ -57,9 +57,7 @@ export class BoardPlayer {
     _selectedTargetPlayersLength?: number;
     _chooseToReleaseSkill?: boolean;
 
-    phaserGroup: (Phaser.GameObjects.Graphics |
-        Phaser.GameObjects.Text |
-        Phaser.GameObjects.Image)[];
+    phaserGroup: PhaserGameObject[];
 
     playerStroke?: Phaser.GameObjects.Graphics;
     cardNumObj?: Phaser.GameObjects.Text;
@@ -333,42 +331,8 @@ export class BoardPlayer {
     }
 
     drawHeroSkills(skills: Skill[]) {
-        const skillMargin = 5;
-        const doubleSkillWidth = (sizeConfig.player.width - 40) / 2
-        const singleSkillWidth = (sizeConfig.player.width - 30)
-
-        const isSingleSkill = (skills.length === 1)
-        const skillWidth = isSingleSkill ? singleSkillWidth : doubleSkillWidth;
-        const skillHeight = 24
-
-        skills.forEach((skill, index) => {
-            if (index > 1) {
-                return // 超过三个技能先不写
-            }
-
-            const x = this.positionX - sizeConfig.player.width / 2 + skillWidth / 2 + index * (skillWidth + skillMargin) + skillMargin
-            const y = this.positionY + sizeConfig.player.height / 2 - skillMargin
-            const skillImage = this.gamingScene.add.image(x, y, "white").setTint(Number(COLOR_CONFIG.grey555));
-            skillImage.setDisplaySize(skillWidth, skillHeight)
-            skillImage.setOrigin(0.5, 1)
-            this.phaserGroup.push(skillImage);
-
-            let skillName = limitStringLengthWithEllipsis(i18(SKILL_NAMES_CONFIG[skill.key]), isSingleSkill ? 10 : 5)
-            const fontSize = (isLanEn() && !isSingleSkill) ? 14 : 16
-            const skillText = this.gamingScene.add.text(x, y, skillName, {
-                    align: 'left',
-                    wordWrap: {
-                        width: isSingleSkill ? Number.MAX_VALUE : skillWidth,
-                        useAdvancedWrap: true
-                    }
-                }
-            )
-
-            skillText.setPadding(2)
-            skillText.setOrigin(0.5, 1)
-            skillText.setFontSize(fontSize)
-            this.phaserGroup.push(skillText);
-        })
+        const boardPlayerSkills = new BoardPlayerSkills(this.gamingScene, this.positionX, this.positionY, skills)
+        this.phaserGroup = this.phaserGroup.concat(boardPlayerSkills.phaserGroup);
     }
 
     setBloods(number: number) {
