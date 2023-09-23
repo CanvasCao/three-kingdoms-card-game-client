@@ -28,6 +28,11 @@ export type GameStatus = {
 
     tieSuoTempStorage: TieSuoTempStorageItem[],
 
+    // winner
+    winner: {
+        winnerTeamName: string,
+    }
+
     // only for debug
     throwedCards?: Card[],
 };

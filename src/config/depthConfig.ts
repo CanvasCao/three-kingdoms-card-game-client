@@ -4,6 +4,8 @@ const DEPTH_CONFIG = {
     CARD: 20,
     BOARD: 100,
     HOVER: 200,
+
+    WINNER_MODAL: 1000
 }
 
 export {

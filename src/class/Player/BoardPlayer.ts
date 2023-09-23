@@ -86,7 +86,7 @@ export class BoardPlayer {
         this.gamingScene = gamingScene;
         this.playerId = player.playerId;
         this.playerName = player.playerName;
-        this.teamName = player.teamMember.split('-')[0];
+        this.teamName = player.teamName
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
         this.isMe = this.playerId === getMyPlayerId();

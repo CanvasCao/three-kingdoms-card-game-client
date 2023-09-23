@@ -9,6 +9,8 @@ export type Player = {
     playerName: string,
     location: number,
     teamMember: string,
+    teamName: string,
+    memberIndex: string,
 
     // cards
     cards: Card[],

@@ -27,6 +27,7 @@ import Phaser from 'phaser';
 import {ToolTip} from '../ToolTip/ToolTip';
 import {PandingBoard} from '../Board/PandingBoard';
 import {bindGlobalHoverEvent} from '../../event/globalEvent';
+import { WinnerModel } from '../Model/WinnerModel';
 
 
 class Gaming extends Phaser.Scene {
@@ -42,6 +43,7 @@ class Gaming extends Phaser.Scene {
     heroSelectBoard: HeroSelectBoard | undefined;
     pandingBoard: PandingBoard | undefined;
     toolTip: ToolTip | undefined;
+    winnerModel: WinnerModel | undefined;
     operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
@@ -108,6 +110,7 @@ class Gaming extends Phaser.Scene {
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
 
             this.toolTip = new ToolTip(this);
+            this.winnerModel = new WinnerModel(this);
 
             this.gameStatusObserved.setGameStatus(data);
 
