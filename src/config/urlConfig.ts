@@ -25,7 +25,8 @@ const URL_CONFIG = {
     "baseUrl": "http://www.caoyuhao.top",
     "card": {
         "card": "card/card.png",
-        "cardBg": "card/cardBg.png"
+        "cardBg": "card/cardBg.png",
+        "cards": "card/cards.webp"
     },
     "other": {
         "gouyu": "other/gouyu.png",

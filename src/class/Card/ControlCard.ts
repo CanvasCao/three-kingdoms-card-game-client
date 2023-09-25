@@ -1,7 +1,7 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {sharedDrawFrontCard} from "../../utils/draw/drawCardUtils";
-import {GamingScene} from "../../types/phaser";
+import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
@@ -26,14 +26,11 @@ export class ControlCard {
     cardInitEndX: number;
     cardInitEndY: number;
 
-    disableTint: string;
-    ableTint: string;
-
     _cardDisable: boolean; // 只有出牌和相应阶段会set _cardDisable true
     isMoving: boolean;
     isDestoryed: boolean;
 
-    cardObjGroup: Phaser.GameObjects.GameObject[];
+    cardObjGroup: PhaserGameObject[];
     cardImgObj: Phaser.GameObjects.Image | null;
 
     _selected: boolean;
@@ -53,10 +50,6 @@ export class ControlCard {
 
         this.cardInitStartX = this.cardInitEndX + 200
         this.cardInitStartY = this.cardInitEndY
-
-        // tint
-        this.disableTint = COLOR_CONFIG.disableCard;
-        this.ableTint = COLOR_CONFIG.card;
 
         // inner state
         this._cardDisable = false;
@@ -173,14 +166,18 @@ export class ControlCard {
 
     onCardDisableChange(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         const setCardDisable = () => {
-            // @ts-ignore
-            this.cardImgObj!.setTint(this.disableTint)
+            this.cardObjGroup.forEach((obj) => {
+                // @ts-ignore
+               if(obj.setTint) obj?.setTint(COLOR_CONFIG.disableCard)
+            })
             this._cardDisable = true
         }
 
         const setCardAble = () => {
-            // @ts-ignore
-            this.cardImgObj!.setTint(this.ableTint)
+            this.cardObjGroup.forEach((obj) => {
+                // @ts-ignore
+                if(obj.setTint) obj?.setTint(COLOR_CONFIG.card)
+            })
             this._cardDisable = false
         }
 

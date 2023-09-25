@@ -32,6 +32,7 @@ export class WuGuFengDengBoard {
     boardContent: PhaserGameObject[];
     cardIdMap: {
         [key: string]: {
+            allCardObjects: PhaserGameObject[],
             cardImgObj: Phaser.GameObjects.Image,
             cardMessageObj: Phaser.GameObjects.Text
         }
@@ -78,6 +79,7 @@ export class WuGuFengDengBoard {
 
             this.boardContent = this.boardContent.concat(allCardObjects)
             this.cardIdMap[card.cardId] = {
+                allCardObjects,
                 cardImgObj,
                 cardMessageObj
             }
@@ -112,7 +114,11 @@ export class WuGuFengDengBoard {
     appendCardSelectedStatus(gameStatus: GameStatus) {
         gameStatus.wugufengdengCards.forEach((card: WugufengdengCard) => {
             if (card.wugefengdengSelectedPlayerId) {
-                this.cardIdMap[card.cardId].cardImgObj.setTint(Number(COLOR_CONFIG.disableCard))
+
+                this.cardIdMap[card.cardId].allCardObjects.forEach((obj)=>{
+                    // @ts-ignore
+                    if(obj.setTint) obj?.setTint(COLOR_CONFIG.disableCard)
+                })
                 this.cardIdMap[card.cardId].cardMessageObj.setText(gameStatus.players[card.wugefengdengSelectedPlayerId].playerName)
             }
         })

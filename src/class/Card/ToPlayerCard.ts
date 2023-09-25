@@ -22,9 +22,6 @@ export class ToPlayerCard {
     fadeInEndX: number;
     fadeInEndY: number;
 
-    disableTint: string;
-    ableTint: string;
-
     isMoving: boolean;
 
     cardObjGroup: Phaser.GameObjects.GameObject[];
@@ -64,10 +61,6 @@ export class ToPlayerCard {
             this.fadeInStartX = fromBoardPlayer!.playerPosition.x
             this.fadeInStartY = fromBoardPlayer!.playerPosition.y
         }
-
-        // tint
-        this.disableTint = COLOR_CONFIG.disableCard;
-        this.ableTint = COLOR_CONFIG.card;
 
         // inner state
         this.isMoving = false;

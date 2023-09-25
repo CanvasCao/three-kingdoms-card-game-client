@@ -2,13 +2,12 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {GamingScene} from "../../types/phaser";
 import {
-    cardDistanceObjOffsetX,
-    cardDistanceObjOffsetY,
     cardHuaseNumberObjOffsetX,
     cardHuaseNumberObjOffsetY,
     cardMessageObjOffsetY,
+    cardNameObjOffsetBasicY,
+    cardNameObjOffsetNonBasicY,
     cardNameObjOffsetX,
-    cardNameObjOffsetY,
     cardTypeObjOffsetX,
     cardTypeObjOffsetY
 } from "../../config/cardContentOffsetConfig";
@@ -19,7 +18,6 @@ import {
     CARD_NUM_DESC,
     CARD_TYPE,
     CARD_TYPE_CONFIG,
-    EQUIPMENT_TYPE,
     EQUIPMENT_TYPE_CONFIG
 } from "../../config/cardConfig";
 import {Card} from "../../types/card";
@@ -27,6 +25,7 @@ import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 import {getCardText, splitText} from "../string/stringUtils";
 import {TOOL_TIP_CARD_MAX_LENGTH} from "../../config/stringConfig";
+import {CARDS_SPRITE_CONFIG, CARDS_SPRITE_DISPLAY_SIZE} from "../../config/cardsSpriteConfig";
 
 const sharedDrawFrontCard = (
     gamingScene: GamingScene,
@@ -41,99 +40,90 @@ const sharedDrawFrontCard = (
     const allCardObjects = []
 
     // background
-    const cardImgObj = gamingScene.add.image(x, y, 'card').setInteractive();
-    cardImgObj.displayHeight = sizeConfig.controlCard.height;
-    cardImgObj.displayWidth = sizeConfig.controlCard.width;
-    cardImgObj.setDepth(depth)
-    cardImgObj.setData("offsetX", 0)
-    cardImgObj.setData("offsetY", 0)
-    cardImgObj.setData("hoverData", {
-        card,
-        text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
-        toolTipType: isToPublic ? TOOL_TIP_CARD_TYPE.PUBLIC_CARD : TOOL_TIP_CARD_TYPE.CONTROL_CARD,
-    })
+    const cardImgObj = gamingScene.add.image(x, y, 'cards');
+    cardImgObj.displayHeight = CARDS_SPRITE_DISPLAY_SIZE.height;
+    cardImgObj.displayWidth = CARDS_SPRITE_DISPLAY_SIZE.width;
+    const cardsSprite = CARDS_SPRITE_CONFIG[card.key];
+    const cropRect = new Phaser.Geom.Rectangle(cardsSprite.x, cardsSprite.y, cardsSprite.w, cardsSprite.h);
+    cardImgObj.setDisplayOrigin(cardsSprite.x + cardsSprite.w / 2, cardsSprite.y + cardsSprite.h / 2)
+        .setCrop(cropRect).setInteractive(cropRect, Phaser.Geom.Rectangle.Contains)
+        .setDepth(depth)
+        .setData("offsetX", 0)
+        .setData("offsetY", 0)
+        .setData("hoverData", {
+            card,
+            text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
+            toolTipType: isToPublic ? TOOL_TIP_CARD_TYPE.PUBLIC_CARD : TOOL_TIP_CARD_TYPE.CONTROL_CARD,
+        })
     allCardObjects.push(cardImgObj)
 
 
     // cardName
-    const cardNameObj = gamingScene.add.text(
-        x + cardNameObjOffsetX,
-        y + cardNameObjOffsetY,
-        i18(CARD_CONFIG[card.key]),
-        {
-            // @ts-ignore
-            fill: "#000",
-            align: "center",
-            wordWrap: {width: sizeConfig.controlCard.width * 0.6, useAdvancedWrap: false}
-        }
-    )
-    cardNameObj.setPadding(0, 6, 0, 1);
-    cardNameObj.setOrigin(0.5, 0.5);
-    cardNameObj.setFontSize(isLanEn() ? 10 : 14)
-    cardNameObj.setDepth(depth)
-    cardNameObj.setData("offsetX", cardNameObjOffsetX)
-    cardNameObj.setData("offsetY", cardNameObjOffsetY)
-    allCardObjects.push(cardNameObj)
+    if (isLanEn()) {
+        const cardNameObj = gamingScene.add.text(
+            x + cardNameObjOffsetX,
+            y + (card.type == CARD_TYPE.BASIC ? cardNameObjOffsetBasicY : cardNameObjOffsetNonBasicY),
+            i18(CARD_CONFIG[card.key]),
+            {
+                // @ts-ignore
+                fill: "#000",
+                align: "center",
+                wordWrap: {width: sizeConfig.controlCard.width * 0.8, useAdvancedWrap: false}
+            }
+        )
 
+        const length = i18(CARD_CONFIG[card.key]).length;
+        const fontSize = -8 / 25 * length + 368 / 23
+        cardNameObj.setPadding(0, card.type == CARD_TYPE.BASIC ? 9 : 0, 0, card.type == CARD_TYPE.BASIC ? 9 : 0)
+            .setOrigin(0.5, 0.5)
+            .setFontSize(fontSize)
+            .setDepth(depth)
+            .setData("offsetX", cardNameObjOffsetX)
+            .setData("offsetY", (card.type == CARD_TYPE.BASIC ? cardNameObjOffsetBasicY : cardNameObjOffsetNonBasicY))
+            .setBackgroundColor(COLOR_CONFIG.cardString)
+        allCardObjects.push(cardNameObj)
+    }
 
     // huase + number
     const cardHuaseNumberObj = gamingScene.add.text(
         x + cardHuaseNumberObjOffsetX,
         y + cardHuaseNumberObjOffsetY,
-        (CARD_NUM_DESC[card?.number] + '\r\n' + card.huase),
+        (CARD_NUM_DESC[card?.number] + '\r' + card.huase),
         // @ts-ignore
-        {fontFamily: 'CustomFont', fill: getCardColor(card.huase), align: "center"}
+        {fill: getCardColor(card.huase), align: "center"}
     )
-    cardHuaseNumberObj.setPadding(0, 5, 0, 0);
-    cardHuaseNumberObj.setOrigin(0, 0);
-    cardHuaseNumberObj.setFontSize(12)
-    cardHuaseNumberObj.setDepth(depth)
-    cardHuaseNumberObj.setStroke(COLOR_CONFIG.whiteString, 2)
-    cardHuaseNumberObj.setData("offsetX", cardHuaseNumberObjOffsetX)
-    cardHuaseNumberObj.setData("offsetY", cardHuaseNumberObjOffsetY)
+    cardHuaseNumberObj.setPadding(0, 5, 0, 0)
+        .setOrigin(0, 0)
+        .setFontSize(14)
+        .setDepth(depth)
+        .setStroke(COLOR_CONFIG.whiteString, 2)
+        .setData("offsetX", cardHuaseNumberObjOffsetX)
+        .setData("offsetY", cardHuaseNumberObjOffsetY)
     allCardObjects.push(cardHuaseNumberObj)
 
     // card type message
-    let cardTypeObjMessage = '';
-    if (card.type == CARD_TYPE.EQUIPMENT) {
-        cardTypeObjMessage = `${i18(CARD_TYPE_CONFIG[card.type])}/${i18(EQUIPMENT_TYPE_CONFIG[card.equipmentType!])}`
-    } else if (card.type == CARD_TYPE.SCROLL) {
-        cardTypeObjMessage = `${i18(CARD_TYPE_CONFIG[card.type])}`
-    }
-    if (cardTypeObjMessage) {
-        const cardTypeObj = gamingScene.add.text(x + cardTypeObjOffsetX, y + cardTypeObjOffsetY, cardTypeObjMessage,
-            // @ts-ignore
-            {fill: COLOR_CONFIG.redString}
-        ).setPadding(0, 5, 0, 0)
-            .setOrigin(0, 1)
-            .setFontSize(isLanEn() ? 9 : 12)
-            .setDepth(depth)
-            .setData("offsetX", cardTypeObjOffsetX)
-            .setData("offsetY", cardTypeObjOffsetY)
-        allCardObjects.push(cardTypeObj)
+    if (isLanEn()) {
+        let cardTypeObjMessage = '';
+        if (card.type == CARD_TYPE.EQUIPMENT) {
+            cardTypeObjMessage = `${i18(CARD_TYPE_CONFIG[card.type])}/${i18(EQUIPMENT_TYPE_CONFIG[card.equipmentType!])}`
+        } else if (card.type == CARD_TYPE.SCROLL) {
+            cardTypeObjMessage = `${i18(CARD_TYPE_CONFIG[card.type])}`
+        }
+        if (cardTypeObjMessage) {
+            const cardTypeObj = gamingScene.add.text(x + cardTypeObjOffsetX, y + cardTypeObjOffsetY, cardTypeObjMessage,
+                // @ts-ignore
+                {fill: COLOR_CONFIG.redString}
+            ).setPadding(0, 2, 0, 2)
+                .setOrigin(0, 1)
+                .setFontSize(9)
+                .setDepth(depth)
+                .setData("offsetX", cardTypeObjOffsetX)
+                .setData("offsetY", cardTypeObjOffsetY)
+                .setBackgroundColor(COLOR_CONFIG.cardString)
+            allCardObjects.push(cardTypeObj)
+        }
     }
 
-    let cardDistanceObjMessage = ''
-    if (card.equipmentType == EQUIPMENT_TYPE.WEAPON) {
-        cardDistanceObjMessage = card.distance!.toString()
-    } else if (card.equipmentType == EQUIPMENT_TYPE.PLUS_HORSE || card.equipmentType == EQUIPMENT_TYPE.MINUS_HORSE) {
-        cardDistanceObjMessage = card.distanceDesc!
-    }
-    if (cardDistanceObjMessage) {
-        const cardDistanceObj = gamingScene.add.text(x + cardDistanceObjOffsetX, y + cardDistanceObjOffsetY
-            , cardDistanceObjMessage,
-            // @ts-ignore
-            {fill: COLOR_CONFIG.blackString}
-        )
-        cardDistanceObj.setPadding(0, 5, 0, 0);
-        cardDistanceObj.setOrigin(1, 1);
-        cardDistanceObj.setFontSize(30);
-        cardDistanceObj.setDepth(depth)
-        cardDistanceObj.setStroke(COLOR_CONFIG.whiteString, 5)
-        cardDistanceObj.setData("offsetX", cardDistanceObjOffsetX)
-        cardDistanceObj.setData("offsetY", cardDistanceObjOffsetY)
-        allCardObjects.push(cardDistanceObj)
-    }
 
     // message
     const cardMessageObj = gamingScene.add.text(x, y + cardMessageObjOffsetY, message,
@@ -146,7 +136,7 @@ const sharedDrawFrontCard = (
         .setOrigin(0.5, 1)
         .setFontSize(isLanEn() ? 10 : 12)
         .setDepth(depth)
-        .setStroke(COLOR_CONFIG.cardString, 2)
+        .setStroke(COLOR_CONFIG.cardString, 3)
         .setData("offsetX", 0)
         .setData("offsetY", cardMessageObjOffsetY)
     allCardObjects.push(cardMessageObj)
@@ -166,7 +156,6 @@ const sharedDrawFrontCard = (
 
     return {
         cardImgObj,
-        cardNameObj,
         cardHuaseNumberObj,
         cardMessageObj,
         cardPandingEffectObj,
