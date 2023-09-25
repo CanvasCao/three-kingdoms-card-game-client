@@ -176,7 +176,7 @@ export class ControlCard {
         const setCardAble = () => {
             this.cardObjGroup.forEach((obj) => {
                 // @ts-ignore
-                if(obj.setTint) obj?.setTint(COLOR_CONFIG.card)
+                if(obj.clearTint) obj?.clearTint()
             })
             this._cardDisable = false
         }

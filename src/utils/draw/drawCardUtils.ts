@@ -60,6 +60,19 @@ const sharedDrawFrontCard = (
 
     // cardName
     if (isLanEn()) {
+        if (card.type !== CARD_TYPE.BASIC) {
+            const cardNameBgObj = gamingScene.add.text(x, y - sizeConfig.controlCard.height / 2, '')
+            cardNameBgObj
+                .setDepth(depth)
+                .setPadding(40, 10, 40, 10)
+                .setData("offsetX", 0)
+                .setData("offsetY", -sizeConfig.controlCard.height / 2)
+                .setOrigin(0.5, 0)
+                .setBackgroundColor(COLOR_CONFIG.cardString)
+            allCardObjects.push(cardNameBgObj)
+        }
+
+
         const cardNameObj = gamingScene.add.text(
             x + cardNameObjOffsetX,
             y + (card.type == CARD_TYPE.BASIC ? cardNameObjOffsetBasicY : cardNameObjOffsetNonBasicY),
@@ -71,10 +84,9 @@ const sharedDrawFrontCard = (
                 wordWrap: {width: sizeConfig.controlCard.width * 0.8, useAdvancedWrap: false}
             }
         )
-
         const length = i18(CARD_CONFIG[card.key]).length;
         const fontSize = -8 / 25 * length + 368 / 23
-        cardNameObj.setPadding(0, card.type == CARD_TYPE.BASIC ? 9 : 0, 0, card.type == CARD_TYPE.BASIC ? 9 : 0)
+        cardNameObj.setPadding(0, card.type == CARD_TYPE.BASIC ? 10 : 0, 0, card.type == CARD_TYPE.BASIC ? 10 : 0)
             .setOrigin(0.5, 0.5)
             .setFontSize(fontSize)
             .setDepth(depth)
@@ -96,7 +108,7 @@ const sharedDrawFrontCard = (
         .setOrigin(0, 0)
         .setFontSize(14)
         .setDepth(depth)
-        .setStroke(COLOR_CONFIG.whiteString, 2)
+        .setStroke(COLOR_CONFIG.whiteString, 4)
         .setData("offsetX", cardHuaseNumberObjOffsetX)
         .setData("offsetY", cardHuaseNumberObjOffsetY)
     allCardObjects.push(cardHuaseNumberObj)

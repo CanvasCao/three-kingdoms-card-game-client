@@ -108,7 +108,7 @@ export class ToolTip {
             const boundw = bound.width + margin * 2
             const boundh = bound.height + margin * 2
 
-            this.bgLine?.lineStyle(2, Number(COLOR_CONFIG.card), 1);
+            this.bgLine?.lineStyle(2, Number(COLOR_CONFIG.white), 1);
             this.bgLine?.strokeRoundedRect(boundx, boundy, boundw, boundh, 2);
             this.bgFill?.fillStyle(Number(COLOR_CONFIG.black), 0.7);
             this.bgFill?.fillRoundedRect(boundx, boundy, boundw, boundh, 2);

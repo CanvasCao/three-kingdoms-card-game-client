@@ -1,5 +1,5 @@
 const COLOR_CONFIG = {
-    "card": "0xF1E1CA",
+    "card": "0xe5c89c",
     "cardString": "#e5c89c",
     "disablePlayer": "0x666666",
     "disableCard": "0x999999",

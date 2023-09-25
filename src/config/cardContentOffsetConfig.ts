@@ -1,11 +1,11 @@
 import {sizeConfig} from "./sizeConfig";
 
-const cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width / 2.3
-const cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height / 2
+const cardHuaseNumberObjOffsetX = -sizeConfig.controlCard.width * 0.47
+const cardHuaseNumberObjOffsetY = -sizeConfig.controlCard.height * 0.53
 
 const cardNameObjOffsetX = sizeConfig.controlCard.width / 40
 const cardNameObjOffsetNonBasicY = -(sizeConfig.controlCard.height * 0.35)
-const cardNameObjOffsetBasicY = cardNameObjOffsetNonBasicY + 5
+const cardNameObjOffsetBasicY = cardNameObjOffsetNonBasicY + 4
 
 const cardMessageObjOffsetX = 0
 const cardMessageObjOffsetY = sizeConfig.controlCard.height / 2.5
