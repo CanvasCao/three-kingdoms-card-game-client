@@ -147,7 +147,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 name = getPlayerDisplayName(gameStatus, scrollResponse.cardTakeEffectOnPlayerId);
                 cardName = i18(CARD_CONFIG[scrollResponse.actualCard.key])
             } else { // 判定牌的无懈可击
-                const currentPlayer = getCurrentPlayer(gameStatus);
+                const currentPlayer = getCurrentPlayer(gameStatus)!;
                 const needPandingSigns = currentPlayer.judgedShandian ?
                     currentPlayer.pandingSigns.filter((sign) => sign.actualCard.key !== DELAY_SCROLL_CARDS_CONFIG.SHAN_DIAN.key) :
                     currentPlayer.pandingSigns;
@@ -170,7 +170,7 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
             throw new Error(curScrollResponse.actualCard.key + "未生效")
         }
         if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
-            const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus).playerId)
+            const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus)!.playerId)
             const targetName = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
             return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN, {originName, targetName})
         }

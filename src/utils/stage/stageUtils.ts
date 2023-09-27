@@ -1,15 +1,16 @@
 import {GameStatus} from "../../types/gameStatus";
 import {getMyPlayerId} from "../localstorage/localStorageUtils";
 import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
-import {STAGE_NAME, STAGE_NAMES} from "../../config/gameConfig";
+import {STAGE_NAME} from "../../config/gameConfig";
 import {getResponseType} from "../response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
+import {getCurrentPlayer} from "../playerUtils";
 
 const getIsMyPlayTurn = (gameStatus: GameStatus) => {
-    return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == STAGE_NAME.PLAY;
+    return getCurrentPlayer(gameStatus)?.playerId == getMyPlayerId() && gameStatus.stage.stageName == STAGE_NAME.PLAY;
 }
 const getIsMyThrowTurn = (gameStatus: GameStatus) => {
-    return gameStatus.stage.playerId == getMyPlayerId() && STAGE_NAMES[gameStatus.stage.stageIndex] == STAGE_NAME.THROW;
+    return getCurrentPlayer(gameStatus)?.playerId == getMyPlayerId() && gameStatus.stage.stageName == STAGE_NAME.THROW;
 }
 
 const getIsMyResponseCardBoardTurn = (gameStatus: GameStatus) => {

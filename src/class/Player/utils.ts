@@ -7,21 +7,22 @@ import {
 import {getCurrentPlayer} from "../../utils/playerUtils";
 import {getResponseType} from "../../utils/response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
-import {STAGE_NAME, STAGE_NAMES, STAGE_NAME_CONFIG} from "../../config/gameConfig";
+import {STAGE_NAME, STAGE_NAME_CONFIG} from "../../config/gameConfig";
 import {i18, isLanEn} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 
 const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) => {
     const currentPlayer = getCurrentPlayer(gameStatus)
+    const stageName = gameStatus.stage.stageName
     const preText = i18(i18Config.IS_THINKING)
     let hintText = '';
 
     if (!gameStatus.players[playerId].heroId) {
         hintText = isLanEn() ? 'choosing a hero' : '选将'
-    } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === STAGE_NAME.PLAY && currentPlayer.playerId == playerId) {
+    } else if (stageName === STAGE_NAME.PLAY && currentPlayer?.playerId == playerId) {
         hintText = i18(STAGE_NAME_CONFIG.PLAY)
-    } else if (STAGE_NAMES[gameStatus.stage.stageIndex] === STAGE_NAME.THROW && currentPlayer.playerId == playerId) {
+    } else if (stageName === STAGE_NAME.THROW && currentPlayer?.playerId == playerId) {
         hintText = i18(STAGE_NAME_CONFIG.THROW)
     } else {
         const responseType = getResponseType(gameStatus);

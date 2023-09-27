@@ -1,5 +1,5 @@
 import {Card, WugufengdengCard} from "./card";
-import {DamageEvent, EventTimingSkill, PandingEvent, ResponseCardEvent, UseStrikeEvent} from "./event";
+import {DamageEvent, EventTimingSkill, GameStageEvent, PandingEvent, ResponseCardEvent, UseStrikeEvent} from "./event";
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
@@ -18,14 +18,15 @@ export type GameStatus = {
     scrollResponses: ScrollResponse[],
     wuxieSimultaneousResponse: WuxieSimultaneousResponse,
 
+    // wugufengdengCards
     wugufengdengCards: WugufengdengCard[]
 
     // events
+    gameStageEvent: GameStageEvent,
     useStrikeEvents: UseStrikeEvent[],
     responseCardEvents: ResponseCardEvent[],
     damageEvents: DamageEvent[],
     pandingEvent: PandingEvent,
-
     tieSuoTempStorage: TieSuoTempStorageItem[],
 
     // winner
@@ -38,8 +39,8 @@ export type GameStatus = {
 };
 
 export type Stage = {
-    playerId: string,
-    stageIndex: number,
+    currentLocation: number,
+    stageName: string,
 }
 
 // action

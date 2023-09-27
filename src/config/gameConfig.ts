@@ -12,15 +12,6 @@ const STAGE_NAME = {
     "END": "END",
 }
 
-const STAGE_NAMES = [
-    "START",
-    "JUDGE",
-    "DRAW",
-    "PLAY",
-    "THROW",
-    "END"
-]
-
 const STAGE_NAME_CONFIG = {
     [STAGE_NAME.START]: {
         EN: "START",
@@ -51,6 +42,5 @@ const STAGE_NAME_CONFIG = {
 export {
     GAME_STATUS,
     STAGE_NAME,
-    STAGE_NAMES,
     STAGE_NAME_CONFIG
 }

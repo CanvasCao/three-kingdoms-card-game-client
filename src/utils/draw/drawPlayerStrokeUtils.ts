@@ -43,7 +43,7 @@ const reDrawPlayerStroke = (stroke: Phaser.GameObjects.Graphics, {x, y, alpha, c
 const getPlayerStrokeAlphaAndColor = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayerId: string) => {
     const isMe = targetPlayerId === getMyPlayerId()
 
-    if (getCurrentPlayer(gameStatus).playerId === targetPlayerId && !isMe) {
+    if (getCurrentPlayer(gameStatus)!.playerId === targetPlayerId && !isMe) {
         return {
             alpha: 0.7,
             lineWidth: 10,

@@ -65,7 +65,7 @@ export class BoardPlayer {
     _selectedTargetPlayersLength?: number;
     _chooseToReleaseSkill?: boolean;
 
-    phaserGroup: PhaserGameObject[];
+    reduceBloodAnimationGroup: PhaserGameObject[];
 
     playerStroke?: Phaser.GameObjects.Graphics;
     cardNumObj?: Phaser.GameObjects.Text;
@@ -96,7 +96,7 @@ export class BoardPlayer {
         this.positionY = this?.playerPosition?.y;
 
         // phaser objects
-        this.phaserGroup = [];
+        this.reduceBloodAnimationGroup = [];
         this.bloodImages = []; //从下往上
         this.pandingCardImages = []; //从右往左
         this.pandingCardTexts = []; //从右往左
@@ -162,7 +162,7 @@ export class BoardPlayer {
         this.playerStroke = stroke;
         this.playerStroke.setAlpha(0);
 
-        this.phaserGroup.push(stroke)
+        this.reduceBloodAnimationGroup.push(stroke)
     }
 
     drawCardNumber() {
@@ -179,7 +179,7 @@ export class BoardPlayer {
         this.cardNumObj.setBackgroundColor("#fff");
         this.cardNumObj.setFontSize(sizeConfig.player.width / 8)
 
-        this.phaserGroup.push(this.cardNumObj)
+        this.reduceBloodAnimationGroup.push(this.cardNumObj)
     }
 
     drawPlayer(gameStatus: GameStatus) {
@@ -205,7 +205,7 @@ export class BoardPlayer {
                 text: splitText(getHeroText(player), isLanEn() ? TOOL_TIP_HERO_MAX_LENGTH_EN : TOOL_TIP_HERO_MAX_LENGTH_CN),
                 toolTipType: TOOL_TIP_CARD_TYPE.PLAYER,
             })
-            this.phaserGroup.push(this.playerImage);
+            this.reduceBloodAnimationGroup.push(this.playerImage);
         }
     }
 
@@ -222,7 +222,7 @@ export class BoardPlayer {
         nameText.setPadding(padding + 0, padding + 2, padding + 0, padding + 0);
         nameText.setBackgroundColor("rgba(0,0,0,0.7)")
 
-        this.phaserGroup.push(nameText)
+        this.reduceBloodAnimationGroup.push(nameText)
     }
 
     drawTeamTag() {
@@ -233,7 +233,7 @@ export class BoardPlayer {
         this.teamImage.setDisplaySize(sizeConfig.teamTag.width, sizeConfig.teamTag.height)
         this.teamImage.setOrigin(0, 0)
 
-        this.phaserGroup.push(this.teamImage)
+        this.reduceBloodAnimationGroup.push(this.teamImage)
     }
 
     drawTieSuo(isTieSuo: boolean) {
@@ -245,7 +245,7 @@ export class BoardPlayer {
         this.tieSuoImage.displayWidth = sizeConfig.player.width;
         this.tieSuoImage.setAlpha(isTieSuo ? 1 : 0);
 
-        this.phaserGroup.push(this.tieSuoImage)
+        this.reduceBloodAnimationGroup.push(this.tieSuoImage)
     }
 
     drawPandingCards() {
@@ -263,7 +263,7 @@ export class BoardPlayer {
             pandingCardImage.setAlpha(0)
             pandingCardImage.setDepth(DEPTH_CONFIG.PANDING_SIGN)
             this.pandingCardImages!.push(pandingCardImage);
-            this.phaserGroup.push(pandingCardImage)
+            this.reduceBloodAnimationGroup.push(pandingCardImage)
 
 
             const pandingCardText = this.gamingScene.add.text(x, y, "",
@@ -275,7 +275,7 @@ export class BoardPlayer {
             pandingCardText.setAlpha(0)
             pandingCardText.setDepth(DEPTH_CONFIG.PANDING_SIGN)
             this.pandingCardTexts!.push(pandingCardText);
-            this.phaserGroup.push(pandingCardText)
+            this.reduceBloodAnimationGroup.push(pandingCardText)
         }
     }
 
@@ -298,7 +298,7 @@ export class BoardPlayer {
                 bl: 0,
                 br: 0
             });
-        this.phaserGroup.push(this.bloodsBgGraphics)
+        this.reduceBloodAnimationGroup.push(this.bloodsBgGraphics)
     }
 
     drawBloods(maxBlood: number) {
@@ -315,7 +315,7 @@ export class BoardPlayer {
             bloodImage.displayWidth = bloodWidth;
 
             this.bloodImages!.push(bloodImage);
-            this.phaserGroup.push(bloodImage)
+            this.reduceBloodAnimationGroup.push(bloodImage)
         }
     }
 
@@ -336,7 +336,7 @@ export class BoardPlayer {
         isDeadText.setFontSize(isLanEn() ? 30 : 40)
         isDeadText.setRotation(-Math.PI / 10)
 
-        this.phaserGroup.push(isDeadText)
+        this.reduceBloodAnimationGroup.push(isDeadText)
     }
 
     drawWound() {
@@ -346,12 +346,12 @@ export class BoardPlayer {
             "wound").setAlpha(0);
 
         wound.setData('name', 'wound');
-        this.phaserGroup.push(wound);
+        this.reduceBloodAnimationGroup.push(wound);
     }
 
     drawHeroSkills(skills: Skill[]) {
         const boardPlayerSkills = new BoardPlayerSkills(this.gamingScene, this.positionX, this.positionY, skills)
-        this.phaserGroup = this.phaserGroup.concat(boardPlayerSkills.phaserGroup);
+        this.reduceBloodAnimationGroup = this.reduceBloodAnimationGroup.concat(boardPlayerSkills.phaserGroup);
     }
 
     setBloods(number: number) {
@@ -441,14 +441,18 @@ export class BoardPlayer {
         const needNewCards = differenceBy(playerEquipmentCards, this._playerEquipmentCards, 'cardId');
         needNewCards.forEach((card) => {
             const equipmentCard = new EquipmentCard(this.gamingScene, card, this.playerId);
-            this.phaserGroup = this.phaserGroup.concat(equipmentCard.phaserGroup)
+
+            // 不是我的武器牌才一起移动
+            if (!this.isMe) {
+                this.reduceBloodAnimationGroup = this.reduceBloodAnimationGroup.concat(equipmentCard.phaserGroup)
+            }
         })
 
         this._playerEquipmentCards = playerEquipmentCards
     }
 
     startReduceBloodMove() {
-        this.phaserGroup.forEach((obj) => {
+        this.reduceBloodAnimationGroup.forEach((obj) => {
             this.gamingScene.tweens.add({
                 targets: obj,
                 x: {

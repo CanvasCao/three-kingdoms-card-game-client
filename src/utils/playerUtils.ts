@@ -78,7 +78,7 @@ const getPlayerDisplayName = (gameStatus: GameStatus, playerId: string) => {
 }
 
 const getCurrentPlayer = (gameStatus: GameStatus) => {
-    return gameStatus.players[gameStatus.stage.playerId]
+    return Object.values(gameStatus.players).find((u) => u.location == gameStatus.stage.currentLocation)
 }
 
 let isAllSelectHeroDone = false

@@ -1,5 +1,10 @@
 import {Card} from "./card"
 
+export type GameStageEvent={
+    eventTimingTracker: eventTimingOneTimingTracker[],
+    done: boolean
+}
+
 export type UseStrikeEvent = {
     cards: Card[],
     actualCard: Card,
