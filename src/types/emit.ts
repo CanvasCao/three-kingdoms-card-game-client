@@ -30,9 +30,6 @@ export type EmitResponseData = {
     actualCard: Card,
     originId: string,
 
-    // 基本卡
-    targetId?: string,
-
     // 为了校验无懈可击是否冲突
     wuxieTargetCardId?: string,
 

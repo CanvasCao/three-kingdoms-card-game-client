@@ -6,9 +6,8 @@ import {GameFEStatus} from "../types/gameFEStatus";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {uuidv4} from "./uuid";
 import {Player} from "../types/player";
-import {BasicCardResponseInfo, SkillResponseInfo, WuXieResponseInfo} from "../types/responseInfo";
 import {CARD_CONFIG} from "../config/cardConfig";
-import {getMyResponseInfo} from "./response/responseUtils";
+import {getWuxieTargetCardId} from "./response/responseUtils";
 
 const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (EmitActionData | undefined) => {
     const actualCard = JSON.parse(JSON.stringify(gameFEStatus.actualCard))
@@ -52,14 +51,12 @@ const generateNoResponse = () => {
 }
 
 const generateYesResponse = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): EmitResponseData => {
-    const info = getMyResponseInfo(gameStatus, gameFEStatus)
     return {
         chooseToResponse: true,
         cards: gameFEStatus.selectedCards,
         actualCard: gameFEStatus.actualCard!,
         originId: getMyPlayerId(),
-        targetId: (info as BasicCardResponseInfo).targetId,
-        wuxieTargetCardId: (info as WuXieResponseInfo)?.wuxieTargetCardId,
+        wuxieTargetCardId: getWuxieTargetCardId(gameStatus),
         skillTargetIds: gameFEStatus.selectedTargetPlayers?.map(p => p.playerId)
     }
 }

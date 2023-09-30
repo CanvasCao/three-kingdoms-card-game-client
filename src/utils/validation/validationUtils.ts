@@ -2,6 +2,7 @@ import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {
     getCanPlayInMyTurn,
+    getIsMyPlayTurn,
     getIsMyResponseCardOrSkillTurn,
     getIsMyThrowTurn
 } from "../stage/stageUtils";
@@ -10,6 +11,7 @@ import {getMyPlayerId} from "../localstorage/localStorageUtils";
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {
     ALL_SHA_CARD_KEYS,
+    BASIC_CARDS_CONFIG,
     DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
@@ -21,7 +23,7 @@ import {
     getPlayerAttackRangeNumber,
     getPlayersDistanceFromAToB
 } from "../playerUtils";
-import {getMyResponseInfo, getResponseType} from "../response/responseUtils";
+import {getResponseType} from "../response/responseUtils";
 import {RESPONSE_TYPE_CONFIG} from "../../config/responseTypeConfig";
 import {attachFEInfoToCard} from "../cardUtils";
 import {Player} from "../../types/player";
@@ -31,7 +33,6 @@ import {
     getCanSelectMeAsFirstTargetCardNamesClosure,
     getCanSelectMeAsSecondTargetCardNamesClosure, getInMyPlayTurnCanPlayCardNamesClourse
 } from "../cardNamesClourseUtils";
-import {BasicCardResponseInfo} from "../../types/responseInfo";
 
 const getSelectedCardNumber = (gameFEStatus: GameFEStatus) => {
     return gameFEStatus.selectedCards.length
@@ -47,17 +48,15 @@ const getNeedSelectCardsMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
     const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
     const responseType = getResponseType(gameStatus);
 
+    if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
+        return {min: 2, max: 2};
+    }
+
     if (canPlayInMyTurn) {
-        if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
-            return {min: 2, max: 2};
-        }
-
         return {min: 1, max: 1};
-    } else if (isMyResponseCardOrSkillTurn) {
-        if (getIsZhangBaSheMaoSelected(gameFEStatus)) {
-            return {min: 2, max: 2};
-        }
+    }
 
+    if (isMyResponseCardOrSkillTurn) {
         if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
             if (gameStatus.skillResponse!.chooseToReleaseSkill === undefined) {
                 return {min: 0, max: 0};
@@ -83,13 +82,22 @@ const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFE
     const mePlayer = gameStatus.players[getMyPlayerId()]
     const responseType = getResponseType(gameStatus)
 
-    if (responseType == RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
-        if (gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
-            return {min: 1, max: 1}
-        } else if (gameStatus.skillResponse!.skillNameKey === SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
-            return {min: 1, max: 2}
+    if (getIsMyResponseCardOrSkillTurn(gameStatus)) {
+        if (responseType == RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
+            switch (gameStatus.skillResponse!.skillNameKey) {
+                case SKILL_NAMES_CONFIG.WU006_LIU_LI.key:
+                    return {min: 1, max: 1}
+                case SKILL_NAMES_CONFIG.WEI004_TU_XI.key:
+                    return {min: 1, max: 2}
+                default:
+                    return {min: 0, max: 0}
+            }
         }
-    } else if (ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key)
+
+        return {min: 0, max: 0}
+    }
+
+    if (ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key)
         && mePlayer.weaponCard?.key == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.key
         && mePlayer.cards.length == 1
         && ALL_SHA_CARD_KEYS.includes(mePlayer.cards[0].key)
@@ -97,8 +105,10 @@ const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFE
         return {min: 1, max: 3}
     }
 
-    if (gameFEStatus.actualCard) {
-        return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+    if (getIsMyPlayTurn(gameStatus)) {
+        if (gameFEStatus.actualCard) {
+            return attachFEInfoToCard(gameFEStatus.actualCard!)!.targetMinMax;
+        }
     }
 
     return {min: 0, max: 0}
@@ -153,7 +163,7 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     const responseType = getResponseType(gameStatus)
     const isMyResponseTurn = getIsMyResponseCardOrSkillTurn(gameStatus)
 
-    // 我响应技能
+    // 确定响应技能后
     if (isMyResponseTurn &&
         responseType == RESPONSE_TYPE_CONFIG.SKILL &&
         gameStatus.skillResponse!.chooseToReleaseSkill) {
@@ -270,9 +280,59 @@ const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     }
 
     if (isMyResponseCardOrSkillTurn) {
-        const {controlCardIsAbleValidate} = (getMyResponseInfo(gameStatus, gameFEStatus) as BasicCardResponseInfo)
-        if (!controlCardIsAbleValidate(card)) {
+        const responseType = getResponseType(gameStatus)
+        if (responseType == RESPONSE_TYPE_CONFIG.TAO) {
+            return [BASIC_CARDS_CONFIG.TAO.key].includes(card.key!)
+        } else if (responseType == RESPONSE_TYPE_CONFIG.CARD) {
+            const cardResponse = gameStatus.cardResponse!
+
+            switch (cardResponse.actionActualCard.key) {
+                case SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key:
+                case BASIC_CARDS_CONFIG.SHA.key:
+                case BASIC_CARDS_CONFIG.LEI_SHA.key:
+                case BASIC_CARDS_CONFIG.HUO_SHA.key:
+                    return [BASIC_CARDS_CONFIG.SHAN.key].includes(card.key)
+
+                case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key:
+                case SCROLL_CARDS_CONFIG.JUE_DOU.key:
+                    return ALL_SHA_CARD_KEYS.includes(card.key)
+            }
+
             return false
+        } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
+            const skillNameKey = gameStatus.skillResponse!.skillNameKey;
+            const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
+
+            if (chooseToReleaseSkill == undefined) {
+                return false
+            }
+
+            switch (skillNameKey) {
+                case SKILL_NAMES_CONFIG.WEI002_GUI_CAI.key:
+                case SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key:
+                case SKILL_NAMES_CONFIG.WU006_LIU_LI.key:
+                case EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key:
+                case EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key:
+                case SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key:
+                    return true
+                case EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key:
+                    return ALL_SHA_CARD_KEYS.includes(card.key)
+                default:
+                    return false
+            }
+        } else if (responseType == RESPONSE_TYPE_CONFIG.CARD_BOARD) {
+            return false
+        } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
+            return [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key].includes(card.key)
+        } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+            const curScrollResponse = gameStatus.scrollResponses[0]
+
+            switch (curScrollResponse.actualCard.key) {
+                case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key:
+                    return ALL_SHA_CARD_KEYS.includes(card.key)
+                default:
+                    return false
+            }
         }
     }
 
@@ -284,8 +344,7 @@ const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
 }
 
 const getCanISelectMySelfAsTarget = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    // 不用关心是谁的回合
-    // 因为mePlayer的_disable 大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
+    // mePlayer的_disable大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
     if (gameFEStatus.actualCard) {
         if (gameFEStatus.selectedTargetPlayers.length == 0) {
             if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(gameFEStatus.actualCard.key)) {

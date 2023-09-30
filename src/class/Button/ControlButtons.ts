@@ -22,8 +22,6 @@ import {
 } from "../../utils/validation/validationUtils";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
-import {BaseResponseInfo} from "../../types/responseInfo";
-import {getMyResponseInfo} from "../../utils/response/responseUtils";
 
 export class ControlButtons {
     obId: string;
@@ -237,6 +235,7 @@ export class ControlButtons {
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         if (gameFEStatus?.actualCard) {
+            // 只校验目标数量
             const needTargetMinMaxNumber = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus);
             const ifSelectedTargetsQualified = getSelectedTargetNumber(gameFEStatus) >= needTargetMinMaxNumber.min
                 && getSelectedTargetNumber(gameFEStatus) <= needTargetMinMaxNumber.max;
@@ -246,11 +245,19 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        const {okButtonIsAbleValidate} = getMyResponseInfo(gameStatus, gameFEStatus) as BaseResponseInfo
-        return okButtonIsAbleValidate(gameFEStatus)
+        // 校验目标和卡牌数量
+        const {min: cardMin, max: cardMax} = getNeedSelectCardsMinMax(gameStatus, gameFEStatus);
+        const {min: playerMin, max: playerMax} = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus);
+        const selectedCardNumber = getSelectedCardNumber(gameFEStatus)
+        const selectedPlayerNumber = getSelectedTargetNumber(gameFEStatus)
+        return selectedCardNumber <= cardMax &&
+            selectedCardNumber >= cardMin &&
+            selectedPlayerNumber <= playerMax &&
+            selectedPlayerNumber >= playerMin
     }
 
     canClickOkBtnInMyThrowStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
+        // 只校验卡牌数量
         return getSelectedCardNumber(gameFEStatus) == getNeedSelectCardsMinMax(gameStatus, gameFEStatus).min
     }
 
