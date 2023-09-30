@@ -26,13 +26,14 @@ import {BoardPlayerThinkingHint} from '../../class/Player/BoardPlayerThinkingHin
 import Phaser from 'phaser';
 import {ToolTip} from '../ToolTip/ToolTip';
 import {PandingBoard} from '../Board/PandingBoard';
-import {bindGlobalHoverEvent} from '../../event/globalEvent';
-import { WinnerModel } from '../Model/WinnerModel';
+import {bindGlobalHoverEvent} from '../../event/bindGlobalEvent';
+import {GameEndModel} from '../Model/GameEndModel';
+import {SCENE_CONGIG} from '../../config/scene';
 
 
-class Gaming extends Phaser.Scene {
+export class Gaming extends Phaser.Scene {
     socket: Socket;
-    init: boolean;
+    initialized: boolean;
     controlCards: Card[];
     boardPlayers: BoardPlayer[];
     boardPlayerThinkHints: BoardPlayerThinkingHint[];
@@ -43,18 +44,17 @@ class Gaming extends Phaser.Scene {
     heroSelectBoard: HeroSelectBoard | undefined;
     pandingBoard: PandingBoard | undefined;
     toolTip: ToolTip | undefined;
-    winnerModel: WinnerModel | undefined;
+    winnerModel: GameEndModel | undefined;
     operateHint: OperateHint | undefined;
     controlButtons: ControlButtons | undefined;
     controlCardsManager: ControlCardsManager | undefined;
     notifyAnimationManager: NofityAnimationManager | undefined;
 
     constructor() {
-        // @ts-ignore
-        super();
+        super(SCENE_CONGIG.GAME);
 
         this.socket = socket;
-        this.init = false;
+        this.initialized = false;
 
         this.controlCards = [];
         this.boardPlayers = [];
@@ -87,12 +87,12 @@ class Gaming extends Phaser.Scene {
 
         // 监听只可能有一次
         socket.on(EMIT_TYPE.INIT, (data: GameStatus) => {
-            if (this.init) {
+            if (this.initialized) {
                 return
             }
-            this.init = true;
+            this.initialized = true;
 
-            $(".page").hide();
+            $('.page').hide();
             $("#canvas").css('display', 'flex');
 
             this.playerCardsBoard = new PlayerCardsBoard(this);
@@ -110,7 +110,7 @@ class Gaming extends Phaser.Scene {
             this.boardPlayers = players.map((player) => new BoardPlayer(this, player));
 
             this.toolTip = new ToolTip(this);
-            this.winnerModel = new WinnerModel(this);
+            this.winnerModel = new GameEndModel(this);
 
             this.gameStatusObserved.setGameStatus(data);
 

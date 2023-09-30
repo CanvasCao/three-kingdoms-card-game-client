@@ -19,23 +19,23 @@ export type BtnGroup = {
     text?: Phaser.GameObjects.Text,
 }
 
-export type GamingScene = Phaser.Scene &
-    {
-        socket: Socket;
-        controlCards: Card[];
-        boardPlayers: BoardPlayer[];
-        gameStatusObserved: GameStatusObserved;
-        gameFEStatusObserved: GameFEStatusObserved;
-        playerCardsBoard: PlayerCardsBoard | undefined;
-        wuGuFengDengBoard: WuGuFengDengBoard | undefined;
-        heroSelectBoard: HeroSelectBoard | undefined;
-        pandingBoard: PandingBoard | undefined;
-        toolTip: ToolTip | undefined;
-        operateHint: OperateHint | undefined;
-        controlButtons: ControlButtons | undefined;
-        controlCardsManager: ControlCardsManager | undefined;
-        notifyAnimationManager: NofityAnimationManager | undefined;
-    }
+export type GamingScene = Phaser.Scene & {
+    socket: Socket;
+    initialized: boolean;
+    controlCards: Card[];
+    boardPlayers: BoardPlayer[];
+    gameStatusObserved: GameStatusObserved;
+    gameFEStatusObserved: GameFEStatusObserved;
+    playerCardsBoard: PlayerCardsBoard | undefined;
+    wuGuFengDengBoard: WuGuFengDengBoard | undefined;
+    heroSelectBoard: HeroSelectBoard | undefined;
+    pandingBoard: PandingBoard | undefined;
+    toolTip: ToolTip | undefined;
+    operateHint: OperateHint | undefined;
+    controlButtons: ControlButtons | undefined;
+    controlCardsManager: ControlCardsManager | undefined;
+    notifyAnimationManager: NofityAnimationManager | undefined;
+}
 
 export type PhaserGameObject = (Phaser.GameObjects.Text | Phaser.GameObjects.Rectangle | Phaser.GameObjects.Graphics | Phaser.GameObjects.Image)
 

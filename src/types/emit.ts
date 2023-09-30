@@ -1,5 +1,6 @@
 import {MultiTargetsAction, OneTargetAction} from "./gameStatus";
 import {Card, PlayerBoardAction} from "./card";
+import {GAME_STATUS} from "../config/gameConfig";
 
 // 前端=>后端
 // 游戏开始前
@@ -63,7 +64,7 @@ export type EmitHeroSelectBoardData = {
 
 
 // 后端=>前端
-export type RoomStatus = "PLAYING" | "IDLE";
+export type RoomStatus = keyof typeof GAME_STATUS;
 export type RoomPlayer = { playerId: string, playerName: string, teamMember: string }
 export type EmitRefreshRooms = {
     roomId: string | number,

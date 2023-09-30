@@ -5,8 +5,13 @@ import {COLOR_CONFIG} from "../../config/colorConfig";
 import {GameStatus} from "../../types/gameStatus";
 import {uuidv4} from "../../utils/uuid";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
+import {config} from "../Gaming/Gaming";
+import {i18} from "../../i18n/i18nUtils";
+import {i18Config} from "../../i18n/i18Config";
+import { socket } from "../../socket";
+import { EMIT_TYPE } from "../../config/emitConfig";
 
-export class WinnerModel {
+export class GameEndModel {
     obId: string;
     gamingScene: GamingScene;
 
@@ -30,30 +35,25 @@ export class WinnerModel {
         this.boardImg.setInteractive();
     }
 
-    drawWinner(gameStatus: GameStatus) {
-        const mePlayer = gameStatus.players[getMyPlayerId()]
-        const image = this.gamingScene.add.image(sizeConfig.background.width / 2 - sizeConfig.player.width * 2, sizeConfig.background.height / 2, mePlayer.heroId)
-        image.displayHeight = sizeConfig.player.height * 1.5;
-        image.displayWidth = sizeConfig.player.width * 1.5;
-        image.setDepth(DEPTH_CONFIG.WINNER_MODAL)
-    }
-
     drawWinOrLose(gameStatus: GameStatus) {
-        const winnerTeamName = gameStatus?.winner.winnerTeamName;
+        const winnerTeamName = gameStatus?.gameEnd.winnerTeamName;
         const myTeamName = gameStatus.players[getMyPlayerId()].teamName
         const s = (winnerTeamName != myTeamName) ? "LOSS !!!" : "VICTORY !!!"
 
-        const text = this.gamingScene.add.text(sizeConfig.background.width / 2, sizeConfig.background.height / 2 - 200, s,
+        const text = this.gamingScene.add.text(
+            sizeConfig.background.width / 2,
+            sizeConfig.background.height / 2 - 120,
+            s,
             // @ts-ignore
             {fill: COLOR_CONFIG.yellowString})
-        text.setFontSize(100)
+        text.setFontSize(80)
         text.setOrigin(0.5, 0.5)
         text.setDepth(DEPTH_CONFIG.WINNER_MODAL)
     }
 
     drawName(gameStatus: GameStatus) {
         const playerName = gameStatus.players[getMyPlayerId()].playerName;
-        const text = this.gamingScene.add.text(sizeConfig.background.width / 2 + 100, sizeConfig.background.height / 2, playerName,
+        const text = this.gamingScene.add.text(sizeConfig.background.width / 2, sizeConfig.background.height / 2, playerName,
             // @ts-ignore
             {fill: COLOR_CONFIG.whiteString})
         text.setFontSize(60)
@@ -61,13 +61,31 @@ export class WinnerModel {
         text.setDepth(DEPTH_CONFIG.WINNER_MODAL)
     }
 
+    drawContinue(gameStatus: GameStatus) {
+        const text = this.gamingScene.add.text(sizeConfig.background.width / 2 , sizeConfig.background.height / 2+ 100, `——————${i18(i18Config.CONTINUE)}——————`,
+            // @ts-ignore
+            {fill: COLOR_CONFIG.yellowString}).setInteractive({cursor: "pointer"})
+        text.setFontSize(30)
+        text.setOrigin(0.5, 0.5)
+        text.setDepth(DEPTH_CONFIG.WINNER_MODAL)
+
+        text.on('pointerdown', () => {
+            $('.page').hide();
+            $('#roomsPage').css('display', 'flex');
+            socket.emit(EMIT_TYPE.REFRESH_ROOMS);
+
+            $("#canvas").html('');
+            new Phaser.Game(config);
+        })
+    }
+
     gameStatusNotify(gameStatus: GameStatus) {
-        const showBoard = !!gameStatus?.winner
+        const showBoard = !!gameStatus?.gameEnd
         if (showBoard) {
             this.drawBackground();
-            this.drawWinner(gameStatus);
             this.drawWinOrLose(gameStatus);
             this.drawName(gameStatus);
+            this.drawContinue(gameStatus);
         }
     }
 }

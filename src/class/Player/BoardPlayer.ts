@@ -1,6 +1,6 @@
 import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
-import {CARD_CONFIG, DELAY_SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
+import {CARD_CONFIG} from "../../config/cardConfig";
 import {GamingScene, PhaserGameObject} from "../../types/phaser";
 import {GameStatus} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
@@ -47,12 +47,12 @@ export class BoardPlayer {
     playerPosition: { x: number, y: number };
     isDead?: boolean;
     isMe: boolean;
+    heroInitialised: boolean;
 
     positionX: number;
     positionY: number;
 
-    maxPandingCardsNumber: number;
-
+    // inner state
     _heroId: string;
     _disable: boolean;
     _pandingCardsLength: number;
@@ -90,6 +90,7 @@ export class BoardPlayer {
         this.linePosition = player.linePosition;
         this.playerPosition = player.playerPosition;
         this.isMe = this.playerId === getMyPlayerId();
+        this.heroInitialised = false;
 
         // position
         this.positionX = this?.playerPosition?.x;
@@ -102,9 +103,6 @@ export class BoardPlayer {
         this.pandingCardTexts = []; //从右往左
         this.skillImages = [];
         this.skillTexts = [];
-
-        // varible
-        this.maxPandingCardsNumber = Object.keys(DELAY_SCROLL_CARDS_CONFIG).length;
 
         // init inner state
         this._heroId = '';
@@ -128,7 +126,15 @@ export class BoardPlayer {
     }
 
     initHero(gameStatus: GameStatus) {
+        if (this.heroInitialised) {
+            return
+        }
+
         const player = gameStatus.players[this.playerId]
+
+        if (!player.heroId) {
+            return;
+        }
 
         this.drawStroke();
         this.drawPlayer(gameStatus);
@@ -152,6 +158,8 @@ export class BoardPlayer {
 
         this.drawWound();
         this.bindEvent();
+
+        this.heroInitialised = true;
     }
 
     drawStroke() {
@@ -250,7 +258,7 @@ export class BoardPlayer {
 
     drawPandingCards() {
         const stepX = sizeConfig.player.width / 4.5;
-        for (let i = 0; i < this.maxPandingCardsNumber; i++) {
+        for (let i = 0; i < 3; i++) {
             const x = this.isMe ? sizeConfig.controlEquipment.width * 1.1 - stepX * i : this.positionX + sizeConfig.player.width / 2 + 5 - stepX * i
             const y = this.isMe ? sizeConfig.playersArea.height : this.positionY + sizeConfig.player.height / 2 + 5
 
@@ -413,7 +421,7 @@ export class BoardPlayer {
         const player = gameStatus.players[this.playerId];
 
         if (this._pandingCardsLength != player.pandingSigns.length) {
-            for (let i = 0; i < this.maxPandingCardsNumber; i++) {
+            for (let i = 0; i < 3; i++) {
                 if (player.pandingSigns[i]) {
                     const pandingSign = player.pandingSigns[i]
                     const {card, actualCard} = pandingSign
@@ -582,20 +590,14 @@ export class BoardPlayer {
 
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!
         const allSelectHeroDone = getIsAllSelectHeroDone(gameStatus)
-        const heroId = gameStatus.players[this.playerId].heroId
 
         if (this.isMe) { // 是我的话 我选完就要显示武将
-            if (heroId && !this._heroId) {
-                this._heroId = heroId;
-                this.initHero(gameStatus);
-            }
+            this.initHero(gameStatus);
         } else {
-            if (heroId && !this._heroId && allSelectHeroDone) {
-                this._heroId = heroId
+            if (allSelectHeroDone) {
                 this.initHero(gameStatus);
             }
         }
-
 
         if (allSelectHeroDone) { // 选将完成了
             this.onPlayerStrokeChange(gameStatus, gameFEStatus);

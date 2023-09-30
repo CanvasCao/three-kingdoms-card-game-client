@@ -2,7 +2,7 @@ export const i18Config = {
     // LOGIN page
     TITLE: {EN: "Legends of the Three Kingdoms", CN: "三国杀"},
     NAME_PLACEHOLDER: {EN: "Your name", CN: "你的名字"},
-    LOGIN: {EN: "Login", CN: "登陆"},
+    LOGIN: {EN: "Login", CN: "登录"},
 
     // ROOMS page
     ROOM: {EN: "Room", CN: "房间"},
@@ -19,6 +19,9 @@ export const i18Config = {
     OK: {EN: "OK", CN: "确定"},
     CANCEL: {EN: "CANCEL", CN: "取消"},
     END: {EN: "END", CN: "结束"},
+
+    // endGame
+    CONTINUE: {EN: "CONTINUE", CN: "继续"},
 
     // 操作提示
     // play phase

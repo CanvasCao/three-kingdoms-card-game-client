@@ -3,7 +3,10 @@ import {DamageEvent, EventTimingSkill, GameStageEvent, PandingEvent, ResponseCar
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
-    roomId: string,
+    room: {
+        roomId: string,
+        status: string,
+    },
     players: GameStatusPlayers,
     stage: Stage,
 
@@ -29,8 +32,8 @@ export type GameStatus = {
     pandingEvent: PandingEvent,
     tieSuoTempStorage: TieSuoTempStorageItem[],
 
-    // winner
-    winner: {
+    // gameEnd
+    gameEnd: {
         winnerTeamName: string,
     }
 

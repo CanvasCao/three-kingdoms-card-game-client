@@ -81,19 +81,8 @@ const getCurrentPlayer = (gameStatus: GameStatus) => {
     return Object.values(gameStatus.players).find((u) => u.location == gameStatus.stage.currentLocation)
 }
 
-let isAllSelectHeroDone = false
 const getIsAllSelectHeroDone = (gameStatus: GameStatus) => {
-    if (isAllSelectHeroDone) {
-        return true
-    }
-
-    const done = Object.values(gameStatus.players).every((p) => p.heroId);
-    if (done) {
-        isAllSelectHeroDone = true
-        return true
-    } else {
-        return false
-    }
+    return Object.values(gameStatus.players).every((p) => p.heroId);
 }
 
 export {
