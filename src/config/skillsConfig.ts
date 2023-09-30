@@ -50,6 +50,17 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '铁骑',
         EN: 'Cavalry'
     },
+    SHU007_JI_ZHI: {
+        key: 'SHU007_JI_ZHI',
+        CN: '急智',
+        EN: 'Intuition'
+    },
+    SHU007_QI_CAI: {
+        key: 'SHU007_QI_CAI',
+        CN: '奇才',
+        EN: 'Wizardry'
+    },
+
     WU006_GUO_SE: {
         key: 'WU006_GUO_SE',
         CN: '国色',
@@ -117,6 +128,14 @@ const SKILL_DESC_CONFIG: any = {
     SHU006_TIE_JI: {
         CN: '你的【杀】指定目标后，你可以进行判定，若结果为红色，该角色不能使用【闪】',
         EN: 'When you target a Hero with [Strike], you may reveal a judgment. If the result is a red color suit, then your [Strike] cannot be Dodged.'
+    },
+    SHU007_JI_ZHI: {
+        CN: '当你使用一张非转化的普通锦囊牌时，你可以摸一张牌。',
+        EN: 'Anytime you use a "Scroll" card you immediately draw a card from the deck before calculating the effect of the "Scroll" card.'
+    },
+    SHU007_QI_CAI: {
+        CN: '锁定技，你使用锦囊牌无距离限制。',
+        EN: 'Your "Scroll" cards have infinite range.'
     },
 
     WU006_GUO_SE: {

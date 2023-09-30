@@ -239,7 +239,8 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     }
     // 兵粮寸断
     else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
-        if (1 >= distanceBetweenMeAndTarget) {
+        const bingLiangRange = mePlayer.bingLiangRange || 1
+        if (bingLiangRange >= distanceBetweenMeAndTarget) {
             return true
         } else {
             return false
@@ -253,7 +254,8 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
             return false
         }
     } else if (actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
-        if (getIfPlayerHasAnyCards(targetPlayer) && 1 >= distanceBetweenMeAndTarget) {
+        const shunRange = mePlayer.shunRange || 1
+        if (getIfPlayerHasAnyCards(targetPlayer) && shunRange >= distanceBetweenMeAndTarget) {
             return true
         } else {
             return false

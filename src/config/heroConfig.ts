@@ -1,13 +1,11 @@
-import {HeroNameConfig} from "../types/hero"
-
-const HERO_NAMES_CONFIG: HeroNameConfig = {
+const HERO_NAMES_CONFIG: any = {
     "WEI001": {
         CN: '曹操',
         EN: 'Cao Cao'
     },
     "WEI002": {
         CN: '司马懿',
-        EN: 'Sima Yi'
+        EN: 'Si Ma Yi'
     },
     "WEI003": {
         CN: '夏侯惇',
@@ -29,6 +27,10 @@ const HERO_NAMES_CONFIG: HeroNameConfig = {
     "SHU006": {
         CN: '马超',
         EN: 'Ma Chao'
+    },
+    "SHU007": {
+        CN: '黄月英',
+        EN: 'Huang Yue Ying'
     },
 
     "WU006": {

@@ -1,15 +1,12 @@
-import { Skill } from "./skill"
-
-export type HeroNameConfigValue = {
-    CN: string,
-    EN: string,
-}
-export type HeroNameConfig = { [key: string]: HeroNameConfigValue }
+import {Skill} from "./skill"
 
 export type Hero = {
     heroId: string,
 
-    shaLimitTimes: number,
+    shaLimitTimes: number, // 张飞
+    shunRange: number, // 黄月英
+    bingLiangRange: number, // 黄月英
+
     maxBlood: number,
     kingdom: string,
     gender: number,
