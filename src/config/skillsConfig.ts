@@ -66,6 +66,11 @@ const SKILL_NAMES_CONFIG: any = {
         EN: 'Wizardry'
     },
 
+    WU002_QI_XI:{
+        key: 'WU002_QI_XI',
+        CN: '奇袭',
+        EN: 'Ambush'
+    },
     WU006_GUO_SE: {
         key: 'WU006_GUO_SE',
         CN: '国色',
@@ -147,6 +152,10 @@ const SKILL_DESC_CONFIG: any = {
         EN: 'Your "Scroll" cards have infinite range.'
     },
 
+    WU002_QI_XI: {
+        CN: '你可以将一张黑色牌当【过河拆桥】使用。',
+        EN: 'During play phase, you may treat any of your black color suit cards as "Dismantle".'
+    },
     WU006_GUO_SE: {
         CN: '你可以将一张♦牌当【乐不思蜀】使用。',
         EN: 'During your play phase, you may use any of your ♦ cards as "Contentment".'

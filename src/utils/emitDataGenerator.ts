@@ -6,7 +6,7 @@ import {GameFEStatus} from "../types/gameFEStatus";
 import {getIsZhangBaSheMaoSelected} from "./weaponUtils";
 import {uuidv4} from "./uuid";
 import {Player} from "../types/player";
-import {CARD_CONFIG} from "../config/cardConfig";
+import {CARD_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {getWuxieTargetCardId} from "./response/responseUtils";
 import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 
@@ -78,6 +78,12 @@ const generateActualCard = (gameFEStatus: GameFEStatus) => {
             huase: gameFEStatus.selectedCards[0].huase,
             cardId: uuidv4(),
             key: CARD_CONFIG.SHA.key,
+        }
+    } else if (gameFEStatus.selectedSkillKey === SKILL_NAMES_CONFIG.WU002_QI_XI.key) {
+        return {
+            huase: gameFEStatus.selectedCards[0].huase,
+            cardId: uuidv4(),
+            key: SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
         }
     } else {
         const card = JSON.parse(JSON.stringify(gameFEStatus.selectedCards[0]))
