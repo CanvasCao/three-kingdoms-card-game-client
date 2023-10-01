@@ -8,7 +8,7 @@ export type GameFEStatus = {
 
     selectedTargetPlayers: Players,
 
-    selectedSkillNameKey: string,
+    selectedSkillKey: string,
 
     publicCards: Card[],
 }

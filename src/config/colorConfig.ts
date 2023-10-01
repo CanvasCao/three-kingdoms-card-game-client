@@ -23,7 +23,10 @@ const COLOR_CONFIG = {
     "countDownBottom": "0xff0000",
 
     // board
-    boardBg: "0x111111",
+    "boardBg": "0x111111",
+
+    // skill
+    "skill": "0x26b426",
 
     // pure color
     "grey111": "0x111111",

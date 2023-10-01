@@ -51,6 +51,7 @@ export type OneTargetAction = {
     cards: Card[],
     actualCard: Card,
     originId: string,
+    skillKey: string,
     targetId?: string,
 }
 
@@ -58,6 +59,7 @@ export type MultiTargetsAction = {
     cards: Card[],
     actualCard: Card,
     originId: string,
+    skillKey: string,
     targetIds: string[],
 }
 

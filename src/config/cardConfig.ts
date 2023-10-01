@@ -378,7 +378,7 @@ const PLUS_HORSE_CARDS_CONFIG = {
     "JUE_YING": {
         key: "JUE_YING",
         "CN": "绝影",
-        "EN": "Shadowrunner",
+        "EN": "Shadow Runner",
         type: CARD_TYPE.EQUIPMENT,
         equipmentType: EQUIPMENT_TYPE.PLUS_HORSE,
     },

@@ -11,7 +11,7 @@ import {
     cardTypeObjOffsetX,
     cardTypeObjOffsetY
 } from "../../config/cardContentOffsetConfig";
-import {getCardColor} from "../cardUtils";
+import {getCardColorString} from "../cardUtils";
 import {i18, isLanEn} from "../../i18n/i18nUtils";
 import {
     CARD_CONFIG,
@@ -102,7 +102,7 @@ const sharedDrawFrontCard = (
         y + cardHuaseNumberObjOffsetY,
         (CARD_NUM_DESC[card?.number] + '\r' + card.huase),
         // @ts-ignore
-        {fill: getCardColor(card.huase), align: "center"}
+        {fill: getCardColorString(card.huase), align: "center"}
     )
     cardHuaseNumberObj.setPadding(0, 5, 0, 0)
         .setOrigin(0, 0)

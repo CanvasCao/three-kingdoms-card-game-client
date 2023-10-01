@@ -139,7 +139,7 @@ const getIsToOtherPlayerCardFaceFront = (fromPlayerId: string, toPlayerId: strin
     return isPublic
 }
 
-const getCardColor = (huase: string) => {
+const getCardColorString = (huase: string) => {
     return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(huase) ? COLOR_CONFIG.redString : COLOR_CONFIG.blackString
 }
 
@@ -182,6 +182,6 @@ const generatePublicCardMessage = (
 export {
     attachFEInfoToCard,
     getIsToOtherPlayerCardFaceFront,
-    getCardColor,
+    getCardColorString,
     generatePublicCardMessage
 }

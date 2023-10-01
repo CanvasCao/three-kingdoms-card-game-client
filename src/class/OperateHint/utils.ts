@@ -23,10 +23,10 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
     const actualCardKey = actualCard?.key || ''
     const actualCardName = actualCard ? i18(CARD_CONFIG[actualCard.key]) : '';
     const equipmentType = actualCard?.equipmentType;
-    const selectedSkillNameKey = gameFEStatus.selectedSkillNameKey;
+    const selectedSkillKey = gameFEStatus.selectedSkillKey;
 
     // 没有选择牌
-    if (!actualCard && !selectedSkillNameKey) {
+    if (!actualCard && !selectedSkillKey) {
         return (i18(i18Config.PLEASE_SELECT_A_CARD))
     }
     // 基本牌
@@ -71,8 +71,16 @@ const getCanPlayInMyTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: G
         return (i18(i18Config.SELECT_LE_BU_SI_SHU))
     } else if (actualCardKey == SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
         return (i18(i18Config.SELECT_BING_LIANG_CUN_DUAN))
-    } else if (selectedSkillNameKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
+    }
+
+    // 武器
+    else if (selectedSkillKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
         return (i18(i18Config.SELECT_ZHANG_BA_SHE_MAO))
+    }
+
+    // 技能
+    else if (!!selectedSkillKey) {
+        return (i18(i18Config.PLEASE_SELECT_A_CARD))
     } else {
         console.log(actualCard)
         throw Error(`${actualCard?.key}出牌时没有操作提示`)

@@ -4,7 +4,7 @@ import {GamingScene} from "../../types/phaser";
 import {CARD_CONFIG, CARD_NUM_DESC, EQUIPMENT_TYPE} from "../../config/cardConfig";
 import {i18, isLanEn} from "../../i18n/i18nUtils";
 import {Card} from "../../types/card";
-import {getCardColor} from "../cardUtils";
+import {getCardColorString} from "../cardUtils";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 import {getCardText, limitStringLengthWithEllipsis, splitText} from "../string/stringUtils";
 import {TOOL_TIP_CARD_MAX_LENGTH} from "../../config/stringConfig";
@@ -74,7 +74,7 @@ const sharedDrawEquipment = (
     huaseNumText.setFontSize(fontSize)
     // @ts-ignore
     huaseNumText.setText(CARD_NUM_DESC[card.number] + card.huase)
-    huaseNumText.setColor(getCardColor(card.huase))
+    huaseNumText.setColor(getCardColorString(card.huase))
 
     return {
         selectedStroke,

@@ -35,6 +35,11 @@ const SKILL_NAMES_CONFIG: any = {
         EN: 'Armorless'
     },
 
+    SHU002_WU_SHENG: {
+        key: 'SHU002_WU_SHENG',
+        CN: '武圣',
+        EN: 'Master of Warfare'
+    },
     SHU003_PAO_XIAO: {
         key: 'SHU003_PAO_XIAO',
         CN: '咆哮',
@@ -117,6 +122,10 @@ const SKILL_DESC_CONFIG: any = {
         EN: "During draw phase, you may draw one card instead of two. If you do so, all of your [Strike] and [Duel] inflict +1 damage for that phase (only when you are the damage source of a Duel)."
     },
 
+    SHU002_WU_SHENG: {
+        CN: '你可以将一张红色牌当【杀】使用或打出。',
+        EN: 'You may use or play your red color suit card(s) as [Strike]'
+    },
     SHU003_PAO_XIAO: {
         CN: '锁定技，你使用【杀】无次数限制。',
         EN: 'During your play phase, you may use any amount of [Strike] cards.'

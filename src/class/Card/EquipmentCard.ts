@@ -27,7 +27,6 @@ export class EquipmentCard {
     card: Card;
     equipmentType: keyof typeof EQUIPMENT_TYPE;
     playerId: string;
-    cardNameKey: string;
     cardId: string;
     isMe: boolean;
 
@@ -47,7 +46,6 @@ export class EquipmentCard {
 
         this.gamingScene = gamingScene;
         this.card = card;
-        this.cardNameKey = card.key;
         this.cardId = card.cardId;
         this.equipmentType = card.equipmentType!;
         this.playerId = playerId;
@@ -133,15 +131,15 @@ export class EquipmentCard {
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
                 const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
-                const canSelectEquipment = getCanSelectEquipmentInTheory(gameStatus, gameFEStatus, this.cardNameKey);
+                const canSelectEquipment = getCanSelectEquipmentInTheory(gameStatus,gameFEStatus, this.card);
                 if (!canSelectEquipment) return;
 
                 const needSelectCardsNumber = getNeedSelectCardsMinMax(gameStatus, gameFEStatus).max;
                 const haveSelectCardsNumber = getSelectedCardNumber(gameFEStatus);
                 const haveSelectedEnoughCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
-                const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillNameKey &&
-                    (gameFEStatus.selectedSkillNameKey !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key)
+                const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillKey &&
+                    (gameFEStatus.selectedSkillKey !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key)
 
                 // 已经选中技能 或者 响应技能 的情况下 一定是要打出武器
                 if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {
@@ -156,10 +154,10 @@ export class EquipmentCard {
                 }
                 // 没有选中技能/响应技能/已经选中的是丈八蛇矛 是要选择/反选丈八蛇矛
                 else {
-                    if (gameFEStatus.selectedSkillNameKey == this.cardNameKey) {
+                    if (gameFEStatus.selectedSkillKey == this.card.key) {
                         gameFEStatusObserved.unselectSkill()
                     } else {
-                        gameFEStatusObserved.selectSkill(this.cardNameKey)
+                        gameFEStatusObserved.selectSkill(this.card.key)
                     }
                 }
             }
@@ -192,8 +190,8 @@ export class EquipmentCard {
         }
 
         let isSelected = false;
-        if (gameFEStatus.selectedSkillNameKey === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
-            this.cardNameKey === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
+        if (gameFEStatus.selectedSkillKey === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
+            this.card.key === EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
             isSelected = true
         }
         // @ts-ignore

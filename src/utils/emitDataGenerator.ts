@@ -8,37 +8,37 @@ import {uuidv4} from "./uuid";
 import {Player} from "../types/player";
 import {CARD_CONFIG} from "../config/cardConfig";
 import {getWuxieTargetCardId} from "./response/responseUtils";
+import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 
 const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (EmitActionData | undefined) => {
     const actualCard = JSON.parse(JSON.stringify(gameFEStatus.actualCard))
     const actualCardWithFEInfo = attachFEInfoToCard(actualCard)!;
 
+    const baseAction = {
+        cards: gameFEStatus.selectedCards,
+        actualCard,
+        originId: getMyPlayerId(),
+        skillKey: gameFEStatus.selectedSkillKey
+    }
+
     if (actualCardWithFEInfo.couldHaveMultiTarget || actualCardWithFEInfo.needAActionToB) {
         return {
-            cards: gameFEStatus.selectedCards,
-            actualCard,
-            originId: getMyPlayerId(),
+            ...baseAction,
             targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
         }
     } else if (actualCardWithFEInfo.noNeedSetTargetDueToImDefaultTarget) {
         return {
-            cards: gameFEStatus.selectedCards,
-            actualCard,
-            originId: getMyPlayerId(),
+            ...baseAction,
             targetId: getMyPlayerId(),
         }
     } else if (actualCardWithFEInfo.canOnlyHaveOneTarget) {
         return {
-            cards: gameFEStatus.selectedCards,
-            actualCard,
-            originId: getMyPlayerId(),
+            ...baseAction,
             targetId: gameFEStatus.selectedTargetPlayers[0].playerId,
         }
     } else if (actualCardWithFEInfo.noNeedSetTargetDueToTargetAll) {
         return {
-            cards: gameFEStatus.selectedCards,
-            actualCard,
-            originId: getMyPlayerId(),
+            ...baseAction,
         }
     }
 }
@@ -70,6 +70,12 @@ const generateActualCard = (gameFEStatus: GameFEStatus) => {
         return {
             huase: gameFEStatus.selectedCards[0].huase,
             huase2: gameFEStatus.selectedCards[1].huase,
+            cardId: uuidv4(),
+            key: CARD_CONFIG.SHA.key,
+        }
+    } else if (gameFEStatus.selectedSkillKey === SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
+        return {
+            huase: gameFEStatus.selectedCards[0].huase,
             cardId: uuidv4(),
             key: CARD_CONFIG.SHA.key,
         }

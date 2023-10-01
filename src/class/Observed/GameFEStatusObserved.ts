@@ -2,7 +2,7 @@ import {cloneDeep, differenceBy} from "lodash";
 import {Card} from "../../types/card";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {FEObserver} from "../../types/observer";
-import { GamingScene } from "../../types/phaser";
+import {GamingScene} from "../../types/phaser";
 import {Player} from "../../types/player";
 import {generateActualCard} from "../../utils/emitDataGenerator";
 
@@ -18,7 +18,7 @@ export class GameFEStatusObserved {
     }
 
     originSkillState: {
-        selectedSkillNameKey: GameFEStatus['selectedSkillNameKey']
+        selectedSkillKey: GameFEStatus['selectedSkillKey']
     }
 
     originPublicCardsState: {
@@ -30,7 +30,7 @@ export class GameFEStatusObserved {
     selectedStatusObservers: FEObserver[]
     publicCardsObservers: FEObserver[]
 
-    constructor(gamingScene:GamingScene) {
+    constructor(gamingScene: GamingScene) {
         this.gamingScene = gamingScene
 
         this.originCardState = {
@@ -41,7 +41,7 @@ export class GameFEStatusObserved {
             selectedTargetPlayers: [],
         }
         this.originSkillState = {
-            selectedSkillNameKey: ""
+            selectedSkillKey: ""
         }
 
         // publicCardsState 是为了ToPublicCard对象 可以Observer并调整自己的位置
@@ -133,6 +133,7 @@ export class GameFEStatusObserved {
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 
+    // Skill
     unselectSkill() {
         const gameFEStatus = this.gameFEStatus;
         // @ts-ignore
@@ -140,12 +141,15 @@ export class GameFEStatusObserved {
     }
 
     selectSkill(skillNameKey: string) {
+        this.resetSelectedStatus()
         const gameFEStatus = this.gameFEStatus;
         // @ts-ignore
-        gameFEStatus.selectedSkillNameKey = skillNameKey;
+        gameFEStatus.selectedSkillKey = skillNameKey;
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 
+
+    // Player
     unselectPlayer(player: Player) {
         const gameFEStatus = this.gameFEStatus;
         // @ts-ignore

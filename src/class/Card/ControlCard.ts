@@ -14,7 +14,7 @@ import {
 } from "../../utils/validation/validationUtils";
 import {Card} from "../../types/card";
 import {getMyCardPosition} from "../../utils/position/cardPositionUtils";
-import { cardDuration } from "../../config/animationConfig";
+import {cardDuration} from "../../config/animationConfig";
 
 export class ControlCard {
     obId: string;
@@ -168,7 +168,7 @@ export class ControlCard {
         const setCardDisable = () => {
             this.cardObjGroup.forEach((obj) => {
                 // @ts-ignore
-               if(obj.setTint) obj?.setTint(COLOR_CONFIG.disableCard)
+                if (obj.setTint) obj?.setTint(COLOR_CONFIG.disableCard)
             })
             this._cardDisable = true
         }
@@ -176,7 +176,7 @@ export class ControlCard {
         const setCardAble = () => {
             this.cardObjGroup.forEach((obj) => {
                 // @ts-ignore
-                if(obj.clearTint) obj?.clearTint()
+                if (obj.clearTint) obj?.clearTint()
             })
             this._cardDisable = false
         }
@@ -186,11 +186,6 @@ export class ControlCard {
     }
 
     destoryAll() {
-        // TODO 好像是Phaser的bug 只能遍历到两个child
-        // this.group.getChildren().forEach((child,i) => {
-        //     console.log(child,i)
-        //     child.destroy()
-        // })
         this.isDestoryed = true;
 
         this.cardObjGroup.forEach((obj) => {

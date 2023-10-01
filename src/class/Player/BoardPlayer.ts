@@ -76,8 +76,9 @@ export class BoardPlayer {
     bloodImages?: Phaser.GameObjects.Image[];
     pandingCardImages?: Phaser.GameObjects.Image[];
     pandingCardTexts?: Phaser.GameObjects.Text[];
-    skillImages?: Phaser.GameObjects.Image[];
-    skillTexts?: Phaser.GameObjects.Text[];
+
+    // class
+    boardPlayerSkills?: BoardPlayerSkills
 
     constructor(gamingScene: GamingScene, player: Player) {
         this.obId = uuidv4();
@@ -101,8 +102,6 @@ export class BoardPlayer {
         this.bloodImages = []; //从下往上
         this.pandingCardImages = []; //从右往左
         this.pandingCardTexts = []; //从右往左
-        this.skillImages = [];
-        this.skillTexts = [];
 
         // init inner state
         this._heroId = '';
@@ -358,8 +357,8 @@ export class BoardPlayer {
     }
 
     drawHeroSkills(skills: Skill[]) {
-        const boardPlayerSkills = new BoardPlayerSkills(this.gamingScene, this.positionX, this.positionY, skills)
-        this.reduceBloodAnimationGroup = this.reduceBloodAnimationGroup.concat(boardPlayerSkills.phaserGroup);
+        this.boardPlayerSkills = new BoardPlayerSkills(this.gamingScene, this.positionX, this.positionY, skills)
+        this.reduceBloodAnimationGroup = this.reduceBloodAnimationGroup.concat(this.boardPlayerSkills.phaserGroup);
     }
 
     setBloods(number: number) {
@@ -593,10 +592,8 @@ export class BoardPlayer {
 
         if (this.isMe) { // 是我的话 我选完就要显示武将
             this.initHero(gameStatus);
-        } else {
-            if (allSelectHeroDone) {
-                this.initHero(gameStatus);
-            }
+        } else if (allSelectHeroDone) {
+            this.initHero(gameStatus);
         }
 
         if (allSelectHeroDone) { // 选将完成了

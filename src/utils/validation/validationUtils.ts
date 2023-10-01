@@ -12,6 +12,7 @@ import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {
     ALL_SHA_CARD_KEYS,
     BASIC_CARDS_CONFIG,
+    CARD_HUASE,
     DELAY_SCROLL_CARDS_CONFIG,
     EQUIPMENT_CARDS_CONFIG,
     SCROLL_CARDS_CONFIG
@@ -33,6 +34,8 @@ import {
     getCanSelectMeAsFirstTargetCardNamesClosure,
     getCanSelectMeAsSecondTargetCardNamesClosure, getInMyPlayTurnCanPlayCardNamesClourse
 } from "../cardNamesClourseUtils";
+import {Skill} from "../../types/skill";
+import {isBoolean} from "lodash";
 
 const getSelectedCardNumber = (gameFEStatus: GameFEStatus) => {
     return gameFEStatus.selectedCards.length
@@ -114,17 +117,20 @@ const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFE
     return {min: 0, max: 0}
 }
 
-const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, eqCardName: string) => {
+const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, card: Card) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
+    const eqCardKey = card.key;
 
-    if (isMyResponseCardOrSkillTurn) {
+    if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
+        return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(card.huase)
+    } else if (isMyResponseCardOrSkillTurn) {
         const responseType = getResponseType(gameStatus)
         if (responseType === RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
             if (gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
                 return true
             } else if (gameStatus.skillResponse!.skillNameKey == EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key &&
-                eqCardName !== EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
+                eqCardKey !== EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
                 return true
             }
         }
@@ -132,19 +138,19 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
         if (responseType === RESPONSE_TYPE_CONFIG.CARD &&
             (gameStatus.cardResponse?.actionActualCard.key == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key ||
                 gameStatus.cardResponse?.actionActualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key) &&
-            eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
+            eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
             return true
         }
 
         if (responseType === RESPONSE_TYPE_CONFIG.SCROLL &&
             gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key &&
-            eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
+            eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
             return true
         }
     } else if (canPlayInMyTurn) {
-        if (eqCardName == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
+        if (eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
             getCanPlayerPlaySha(gameStatus.players[getMyPlayerId()])
         ) {
             return true;
@@ -265,20 +271,32 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     }
 }
 
-const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, card: Card) => {
+const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, card: Partial<Card>) => {
+    const res = getIsControlCardAbleByGameFEStatus(gameFEStatus, card)
+    if (isBoolean(res)) {
+        return res
+    }
+    return getIsControlCardAbleByGameStatus(gameStatus, card)
+}
+
+const getIsControlCardAbleByGameFEStatus = (gameFEStatus: GameFEStatus, card: Partial<Card>) => {
+    if (gameFEStatus.selectedSkillKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
+        return true
+    }
+
+    if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
+        return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(card.huase!)
+    }
+}
+
+const getIsControlCardAbleByGameStatus = (gameStatus: GameStatus, card: Partial<Card>) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
     const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
-    if (gameFEStatus.selectedSkillNameKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
-        return true
-    }
-
     if (canPlayInMyTurn) {
         const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
-        if (!canPlayCardNames.includes(card.key)) {
-            return false
-        }
+        return canPlayCardNames.includes(card.key!)
     }
 
     if (isMyResponseCardOrSkillTurn) {
@@ -293,14 +311,14 @@ const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
                 case BASIC_CARDS_CONFIG.SHA.key:
                 case BASIC_CARDS_CONFIG.LEI_SHA.key:
                 case BASIC_CARDS_CONFIG.HUO_SHA.key:
-                    return [BASIC_CARDS_CONFIG.SHAN.key].includes(card.key)
+                    return [BASIC_CARDS_CONFIG.SHAN.key].includes(card.key!)
 
                 case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key:
                 case SCROLL_CARDS_CONFIG.JUE_DOU.key:
                     return ALL_SHA_CARD_KEYS.includes(card.key)
+                default:
+                    return false
             }
-
-            return false
         } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
             const skillNameKey = gameStatus.skillResponse!.skillNameKey;
             const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
@@ -325,7 +343,7 @@ const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         } else if (responseType == RESPONSE_TYPE_CONFIG.CARD_BOARD) {
             return false
         } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
-            return [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key].includes(card.key)
+            return [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key].includes(card.key!)
         } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
             const curScrollResponse = gameStatus.scrollResponses[0]
 
@@ -343,6 +361,17 @@ const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     }
 
     return true
+}
+
+const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skill: Skill) => {
+    const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
+    const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
+    if (skill.key == SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
+        if (canPlayInMyTurn || isMyResponseCardOrSkillTurn) {
+            return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key}) // 不考虑前端点击（丈八蛇矛） 只计算当前是否可以出杀
+        }
+    }
+    return false
 }
 
 const getCanISelectMySelfAsTarget = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
@@ -368,6 +397,9 @@ export {
 
     getIsBoardPlayerAble,
     getIsControlCardAble,
+    getIsControlCardAbleByGameStatus,
+    getIsControlCardAbleByGameFEStatus,
+    getIsSkillAble,
 
     getCanSelectEquipmentInTheory,
 
