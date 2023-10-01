@@ -120,12 +120,36 @@ const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFE
 const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, card: Card) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
+    const responseType = getResponseType(gameStatus)
     const eqCardKey = card.key;
 
     if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
+        // 出过杀不能用诸葛连弩当杀
+        if (eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHU_GE_LIAN_NU.key) {
+            return !(gameStatus.players[getMyPlayerId()].shaTimes > 0)
+        }
+
+        // 借刀杀人 用武器距离不够时
+        if (isMyResponseCardOrSkillTurn && responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
+            const curScrollResponse = gameStatus.scrollResponses?.[0];
+            if (curScrollResponse?.actualCard?.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
+                const originPlayer = gameStatus.players[curScrollResponse.originId]
+                const targetPlayer = gameStatus.players[curScrollResponse.targetId]
+
+                const fakeGameFEStatus = {selectedCards: [card]} as GameFEStatus
+                const myAttackDistance = getPlayerAttackRangeNumber(fakeGameFEStatus, originPlayer)
+                const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, fakeGameFEStatus, originPlayer, targetPlayer)
+
+                if (myAttackDistance >= distanceBetweenMeAndTarget) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+
         return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(card.huase)
     } else if (isMyResponseCardOrSkillTurn) {
-        const responseType = getResponseType(gameStatus)
         if (responseType === RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
             if (gameStatus.skillResponse!.skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
                 return true
@@ -206,7 +230,6 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     // 使用牌的时候
     // 杀
     if (ALL_SHA_CARD_KEYS.includes(actualCardName)) {
-        let myAttackDistance = mePlayer?.weaponCard?.distance || 1
         if (myAttackDistance >= distanceBetweenMeAndTarget) {
             return true
         } else {

@@ -11,6 +11,7 @@ import {PublicLine} from "../Line/PublicLine";
 import {ToPlayerCard} from "../Card/ToPlayerCard";
 import {Card} from "../../types/card";
 import {cardDuration} from "../../config/animationConfig";
+import {uuidv4} from "../../utils/uuid";
 
 export class NofityAnimationManager {
     // obId: string;
@@ -87,7 +88,10 @@ export class NofityAnimationManager {
         const message = generatePublicCardMessage(gameStatus, data);
 
         handCardsWithOrder.forEach(({card, originIndex}) => {
+            card.cardId = uuidv4(); // 为了防止 关羽装备武器再打出武器 会在ToPublicCard只显示成一张
+
             gameFEStatus.publicCards.push(card)
+
             new ToPublicCard(
                 this.gamingScene,
                 card,

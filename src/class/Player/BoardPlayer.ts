@@ -193,6 +193,7 @@ export class BoardPlayer {
         const player = gameStatus?.players[this.playerId]
         const playerImage = player?.heroId || 'xuanjiang';
 
+        this.playerImage?.destroy(); // 第二次 需要删除xuanjiang
         this.playerImage = this.gamingScene.add.image(
             this.positionX - sizeConfig.player.width / 2,
             this.positionY - sizeConfig.player.height / 2,
