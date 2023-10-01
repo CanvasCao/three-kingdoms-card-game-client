@@ -91,25 +91,25 @@ export class ControlCard {
                 }
 
                 const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved;
-                const curFEStatus = gameFEStatusObserved.gameFEStatus!;
-                const curStatus = this.gamingScene.gameStatusObserved.gameStatus!;
+                const gameFEStatus = gameFEStatusObserved.gameFEStatus!;
+                const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
 
-                const canPlayInMyTurn = getCanPlayInMyTurn(curStatus);
-                const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(curStatus);
-                const isMyThrowTurn = getIsMyThrowTurn(curStatus);
+                const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
+                const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
+                const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
 
-                const needSelectCardsNumber = getNeedSelectCardsMinMax(curStatus, curFEStatus).max;
-                const haveSelectCardsNumber = getSelectedCardNumber(curFEStatus);
+                const needSelectCardsNumber = getNeedSelectCardsMinMax(gameStatus, gameFEStatus).max;
+                const haveSelectCardsNumber = getSelectedCardNumber(gameFEStatus);
                 const haveSelectedEnoughThrowCard = haveSelectCardsNumber >= needSelectCardsNumber;
 
                 // 选中再点击就是反选
-                if (curFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
+                if (gameFEStatus.selectedCards.map(c => c.cardId).includes(this.card.cardId)) {
                     gameFEStatusObserved.unselectCard(this.card)
                 } else { // 选中
                     if (!haveSelectedEnoughThrowCard) {
-                        const selectEnoughCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
-                        const needGenerateActualCard = (selectEnoughCard && !isMyThrowTurn)
-                        gameFEStatusObserved.selectCard(this.card, {needGenerateActualCard})
+                        const oneCardToEnoughCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
+                        const needGenerateActualCard = (oneCardToEnoughCard && !isMyThrowTurn)
+                        gameFEStatusObserved.selectCard(this.card, needGenerateActualCard, gameStatus)
                     }
                 }
             }

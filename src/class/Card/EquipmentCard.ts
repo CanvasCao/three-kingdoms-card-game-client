@@ -131,7 +131,7 @@ export class EquipmentCard {
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
                 const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
-                const canSelectEquipment = getCanSelectEquipmentInTheory(gameStatus,gameFEStatus, this.card);
+                const canSelectEquipment = getCanSelectEquipmentInTheory(gameStatus, gameFEStatus, this.card);
                 if (!canSelectEquipment) return;
 
                 const needSelectCardsNumber = getNeedSelectCardsMinMax(gameStatus, gameFEStatus).max;
@@ -147,8 +147,9 @@ export class EquipmentCard {
                         gameFEStatusObserved.unselectCard(this.card)
                     } else { // 还没选中
                         if (!haveSelectedEnoughCard) {
-                            const needGenerateActualCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
-                            gameFEStatusObserved.selectCard(this.card, {needGenerateActualCard})
+                            const oneCardToEnoughCard = haveSelectCardsNumber == (needSelectCardsNumber - 1)
+                            const needGenerateActualCard = !!oneCardToEnoughCard
+                            gameFEStatusObserved.selectCard(this.card, needGenerateActualCard, gameStatus)
                         }
                     }
                 }

@@ -297,14 +297,14 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
 }
 
 const getIsControlCardAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, card: Partial<Card>) => {
-    const res = getIsControlCardAbleByGameFEStatus(gameFEStatus, card)
+    const res = getIsControlCardAbleByGameFEStatus(gameStatus, gameFEStatus, card)
     if (isBoolean(res)) {
         return res
     }
     return getIsControlCardAbleByGameStatus(gameStatus, card)
 }
 
-const getIsControlCardAbleByGameFEStatus = (gameFEStatus: GameFEStatus, card: Partial<Card>) => {
+const getIsControlCardAbleByGameFEStatus = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, card: Partial<Card>) => {
     if (gameFEStatus.selectedSkillKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key) {
         return true
     }
@@ -315,6 +315,14 @@ const getIsControlCardAbleByGameFEStatus = (gameFEStatus: GameFEStatus, card: Pa
 
     if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.WU002_QI_XI.key) {
         return [CARD_HUASE.HEITAO, CARD_HUASE.CAOHUA].includes(card.huase!)
+    }
+
+    if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.SHU005_LONG_DAN.key) {
+        if (getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key})) {
+            return [BASIC_CARDS_CONFIG.SHAN.key].includes(card.key!)
+        } else if (getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHAN.key})) {
+            return ALL_SHA_CARD_KEYS.includes(card.key!)
+        }
     }
 }
 
@@ -403,6 +411,15 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
     if (skill.key == SKILL_NAMES_CONFIG.WU002_QI_XI.key) {
         if (canPlayInMyTurn) {
             return getIsControlCardAbleByGameStatus(gameStatus, {key: SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key})
+        }
+    }
+
+    if (skill.key == SKILL_NAMES_CONFIG.SHU005_LONG_DAN.key) {
+        if (canPlayInMyTurn) {
+            return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key})
+        } else if (isMyResponseCardOrSkillTurn) {
+            return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key}) ||
+                getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHAN.key})
         }
     }
     return false

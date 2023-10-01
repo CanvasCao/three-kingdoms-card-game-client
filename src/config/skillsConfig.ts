@@ -45,6 +45,11 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '咆哮',
         EN: 'Battlecry'
     },
+    SHU005_LONG_DAN: {
+        key: 'SHU005_LONG_DAN',
+        CN: '龙胆',
+        EN: 'Courage'
+    },
     SHU006_MA_SHU: {
         key: 'SHU006_MA_SHU',
         CN: '马术',
@@ -66,7 +71,7 @@ const SKILL_NAMES_CONFIG: any = {
         EN: 'Wizardry'
     },
 
-    WU002_QI_XI:{
+    WU002_QI_XI: {
         key: 'WU002_QI_XI',
         CN: '奇袭',
         EN: 'Ambush'
@@ -134,6 +139,10 @@ const SKILL_DESC_CONFIG: any = {
     SHU003_PAO_XIAO: {
         CN: '锁定技，你使用【杀】无次数限制。',
         EN: 'During your play phase, you may use any amount of [Strike] cards.'
+    },
+    SHU005_LONG_DAN: {
+        CN: '你可以将一张【杀】当【闪】、一张【闪】当【杀】使用或打出。',
+        EN: 'You may treat your "Strike" as a "Dodge" or your "Dodge" as a "Strike".'
     },
     SHU006_MA_SHU: {
         CN: '锁定技，你计算与其他角色的距离-1。',

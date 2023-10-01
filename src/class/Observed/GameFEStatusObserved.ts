@@ -1,6 +1,7 @@
 import {cloneDeep, differenceBy} from "lodash";
 import {Card} from "../../types/card";
 import {GameFEStatus} from "../../types/gameFEStatus";
+import {GameStatus} from "../../types/gameStatus";
 import {FEObserver} from "../../types/observer";
 import {GamingScene} from "../../types/phaser";
 import {Player} from "../../types/player";
@@ -124,11 +125,11 @@ export class GameFEStatusObserved {
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 
-    selectCard(card: Card, {needGenerateActualCard}: { needGenerateActualCard?: boolean } = {}) {
+    selectCard(card: Card, needGenerateActualCard: boolean, gameStatus: GameStatus) {
         const gameFEStatus = this.gameFEStatus;
         gameFEStatus.selectedCards.push(card);
         if (needGenerateActualCard) {
-            gameFEStatus.actualCard = generateActualCard(gameFEStatus);
+            gameFEStatus.actualCard = generateActualCard(gameStatus, gameFEStatus);
         }
         this._setSelectedGameEFStatus(gameFEStatus)
     }
