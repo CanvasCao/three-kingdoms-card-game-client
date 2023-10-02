@@ -427,6 +427,12 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
         }
     }
 
+    if (skill.key == SKILL_NAMES_CONFIG.WU004_KU_ROU.key) {
+        if (canPlayInMyTurn) {
+            return gameStatus.players[getMyPlayerId()].currentBlood > 0;
+        }
+    }
+
     if (skill.key == SKILL_NAMES_CONFIG.SHU005_LONG_DAN.key) {
         if (canPlayInMyTurn) {
             return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key})

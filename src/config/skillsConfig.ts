@@ -81,6 +81,11 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '奇袭',
         EN: 'Ambush'
     },
+    WU004_KU_ROU:{
+        key: 'WU004_KU_ROU',
+        CN: '苦肉',
+        EN: 'Desperation'
+    },
     WU006_GUO_SE: {
         key: 'WU006_GUO_SE',
         CN: '国色',
@@ -173,6 +178,10 @@ const SKILL_DESC_CONFIG: any = {
     WU002_QI_XI: {
         CN: '你可以将一张黑色牌当【过河拆桥】使用。',
         EN: 'During play phase, you may treat any of your black color suit cards as "Dismantle".'
+    },
+    WU004_KU_ROU: {
+        CN: '出牌阶段，你可以失去1点体力，然后摸两张牌。',
+        EN: 'During your play phase, you may choose to lose one unit of life to draw two cards from the deck.'
     },
     WU006_GUO_SE: {
         CN: '你可以将一张♦牌当【乐不思蜀】使用。',

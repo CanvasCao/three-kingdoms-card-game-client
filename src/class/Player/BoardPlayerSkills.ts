@@ -9,6 +9,8 @@ import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {GameStatus} from "../../types/gameStatus";
 import {getIsSkillAble} from "../../utils/validation/validationUtils";
 import {GameFEStatus} from "../../types/gameFEStatus";
+import {EMIT_TYPE} from "../../config/emitConfig";
+import {generateAction} from "../../utils/emitDataGenerator";
 
 export class BoardPlayerSkills {
     obId: string;
@@ -97,7 +99,19 @@ export class BoardPlayerSkills {
     bindEvent() {
         this.skills.forEach((skill, index) => {
             this._skillImages[index].on('pointerdown', () => {
+                const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
+                const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
                 const gameFEStatusObserved = this.gamingScene.gameFEStatusObserved!;
+
+                if (skill.key == SKILL_NAMES_CONFIG.WU004_KU_ROU.key) {
+                    gameFEStatus.selectedSkillKey = skill.key // 不要通知gameFEStatusObserved 就不会显示选中
+                    this.gamingScene.socket.emit(
+                        EMIT_TYPE.ACTION,
+                        generateAction(gameStatus, gameFEStatus)
+                    )
+                    return
+                }
+
                 if (gameFEStatusObserved.gameFEStatus.selectedSkillKey) {
                     gameFEStatusObserved.unselectSkill()
                 } else {
