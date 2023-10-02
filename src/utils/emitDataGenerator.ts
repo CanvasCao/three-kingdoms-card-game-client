@@ -113,6 +113,7 @@ const generateActualCard = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) 
                     key: CARD_CONFIG.SHAN.key,
                 }
             }
+            return null;
         case SKILL_NAMES_CONFIG.WU002_QI_XI.key:
             return {
                 huase: gameFEStatus.selectedCards[0].huase,
