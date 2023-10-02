@@ -11,7 +11,7 @@ export type GameStatus = {
     stage: Stage,
 
     // Action
-    action: OneTargetAction | MultiTargetsAction,
+    action: Action,
 
     // Response
     cardResponse: CardResponse | undefined,
@@ -47,20 +47,12 @@ export type Stage = {
 }
 
 // action
-export type OneTargetAction = {
+export type Action = {
     cards: Card[],
     actualCard: Card,
     originId: string,
     skillKey: string,
-    targetId?: string,
-}
-
-export type MultiTargetsAction = {
-    cards: Card[],
-    actualCard: Card,
-    originId: string,
-    skillKey: string,
-    targetIds: string[],
+    targetIds?: string[],
 }
 
 // response

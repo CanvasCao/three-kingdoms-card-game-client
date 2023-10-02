@@ -55,7 +55,7 @@ export type eventTimingOneTimingTracker = {
 }
 
 export type EventTimingSkill = {
-    skillNameKey: string,
+    skillKey: string,
     playerId: string,
     chooseToReleaseSkill: boolean | undefined,
     releaseTargetIds: string[],

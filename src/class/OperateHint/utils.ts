@@ -112,28 +112,28 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
             return i18(i18Config.RESPONSE_JUE_DOU, {name, number})
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
-        const skillNameKey = gameStatus.skillResponse!.skillNameKey;
-        const skillName = i18(SKILL_NAMES_CONFIG[skillNameKey]) || i18(CARD_CONFIG[skillNameKey])
+        const skillKey = gameStatus.skillResponse!.skillKey;
+        const skillName = i18(SKILL_NAMES_CONFIG[skillKey]) || i18(CARD_CONFIG[skillKey])
         const chooseToReleaseSkill = gameStatus.skillResponse!.chooseToReleaseSkill;
 
         if (chooseToReleaseSkill === undefined) {
             return i18(i18Config.RESPONSE_SKILL_OR_NOT, {skillName})
         } else if (chooseToReleaseSkill) {
-            if (skillNameKey == SKILL_NAMES_CONFIG.WEI002_GUI_CAI.key) {
+            if (skillKey == SKILL_NAMES_CONFIG.WEI002_GUI_CAI.key) {
                 return i18(i18Config.RESPONSE_SKILL_GUI_CAI)
-            } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key) {
+            } else if (skillKey == SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key) {
                 return i18(i18Config.RESPONSE_SKILL_GANG_LIE)
-            } else if (skillNameKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+            } else if (skillKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
                 return i18(i18Config.RESPONSE_SKILL_TU_XI)
-            } else if (skillNameKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
+            } else if (skillKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
                 return i18(i18Config.RESPONSE_SKILL_LIU_LI)
-            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
+            } else if (skillKey == EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {
                 const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
                 const player = gameStatus.players[onGoingUseStrikeEvent.originId]!
                 return i18(i18Config.RESPONSE_SKILL_CI_XIONG_SHUANG_GU_JIAN, {name: getPlayerDisplayName(gameStatus, player.playerId)})
-            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
+            } else if (skillKey == EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key) {
                 return i18(i18Config.RESPONSE_SKILL_GUAN_SHI_FU)
-            } else if (skillNameKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
+            } else if (skillKey == EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key) {
                 return i18(i18Config.RESPONSE_SKILL_QING_LONG_YAN_YUE_DAO)
             }
         }

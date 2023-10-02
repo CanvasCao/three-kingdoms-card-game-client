@@ -39,7 +39,7 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                 break;
             case RESPONSE_TYPE_CONFIG.SKILL:
                 if (gameStatus.skillResponse!.playerId == playerId) {
-                    const skillKeyName = gameStatus.skillResponse?.skillNameKey!
+                    const skillKeyName = gameStatus.skillResponse?.skillKey!
                     hintText = i18(SKILL_NAMES_CONFIG[skillKeyName]) || i18(CARD_CONFIG[skillKeyName])
                 }
                 break;

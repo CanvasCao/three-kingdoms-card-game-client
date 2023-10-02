@@ -145,11 +145,11 @@ const getCardColorString = (huase: string) => {
 
 const generatePublicCardMessage = (
     gameStatus: GameStatus,
-    {type, fromId, originId, targetId, pandingPlayerId, pandingNameKey, skillNameKey}:
+    {type, fromId, originId, targetId, pandingPlayerId, pandingNameKey, skillKey}:
         EmitNotifyAddToPublicCardData) => {
-    if (skillNameKey) {
+    if (skillKey) {
         const player = gameStatus.players[originId]!
-        const skillName = i18(SKILL_NAMES_CONFIG[skillNameKey]) || i18(CARD_CONFIG[skillNameKey])
+        const skillName = i18(SKILL_NAMES_CONFIG[skillKey]) || i18(CARD_CONFIG[skillKey])
         const originName = player.playerName;
         return `${originName} ${skillName}`
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PLAY) {

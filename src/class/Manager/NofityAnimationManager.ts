@@ -33,7 +33,7 @@ export class NofityAnimationManager {
         let toIds = data.toIds || [];
 
         // 借刀杀人 貂蝉决斗
-        if (toIds && actualCard && attachFEInfoToCard(actualCard)?.needAActionToB) {
+        if (actualCard && attachFEInfoToCard(actualCard)?.needAActionToB) {
             const targetBoardPlayer1 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[0])!;
             const targetBoardPlayer2 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[1])!;
 
@@ -47,21 +47,20 @@ export class NofityAnimationManager {
                     endPosition: targetBoardPlayer2.linePosition,
                 });
             }, cardDuration)
-            return
         }
-
         // AOE
-        if (actualCard && attachFEInfoToCard(actualCard)?.noNeedSetTargetDueToTargetAll) {
+        else if (actualCard && attachFEInfoToCard(actualCard)?.noNeedSetTargetDueToTargetAll) {
             toIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
+        } else {
+            // 其他正确指定目标的情况
+            toIds.forEach((toId: string) => {
+                const targetBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.playerId == toId)!;
+                new PublicLine(this.gamingScene, {
+                    startPosition: fromBoardPlayer.linePosition,
+                    endPosition: targetBoardPlayer.linePosition,
+                });
+            })
         }
-        // 其他正确指定目标的情况
-        toIds.forEach((toId: string) => {
-            const targetBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.playerId == toId)!;
-            new PublicLine(this.gamingScene, {
-                startPosition: fromBoardPlayer.linePosition,
-                endPosition: targetBoardPlayer.linePosition,
-            });
-        })
     }
 
     addToPublicCard(data: EmitNotifyAddToPublicCardData) {

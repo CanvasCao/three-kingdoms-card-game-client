@@ -234,14 +234,24 @@ export class ControlButtons {
     }
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
-        if (gameFEStatus?.actualCard) {
-            // 只校验目标数量
-            const needTargetMinMaxNumber = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus);
-            const ifSelectedTargetsQualified = getSelectedTargetNumber(gameFEStatus) >= needTargetMinMaxNumber.min
-                && getSelectedTargetNumber(gameFEStatus) <= needTargetMinMaxNumber.max;
-            return ifSelectedTargetsQualified;
+        if (!gameFEStatus.actualCard && !gameFEStatus.selectedSkillKey) {
+            return false
         }
-        return false
+
+        const {min: cardMin, max: cardMax} = getNeedSelectCardsMinMax(gameStatus, gameFEStatus);
+        const {min: playerMin, max: playerMax} = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus);
+        const selectedCardNumber = getSelectedCardNumber(gameFEStatus)
+        const selectedPlayerNumber = getSelectedTargetNumber(gameFEStatus)
+        if (gameFEStatus.actualCard) {
+            // 只校验目标数量
+            return selectedPlayerNumber <= playerMax &&
+                selectedPlayerNumber >= playerMin
+        } else if (gameFEStatus.selectedSkillKey) {
+            return selectedCardNumber <= cardMax &&
+                selectedCardNumber >= cardMin &&
+                selectedPlayerNumber <= playerMax &&
+                selectedPlayerNumber >= playerMin
+        }
     }
 
     canClickOkBtnInMyResponseStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {

@@ -1,4 +1,4 @@
-import {MultiTargetsAction, OneTargetAction} from "./gameStatus";
+import {Action} from "./gameStatus";
 import {Card, PlayerBoardAction} from "./card";
 import {GAME_STATUS} from "../config/gameConfig";
 
@@ -22,19 +22,20 @@ export type EmitSwitchTeamMemberData = {
 }
 
 // 游戏开始中
-export type EmitActionData = OneTargetAction | MultiTargetsAction
+export type EmitActionData = Action
 
 export type EmitResponseData = {
     chooseToResponse: boolean,
     cards: Card[],
-    actualCard: Card,
+    actualCard?: Card,
     originId: string,
 
     // 为了校验无懈可击是否冲突
     wuxieTargetCardId?: string,
 
     // 响应技能选中的目标 流离
-    skillTargetIds?: string[]
+    skillTargetIds?: string[],
+    skillKey?: string
 }
 
 export type EmitThrowData = {
@@ -83,7 +84,7 @@ export type EmitNotifyAddToPublicCardData = {
     pandingPlayerId: string,
     pandingNameKey: string,
     type: string,
-    skillNameKey?: string,
+    skillKey?: string,
 }
 
 export type EmitNotifyAddToPlayerCardData = {

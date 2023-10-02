@@ -21,7 +21,7 @@ const getMyPlayerName = () => {
     }
 }
 
-const getMyPlayerId = () => {
+const getMyPlayerId = (): string => {
     const playerid = localStorage.getItem(playerIdKey);
     if (playerid) {
         return playerid

@@ -36,7 +36,7 @@ export class GameFEStatusObserved {
 
         this.originCardState = {
             selectedCards: [],
-            actualCard: null,
+            actualCard: undefined,
         }
         this.originTargetState = {
             selectedTargetPlayers: [],
@@ -120,7 +120,7 @@ export class GameFEStatusObserved {
     unselectCard(card: Card) {
         const gameFEStatus = this.gameFEStatus;
         gameFEStatus.selectedCards = differenceBy(gameFEStatus.selectedCards, [card], 'cardId');
-        gameFEStatus.actualCard = null;
+        gameFEStatus.actualCard = undefined;
         gameFEStatus.selectedTargetPlayers = [];
         this._setSelectedGameEFStatus(gameFEStatus)
     }
@@ -141,11 +141,11 @@ export class GameFEStatusObserved {
         this.resetSelectedStatus()
     }
 
-    selectSkill(skillNameKey: string) {
+    selectSkill(skillKey: string) {
         this.resetSelectedStatus()
         const gameFEStatus = this.gameFEStatus;
         // @ts-ignore
-        gameFEStatus.selectedSkillKey = skillNameKey;
+        gameFEStatus.selectedSkillKey = skillKey;
         this._setSelectedGameEFStatus(gameFEStatus)
     }
 

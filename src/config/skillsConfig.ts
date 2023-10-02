@@ -35,6 +35,11 @@ const SKILL_NAMES_CONFIG: any = {
         EN: 'Armorless'
     },
 
+    SHU001_REN_DE: {
+        key: 'SHU001_REN_DE',
+        CN: '仁德',
+        EN: 'Kindness'
+    },
     SHU002_WU_SHENG: {
         key: 'SHU002_WU_SHENG',
         CN: '武圣',
@@ -132,6 +137,10 @@ const SKILL_DESC_CONFIG: any = {
         EN: "During draw phase, you may draw one card instead of two. If you do so, all of your [Strike] and [Duel] inflict +1 damage for that phase (only when you are the damage source of a Duel)."
     },
 
+    SHU001_REN_DE:{
+        CN: '出牌阶段，你可以将任意张手牌交给其他角色，每回合你以此法给出第二张牌时，回复1点体力。',
+        EN: 'During play phase, you may give any amount of hand cards to another Hero. You regain 1 life if the total amount of cards given is more than or equal to two.'
+    },
     SHU002_WU_SHENG: {
         CN: '你可以将一张红色牌当【杀】使用或打出。',
         EN: 'You may use or play your red color suit card(s) as [Strike]'
