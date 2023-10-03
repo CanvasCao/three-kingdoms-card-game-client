@@ -76,6 +76,11 @@ const SKILL_NAMES_CONFIG: any = {
         EN: 'Wizardry'
     },
 
+    WU001_ZHI_HENG: {
+        key: 'WU001_ZHI_HENG',
+        CN: '制衡',
+        EN: 'Balance'
+    },
     WU002_QI_XI: {
         key: 'WU002_QI_XI',
         CN: '奇袭',
@@ -175,6 +180,10 @@ const SKILL_DESC_CONFIG: any = {
         EN: 'Your "Scroll" cards have infinite range.'
     },
 
+    WU001_ZHI_HENG:{
+        CN: '出牌阶段限一次，你可以弃置至少一张牌，摸等量的牌。',
+        EN: 'During play phase, you may discard any amount of cards and redraw an equal amount from the deck (may only be used once per phase).'
+    },
     WU002_QI_XI: {
         CN: '你可以将一张黑色牌当【过河拆桥】使用。',
         EN: 'During play phase, you may treat any of your black color suit cards as "Dismantle".'
