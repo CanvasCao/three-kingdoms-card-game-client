@@ -120,6 +120,12 @@ const generateActualCard = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) 
                 cardId: uuidv4(),
                 key: SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
             }
+        case SKILL_NAMES_CONFIG.WU006_GUO_SE.key:
+            return {
+                huase: gameFEStatus.selectedCards[0].huase,
+                cardId: uuidv4(),
+                key: SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key,
+            }
         default:
             return null
     }

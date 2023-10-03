@@ -161,6 +161,8 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
         return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(card.huase)
     } else if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.WU002_QI_XI.key) {
         return [CARD_HUASE.HEITAO, CARD_HUASE.CAOHUA].includes(card.huase)
+    } else if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.WU006_GUO_SE.key) {
+        return [CARD_HUASE.FANGKUAI].includes(card.huase)
     } else if (isMyResponseCardOrSkillTurn) {
         if (responseType === RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
             if (gameStatus.skillResponse!.skillKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
@@ -197,7 +199,7 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
 }
 
 const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayer: Player) => {
-    const actualCardName = gameFEStatus?.actualCard?.key || '';
+    const actualCardKey = gameFEStatus?.actualCard?.key || '';
     const mePlayer = gameStatus.players[getMyPlayerId()];
     const myAttackDistance = getPlayerAttackRangeNumber(gameFEStatus, mePlayer)
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, mePlayer, targetPlayer)
@@ -243,7 +245,7 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
 
     // 使用牌的时候
     // 杀
-    if (ALL_SHA_CARD_KEYS.includes(actualCardName)) {
+    if (ALL_SHA_CARD_KEYS.includes(actualCardKey)) {
         if (myAttackDistance >= distanceBetweenMeAndTarget) {
             return true
         } else {
@@ -251,7 +253,7 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         }
     }
     // 借刀杀人
-    else if (actualCardName == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
+    else if (actualCardKey == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
         if (selectedTargetNumber == 0) {
             if (getIfPlayerHasWeapon(targetPlayer)) {
                 return true
@@ -273,7 +275,7 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         }
     }
     // 乐不思蜀
-    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key) {
+    else if (actualCardKey == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key) {
         if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.key == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
             return false
         } else {
@@ -281,7 +283,7 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         }
     }
     // 兵粮寸断
-    else if (actualCardName == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
+    else if (actualCardKey == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
         const bingLiangRange = mePlayer.bingLiangRange || 1
         if (bingLiangRange >= distanceBetweenMeAndTarget) {
             return true
@@ -290,13 +292,13 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         }
     }
     // 过河拆桥 顺手牵羊
-    else if (actualCardName == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
+    else if (actualCardKey == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
         if (getIfPlayerHasAnyCards(targetPlayer)) {
             return true
         } else {
             return false
         }
-    } else if (actualCardName == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
+    } else if (actualCardKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
         const shunRange = mePlayer.shunRange || 1
         if (getIfPlayerHasAnyCards(targetPlayer) && shunRange >= distanceBetweenMeAndTarget) {
             return true
@@ -336,6 +338,10 @@ const getIsControlCardAbleByGameFEStatus = (gameStatus: GameStatus, gameFEStatus
         } else if (getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHAN.key})) {
             return ALL_SHA_CARD_KEYS.includes(card.key!)
         }
+    }
+
+    if (selectedSkillKey == SKILL_NAMES_CONFIG.WU006_GUO_SE.key) {
+        return [CARD_HUASE.FANGKUAI].includes(card.huase!)
     }
 }
 
@@ -446,6 +452,10 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
         if (canPlayInMyTurn) {
             return gameStatus.players[getMyPlayerId()].cards.length > 0
         }
+    }
+
+    if (skill.key == SKILL_NAMES_CONFIG.WU006_GUO_SE.key) {
+        return canPlayInMyTurn
     }
     return false
 }
