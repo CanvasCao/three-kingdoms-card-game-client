@@ -20,6 +20,7 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
         return
     }
 
+    // 我的回合能出的牌
     if (card.key == BASIC_CARDS_CONFIG.SHA.key ||
         card.key == BASIC_CARDS_CONFIG.LEI_SHA.key ||
         card.key == BASIC_CARDS_CONFIG.HUO_SHA.key ||
@@ -35,24 +36,24 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
 
 
     // 暂时 只需要我的回合可以出的牌 因为我的响应阶段目前不需要指定目标
-    // 1.可以多目标 2.前端无目标 因为以自己为目标 3.单目标 4.所有人都是目标
-    // 5.双目标
-    // 6.我的回合不能出的牌(无需标记)
+    // 1.前端无目标 因为以自己为目标 2.所有人都是目标
+    // 3.必须双目标
+
     if (card.type == CARD_TYPE.EQUIPMENT) {
         card.targetMinMax = {min: 0, max: 0}
         card.noNeedSetTargetDueToImDefaultTarget = true
     } else if ([
-        // 2.
+        // 1.
         BASIC_CARDS_CONFIG.TAO.key,
         BASIC_CARDS_CONFIG.JIU.key,
         SCROLL_CARDS_CONFIG.SHAN_DIAN.key,
         SCROLL_CARDS_CONFIG.WU_ZHONG_SHENG_YOU.key,
 
-        // 6.
+        // 无目标.
         BASIC_CARDS_CONFIG.SHAN.key,
         SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key,
 
-        // 4.
+        // 2.
         SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key,
         SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key,
         SCROLL_CARDS_CONFIG.TAO_YUAN_JIE_YI.key,
@@ -60,7 +61,7 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
     ].includes(card.key)) {
         card.targetMinMax = {min: 0, max: 0}
 
-        // 2.
+        // 1.
         if ([
             BASIC_CARDS_CONFIG.TAO.key,
             BASIC_CARDS_CONFIG.JIU.key,
@@ -70,6 +71,7 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
             card.noNeedSetTargetDueToImDefaultTarget = true
         }
 
+        // 2.
         if ([
             SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key,
             SCROLL_CARDS_CONFIG.WAN_JIAN_QI_FA.key,
@@ -92,27 +94,15 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
         SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key,
     ].includes(card.key)) {
         card.targetMinMax = {min: 1, max: 1}
-
-        // 1.
-        if ([
-            BASIC_CARDS_CONFIG.SHA.key,
-            BASIC_CARDS_CONFIG.LEI_SHA.key,
-            BASIC_CARDS_CONFIG.HUO_SHA.key,
-            SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
-            SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key,
-        ].includes(card.key)) {
-            card.couldHaveMultiTarget = true
-        }
-        // 3.
-        else {
-            card.canOnlyHaveOneTarget = true
-        }
     } else if ([
         SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key,
+    ].includes(card.key)) {
+        // 3。
+        card.targetMinMax = {min: 2, max: 2}
+    } else if ([
         SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.key,
     ].includes(card.key)) {
-        card.targetMinMax = {min: 2, max: 2}
-        card.needAActionToB = true;
+        card.targetMinMax = {min: 0, max: 2}
     } else {
         throw new Error(card.key + "未在attachFEInfoToCard设置")
     }

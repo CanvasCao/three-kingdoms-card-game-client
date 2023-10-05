@@ -12,6 +12,7 @@ import {ToPlayerCard} from "../Card/ToPlayerCard";
 import {Card} from "../../types/card";
 import {cardDuration} from "../../config/animationConfig";
 import {uuidv4} from "../../utils/uuid";
+import {SCROLL_CARDS_CONFIG} from "../../config/cardConfig";
 
 export class NofityAnimationManager {
     // obId: string;
@@ -33,7 +34,7 @@ export class NofityAnimationManager {
         let toIds = data.toIds || [];
 
         // 借刀杀人 貂蝉决斗
-        if (actualCard && attachFEInfoToCard(actualCard)?.needAActionToB) {
+        if (actualCard?.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
             const targetBoardPlayer1 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[0])!;
             const targetBoardPlayer2 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[1])!;
 
@@ -50,7 +51,7 @@ export class NofityAnimationManager {
         }
         // AOE
         else if (actualCard && attachFEInfoToCard(actualCard)?.noNeedSetTargetDueToTargetAll) {
-            toIds = Object.values(gameStatus.players).filter(u => !u.isDead).map(u => u.playerId)
+            toIds = Object.values(gameStatus.players).filter(player => !player.isDead).map(player => player.playerId)
         } else {
             // 其他正确指定目标的情况
             toIds.forEach((toId: string) => {

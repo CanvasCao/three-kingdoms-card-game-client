@@ -5,7 +5,7 @@ import {getMyPlayerId} from "./localstorage/localStorageUtils";
 import {GameFEStatus} from "../types/gameFEStatus";
 import {uuidv4} from "./uuid";
 import {Player} from "../types/player";
-import {BASIC_CARDS_CONFIG, CARD_CONFIG, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
+import {BASIC_CARDS_CONFIG, EQUIPMENT_CARDS_CONFIG, SCROLL_CARDS_CONFIG} from "../config/cardConfig";
 import {getResponseType, getWuxieTargetCardId} from "./response/responseUtils";
 import {SKILL_NAMES_CONFIG} from "../config/skillsConfig";
 import {getIsControlCardAbleByGameStatus} from "./validation/validationUtils";
@@ -29,24 +29,19 @@ const generateAction = (gameStatus: GameStatus, gameFEStatus: GameFEStatus): (Em
     }
 
     const actualCardWithFEInfo = attachFEInfoToCard(actualCard)!;
-    if (actualCardWithFEInfo.couldHaveMultiTarget || actualCardWithFEInfo.needAActionToB) {
-        return {
-            ...baseAction,
-            targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
-        }
-    } else if (actualCardWithFEInfo.noNeedSetTargetDueToImDefaultTarget) {
+    if (actualCardWithFEInfo.noNeedSetTargetDueToImDefaultTarget) {
         return {
             ...baseAction,
             targetIds: [getMyPlayerId()],
         }
-    } else if (actualCardWithFEInfo.canOnlyHaveOneTarget) {
-        return {
-            ...baseAction,
-            targetIds: [gameFEStatus.selectedTargetPlayers[0].playerId],
-        }
     } else if (actualCardWithFEInfo.noNeedSetTargetDueToTargetAll) {
         return {
             ...baseAction,
+        }
+    } else {
+        return {
+            ...baseAction,
+            targetIds: gameFEStatus.selectedTargetPlayers.map((targetPlayer: Player) => targetPlayer.playerId)
         }
     }
 }
