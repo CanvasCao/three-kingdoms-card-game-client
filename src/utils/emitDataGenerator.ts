@@ -91,26 +91,30 @@ const generateActualCard = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) 
                 huase: gameFEStatus.selectedCards[0].huase,
                 huase2: gameFEStatus.selectedCards[1].huase,
                 cardId: uuidv4(),
-                key: CARD_CONFIG.SHA.key,
+                key: BASIC_CARDS_CONFIG.SHA.key,
+                type: BASIC_CARDS_CONFIG.SHA.type,
             }
         case SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key:
             return {
                 huase: gameFEStatus.selectedCards[0].huase,
                 cardId: uuidv4(),
-                key: CARD_CONFIG.SHA.key,
+                key: BASIC_CARDS_CONFIG.SHA.key,
+                type: BASIC_CARDS_CONFIG.SHA.type,
             }
         case SKILL_NAMES_CONFIG.SHU005_LONG_DAN.key:
             if (getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key})) {
                 return {
                     huase: gameFEStatus.selectedCards[0].huase,
                     cardId: uuidv4(),
-                    key: CARD_CONFIG.SHA.key,
+                    key: BASIC_CARDS_CONFIG.SHA.key,
+                    type: BASIC_CARDS_CONFIG.SHA.type,
                 }
             } else if (getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHAN.key})) {
                 return {
                     huase: gameFEStatus.selectedCards[0].huase,
                     cardId: uuidv4(),
-                    key: CARD_CONFIG.SHAN.key,
+                    key: BASIC_CARDS_CONFIG.SHAN.key,
+                    type: BASIC_CARDS_CONFIG.SHAN.type,
                 }
             }
             return null;
@@ -119,12 +123,14 @@ const generateActualCard = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) 
                 huase: gameFEStatus.selectedCards[0].huase,
                 cardId: uuidv4(),
                 key: SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key,
+                type: SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.type,
             }
         case SKILL_NAMES_CONFIG.WU006_GUO_SE.key:
             return {
                 huase: gameFEStatus.selectedCards[0].huase,
                 cardId: uuidv4(),
                 key: SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key,
+                type: SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.type,
             }
         default:
             return null

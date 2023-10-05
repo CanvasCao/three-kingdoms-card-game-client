@@ -2,7 +2,7 @@ import {sizeConfig} from "../../config/sizeConfig";
 import {COLOR_CONFIG} from "../../config/colorConfig";
 import {CARD_CONFIG} from "../../config/cardConfig";
 import {GamingScene, PhaserGameObject} from "../../types/phaser";
-import {GameStatus} from "../../types/gameStatus";
+import {GameStatus, SkillResponse} from "../../types/gameStatus";
 import {GameFEStatus} from "../../types/gameFEStatus";
 import {getIsAllSelectHeroDone} from "../../utils/playerUtils";
 import {getMyPlayerId} from "../../utils/localstorage/localStorageUtils";
@@ -25,7 +25,6 @@ import {
     TOOL_TIP_HERO_MAX_LENGTH_EN
 } from "../../config/stringConfig";
 import {
-    getCanISelectMySelfAsTarget,
     getIsBoardPlayerAble,
     getNeedSelectPlayersMinMax
 } from "../../utils/validation/validationUtils";
@@ -33,6 +32,7 @@ import {BoardPlayerSkills} from "./BoardPlayerSkills";
 import {Card} from "../../types/card";
 import {EquipmentCard} from "../Card/EquipmentCard";
 import differenceBy from "lodash/differenceBy";
+import {isEqual} from "lodash";
 
 const reduceBloodOut = 50;
 const reduceBloodIn = 300;
@@ -61,9 +61,10 @@ export class BoardPlayer {
     _cardNumber: number;
     _isTieSuo: boolean;
     // player disable inner state
-    _actualCardId?: string;
+    _selectedCardsLength?: number;
     _selectedTargetPlayersLength?: number;
-    _chooseToReleaseSkill?: boolean;
+    _selectedSkillKey?: string;
+    _skillResponse?: SkillResponse;
 
     reduceBloodAnimationGroup: PhaserGameObject[];
 
@@ -112,9 +113,10 @@ export class BoardPlayer {
         this._cardNumber = 0;
         this._isTieSuo = false;
         // player disable inner state
-        this._actualCardId = '';
+        this._selectedCardsLength = 0;
         this._selectedTargetPlayersLength = 0;
-        this._chooseToReleaseSkill = undefined;
+        this._selectedSkillKey;
+        this._skillResponse;
 
         this.drawPlayer(this.gamingScene.gameStatusObserved.gameStatus!);
         this.drawPlayerName();
@@ -400,14 +402,6 @@ export class BoardPlayer {
                 return;
             }
 
-            // 检查是否指定我自己为目标
-            if (this.isMe) {
-                const canISelectMySelfAsTarget = getCanISelectMySelfAsTarget(curGameStatus, curGameFEStatus)
-                if (!canISelectMySelfAsTarget) {
-                    return;
-                }
-            }
-
             // validate是否选择了足够目标
             if (curGameFEStatus.selectedTargetPlayers.length >= getNeedSelectPlayersMinMax(curGameStatus, curGameFEStatus).max) {
                 return;
@@ -534,9 +528,7 @@ export class BoardPlayer {
         }
     }
 
-    onPlayerDisableChange(gameFEStatus: GameFEStatus) {
-        const gameStatus = this.gamingScene.gameStatusObserved.gameStatus as GameStatus
-
+    onPlayerDisableChange(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
         const setPlayerDisable = () => {
             // @ts-ignore
             this.playerImage!.setTint(COLOR_CONFIG.disablePlayer);
@@ -547,9 +539,10 @@ export class BoardPlayer {
             this._disable = false;
         }
 
-        if (this._actualCardId == gameFEStatus?.actualCard?.cardId &&
+        if (this._selectedCardsLength == gameFEStatus?.selectedCards?.length &&
             this._selectedTargetPlayersLength == gameFEStatus?.selectedTargetPlayers?.length &&
-            this._chooseToReleaseSkill == gameStatus.skillResponse?.chooseToReleaseSkill
+            this._selectedSkillKey == gameFEStatus?.selectedSkillKey &&
+            isEqual(this._skillResponse, gameStatus?.skillResponse)
         ) {
             return
         }
@@ -558,9 +551,10 @@ export class BoardPlayer {
         const playerAble = getIsBoardPlayerAble(gameStatus, gameFEStatus, targetPlayer)
         playerAble ? setPlayerAble() : setPlayerDisable()
 
-        this._actualCardId = gameFEStatus?.actualCard?.cardId
+        this._selectedCardsLength = gameFEStatus?.selectedCards?.length
         this._selectedTargetPlayersLength = gameFEStatus?.selectedTargetPlayers?.length //借刀杀人
-        this._chooseToReleaseSkill = gameStatus.skillResponse?.chooseToReleaseSkill
+        this._selectedSkillKey = gameFEStatus?.selectedSkillKey //借刀杀人
+        this._skillResponse = gameStatus.skillResponse
     }
 
 
@@ -599,6 +593,7 @@ export class BoardPlayer {
 
         if (allSelectHeroDone) { // 选将完成了
             this.onPlayerStrokeChange(gameStatus, gameFEStatus);
+            this.onPlayerDisableChange(gameStatus, gameFEStatus);
             this.onCardNumberChange(gameStatus);
             this.onTieSuoChange(gameStatus);
             this.onPlayerBloodChange(gameStatus);
@@ -617,7 +612,7 @@ export class BoardPlayer {
         const allSelectHeroDone = getIsAllSelectHeroDone(gameStatus)
         if (allSelectHeroDone) { // 选将完成了
             this.onPlayerStrokeChange(gameStatus, gameFEStatus);
-            this.onPlayerDisableChange(gameFEStatus);
+            this.onPlayerDisableChange(gameStatus, gameFEStatus);
         }
     }
 }

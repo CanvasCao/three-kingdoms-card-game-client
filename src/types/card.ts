@@ -15,8 +15,6 @@ export type Card = {
     distance?: number,
     distanceDesc?: string,
 
-    canClickMySelfAsFirstTarget?: boolean,
-    canClickMySelfAsSecondTarget?: boolean,
     canPlayInMyTurn: boolean,
     targetMinMax: { min: number, max: number },
     noNeedSetTargetDueToImDefaultTarget?: boolean,

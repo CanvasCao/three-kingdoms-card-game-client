@@ -20,18 +20,6 @@ const attachFEInfoToCard = (card: Card): Card | undefined => {
         return
     }
 
-    if (card.key == SCROLL_CARDS_CONFIG.HUO_GONG.key || card.key == SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.key) {
-        card.canClickMySelfAsFirstTarget = true
-    } else {
-        card.canClickMySelfAsFirstTarget = false
-    }
-
-    if (card.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key || card.key == SCROLL_CARDS_CONFIG.TIE_SUO_LIAN_HUAN.key) {
-        card.canClickMySelfAsSecondTarget = true
-    } else {
-        card.canClickMySelfAsSecondTarget = false
-    }
-
     if (card.key == BASIC_CARDS_CONFIG.SHA.key ||
         card.key == BASIC_CARDS_CONFIG.LEI_SHA.key ||
         card.key == BASIC_CARDS_CONFIG.HUO_SHA.key ||

@@ -29,12 +29,9 @@ import {attachFEInfoToCard} from "../cardUtils";
 import {Player} from "../../types/player";
 import {findOnGoingUseStrikeEvent} from "../event/eventUtils";
 import {Card, PandingSign} from "../../types/card";
-import {
-    getCanSelectMeAsFirstTargetCardNamesClosure,
-    getCanSelectMeAsSecondTargetCardNamesClosure, getInMyPlayTurnCanPlayCardNamesClourse
-} from "../cardNamesClourseUtils";
 import {Skill} from "../../types/skill";
 import {isBoolean} from "lodash";
+import {CARD_CONFIG_WITH_FE_INFO} from "../../config/cardConfigWithFEInfo";
 
 const getSelectedCardNumber = (gameFEStatus: GameFEStatus) => {
     return gameFEStatus.selectedCards.length
@@ -72,6 +69,8 @@ const getNeedSelectCardsMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
                 if (gameStatus.skillResponse?.skillKey === EQUIPMENT_CARDS_CONFIG.GUAN_SHI_FU.key ||
                     gameStatus.skillResponse?.skillKey === SKILL_NAMES_CONFIG.WEI003_GANG_LIE.key) {
                     return {min: 2, max: 2};
+                } else if (gameStatus.skillResponse?.skillKey === SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+                    return {min: 0, max: 0};
                 }
             }
         }
@@ -205,113 +204,144 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
 }
 
 const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayer: Player) => {
-    const actualCardKey = gameFEStatus?.actualCard?.key || '';
+    const actualCard = gameFEStatus?.actualCard;
+    const actualCardKey = actualCard?.key || '';
     const mePlayer = gameStatus.players[getMyPlayerId()];
+    const targetPlayerIsMe = mePlayer.playerId == targetPlayer.playerId
     const myAttackDistance = getPlayerAttackRangeNumber(gameFEStatus, mePlayer)
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, mePlayer, targetPlayer)
     const selectedTargetNumber = getSelectedTargetNumber(gameFEStatus)
     const responseType = getResponseType(gameStatus)
+    const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus)
     const isMyResponseTurn = getIsMyResponseCardOrSkillTurn(gameStatus)
 
-    // 确定响应技能后
-    if (isMyResponseTurn &&
-        responseType == RESPONSE_TYPE_CONFIG.SKILL &&
-        gameStatus.skillResponse!.chooseToReleaseSkill) {
-        const skillKey = gameStatus.skillResponse!.skillKey
-        if (
-            skillKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
-            getSelectedCardNumber(gameFEStatus) == 1
-        ) {
-            const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
-            // 不能流离给杀的来源
-            if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
+    const needSelectPlayersMinMax = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus)
+    if (needSelectPlayersMinMax.max == 0) { // 不用选择目标的情况下 BoardPlayerAble永远都是able
+        return true
+    }
+
+    if (gameFEStatus.selectedSkillKey === SKILL_NAMES_CONFIG.SHU001_REN_DE.key) {
+        if (targetPlayerIsMe) {
+            return false
+        }
+        return true
+    }
+
+
+    if (isMyResponseTurn) {
+        // 确定响应技能后
+        if (responseType == RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
+            const skillKey = gameStatus.skillResponse!.skillKey
+            if (
+                skillKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
+                getSelectedCardNumber(gameFEStatus) == 1
+            ) {
+                const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
+                // 不能流离给杀的来源
+                if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
+                    return false
+                }
+                // 不能流离自己
+                if (targetPlayerIsMe) {
+                    return false
+                }
+                // 不能流离给距离之外的角色
+                if (myAttackDistance < distanceBetweenMeAndTarget) {
+                    return false
+                }
+            } else if (skillKey === SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
+                if (mePlayer.playerId == targetPlayer.playerId) {
+                    return false
+                }
+                return targetPlayer.cards.length
+            }
+        }
+        return true
+    }
+
+    if (canPlayInMyTurn) {
+        // 杀
+        if (ALL_SHA_CARD_KEYS.includes(actualCardKey)) {
+            if (targetPlayerIsMe) {
                 return false
             }
-            // 不能流离自己
-            if (mePlayer.playerId == targetPlayer.playerId) {
-                return false
-            }
-            // 不能流离给距离之外的角色
             if (myAttackDistance < distanceBetweenMeAndTarget) {
                 return false
             }
-        } else if (skillKey === SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
-            if (mePlayer.playerId == targetPlayer.playerId) {
-                return false
-            }
-            return targetPlayer.cards.length
-        }
-        return true
-    }
-
-    // 我响应锦囊
-    if (isMyResponseTurn && responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
-        return true
-    }
-
-    // 使用牌的时候
-    // 杀
-    if (ALL_SHA_CARD_KEYS.includes(actualCardKey)) {
-        if (myAttackDistance >= distanceBetweenMeAndTarget) {
             return true
-        } else {
-            return false
         }
-    }
-    // 借刀杀人
-    else if (actualCardKey == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
-        if (selectedTargetNumber == 0) {
-            if (getIfPlayerHasWeapon(targetPlayer)) {
+        // 借刀杀人
+        else if (actualCardKey == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
+            if (selectedTargetNumber == 0) {
+                if (targetPlayerIsMe) {
+                    return false
+                }
+                if (!getIfPlayerHasWeapon(targetPlayer)) {
+                    return false
+                }
                 return true
-            } else {
-                return false
-            }
-        } else if (selectedTargetNumber == 1) {
-            let attackDistance, distanceBetweenAAndB;
-            const weaponOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
-            attackDistance = getPlayerAttackRangeNumber(gameFEStatus, weaponOwnerPlayer);
-            distanceBetweenAAndB = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, weaponOwnerPlayer, targetPlayer)
-            if (attackDistance >= distanceBetweenAAndB) {
+            } else if (selectedTargetNumber == 1) {
+                let attackDistance, distanceBetweenAAndB;
+                const weaponOwnerPlayer = gameFEStatus.selectedTargetPlayers[0];
+                attackDistance = getPlayerAttackRangeNumber(gameFEStatus, weaponOwnerPlayer);
+                distanceBetweenAAndB = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, weaponOwnerPlayer, targetPlayer)
+                if (attackDistance < distanceBetweenAAndB) {
+                    return false
+                }
                 return true
-            } else {
+            }
+        }
+        // 乐不思蜀
+        else if (actualCardKey == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key) {
+            if (targetPlayerIsMe) {
                 return false
             }
-        } else {
+            if (targetPlayer.pandingSigns.find((sign: PandingSign) =>
+                sign.actualCard.key == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
+                return false
+            }
             return true
         }
-    }
-    // 乐不思蜀
-    else if (actualCardKey == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key) {
-        if (targetPlayer.pandingSigns.find((sign: PandingSign) => sign.actualCard.key == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
-            return false
-        } else {
+        // 兵粮寸断
+        else if (actualCardKey == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
+            const bingLiangRange = mePlayer.bingLiangRange || 1
+            if (targetPlayerIsMe) {
+                return false
+            }
+            if (bingLiangRange < distanceBetweenMeAndTarget) {
+                return false
+            }
             return true
         }
-    }
-    // 兵粮寸断
-    else if (actualCardKey == DELAY_SCROLL_CARDS_CONFIG.BING_LIANG_CUN_DUAN.key) {
-        const bingLiangRange = mePlayer.bingLiangRange || 1
-        if (bingLiangRange >= distanceBetweenMeAndTarget) {
+        // 过河拆桥
+        else if (actualCardKey == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
+            if (targetPlayerIsMe) {
+                return false
+            }
+            if (!getIfPlayerHasAnyCards(targetPlayer)) {
+                return false
+            }
             return true
-        } else {
-            return false
         }
-    }
-    // 过河拆桥 顺手牵羊
-    else if (actualCardKey == SCROLL_CARDS_CONFIG.GUO_HE_CHAI_QIAO.key) {
-        if (getIfPlayerHasAnyCards(targetPlayer)) {
+        // 顺手牵羊
+        else if (actualCardKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
+            const shunRange = mePlayer.shunRange || 1
+            if (targetPlayerIsMe) {
+                return false
+            }
+            if (!getIfPlayerHasAnyCards(targetPlayer)) {
+                return false
+            }
+            if (shunRange < distanceBetweenMeAndTarget) {
+                return false
+            }
             return true
-        } else {
-            return false
-        }
-    } else if (actualCardKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
-        const shunRange = mePlayer.shunRange || 1
-        if (getIfPlayerHasAnyCards(targetPlayer) && shunRange >= distanceBetweenMeAndTarget) {
+        } else if (actualCardKey == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
+            if (targetPlayerIsMe) {
+                return false
+            }
             return true
-        } else {
-            return false
         }
-    } else {
         return true
     }
 }
@@ -353,14 +383,33 @@ const getIsControlCardAbleByGameFEStatus = (gameStatus: GameStatus, gameFEStatus
     }
 }
 
+let canPlayInMyTurnCardKeys: string[];
 const getIsControlCardAbleByGameStatus = (gameStatus: GameStatus, card: Partial<Card>) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
     const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
+    const mePlayer = gameStatus.players[getMyPlayerId()];
 
     if (canPlayInMyTurn) {
-        const canPlayCardNames = getInMyPlayTurnCanPlayCardNamesClourse(gameStatus.players[getMyPlayerId()])()
-        return canPlayCardNames.includes(card.key!)
+        if (!canPlayInMyTurnCardKeys) {
+            canPlayInMyTurnCardKeys = Object.values(CARD_CONFIG_WITH_FE_INFO).filter((c: Card) => c.canPlayInMyTurn).map((c) => c.key)
+        }
+
+        let amendCanPlayInMyTurnCardKeys: string[] = canPlayInMyTurnCardKeys;
+        if (mePlayer.maxBlood <= mePlayer.currentBlood) {
+            amendCanPlayInMyTurnCardKeys = amendCanPlayInMyTurnCardKeys.filter((n) => n != BASIC_CARDS_CONFIG.TAO.key)
+        }
+
+        if (mePlayer.pandingSigns.find((sign) => sign.actualCard.key == SCROLL_CARDS_CONFIG.SHAN_DIAN.key)) {
+            amendCanPlayInMyTurnCardKeys = amendCanPlayInMyTurnCardKeys.filter((n) => n != SCROLL_CARDS_CONFIG.SHAN_DIAN.key)
+        }
+
+        if (!getCanPlayerPlaySha(mePlayer)) {
+            amendCanPlayInMyTurnCardKeys = amendCanPlayInMyTurnCardKeys.filter((n) => {
+                return n != BASIC_CARDS_CONFIG.SHA.key && n != BASIC_CARDS_CONFIG.LEI_SHA.key && n != BASIC_CARDS_CONFIG.HUO_SHA.key
+            })
+        }
+        return amendCanPlayInMyTurnCardKeys.includes(card.key!)
     }
 
     if (isMyResponseCardOrSkillTurn) {
@@ -468,23 +517,6 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
     return false
 }
 
-const getCanISelectMySelfAsTarget = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
-    // mePlayer的_disable大部分情况是false（除了借刀） 所以在这里validate这张卡能否以自己为目标
-    if (gameFEStatus.actualCard) {
-        if (gameFEStatus.selectedTargetPlayers.length == 0) {
-            if (!getCanSelectMeAsFirstTargetCardNamesClosure()().includes(gameFEStatus.actualCard.key)) {
-                return false;
-            }
-        }
-        if (gameFEStatus.selectedTargetPlayers.length == 1) {
-            if (!getCanSelectMeAsSecondTargetCardNamesClosure()().includes(gameFEStatus.actualCard.key)) {
-                return false;
-            }
-        }
-    }
-    return true
-}
-
 export {
     getNeedSelectPlayersMinMax,
     getNeedSelectCardsMinMax,
@@ -499,6 +531,4 @@ export {
 
     getSelectedCardNumber,
     getSelectedTargetNumber,
-
-    getCanISelectMySelfAsTarget
 };
