@@ -86,6 +86,11 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '奇袭',
         EN: 'Ambush'
     },
+    WU003_KE_JI: {
+        key: 'WU003_KE_JI',
+        CN: '克己',
+        EN: 'Discipline'
+    },
     WU004_KU_ROU:{
         key: 'WU004_KU_ROU',
         CN: '苦肉',
@@ -187,6 +192,10 @@ const SKILL_DESC_CONFIG: any = {
     WU002_QI_XI: {
         CN: '你可以将一张黑色牌当【过河拆桥】使用。',
         EN: 'During play phase, you may treat any of your black color suit cards as "Dismantle".'
+    },
+    WU003_KE_JI: {
+        CN: '若你未于出牌阶段内使用或打出过【杀】，你可以跳过弃牌阶段。',
+        EN: 'If you did not use or play any "Strike" during your play phase, then you may skip your discard phase for that turn.'
     },
     WU004_KU_ROU: {
         CN: '出牌阶段，你可以失去1点体力，然后摸两张牌。',

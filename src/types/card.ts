@@ -19,12 +19,8 @@ export type Card = {
     targetMinMax: { min: number, max: number },
     noNeedSetTargetDueToImDefaultTarget?: boolean,
     noNeedSetTargetDueToTargetAll?: boolean,
-    couldHaveMultiTarget?: boolean,
-    canOnlyHaveOneTarget?: boolean,
-
-    // 只有借刀杀人
-    needAActionToB?: boolean,
 }
+
 export type PandingSign = {
     card: Card,
     actualCard: Card,

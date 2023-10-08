@@ -1,5 +1,6 @@
 import {Card, WugufengdengCard} from "./card";
 import {DamageEvent, EventTimingSkill, GameStageEvent, PandingEvent, ResponseCardEvent, UseStrikeEvent} from "./event";
+import {Log} from "./log";
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
@@ -35,9 +36,10 @@ export type GameStatus = {
     // gameEnd
     gameEnd: {
         winnerTeamName: string,
-    }
+    },
 
     // only for debug
+    log: Log,
     throwedCards?: Card[],
 };
 
