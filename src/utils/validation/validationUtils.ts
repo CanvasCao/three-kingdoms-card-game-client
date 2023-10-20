@@ -366,6 +366,10 @@ const getIsControlCardAbleByGameFEStatus = (gameStatus: GameStatus, gameFEStatus
         return [CARD_HUASE.HONGTAO, CARD_HUASE.FANGKUAI].includes(card.huase!)
     }
 
+    if (selectedSkillKey == SKILL_NAMES_CONFIG.WEI007_QING_GUO.key) {
+        return [CARD_HUASE.HEITAO, CARD_HUASE.CAOHUA].includes(card.huase!)
+    }
+
     if (selectedSkillKey == SKILL_NAMES_CONFIG.WU002_QI_XI.key) {
         return [CARD_HUASE.HEITAO, CARD_HUASE.CAOHUA].includes(card.huase!)
     }
@@ -481,9 +485,16 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
     if (skill.key == SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
         if (canPlayInMyTurn || isMyResponseCardOrSkillTurn) {
-            return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key}) // 不考虑前端点击（丈八蛇矛） 只计算当前是否可以出杀
+            return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key})
         }
     }
+
+    if (skill.key == SKILL_NAMES_CONFIG.WEI007_QING_GUO.key) {
+        if (isMyResponseCardOrSkillTurn) {
+            return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHAN.key})
+        }
+    }
+
     if ([SKILL_NAMES_CONFIG.WU002_QI_XI.key, SKILL_NAMES_CONFIG.WU006_GUO_SE.key].includes(skill.key)) {
         return canPlayInMyTurn
     }

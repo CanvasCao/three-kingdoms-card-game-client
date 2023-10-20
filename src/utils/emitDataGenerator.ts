@@ -96,6 +96,13 @@ const generateActualCard = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) 
                 key: BASIC_CARDS_CONFIG.SHA.key,
                 type: BASIC_CARDS_CONFIG.SHA.type,
             }
+        case SKILL_NAMES_CONFIG.WEI007_QING_GUO.key:
+            return {
+                huase: gameFEStatus.selectedCards[0].huase,
+                cardId: uuidv4(),
+                key: BASIC_CARDS_CONFIG.SHAN.key,
+                type: BASIC_CARDS_CONFIG.SHAN.type,
+            }
         case SKILL_NAMES_CONFIG.SHU005_LONG_DAN.key:
             if (getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key})) {
                 return {

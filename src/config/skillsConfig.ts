@@ -34,6 +34,16 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '裸衣',
         EN: 'Armorless'
     },
+    WEI007_QING_GUO:{
+        key: 'WEI007_QING_GUO',
+        CN: '倾国',
+        EN: 'Gorgeous'
+    },
+    WEI007_LUO_SHEN:{
+        key: 'WEI007_LUO_SHEN',
+        CN: '洛神',
+        EN: 'Siren'
+    },
 
     SHU001_REN_DE: {
         key: 'SHU001_REN_DE',
@@ -150,6 +160,14 @@ const SKILL_DESC_CONFIG: any = {
     WEI005_LUO_YI: {
         CN: '摸牌阶段，你可以少摸一张牌，然后本回合你为伤害来源的【杀】或【决斗】造成的伤害+1。',
         EN: "During draw phase, you may draw one card instead of two. If you do so, all of your [Strike] and [Duel] inflict +1 damage for that phase (only when you are the damage source of a Duel)."
+    },
+    WEI007_QING_GUO:{
+        CN: '你可以将一张黑色手牌当【闪】使用或打出。',
+        EN: "All your black color suit hand cards may be treated as [Dodge]."
+    },
+    WEI007_LUO_SHEN:{
+        CN: '准备阶段开始时，你可以：判定（当黑色判定牌生效后，你获得之），若结果为黑色，你可以重复此流程。',
+        EN: "During your Start phase, you may use this ability to reveal a judgment and acquire the card if the result is a black color suit. You may use this ability again until a red color suit is revealed. Discard that judgment card afterwards and end the phase."
     },
 
     SHU001_REN_DE:{

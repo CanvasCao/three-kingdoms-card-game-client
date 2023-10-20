@@ -19,6 +19,10 @@ const HERO_NAMES_CONFIG: any = {
         CN: '许褚',
         EN: 'Xu Chu'
     },
+    "WEI007": {
+        CN: '甄姬',
+        EN: 'Zhen Ji'
+    },
 
     "SHU001": {
         CN: '刘备',
