@@ -4,10 +4,7 @@ import {Log} from "./log";
 import {GameStatusPlayers} from "./player";
 
 export type GameStatus = {
-    room: {
-        roomId: string,
-        status: string,
-    },
+    roomId: string,
     players: GameStatusPlayers,
     stage: Stage,
 

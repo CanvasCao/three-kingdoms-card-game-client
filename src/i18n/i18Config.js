@@ -197,7 +197,7 @@ export const i18Config = {
     // 操作提示
     // 五谷丰登
     WU_GU_FENG_DENG_WAIT_WU_XIE: {
-        EN: "{name} is about to choose a card\r\nwaiting for [cancel]",
+        EN: "{name} is about to choose a card\r\nwaiting for [Ward]",
         CN: "{name}即将选牌，正在询问无懈可击"
     },
     WU_GU_FENG_DENG_CHOOSING: {
