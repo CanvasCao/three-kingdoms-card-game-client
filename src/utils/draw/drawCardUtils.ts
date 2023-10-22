@@ -24,7 +24,10 @@ import {Card} from "../../types/card";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 import {getCardText, splitText} from "../string/stringUtils";
-import {TOOL_TIP_CARD_MAX_LENGTH} from "../../config/stringConfig";
+import {
+    TOOL_TIP_CARD_MAX_LENGTH_CN,
+    TOOL_TIP_CARD_MAX_LENGTH_EN
+} from "../../config/stringConfig";
 import {CARDS_SPRITE_CONFIG, CARDS_SPRITE_DISPLAY_SIZE} from "../../config/cardsSpriteConfig";
 
 const sharedDrawFrontCard = (
@@ -52,11 +55,10 @@ const sharedDrawFrontCard = (
         .setData("offsetY", 0)
         .setData("hoverData", {
             card,
-            text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
+            text: splitText(getCardText(card), isLanEn() ? TOOL_TIP_CARD_MAX_LENGTH_EN : TOOL_TIP_CARD_MAX_LENGTH_CN),
             toolTipType: isToPublic ? TOOL_TIP_CARD_TYPE.PUBLIC_CARD : TOOL_TIP_CARD_TYPE.CONTROL_CARD,
         })
     allCardObjects.push(cardImgObj)
-
 
     // cardName
     if (isLanEn()) {
@@ -108,7 +110,7 @@ const sharedDrawFrontCard = (
         .setOrigin(0, 0)
         .setFontSize(14)
         .setDepth(depth)
-        .setStroke(COLOR_CONFIG.whiteString, 4)
+        .setStroke(COLOR_CONFIG.whiteString, 1)
         .setData("offsetX", cardHuaseNumberObjOffsetX)
         .setData("offsetY", cardHuaseNumberObjOffsetY)
     allCardObjects.push(cardHuaseNumberObj)

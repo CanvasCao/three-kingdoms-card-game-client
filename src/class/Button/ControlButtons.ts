@@ -206,7 +206,7 @@ export class ControlButtons {
             targets: [group.img, group.text],
             alpha: {
                 value: 1,
-                duration: 50
+                duration: 0
             },
             onComplete: () => {
                 cb && cb()
@@ -220,7 +220,7 @@ export class ControlButtons {
             targets: [group.img, group.text],
             alpha: {
                 value: 0,
-                duration: 50
+                duration: 0
             },
             onComplete: () => {
                 cb && cb()

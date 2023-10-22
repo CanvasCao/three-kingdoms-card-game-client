@@ -8,10 +8,11 @@ import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from "./BaseBoard";
 import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 import {HERO_NAMES_CONFIG} from "../../config/heroConfig";
-import {verticalRotationString} from "../../utils/string/stringUtils";
+import {splitText, verticalRotationString} from "../../utils/string/stringUtils";
 import {PANDING_EFFECT_CONFIG} from "../../config/pandingConfig";
 import {cloneDeep, isBoolean, isEqual} from "lodash";
 import {COLOR_CONFIG} from "../../config/colorConfig";
+import {PANDING_EFFECT_LENGTH_EN, PANDING_EFFECT_LENGTH_CN} from "../../config/stringConfig";
 
 const boardSize = {
     height: 380,
@@ -73,11 +74,11 @@ export class PandingBoard {
         if (!player) {
             return
         }
-        const heroName = i18(HERO_NAMES_CONFIG[player.heroId])
+        const pandingPlayerName = isLanEn() ? player.playerName : HERO_NAMES_CONFIG[player.heroId]?.CN
         const text = this.gamingScene.add.text(
             this.initX - 192,
             this.initY,
-            verticalRotationString(heroName), {align: 'center', padding: {top: 2}}
+            verticalRotationString(pandingPlayerName), {align: 'center', padding: {top: 2}}
         ).setDepth(DEPTH_CONFIG.BOARD).setOrigin(0.5, 0.5)
 
         this.boardContent = this.boardContent.concat(text)
@@ -90,20 +91,25 @@ export class PandingBoard {
             return
         }
 
-        const effectTitle = isLanEn() ? "Effect" : '判定效果'
-        const text2 = this.gamingScene.add.text(
+        const effectTitle = this.gamingScene.add.text(
             this.initX + 20,
             this.initY,
-            verticalRotationString(effectTitle), {align: 'center'}
+            verticalRotationString(isLanEn() ? "Effect" : '判定效果')
         ).setDepth(DEPTH_CONFIG.BOARD).setOrigin(0.5, 0.5)
-        this.boardContent = this.boardContent.concat(text2)
+        this.boardContent = this.boardContent.concat(effectTitle)
 
-        const text = this.gamingScene.add.text(
-            this.initX + 130,
+
+        const effectContentString = i18(PANDING_EFFECT_CONFIG[pandingNameKey])
+        const effectContent = this.gamingScene.add.text(
+            this.initX + 140,
             this.initY,
-            i18(PANDING_EFFECT_CONFIG[pandingNameKey]), {align: 'left', fontSize: 12, padding: {top: 2}}
+            splitText(effectContentString, isLanEn() ? PANDING_EFFECT_LENGTH_EN : PANDING_EFFECT_LENGTH_CN), {
+                align: 'left',
+                fontSize: 12,
+                padding: {top: 2}
+            }
         ).setDepth(DEPTH_CONFIG.BOARD).setOrigin(0.5, 0.5)
-        this.boardContent = this.boardContent.concat(text)
+        this.boardContent = this.boardContent.concat(effectContent)
     }
 
     gameStatusNotify(gameStatus: GameStatus) {

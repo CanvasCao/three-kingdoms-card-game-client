@@ -20,7 +20,8 @@ import {i18Config} from "../../i18n/i18Config";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 import {getCardText, getHeroText, splitText} from "../../utils/string/stringUtils";
 import {
-    TOOL_TIP_CARD_MAX_LENGTH,
+    TOOL_TIP_CARD_MAX_LENGTH_CN,
+    TOOL_TIP_CARD_MAX_LENGTH_EN,
     TOOL_TIP_HERO_MAX_LENGTH_CN,
     TOOL_TIP_HERO_MAX_LENGTH_EN
 } from "../../config/stringConfig";
@@ -424,7 +425,7 @@ export class BoardPlayer {
 
                     this.pandingCardImages![i].setData('hoverData', {
                         card,
-                        text: splitText(getCardText(actualCard), TOOL_TIP_CARD_MAX_LENGTH),
+                        text: splitText(getCardText(actualCard), isLanEn() ? TOOL_TIP_CARD_MAX_LENGTH_EN : TOOL_TIP_CARD_MAX_LENGTH_CN),
                         toolTipType: TOOL_TIP_CARD_TYPE.PANDING_CARD,
                     }).setInteractive().setAlpha(1);
                 } else {

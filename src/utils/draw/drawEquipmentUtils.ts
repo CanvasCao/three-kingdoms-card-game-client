@@ -7,7 +7,10 @@ import {Card} from "../../types/card";
 import {getCardColorString} from "../cardUtils";
 import {TOOL_TIP_CARD_TYPE} from "../../config/toolTipConfig";
 import {getCardText, limitStringLengthWithEllipsis, splitText} from "../string/stringUtils";
-import {TOOL_TIP_CARD_MAX_LENGTH} from "../../config/stringConfig";
+import {
+    TOOL_TIP_CARD_MAX_LENGTH_CN,
+    TOOL_TIP_CARD_MAX_LENGTH_EN
+} from "../../config/stringConfig";
 
 const sharedDrawEquipment = (
     gamingScene: GamingScene,
@@ -40,7 +43,7 @@ const sharedDrawEquipment = (
     background.displayWidth = equipmentCardWidth;
     background.setData('hoverData', {
         card,
-        text: splitText(getCardText(card), TOOL_TIP_CARD_MAX_LENGTH),
+        text: splitText(getCardText(card), isLanEn() ? TOOL_TIP_CARD_MAX_LENGTH_EN : TOOL_TIP_CARD_MAX_LENGTH_CN),
         toolTipType: TOOL_TIP_CARD_TYPE.EQUIPMENT,
     })
 
