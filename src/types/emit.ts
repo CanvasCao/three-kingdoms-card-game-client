@@ -78,12 +78,13 @@ export type EmitRefreshRoomPlayers = {
 
 export type EmitNotifyAddToPublicCardData = {
     fromId: string,
-    originId: string,
-    targetId?: string,
     cards: Card[],
-    pandingPlayerId: string,
-    pandingNameKey: string,
-    type: string,
+
+    originId?: string,
+    targetIds?: string[],
+    pandingPlayerId?: string,
+    pandingNameKey?: string,
+    type?: string,
     skillKey?: string,
 }
 

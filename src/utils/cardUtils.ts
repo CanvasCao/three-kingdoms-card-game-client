@@ -123,26 +123,29 @@ const getCardColorString = (huase: string) => {
 
 const generatePublicCardMessage = (
     gameStatus: GameStatus,
-    {type, fromId, originId, targetId, pandingPlayerId, pandingNameKey, skillKey}:
+    {fromId, originId, targetIds, pandingPlayerId, pandingNameKey, type, skillKey}:
         EmitNotifyAddToPublicCardData) => {
     if (skillKey) {
-        const player = gameStatus.players[originId]!
+        const player = gameStatus.players[fromId]!
         const skillName = i18(SKILL_NAMES_CONFIG[skillKey]) || i18(CARD_CONFIG[skillKey])
         const originName = player.playerName;
         return `${originName} ${skillName}`
     } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PLAY) {
-        const originName = gameStatus.players[originId].playerName;
+        const originName = gameStatus.players[fromId].playerName;
 
         // AOE
-        if (!targetId) return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET, {name: originName});
+        if (!targetIds) return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET, {name: originName});
 
-        const targetName = gameStatus.players[targetId].playerName;
-        if (originId == targetId) {
+        if (originId == targetIds[0]) {
             return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_NO_TARGET, {name: originName});
-        } else if (originId && originId !== targetId) {
-            return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET, {originName, targetName});
+        } else {
+            return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_HAVE_TARGET, {
+                originName, targetName: targetIds.map((targetId) => {
+                    return gameStatus.players[targetId].playerName
+                }).join(' ')
+            });
         }
-    } else if (type == ADD_TO_PUBLIC_CARD_TYPE.PANDING) {
+    } else if (pandingNameKey && pandingPlayerId) {
         const pandingPlayer = gameStatus.players[pandingPlayerId]
         const pandingName = i18(CARD_CONFIG[pandingNameKey] || SKILL_NAMES_CONFIG[pandingNameKey])
         return i18(i18Config.PUBLIC_CARD_MESSAGE_PLAY_PANDING_RESULT, {
