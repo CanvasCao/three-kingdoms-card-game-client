@@ -302,6 +302,9 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
             if (targetPlayerIsMe) {
                 return false
             }
+            if (targetPlayer.cantBeTargetKeys?.includes(SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
+                return false
+            }
             if (targetPlayer.pandingSigns.find((sign: PandingSign) =>
                 sign.actualCard.key == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
                 return false
@@ -333,6 +336,9 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         else if (actualCardKey == SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key) {
             const shunRange = mePlayer.shunRange || 1
             if (targetPlayerIsMe) {
+                return false
+            }
+            if (targetPlayer.cantBeTargetKeys?.includes(SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key)) {
                 return false
             }
             if (!getIfPlayerHasAnyCards(targetPlayer)) {

@@ -34,12 +34,12 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '裸衣',
         EN: 'Armorless'
     },
-    WEI007_QING_GUO:{
+    WEI007_QING_GUO: {
         key: 'WEI007_QING_GUO',
         CN: '倾国',
         EN: 'Gorgeous'
     },
-    WEI007_LUO_SHEN:{
+    WEI007_LUO_SHEN: {
         key: 'WEI007_LUO_SHEN',
         CN: '洛神',
         EN: 'Siren'
@@ -101,7 +101,7 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '克己',
         EN: 'Discipline'
     },
-    WU004_KU_ROU:{
+    WU004_KU_ROU: {
         key: 'WU004_KU_ROU',
         CN: '苦肉',
         EN: 'Desperation'
@@ -115,6 +115,16 @@ const SKILL_NAMES_CONFIG: any = {
         key: 'WU006_LIU_LI',
         CN: '流离',
         EN: 'Outcast'
+    },
+    WU007_QIAN_XUN: {
+        key: 'WU007_QIAN_XUN',
+        CN: '谦逊',
+        EN: 'Humble'
+    },
+    WU007_LIAN_YING: {
+        key: 'WU007_LIAN_YING',
+        CN: '连营',
+        EN: 'Alliance'
     },
 
     QUN002_WU_SHUANG: {
@@ -161,16 +171,16 @@ const SKILL_DESC_CONFIG: any = {
         CN: '摸牌阶段，你可以少摸一张牌，然后本回合你为伤害来源的【杀】或【决斗】造成的伤害+1。',
         EN: "During draw phase, you may draw one card instead of two. If you do so, all of your [Strike] and [Duel] inflict +1 damage for that phase (only when you are the damage source of a Duel)."
     },
-    WEI007_QING_GUO:{
+    WEI007_QING_GUO: {
         CN: '你可以将一张黑色手牌当【闪】使用或打出。',
         EN: "All your black color suit hand cards may be treated as [Dodge]."
     },
-    WEI007_LUO_SHEN:{
+    WEI007_LUO_SHEN: {
         CN: '准备阶段开始时，你可以：判定（当黑色判定牌生效后，你获得之），若结果为黑色，你可以重复此流程。',
         EN: "During your Start phase, you may use this ability to reveal a judgment and acquire the card if the result is a black color suit. You may use this ability again until a red color suit is revealed. Discard that judgment card afterwards and end the phase."
     },
 
-    SHU001_REN_DE:{
+    SHU001_REN_DE: {
         CN: '出牌阶段，你可以将任意张手牌交给其他角色，每回合你以此法给出第二张牌时，回复1点体力。',
         EN: 'During play phase, you may give any amount of hand cards to another Hero. You regain 1 life if the total amount of cards given is more than or equal to two.'
     },
@@ -203,7 +213,7 @@ const SKILL_DESC_CONFIG: any = {
         EN: 'Your "Scroll" cards have infinite range.'
     },
 
-    WU001_ZHI_HENG:{
+    WU001_ZHI_HENG: {
         CN: '出牌阶段限一次，你可以弃置至少一张牌，摸等量的牌。',
         EN: 'During play phase, you may discard any amount of cards and redraw an equal amount from the deck (may only be used once per phase).'
     },
@@ -227,6 +237,15 @@ const SKILL_DESC_CONFIG: any = {
         CN: '当你成为【杀】的目标时，你可以弃置一张牌并将此【杀】转移给你攻击范围内的一名其他角色（不能是使用此【杀】的角色）。',
         EN: 'You may discard one of your cards to transfer a [Strike] targeting you to another Hero within your weapon range, except for the attacker.'
     },
+    WU007_QIAN_XUN: {
+        CN: '锁定技，你不能成为【乐不思蜀】或【顺手牵羊】的目标。',
+        EN: 'Passive Ability: You cannot be the target of "Snatch" or "Contentment".'
+    },
+    WU007_LIAN_YING: {
+        CN: '当你失去最后的手牌时，你可以摸一张牌。',
+        EN: 'Draw a card if you have no hand cards.'
+    },
+
 
     QUN002_WU_SHUANG: {
         CN: '锁定技，你的【杀】需要两张【闪】才能抵消；与你【决斗】的角色每次需要打出两张【杀】。',

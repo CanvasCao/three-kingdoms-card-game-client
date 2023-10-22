@@ -69,6 +69,10 @@ const HERO_NAMES_CONFIG: any = {
         CN: '大乔',
         EN: 'Da Qiao'
     },
+    "WU007": {
+        CN: '陆逊',
+        EN: 'Lu Xun'
+    },
 
     "QUN002": {
         CN: '吕布',
