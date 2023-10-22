@@ -181,6 +181,7 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
         if (responseType === RESPONSE_TYPE_CONFIG.CARD &&
             (gameStatus.cardResponse?.actionActualCard.key == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key ||
                 gameStatus.cardResponse?.actionActualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key) &&
+            !gameFEStatus.selectedSkillKey && // 选中技能就不能选丈八蛇矛
             eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
             return true
@@ -188,12 +189,17 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
 
         if (responseType === RESPONSE_TYPE_CONFIG.SCROLL &&
             gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key &&
+            !gameFEStatus.selectedSkillKey && // 选中技能就不能选丈八蛇矛
             eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
             return true
         }
-    } else if (canPlayInMyTurn) {
-        if (eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
+    }
+
+    // 出牌
+    else if (canPlayInMyTurn) {
+        if (!gameFEStatus.selectedSkillKey && // 选中技能就不能选丈八蛇矛
+            eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key &&
             getCanPlayerPlaySha(gameStatus.players[getMyPlayerId()])
         ) {
             return true;

@@ -112,10 +112,10 @@ export class BoardPlayerSkills {
                     return
                 }
 
-                if (gameFEStatusObserved.gameFEStatus.selectedSkillKey) {
-                    gameFEStatusObserved.unselectSkill()
-                } else {
+                if (gameFEStatus.selectedSkillKey !== skill.key) { // 清空丈八蛇矛
                     gameFEStatusObserved.selectSkill(skill.key)
+                } else {
+                    gameFEStatusObserved.unselectSkill()
                 }
             })
         })

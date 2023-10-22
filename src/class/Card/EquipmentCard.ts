@@ -141,7 +141,7 @@ export class EquipmentCard {
                 const haveSelectedSkillAndItsNotZhangBaSheMao = gameFEStatus.selectedSkillKey &&
                     (gameFEStatus.selectedSkillKey !== EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key)
 
-                // 已经选中技能 或者 响应技能 的情况下 一定是要打出武器
+                // 已经选中/响应技能 这时候如果可以选中武器 一定是要打出武器
                 if (haveSelectedSkillAndItsNotZhangBaSheMao || gameStatus.skillResponse) {
                     if (gameFEStatus.selectedCards.map(c => c.cardId).includes(this.cardId)) { // 已经选中
                         gameFEStatusObserved.unselectCard(this.card)
