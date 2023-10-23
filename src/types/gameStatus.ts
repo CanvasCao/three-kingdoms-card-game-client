@@ -15,9 +15,11 @@ export type GameStatus = {
     cardResponse: CardResponse | undefined,
     skillResponse: SkillResponse | undefined,
     taoResponses: TaoResponse[],
-    cardBoardResponses: CardBoardResponse[],
     scrollResponses: ScrollResponse[],
     wuxieSimultaneousResponse: WuxieSimultaneousResponse,
+
+    cardBoardResponses: CardBoardResponse[],
+    fanjianBoardResponse: fanjianBoardResponse,
 
     // wugufengdengCards
     wugufengdengCards: WugufengdengCard[]
@@ -69,12 +71,6 @@ export type TaoResponse = {
     cardNumber: number,
 }
 
-export type CardBoardResponse = {
-    originId: string,
-    targetId: string,
-    cardBoardContentKey: string,
-}
-
 export type SkillResponse = EventTimingSkill
 
 export type ScrollResponse = {
@@ -96,6 +92,16 @@ export type WuxieChain = {
     actualCard: Card,
     cardFromPlayerId: string, // 操作提示里 当有人出无懈可击后 显示是否无懈某人
 }[];
+
+export type CardBoardResponse = {
+    originId: string,
+    targetId: string,
+    cardBoardContentKey: string,
+}
+
+export type fanjianBoardResponse = {
+    originId: string,
+}
 
 export type TieSuoTempStorageItem = {
     damage: number,

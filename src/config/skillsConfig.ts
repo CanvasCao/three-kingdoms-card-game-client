@@ -106,6 +106,16 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '苦肉',
         EN: 'Desperation'
     },
+    WU005_YING_ZI: {
+        key: 'WU005_YING_ZI',
+        CN: '英姿',
+        EN: 'Heroic'
+    },
+    WU005_FAN_JIAN: {
+        key: 'WU005_FAN_JIAN',
+        CN: '反间',
+        EN: 'Counter Spy'
+    },
     WU006_GUO_SE: {
         key: 'WU006_GUO_SE',
         CN: '国色',
@@ -228,6 +238,14 @@ const SKILL_DESC_CONFIG: any = {
     WU004_KU_ROU: {
         CN: '出牌阶段，你可以失去1点体力，然后摸两张牌。',
         EN: 'During your play phase, you may choose to lose one unit of life to draw two cards from the deck.'
+    },
+    WU005_YING_ZI: {
+        CN: '摸牌阶段，你可以多摸一张牌。',
+        EN: 'During your draw phase, you may draw one extra card from the deck.'
+    },
+    WU005_FAN_JIAN: {
+        CN: '出牌阶段限一次，若你有手牌，你可以令一名其他角色选择一种花色，然后该角色先获得你的一张手牌再展示之，若此牌的花色与其所选的不同，你对其造成1点伤害。',
+        EN: 'During your play phase, you may select another Hero, and ask that Hero to pick a suit. That Hero takes a hand card from you and shows it to you. If the resulting suit is not the same as his/her pick, then you cause 1 damage to your target (The target keeps that card regardless of the result, once per phase).'
     },
     WU006_GUO_SE: {
         CN: '你可以将一张♦牌当【乐不思蜀】使用。',

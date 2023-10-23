@@ -60,6 +60,9 @@ export type EmitHeroSelectBoardData = {
     heroId: string,
 }
 
+export type EmitFanJianBoardData = {
+    huase: string,
+}
 
 // 后端=>前端
 export type RoomStatus = keyof typeof GAME_STATUS;

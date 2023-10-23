@@ -12,7 +12,10 @@ import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
 import {Card, PlayerBoardAction} from "../../types/card";
 import {Player} from "../../types/player";
-import {getCardBoardDisplayArea, getCardBoardTitle} from "../../utils/board/boardUtils";
+import {
+    getCardBoardDisplayArea,
+    getCardBoardTitle
+} from "../../utils/board/cardBoardUtils";
 import {PLAYER_BOARD_ACTION} from "../../config/boardConfig";
 import {DEPTH_CONFIG} from "../../config/depthConfig";
 import {BaseBoard} from "./BaseBoard";

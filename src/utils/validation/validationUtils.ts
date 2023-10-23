@@ -52,12 +52,16 @@ const getNeedSelectCardsMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
         return {min: 2, max: 2};
     }
 
-    if ([SKILL_NAMES_CONFIG.SHU001_REN_DE.key,
-        SKILL_NAMES_CONFIG.WU001_ZHI_HENG.key].includes(selectedSkillKey)) {
-        return {min: 1, max: 100};
-    }
-
     if (canPlayInMyTurn) {
+        if ([SKILL_NAMES_CONFIG.SHU001_REN_DE.key,
+            SKILL_NAMES_CONFIG.WU001_ZHI_HENG.key].includes(selectedSkillKey)) {
+            return {min: 1, max: 100};
+        }
+
+        if ([SKILL_NAMES_CONFIG.WU005_FAN_JIAN.key].includes(selectedSkillKey)) {
+            return {min: 0, max: 0};
+        }
+
         return {min: 1, max: 1};
     }
 
@@ -87,15 +91,14 @@ const getNeedSelectCardsMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
 
 const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFEStatus) => {
     const mePlayer = gameStatus.players[getMyPlayerId()]
+    const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
+    const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
+    const isMyThrowTurn = getIsMyThrowTurn(gameStatus);
     const responseType = getResponseType(gameStatus)
     const actualCard = gameFEStatus?.actualCard
     const selectedSkillKey = gameFEStatus?.selectedSkillKey
 
-    if (selectedSkillKey === SKILL_NAMES_CONFIG.SHU001_REN_DE.key) {
-        return {min: 1, max: 1}
-    }
-
-    if (getIsMyResponseCardOrSkillTurn(gameStatus)) {
+    if (isMyResponseCardOrSkillTurn) {
         if (responseType == RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
             switch (gameStatus.skillResponse!.skillKey) {
                 case SKILL_NAMES_CONFIG.WU006_LIU_LI.key:
@@ -110,15 +113,21 @@ const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFE
         return {min: 0, max: 0}
     }
 
-    if (ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key)
-        && mePlayer.weaponCard?.key == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.key
-        && mePlayer.cards.length == 1
-        && ALL_SHA_CARD_KEYS.includes(mePlayer.cards[0].key)
-    ) {
-        return {min: 1, max: 3}
-    }
+    if (canPlayInMyTurn) {
+        if (selectedSkillKey === SKILL_NAMES_CONFIG.SHU001_REN_DE.key ||
+            selectedSkillKey === SKILL_NAMES_CONFIG.WU005_FAN_JIAN.key
+        ) {
+            return {min: 1, max: 1}
+        }
 
-    if (getIsMyPlayTurn(gameStatus)) {
+        if (ALL_SHA_CARD_KEYS.includes(gameFEStatus.actualCard?.key)
+            && mePlayer.weaponCard?.key == EQUIPMENT_CARDS_CONFIG.FANG_TIAN_HUA_JI.key
+            && mePlayer.cards.length == 1
+            && ALL_SHA_CARD_KEYS.includes(mePlayer.cards[0].key)
+        ) {
+            return {min: 1, max: 3}
+        }
+
         if (actualCard) {
             return attachFEInfoToCard(actualCard)!.targetMinMax;
         }
@@ -495,6 +504,8 @@ const getIsControlCardAbleByGameStatus = (gameStatus: GameStatus, card: Partial<
 const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skill: Skill) => {
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus);
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
+    const mePlayer = gameStatus.players[getMyPlayerId()]
+
     if (skill.key == SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
         if (canPlayInMyTurn || isMyResponseCardOrSkillTurn) {
             return getIsControlCardAbleByGameStatus(gameStatus, {key: BASIC_CARDS_CONFIG.SHA.key})
@@ -513,7 +524,7 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
 
     if (skill.key == SKILL_NAMES_CONFIG.WU004_KU_ROU.key) {
         if (canPlayInMyTurn) {
-            return gameStatus.players[getMyPlayerId()].currentBlood > 0;
+            return mePlayer.currentBlood > 0;
         }
     }
 
@@ -528,15 +539,25 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
 
     if (skill.key == SKILL_NAMES_CONFIG.SHU001_REN_DE.key) {
         if (canPlayInMyTurn) {
-            return gameStatus.players[getMyPlayerId()].cards.length > 0
+            return mePlayer.cards.length > 0
         }
     }
 
     if (skill.key == SKILL_NAMES_CONFIG.WU001_ZHI_HENG.key) {
         if (canPlayInMyTurn) {
-            return gameStatus.players[getMyPlayerId()].zhiHengTimes <= 0
+            const useSkillTimes = mePlayer.useSkillTimes[skill.key] || 0
+            return useSkillTimes <= 0
         }
     }
+
+    if (skill.key == SKILL_NAMES_CONFIG.WU005_FAN_JIAN.key) {
+        if (canPlayInMyTurn) {
+            const useSkillTimes = mePlayer.useSkillTimes[skill.key] || 0
+            return useSkillTimes <= 0 && mePlayer.cards.length > 0
+        }
+    }
+
+
     return false
 }
 

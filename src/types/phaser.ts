@@ -13,6 +13,7 @@ import {HeroSelectBoard} from "../class/Board/HeroSelectBoard";
 import {WuGuFengDengBoard} from "../class/Board/WuGuFengDengBoard";
 import {ToolTip} from "../class/ToolTip/ToolTip";
 import {PandingBoard} from "../class/Board/PandingBoard";
+import {FanJianBoard} from "../class/Board/FanJianBoard";
 
 export type BtnGroup = {
     img?: Phaser.GameObjects.Image,
@@ -27,6 +28,7 @@ export type GamingScene = Phaser.Scene & {
     gameStatusObserved: GameStatusObserved;
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
+    fanJianBoard: FanJianBoard | undefined;
     wuGuFengDengBoard: WuGuFengDengBoard | undefined;
     heroSelectBoard: HeroSelectBoard | undefined;
     pandingBoard: PandingBoard | undefined;

@@ -146,6 +146,8 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
         } else if (cardBoardContentKey == EQUIPMENT_CARDS_CONFIG.QI_LIN_GONG.key) {
             return i18(i18Config.RESPONSE_SKILL_QI_LIN_GONG)
         }
+    } else if (responseType == RESPONSE_TYPE_CONFIG.FAN_JIAN_BOARD) {
+
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
         if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
             const scrollResponse = gameStatus.scrollResponses?.[0];

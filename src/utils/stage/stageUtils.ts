@@ -13,10 +13,6 @@ const getIsMyThrowTurn = (gameStatus: GameStatus) => {
     return getCurrentPlayer(gameStatus)?.playerId == getMyPlayerId() && gameStatus.stage.stageName == STAGE_NAME.THROW;
 }
 
-const getIsMyResponseCardBoardTurn = (gameStatus: GameStatus) => {
-    return gameStatus.cardBoardResponses[0]?.originId == getMyPlayerId();
-}
-
 const getIsMyResponseCardOrSkillTurn = (gameStatus: GameStatus) => {
     const responseType = getResponseType(gameStatus)
 
@@ -49,6 +45,7 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
         !gameStatus.skillResponse &&
         gameStatus.taoResponses.length <= 0 &&
         gameStatus.cardBoardResponses.length <= 0 &&
+        !gameStatus.fanjianBoardResponse &&
         gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length <= 0 &&
         gameStatus.scrollResponses.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
@@ -58,7 +55,6 @@ export {
     getIsMyPlayTurn,
     getCanPlayInMyTurn,
     getIsMyResponseCardOrSkillTurn,
-    getIsMyResponseCardBoardTurn,
     getIsMyThrowTurn,
 
 }

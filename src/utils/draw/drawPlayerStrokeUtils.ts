@@ -58,7 +58,8 @@ const getPlayerStrokeAlphaAndColor = (gameStatus: GameStatus, gameFEStatus: Game
         }
     }
     if (gameStatus.cardBoardResponses?.[0]?.targetId == targetPlayerId ||
-        gameStatus.cardResponse?.originId == targetPlayerId
+        gameStatus.cardResponse?.originId == targetPlayerId ||
+        gameStatus.fanjianBoardResponse?.originId == targetPlayerId
     ) {
         return {
             alpha: 0.7,

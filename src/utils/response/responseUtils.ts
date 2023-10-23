@@ -10,6 +10,8 @@ const getResponseType = (gameStatus: GameStatus): RESPONSE_TYPE_CONFIG_VALUES | 
         return RESPONSE_TYPE_CONFIG.SKILL;
     } else if (gameStatus.cardBoardResponses.length > 0) {
         return RESPONSE_TYPE_CONFIG.CARD_BOARD;
+    } else if (gameStatus.fanjianBoardResponse) {
+        return RESPONSE_TYPE_CONFIG.FAN_JIAN_BOARD;
     } else if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length > 0) {
         return RESPONSE_TYPE_CONFIG.WUXIE;
     } else if (gameStatus.scrollResponses.length > 0) {

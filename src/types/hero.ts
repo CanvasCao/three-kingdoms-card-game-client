@@ -7,8 +7,10 @@ export type Hero = {
     shunRange: number, // 黄月英
     bingLiangRange: number, // 黄月英
     minusHorseDistance: number, // 马超
-    zhiHengTimes: number, // 孙权
     cantBeTargetKeys: string[], // 陆逊
+    useSkillTimes: {
+        [key: string]: number    // 孙权
+    }
 
     maxBlood: number,
     kingdom: string,
