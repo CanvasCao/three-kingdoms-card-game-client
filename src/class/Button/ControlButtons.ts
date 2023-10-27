@@ -79,7 +79,7 @@ export class ControlButtons {
         this.okBtnImg = this.gamingScene.add.image(
             this.cardBtnsX - this.btnOffset,
             this.cardBtnsY,
-            'white').setInteractive();
+            'white')
         this.okBtnImg.displayHeight = sizeConfig.okBtn.height;
         this.okBtnImg.displayWidth = sizeConfig.okBtn.width;
         this.okBtnImg.setAlpha(0)
@@ -102,7 +102,7 @@ export class ControlButtons {
         this.cancelBtnImg = this.gamingScene.add.image(
             this.cardBtnsX + this.btnOffset,
             this.cardBtnsY,
-            'white').setInteractive();
+            'white')
         this.cancelBtnImg.displayHeight = sizeConfig.cancelBtn.height;
         this.cancelBtnImg.displayWidth = sizeConfig.cancelBtn.width;
         this.cancelBtnImg.setAlpha(0)
@@ -126,7 +126,7 @@ export class ControlButtons {
         this.endBtnImg = this.gamingScene.add.image(
             this.cardBtnsX + offsetX,
             this.cardBtnsY,
-            'white').setInteractive();
+            'white')
         this.endBtnImg.displayHeight = sizeConfig.endRoundBtn.height;
         this.endBtnImg.displayWidth = sizeConfig.endRoundBtn.width;
         this.endBtnImg.setAlpha(0)
@@ -212,7 +212,7 @@ export class ControlButtons {
                 cb && cb()
             }
         });
-        group.img!.setTint(0xcc0000)
+        group.img!.setTint(0xcc0000).setInteractive({cursor: 'pointer'})
     }
 
     hideBtn(group: BtnGroup, cb?: Function) {
@@ -230,7 +230,7 @@ export class ControlButtons {
 
 
     disableBtn(group: BtnGroup) {
-        group.img!.setTint(0xcccccc)
+        group.img!.setTint(0xcccccc).removeInteractive()
     }
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {
