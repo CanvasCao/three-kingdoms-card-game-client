@@ -39,7 +39,7 @@ export class WuGuFengDengBoard {
     };
 
     // innerState
-    _scrollResponse: object | undefined;
+    _scrollStorage: object | undefined;
 
     baseBoard: BaseBoard;
     initX: number;
@@ -57,7 +57,7 @@ export class WuGuFengDengBoard {
         this.initX = this.baseBoard.initX;
         this.initY = this.baseBoard.initY;
 
-        this._scrollResponse = undefined;
+        this._scrollStorage = undefined;
 
         this.gamingScene.gameStatusObserved.addObserver(this);
     }
@@ -91,7 +91,7 @@ export class WuGuFengDengBoard {
             this.cardIdMap[card.cardId].cardImgObj.on("pointerdown", () => {
                 // 不能用params里的gameStatus
                 const gameStatus = this.gamingScene.gameStatusObserved.gameStatus!;
-                if (gameStatus.scrollResponses?.[0].originId !== getMyPlayerId()) {
+                if (gameStatus.scrollStorages?.[0].originId !== getMyPlayerId()) {
                     return;
                 }
                 if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0) {
@@ -100,7 +100,7 @@ export class WuGuFengDengBoard {
                 if (card.wugefengdengSelectedPlayerId) {
                     return;
                 }
-                if (!gameStatus.scrollResponses?.[0].isEffect) {
+                if (!gameStatus.scrollStorages?.[0].isEffect) {
                     return;
                 }
                 this.gamingScene.socket.emit(
@@ -126,7 +126,7 @@ export class WuGuFengDengBoard {
 
     getBottomText(gameStatus: GameStatus) {
         const hasWuxiePlayer = gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length > 0;
-        const originId = gameStatus.scrollResponses?.[0]?.originId;
+        const originId = gameStatus.scrollStorages?.[0]?.originId;
         return hasWuxiePlayer ?
             i18(i18Config.WU_GU_FENG_DENG_WAIT_WU_XIE, {name: getPlayerDisplayName(gameStatus, originId)}) :
             i18(i18Config.WU_GU_FENG_DENG_CHOOSING, {name: getPlayerDisplayName(gameStatus, originId)})
@@ -140,12 +140,12 @@ export class WuGuFengDengBoard {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const curScrollResponse = gameStatus.scrollResponses?.[0];
-        if (isEqual(this._scrollResponse, curScrollResponse)) {
+        const curScrollStorage = gameStatus.scrollStorages?.[0];
+        if (isEqual(this._scrollStorage, curScrollStorage)) {
             return;
         }
 
-        const showBoard = curScrollResponse?.actualCard?.key === SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.key
+        const showBoard = curScrollStorage?.actualCard?.key === SCROLL_CARDS_CONFIG.WU_GU_FENG_DENG.key
         if (showBoard && !this.baseBoard.show) {
             this.baseBoard.showBoard();
             this.baseBoard.setTitle(i18(CARD_CONFIG.WU_GU_FENG_DENG))
@@ -157,12 +157,12 @@ export class WuGuFengDengBoard {
             this.cardIdMap = {};
         }
 
-        // curScrollResponse不同了 所以需要更新Mask和BoardCard状态 并且重新绑定事件
+        // _scrollStorage不同了 所以需要更新Mask和BoardCard状态 并且重新绑定事件
         if (showBoard) {
             this.baseBoard.setBottom(this.getBottomText(gameStatus))
             this.appendCardSelectedStatus(gameStatus);
         }
 
-        this._scrollResponse = cloneDeep(curScrollResponse);
+        this._scrollStorage = cloneDeep(curScrollStorage);
     }
 }

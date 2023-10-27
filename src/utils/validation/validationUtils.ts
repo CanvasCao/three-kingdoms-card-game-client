@@ -141,6 +141,7 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus);
     const responseType = getResponseType(gameStatus)
     const eqCardKey = card.key;
+    const cardResponse = gameStatus.cardResponse;
 
     if (gameFEStatus.selectedSkillKey == SKILL_NAMES_CONFIG.SHU002_WU_SHENG.key) {
         // 出过杀不能用诸葛连弩当杀
@@ -149,11 +150,11 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
         }
 
         // 借刀杀人 用武器距离不够时
-        if (isMyResponseCardOrSkillTurn && responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
-            const curScrollResponse = gameStatus.scrollResponses?.[0];
-            if (curScrollResponse?.actualCard?.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
-                const originPlayer = gameStatus.players[curScrollResponse.originId]
-                const targetPlayer = gameStatus.players[curScrollResponse.targetId]
+        if (isMyResponseCardOrSkillTurn && responseType == RESPONSE_TYPE_CONFIG.CARD) {
+            const cardResponse = gameStatus.cardResponse;
+            if (cardResponse?.actionActualCard?.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
+                const originPlayer = gameStatus.players[cardResponse.originId]
+                const targetPlayer = gameStatus.players[cardResponse.targetId]
 
                 const fakeGameFEStatus = {selectedCards: [card]} as GameFEStatus
                 const myAttackDistance = getPlayerAttackRangeNumber(fakeGameFEStatus, originPlayer)
@@ -188,16 +189,9 @@ const getCanSelectEquipmentInTheory = (gameStatus: GameStatus, gameFEStatus: Gam
         }
 
         if (responseType === RESPONSE_TYPE_CONFIG.CARD &&
-            (gameStatus.cardResponse?.actionActualCard.key == SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key ||
-                gameStatus.cardResponse?.actionActualCard.key == SCROLL_CARDS_CONFIG.JUE_DOU.key) &&
-            !gameFEStatus.selectedSkillKey && // 选中技能就不能选丈八蛇矛
-            eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
-        ) {
-            return true
-        }
-
-        if (responseType === RESPONSE_TYPE_CONFIG.SCROLL &&
-            gameStatus.scrollResponses[0].actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key &&
+            [SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key,
+                SCROLL_CARDS_CONFIG.JUE_DOU.key,
+                SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key].includes(cardResponse?.actionActualCard?.key || '') &&
             !gameFEStatus.selectedSkillKey && // 选中技能就不能选丈八蛇矛
             eqCardKey == EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key
         ) {
@@ -453,6 +447,7 @@ const getIsControlCardAbleByGameStatus = (gameStatus: GameStatus, card: Partial<
 
                 case SCROLL_CARDS_CONFIG.NAN_MAN_RU_QIN.key:
                 case SCROLL_CARDS_CONFIG.JUE_DOU.key:
+                case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key:
                     return ALL_SHA_CARD_KEYS.includes(card.key)
                 default:
                     return false
@@ -482,15 +477,6 @@ const getIsControlCardAbleByGameStatus = (gameStatus: GameStatus, card: Partial<
             return false
         } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
             return [SCROLL_CARDS_CONFIG.WU_XIE_KE_JI.key].includes(card.key!)
-        } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
-            const curScrollResponse = gameStatus.scrollResponses[0]
-
-            switch (curScrollResponse.actualCard.key) {
-                case SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key:
-                    return ALL_SHA_CARD_KEYS.includes(card.key)
-                default:
-                    return false
-            }
         }
     }
 

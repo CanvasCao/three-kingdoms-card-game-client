@@ -15,11 +15,10 @@ export type GameStatus = {
     cardResponse: CardResponse | undefined,
     skillResponse: SkillResponse | undefined,
     taoResponses: TaoResponse[],
-    scrollResponses: ScrollResponse[],
     wuxieSimultaneousResponse: WuxieSimultaneousResponse,
 
     cardBoardResponses: CardBoardResponse[],
-    fanjianBoardResponse: fanjianBoardResponse,
+    fanjianBoardResponse: FanJianBoardResponse | undefined,
 
     // wugufengdengCards
     wugufengdengCards: WugufengdengCard[]
@@ -30,6 +29,9 @@ export type GameStatus = {
     responseCardEvents: ResponseCardEvent[],
     damageEvents: DamageEvent[],
     pandingEvent: PandingEvent,
+
+    // storage
+    scrollStorages: ScrollStorage[],
     tieSuoTempStorage: TieSuoTempStorageItem[],
 
     // gameEnd
@@ -73,7 +75,7 @@ export type TaoResponse = {
 
 export type SkillResponse = EventTimingSkill
 
-export type ScrollResponse = {
+export type ScrollStorage = {
     originId: string,
     targetId: string,
     cardTakeEffectOnPlayerId: string,
@@ -99,7 +101,7 @@ export type CardBoardResponse = {
     cardBoardContentKey: string,
 }
 
-export type fanjianBoardResponse = {
+export type FanJianBoardResponse = {
     originId: string,
 }
 

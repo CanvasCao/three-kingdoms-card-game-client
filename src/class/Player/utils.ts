@@ -50,19 +50,13 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.FAN_JIAN_BOARD:
-                if (gameStatus.fanjianBoardResponse.originId == playerId) {
+                if (gameStatus.fanjianBoardResponse!.originId == playerId) {
                     hintText = i18(SKILL_NAMES_CONFIG.WU005_FAN_JIAN)
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.WUXIE:
                 if (gameStatus.wuxieSimultaneousResponse.hasWuxiePlayerIds.length) {
                     hintText = i18(SCROLL_CARDS_CONFIG.WU_XIE_KE_JI)
-                }
-                break;
-            case RESPONSE_TYPE_CONFIG.SCROLL:
-                const curScrollResponse = gameStatus.scrollResponses[0]
-                if (curScrollResponse.originId == playerId) {
-                    hintText = i18(CARD_CONFIG[curScrollResponse.actualCard.key])
                 }
                 break;
         }

@@ -110,6 +110,10 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
             return i18(i18Config.RESPONSE_NAN_MAN_RU_QIN, {name})
         } else if (actionCardKey == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
             return i18(i18Config.RESPONSE_JUE_DOU, {name, number})
+        } else if (actionCardKey == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
+            const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus)!.playerId)
+            const targetName = getPlayerDisplayName(gameStatus, targetId)
+            return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN, {originName, targetName})
         }
     } else if (responseType == RESPONSE_TYPE_CONFIG.SKILL) {
         const skillKey = gameStatus.skillResponse!.skillKey;
@@ -150,12 +154,12 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
 
     } else if (responseType == RESPONSE_TYPE_CONFIG.WUXIE) {
         if (gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds.includes(getMyPlayerId())) {
-            const scrollResponse = gameStatus.scrollResponses?.[0];
+            const scrollStorage = gameStatus.scrollStorages?.[0];
             let name, cardName;
 
-            if (scrollResponse) { // 锦囊的无懈可击
-                name = getPlayerDisplayName(gameStatus, scrollResponse.cardTakeEffectOnPlayerId);
-                cardName = i18(CARD_CONFIG[scrollResponse.actualCard.key])
+            if (scrollStorage) { // 锦囊的无懈可击
+                name = getPlayerDisplayName(gameStatus, scrollStorage.cardTakeEffectOnPlayerId);
+                cardName = i18(CARD_CONFIG[scrollStorage.actualCard.key])
             } else { // 判定牌的无懈可击
                 const currentPlayer = getCurrentPlayer(gameStatus)!;
                 const needPandingSigns = currentPlayer.judgedShandian ?
@@ -173,16 +177,6 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
             }
         } else {
             return i18(i18Config.WAIT_WU_XIE)
-        }
-    } else if (responseType == RESPONSE_TYPE_CONFIG.SCROLL) {
-        const curScrollResponse = gameStatus.scrollResponses[0]
-        if (!curScrollResponse.isEffect) {
-            throw new Error(curScrollResponse.actualCard.key + "未生效")
-        }
-        if (curScrollResponse.actualCard.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
-            const originName = getPlayerDisplayName(gameStatus, getCurrentPlayer(gameStatus)!.playerId)
-            const targetName = getPlayerDisplayName(gameStatus, curScrollResponse.targetId)
-            return i18(i18Config.RESPONSE_JIE_DAO_SHA_REN, {originName, targetName})
         }
     } else {
         console.log(gameStatus)
