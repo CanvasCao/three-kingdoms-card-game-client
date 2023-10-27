@@ -62,6 +62,10 @@ const getNeedSelectCardsMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
             return {min: 0, max: 0};
         }
 
+        if ([SKILL_NAMES_CONFIG.WU008_JIE_YIN.key].includes(selectedSkillKey)) {
+            return {min: 2, max: 2};
+        }
+
         return {min: 1, max: 1};
     }
 
@@ -114,8 +118,10 @@ const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFE
     }
 
     if (canPlayInMyTurn) {
-        if (selectedSkillKey === SKILL_NAMES_CONFIG.SHU001_REN_DE.key ||
-            selectedSkillKey === SKILL_NAMES_CONFIG.WU005_FAN_JIAN.key
+        if ([SKILL_NAMES_CONFIG.SHU001_REN_DE.key,
+            SKILL_NAMES_CONFIG.WU005_FAN_JIAN.key,
+            SKILL_NAMES_CONFIG.WU008_JIE_YIN.key,
+        ].includes(selectedSkillKey)
         ) {
             return {min: 1, max: 1}
         }
@@ -230,12 +236,12 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     }
 
     if (gameFEStatus.selectedSkillKey === SKILL_NAMES_CONFIG.SHU001_REN_DE.key) {
-        if (targetPlayerIsMe) {
-            return false
-        }
-        return true
+        return !targetPlayerIsMe
     }
 
+    if (gameFEStatus.selectedSkillKey === SKILL_NAMES_CONFIG.WU008_JIE_YIN.key) {
+        return targetPlayer.currentBlood < targetPlayer.maxBlood && targetPlayer.gender == 1
+    }
 
     if (isMyResponseTurn) {
         // 确定响应技能后
@@ -373,7 +379,9 @@ const getIsControlCardAbleByGameFEStatus = (gameStatus: GameStatus, gameFEStatus
     const selectedSkillKey = gameFEStatus.selectedSkillKey;
     if ([EQUIPMENT_CARDS_CONFIG.ZHANG_BA_SHE_MAO.key,
         SKILL_NAMES_CONFIG.SHU001_REN_DE.key,
-        SKILL_NAMES_CONFIG.WU001_ZHI_HENG.key].includes(selectedSkillKey)) {
+        SKILL_NAMES_CONFIG.WU001_ZHI_HENG.key,
+        SKILL_NAMES_CONFIG.WU008_JIE_YIN.key
+    ].includes(selectedSkillKey)) {
         return true
     }
 
@@ -529,7 +537,8 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
         }
     }
 
-    if (skill.key == SKILL_NAMES_CONFIG.WU001_ZHI_HENG.key) {
+    if ([SKILL_NAMES_CONFIG.WU001_ZHI_HENG.key,
+        SKILL_NAMES_CONFIG.WU008_JIE_YIN.key].includes(skill.key)) {
         if (canPlayInMyTurn) {
             const useSkillTimes = mePlayer.useSkillTimes[skill.key] || 0
             return useSkillTimes <= 0
@@ -542,7 +551,6 @@ const getIsSkillAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, skil
             return useSkillTimes <= 0 && mePlayer.cards.length > 0
         }
     }
-
 
     return false
 }

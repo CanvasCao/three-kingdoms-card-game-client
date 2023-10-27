@@ -136,6 +136,16 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '连营',
         EN: 'Alliance'
     },
+    WU008_XIAO_JI: {
+        key: 'WU008_XIAO_JI',
+        CN: '枭姬',
+        EN: 'Heroine'
+    },
+    WU008_JIE_YIN: {
+        key: 'WU008_JIE_YIN',
+        CN: '结姻',
+        EN: 'Engagement'
+    },
 
     QUN002_WU_SHUANG: {
         key: 'QUN002_WU_SHUANG',
@@ -188,6 +198,14 @@ const SKILL_DESC_CONFIG: any = {
     WEI007_LUO_SHEN: {
         CN: '准备阶段开始时，你可以：判定（当黑色判定牌生效后，你获得之），若结果为黑色，你可以重复此流程。',
         EN: "During your Start phase, you may use this ability to reveal a judgment and acquire the card if the result is a black color suit. You may use this ability again until a red color suit is revealed. Discard that judgment card afterwards and end the phase."
+    },
+    WU008_XIAO_JI: {
+        CN: '每当你失去装备区里的一张牌后，你可以摸两张牌。',
+        EN: 'Immediately draw two cards from the deck upon losing a card from the equipment field.'
+    },
+    WU008_JIE_YIN: {
+        CN: '出牌阶段限一次，你可以弃置两张手牌并选择一名已受伤的男性角色，令你与该角色各回复1点体力。',
+        EN: 'During your play phase, you may discard two hand cards to target a male Hero and heal 1 unit of life for both of you (only if the male Hero is not at full life).'
     },
 
     SHU001_REN_DE: {
