@@ -30,7 +30,7 @@ import {Player} from "../../types/player";
 import {findOnGoingUseStrikeEvent} from "../event/eventUtils";
 import {Card, PandingSign} from "../../types/card";
 import {Skill} from "../../types/skill";
-import {isBoolean} from "lodash";
+import {differenceBy, isBoolean} from "lodash";
 import {CARD_CONFIG_WITH_FE_INFO} from "../../config/cardConfigWithFEInfo";
 
 const getSelectedCardNumber = (gameFEStatus: GameFEStatus) => {
@@ -239,11 +239,15 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     const myAttackDistance = getPlayerAttackRangeNumber(gameFEStatus, mePlayer)
     const distanceBetweenMeAndTarget = getPlayersDistanceFromAToB(gameStatus, gameFEStatus, mePlayer, targetPlayer)
     const selectedTargetNumber = getSelectedTargetNumber(gameFEStatus)
+
+    // 诸葛亮只有一张借刀杀人的时候 不可以借刀杀自己
+    const targetPlayerHandCardNumber = differenceBy(targetPlayer.cards, gameFEStatus.selectedCards, 'cardId')?.length || 0;
+
     const responseType = getResponseType(gameStatus)
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus)
     const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus)
-
     const needSelectPlayersMinMax = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus)
+
     if (needSelectPlayersMinMax.max == 0) { // 不用选择目标的情况下 BoardPlayerAble永远都是able
         return true
     }
@@ -304,6 +308,9 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
             if (myAttackDistance < distanceBetweenMeAndTarget) {
                 return false
             }
+            if (targetPlayer.cantBeTargetWhenNoHandCardsKeys?.includes(actualCardKey) && targetPlayerHandCardNumber == 0) {
+                return false
+            }
             return true
         }
         // 借刀杀人
@@ -324,6 +331,11 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
                 if (attackDistance < distanceBetweenAAndB) {
                     return false
                 }
+
+                // 诸葛亮只有一张借刀杀人的时候 不可以借刀杀自己
+                if (targetPlayer.cantBeTargetWhenNoHandCardsKeys?.includes(BASIC_CARDS_CONFIG.SHA.key) && targetPlayerHandCardNumber == 0) {
+                    return false
+                }
                 return true
             }
         }
@@ -332,11 +344,11 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
             if (targetPlayerIsMe) {
                 return false
             }
-            if (targetPlayer.cantBeTargetKeys?.includes(SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
+            if (targetPlayer.cantBeTargetKeys?.includes(actualCardKey)) {
                 return false
             }
             if (targetPlayer.pandingSigns.find((sign: PandingSign) =>
-                sign.actualCard.key == DELAY_SCROLL_CARDS_CONFIG.LE_BU_SI_SHU.key)) {
+                sign.actualCard.key == actualCardKey)) {
                 return false
             }
             return true
@@ -368,7 +380,7 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
             if (targetPlayerIsMe) {
                 return false
             }
-            if (targetPlayer.cantBeTargetKeys?.includes(SCROLL_CARDS_CONFIG.SHUN_SHOU_QIAN_YANG.key)) {
+            if (targetPlayer.cantBeTargetKeys?.includes(actualCardKey)) {
                 return false
             }
             if (!getIfPlayerHasAnyCards(targetPlayer)) {
@@ -380,6 +392,9 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
             return true
         } else if (actualCardKey == SCROLL_CARDS_CONFIG.JUE_DOU.key) {
             if (targetPlayerIsMe) {
+                return false
+            }
+            if (targetPlayer.cantBeTargetWhenNoHandCardsKeys?.includes(actualCardKey) && targetPlayerHandCardNumber == 0) {
                 return false
             }
             return true

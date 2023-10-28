@@ -40,6 +40,10 @@ const HERO_NAMES_CONFIG: any = {
         CN: '张飞',
         EN: 'Zhang Fei'
     },
+    "SHU004": {
+        CN: '诸葛亮',
+        EN: 'Zhu Ge Liang'
+    },
     "SHU005": {
         CN: '赵云',
         EN: 'Zhao Yun'

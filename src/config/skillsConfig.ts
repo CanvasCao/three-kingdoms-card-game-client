@@ -70,6 +70,16 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '咆哮',
         EN: 'Battlecry'
     },
+    SHU004_GUAN_XING: {
+        key: 'SHU004_GUAN_XING',
+        CN: '观星',
+        EN: 'Astrology'
+    },
+    SHU004_KONG_CHENG: {
+        key: 'SHU004_KONG_CHENG',
+        CN: '空城',
+        EN: 'Empty Fortress'
+    },
     SHU005_LONG_DAN: {
         key: 'SHU005_LONG_DAN',
         CN: '龙胆',
@@ -258,6 +268,14 @@ const SKILL_DESC_CONFIG: any = {
     SHU003_PAO_XIAO: {
         CN: '锁定技，你使用【杀】无次数限制。',
         EN: 'During your play phase, you may use any amount of [Strike] cards.'
+    },
+    SHU004_GUAN_XING: {
+        CN: '准备阶段开始时，你可以观看牌堆顶的X张牌（X为全场角色的数量且至多为5）并调整这些牌的顺序，然后将其中任意数量的牌置于牌堆底。',
+        EN: 'During the Start phase of your turn, you may look at "X" amount of cards from the top of the deck (where X is the number of Heroes alive, up to a max of five). You may then put any amount of cards back to the top of the deck in any order, and the rest to the bottom of the deck.'
+    },
+    SHU004_KONG_CHENG: {
+        CN: '锁定技，若你没有手牌，你不是【杀】和【决斗】的合法目标。',
+        EN: 'Passive Ability: You cannot be the target of "Strike" or "Duel" when you have no hand cards.'
     },
     SHU005_LONG_DAN: {
         CN: '你可以将一张【杀】当【闪】、一张【闪】当【杀】使用或打出。',

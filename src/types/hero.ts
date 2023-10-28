@@ -8,6 +8,7 @@ export type Hero = {
     bingLiangRange: number, // 黄月英
     minusHorseDistance: number, // 马超
     cantBeTargetKeys: string[], // 陆逊
+    cantBeTargetWhenNoHandCardsKeys: string[], // 诸葛亮
     useSkillTimes: {
         [key: string]: number    // 孙权
     }
