@@ -196,13 +196,16 @@ export class ControlCard {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const currentIndex = gameStatus.players[getMyPlayerId()].cards.findIndex((c) => c.cardId == this.card.cardId);
+        const playerCards = gameStatus.players[getMyPlayerId()].cards
+        const currentIndex = playerCards.findIndex((c) => c.cardId == this.card.cardId);
         const gameFEStatus = this.gamingScene.gameFEStatusObserved.gameFEStatus!;
 
         // 这张牌重新查询自己在手牌的新位置 没有就destory自己
         if (currentIndex == -1) {
             this.destoryAll();
             return;
+        } else { // 因为有遗计信息 需要更新this.card
+            this.card = playerCards[currentIndex]
         }
         this.adjustLocation(currentIndex);
 

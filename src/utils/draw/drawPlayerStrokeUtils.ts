@@ -43,18 +43,19 @@ const reDrawPlayerStroke = (stroke: Phaser.GameObjects.Graphics, {x, y, alpha, c
 const getPlayerStrokeAlphaAndColor = (gameStatus: GameStatus, gameFEStatus: GameFEStatus, targetPlayerId: string) => {
     const isMe = targetPlayerId === getMyPlayerId()
 
-    if (getCurrentPlayer(gameStatus)!.playerId === targetPlayerId && !isMe) {
-        return {
-            alpha: 0.7,
-            lineWidth: 10,
-            color: COLOR_CONFIG.myTurnStroke
-        }
-    }
+
     if (!!gameFEStatus.selectedTargetPlayers.find((u) => u.playerId == targetPlayerId)) {
         return {
             alpha: 1,
             lineWidth: 2,
             color: COLOR_CONFIG.selectedPlayerStroke
+        }
+    }
+    if (getCurrentPlayer(gameStatus)!.playerId === targetPlayerId && !isMe) {
+        return {
+            alpha: 0.7,
+            lineWidth: 10,
+            color: COLOR_CONFIG.myTurnStroke
         }
     }
     if (gameStatus.cardBoardResponses?.[0]?.targetId == targetPlayerId ||

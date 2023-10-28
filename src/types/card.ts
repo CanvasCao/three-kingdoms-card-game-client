@@ -15,6 +15,9 @@ export type Card = {
     distance?: number,
     distanceDesc?: string,
 
+    isYiJi?: boolean; // 遗计
+
+    // FE
     canPlayInMyTurn: boolean,
     targetMinMax: { min: number, max: number },
     noNeedSetTargetDueToImDefaultTarget?: boolean,

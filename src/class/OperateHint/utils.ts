@@ -129,6 +129,8 @@ const getIsMyResponseTurnOperationHint = (gameStatus: GameStatus, gameFEStatus: 
                 return i18(i18Config.RESPONSE_SKILL_GANG_LIE)
             } else if (skillKey == SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
                 return i18(i18Config.RESPONSE_SKILL_TU_XI)
+            } else if (skillKey == SKILL_NAMES_CONFIG.WEI006_YI_JI.key) {
+                return i18(i18Config.RESPONSE_SKILL_YI_JI)
             } else if (skillKey == SKILL_NAMES_CONFIG.WU006_LIU_LI.key) {
                 return i18(i18Config.RESPONSE_SKILL_LIU_LI)
             } else if (skillKey == EQUIPMENT_CARDS_CONFIG.CI_XIONG_SHUANG_GU_JIAN.key) {

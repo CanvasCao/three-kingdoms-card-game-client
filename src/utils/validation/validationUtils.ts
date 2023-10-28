@@ -79,6 +79,8 @@ const getNeedSelectCardsMinMax = (gameStatus: GameStatus, gameFEStatus: GameFESt
                     return {min: 2, max: 2};
                 } else if (gameStatus.skillResponse?.skillKey === SKILL_NAMES_CONFIG.WEI004_TU_XI.key) {
                     return {min: 0, max: 0};
+                } else if (gameStatus.skillResponse?.skillKey === SKILL_NAMES_CONFIG.WEI006_YI_JI.key) {
+                    return {min: 1, max: 2};
                 }
             }
         }
@@ -106,6 +108,7 @@ const getNeedSelectPlayersMinMax = (gameStatus: GameStatus, gameFEStatus: GameFE
         if (responseType == RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
             switch (gameStatus.skillResponse!.skillKey) {
                 case SKILL_NAMES_CONFIG.WU006_LIU_LI.key:
+                case SKILL_NAMES_CONFIG.WEI006_YI_JI.key:
                     return {min: 1, max: 1}
                 case SKILL_NAMES_CONFIG.WEI004_TU_XI.key:
                     return {min: 1, max: 2}
@@ -238,7 +241,7 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
     const selectedTargetNumber = getSelectedTargetNumber(gameFEStatus)
     const responseType = getResponseType(gameStatus)
     const canPlayInMyTurn = getCanPlayInMyTurn(gameStatus)
-    const isMyResponseTurn = getIsMyResponseCardOrSkillTurn(gameStatus)
+    const isMyResponseCardOrSkillTurn = getIsMyResponseCardOrSkillTurn(gameStatus)
 
     const needSelectPlayersMinMax = getNeedSelectPlayersMinMax(gameStatus, gameFEStatus)
     if (needSelectPlayersMinMax.max == 0) { // 不用选择目标的情况下 BoardPlayerAble永远都是able
@@ -261,14 +264,12 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
         return targetPlayer.gender == 1
     }
 
-    if (isMyResponseTurn) {
+    if (isMyResponseCardOrSkillTurn) {
         // 确定响应技能后
         if (responseType == RESPONSE_TYPE_CONFIG.SKILL && gameStatus.skillResponse!.chooseToReleaseSkill) {
             const skillKey = gameStatus.skillResponse!.skillKey
-            if (
-                skillKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
-                getSelectedCardNumber(gameFEStatus) == 1
-            ) {
+            if (skillKey === SKILL_NAMES_CONFIG.WU006_LIU_LI.key &&
+                getSelectedCardNumber(gameFEStatus) == 1) {
                 const onGoingUseStrikeEvent = findOnGoingUseStrikeEvent(gameStatus)!
                 // 不能流离给杀的来源
                 if (onGoingUseStrikeEvent.originId === targetPlayer.playerId) {
@@ -287,9 +288,11 @@ const getIsBoardPlayerAble = (gameStatus: GameStatus, gameFEStatus: GameFEStatus
                     return false
                 }
                 return targetPlayer.cards.length
+            } else if (skillKey === SKILL_NAMES_CONFIG.WEI006_YI_JI.key) {
+                return mePlayer.playerId !== targetPlayer.playerId
             }
+            return true
         }
-        return true
     }
 
     if (canPlayInMyTurn) {
@@ -494,6 +497,8 @@ const getIsControlCardAbleByGameStatus = (gameStatus: GameStatus, card: Partial<
                     return true
                 case EQUIPMENT_CARDS_CONFIG.QING_LONG_YAN_YUE_DAO.key:
                     return ALL_SHA_CARD_KEYS.includes(card.key)
+                case SKILL_NAMES_CONFIG.WEI006_YI_JI.key:
+                    return card.isYiJi
                 default:
                     return false
             }

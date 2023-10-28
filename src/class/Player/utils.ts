@@ -15,17 +15,13 @@ import {SKILL_NAMES_CONFIG} from "../../config/skillsConfig";
 const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) => {
     const currentPlayer = getCurrentPlayer(gameStatus)
     const stageName = gameStatus.stage.stageName
+    const responseType = getResponseType(gameStatus);
     const preText = i18(i18Config.IS_THINKING)
     let hintText = '';
 
     if (!gameStatus.players[playerId].heroId) {
         hintText = isLanEn() ? 'choosing a hero' : '选将'
-    } else if (stageName === STAGE_NAME.PLAY && currentPlayer?.playerId == playerId) {
-        hintText = i18(STAGE_NAME_CONFIG.PLAY)
-    } else if (stageName === STAGE_NAME.THROW && currentPlayer?.playerId == playerId) {
-        hintText = i18(STAGE_NAME_CONFIG.THROW)
-    } else {
-        const responseType = getResponseType(gameStatus);
+    } else if (responseType) {
         switch (responseType) {
             case RESPONSE_TYPE_CONFIG.TAO:
                 if (gameStatus.taoResponses[0].originId == playerId) {
@@ -60,6 +56,10 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                 }
                 break;
         }
+    } else if (stageName === STAGE_NAME.PLAY && currentPlayer?.playerId == playerId) {
+        hintText = i18(STAGE_NAME_CONFIG.PLAY)
+    } else if (stageName === STAGE_NAME.THROW && currentPlayer?.playerId == playerId) {
+        hintText = i18(STAGE_NAME_CONFIG.THROW)
     }
 
     if (hintText) {

@@ -168,6 +168,10 @@ export const i18Config = {
         EN: "Obtain one hand card from up to two other characters",
         CN: '获得最多两名其他角色的各一张手牌'
     },
+    RESPONSE_SKILL_YI_JI: {
+        EN: "Look at the top two cards from the deck, give any amount of those cards to any Hero(es) including yourself.",
+        CN: '观看牌堆顶的两张牌，然后交给任意名角色'
+    },
     RESPONSE_SKILL_GANG_LIE: {
         EN: "Discard two hand cards or take 1 point of damage",
         CN: '弃置两张牌或受到一点伤害'
