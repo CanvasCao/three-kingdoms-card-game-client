@@ -34,6 +34,16 @@ const SKILL_NAMES_CONFIG: any = {
         CN: '裸衣',
         EN: 'Armorless'
     },
+    WEI006_TIAN_DU: {
+        key: 'WEI006_TIAN_DU',
+        CN: '天妒',
+        EN: 'Talented'
+    },
+    WEI006_YI_JI: {
+        key: 'WEI006_YI_JI',
+        CN: '遗计',
+        EN: 'Legacy'
+    },
     WEI007_QING_GUO: {
         key: 'WEI007_QING_GUO',
         CN: '倾国',
@@ -211,6 +221,14 @@ const SKILL_DESC_CONFIG: any = {
     WEI005_LUO_YI: {
         CN: '摸牌阶段，你可以少摸一张牌，然后本回合你为伤害来源的【杀】或【决斗】造成的伤害+1。',
         EN: "During draw phase, you may draw one card instead of two. If you do so, all of your [Strike] and [Duel] inflict +1 damage for that phase (only when you are the damage source of a Duel)."
+    },
+    WEI006_TIAN_DU: {
+        CN: '每当你的判定牌生效后，你可以获得之。',
+        EN: 'Keep your judgment card after the effect is activated.'
+    },
+    WEI006_YI_JI: {
+        CN: '当你受到1点伤害后，你可以观看牌堆顶的两张牌，然后交给任意名角色。',
+        EN: 'You may look at the top two cards from the deck after every 1 "damage taken", then you must give any amount of those cards to any Hero(es) including yourself.'
     },
     WEI007_QING_GUO: {
         CN: '你可以将一张黑色手牌当【闪】使用或打出。',

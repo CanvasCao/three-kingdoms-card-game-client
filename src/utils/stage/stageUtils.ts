@@ -38,6 +38,7 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
         gameStatus.cardBoardResponses.length <= 0 &&
         !gameStatus.fanjianBoardResponse &&
         gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length <= 0 &&
+        gameStatus.scrollStorages.length <= 0 &&
         getIsMyPlayTurn(gameStatus);
 }
 

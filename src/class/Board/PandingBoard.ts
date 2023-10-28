@@ -141,7 +141,7 @@ export class PandingBoard {
             }
             this.timer = setTimeout(() => {
                 this.baseBoard.hideBoard();
-            }, 3000) as unknown as number
+            }, 2000) as unknown as number
         }
 
         this._pandingEvent = cloneDeep(pandingEvent);
