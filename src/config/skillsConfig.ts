@@ -147,11 +147,32 @@ const SKILL_NAMES_CONFIG: any = {
         EN: 'Engagement'
     },
 
+    QUN001_QING_NANG: {
+        key: 'QUN001_QING_NANG',
+        CN: '青囊',
+        EN: 'Triage'
+    },
+    QUN001_JI_JIU: {
+        key: 'QUN001_JI_JIU',
+        CN: '急救',
+        EN: 'First Aid'
+    },
     QUN002_WU_SHUANG: {
         key: 'QUN002_WU_SHUANG',
         CN: '无双',
         EN: 'Unrivaled'
     },
+    QUN003_LI_JIAN: {
+        key: 'QUN003_LI_JIAN',
+        CN: '离间',
+        EN: 'Mischief'
+    },
+    QUN003_BI_YUE: {
+        key: 'QUN003_BI_YUE',
+        CN: '闭月',
+        EN: 'Eclipse'
+    },
+
 
     SP001_CHONG_SHENG: {
         key: 'SP001_CHONG_SHENG',
@@ -282,10 +303,25 @@ const SKILL_DESC_CONFIG: any = {
         EN: 'Draw a card if you have no hand cards.'
     },
 
-
+    QUN001_QING_NANG: {
+        CN: '出牌阶段限一次，你可以弃置一张手牌并选择一名已受伤的角色，令该角色回复1点体力。',
+        EN: 'During your play phase, you may discard one hand card and heal any Hero 1 unit of life (only once per phase).'
+    },
+    QUN001_JI_JIU: {
+        CN: '你于回合外可以将一张红色牌当【桃】使用。',
+        EN: 'Outside of your turn, you may use any of your red color suit cards as "Peach".'
+    },
     QUN002_WU_SHUANG: {
         CN: '锁定技，你的【杀】需要两张【闪】才能抵消；与你【决斗】的角色每次需要打出两张【杀】。',
         EN: 'Passive Ability: When you use [Strike], your target must use two [Dodge] to dodge your [Strike], when you use [Duel] your target must play two [Strike] to counter one of your [Strike].'
+    },
+    QUN003_LI_JIAN: {
+        CN: '出牌阶段限一次，你可以弃置一张牌并选择两名男性角色，令其中的一名男性角色视为对另一名男性角色使用【决斗】。',
+        EN: 'During your play phase, you may discard one card and select two Male Heroes and have them "Duel" each other. You must pick which Hero to play "Strike" first (This "Duel" cannot be "Warded" and can only occur once per phase).'
+    },
+    QUN003_BI_YUE: {
+        CN: '结束阶段开始时，你可以摸一张牌。',
+        EN: 'Immediately draw one card at the start of End phase.'
     },
 
     SP001_CHONG_SHENG: {

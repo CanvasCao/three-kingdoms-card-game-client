@@ -82,9 +82,17 @@ const HERO_NAMES_CONFIG: any = {
         EN: 'Sun Shang Xiang'
     },
 
+    "QUN001": {
+        CN: '华佗',
+        EN: 'Hua Tuo'
+    },
     "QUN002": {
         CN: '吕布',
         EN: 'Lv Bu'
+    },
+    "QUN003": {
+        CN: '貂蝉',
+        EN: 'Diao Chan'
     },
 
     "SP001": {

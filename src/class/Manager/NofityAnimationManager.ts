@@ -33,7 +33,7 @@ export class NofityAnimationManager {
         const fromBoardPlayer = this.gamingScene.boardPlayers.find((p) => p.playerId == fromId)!;
         let toIds = data.toIds || [];
 
-        // 借刀杀人 貂蝉决斗
+        // 借刀杀人
         if (actualCard?.key == SCROLL_CARDS_CONFIG.JIE_DAO_SHA_REN.key) {
             const targetBoardPlayer1 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[0])!;
             const targetBoardPlayer2 = this.gamingScene.boardPlayers.find((p) => p.playerId == toIds[1])!;
