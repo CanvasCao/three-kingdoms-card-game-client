@@ -89,8 +89,8 @@ const sizeConfig = {
         height: 40
     },
     boardBtn: {
-        width: 50,
-        height: 20
+        width: 75,
+        height: 30
     }
 }
 

@@ -229,6 +229,10 @@ export class GuanXingBoard {
             this.baseBoard.addContent(this.boardContent);
         } else if (!showBoard && this.baseBoard.show) {
             this.baseBoard.hideBoard();
+            this.placeholderObjs = {};
+            this.cardIdAllObjs = {};
+            this.cardIdIndex = {}
+            this.selectedIndex = undefined;
         }
 
         this._originId = originId;
