@@ -46,8 +46,13 @@ const getBoardPlayerThinkHintText = (gameStatus: GameStatus, playerId: string) =
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.FAN_JIAN_BOARD:
-                if (gameStatus.fanjianBoardResponse!.originId == playerId) {
+                if (gameStatus.fanJianBoardResponse!.originId == playerId) {
                     hintText = i18(SKILL_NAMES_CONFIG.WU005_FAN_JIAN)
+                }
+                break;
+            case RESPONSE_TYPE_CONFIG.GUAN_XING_BOARD:
+                if (gameStatus.guanXingBoardResponse!.originId == playerId) {
+                    hintText = i18(SKILL_NAMES_CONFIG.SHU004_GUAN_XING)
                 }
                 break;
             case RESPONSE_TYPE_CONFIG.WUXIE:

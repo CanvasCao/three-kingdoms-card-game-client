@@ -36,7 +36,8 @@ const getCanPlayInMyTurn = (gameStatus: GameStatus) => {
         !gameStatus.skillResponse &&
         gameStatus.taoResponses.length <= 0 &&
         gameStatus.cardBoardResponses.length <= 0 &&
-        !gameStatus.fanjianBoardResponse &&
+        !gameStatus.fanJianBoardResponse &&
+        !gameStatus.guanXingBoardResponse &&
         gameStatus.wuxieSimultaneousResponse?.hasWuxiePlayerIds?.length <= 0 &&
         gameStatus.scrollStorages.length <= 0 &&
         getIsMyPlayTurn(gameStatus);

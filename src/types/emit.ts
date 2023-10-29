@@ -64,6 +64,11 @@ export type EmitFanJianBoardData = {
     huase: string,
 }
 
+export type EmitGuanXingBoardData = {
+    topCards: Card[],
+    bottomCards: Card[],
+}
+
 // 后端=>前端
 export type RoomStatus = keyof typeof GAME_STATUS;
 export type RoomPlayer = { playerId: string, playerName: string, teamMember: string }

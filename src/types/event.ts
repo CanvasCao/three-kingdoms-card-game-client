@@ -1,6 +1,6 @@
 import {Card} from "./card"
 
-export type GameStageEvent={
+export type GameStageEvent = {
     eventTimingTracker: eventTimingOneTimingTracker[],
     done: boolean
 }
@@ -58,7 +58,7 @@ export type EventTimingSkill = {
     skillKey: string,
     playerId: string,
     chooseToReleaseSkill: boolean | undefined,
-    releaseTargetIds: string[],
-    releaseCards: Card[],
     done: boolean,
+
+    guanXingCards?: Card[],
 }

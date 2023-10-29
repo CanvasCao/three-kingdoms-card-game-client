@@ -4,6 +4,12 @@ const COLOR_CONFIG = {
     "disablePlayer": "0x666666",
     "disableCard": "0x999999",
 
+
+    // button
+    "buttonAble":"0xcc0000",
+    "buttonDisable":"0xcccccc",
+
+    // blood
     "bloodGreen": "0x60EE54",
     "bloodYellow": "0xFFCD76",
     "bloodRed": "0xFBBA9D",
@@ -23,7 +29,7 @@ const COLOR_CONFIG = {
     "countDownBottom": "0xff0000",
 
     // board
-    "boardBg": "0x111111",
+    "boardBg": "0x222222",
 
     // skill
     "skill": "0x26b426",

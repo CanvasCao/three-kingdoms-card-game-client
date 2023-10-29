@@ -30,6 +30,7 @@ import {bindGlobalHoverEvent} from '../../event/bindGlobalEvent';
 import {GameEndModel} from '../Model/GameEndModel';
 import {SCENE_CONGIG} from '../../config/scene';
 import {FanJianBoard} from '../Board/FanJianBoard';
+import {GuanXingBoard} from '../Board/GuanXingBoard';
 
 export class Gaming extends Phaser.Scene {
     socket: Socket;
@@ -41,6 +42,7 @@ export class Gaming extends Phaser.Scene {
     gameFEStatusObserved: GameFEStatusObserved;
     playerCardsBoard: PlayerCardsBoard | undefined;
     fanJianBoard: FanJianBoard | undefined;
+    guanXingBoard: GuanXingBoard | undefined;
     wuGuFengDengBoard: WuGuFengDengBoard | undefined;
     heroSelectBoard: HeroSelectBoard | undefined;
     pandingBoard: PandingBoard | undefined;
@@ -98,6 +100,7 @@ export class Gaming extends Phaser.Scene {
 
             this.playerCardsBoard = new PlayerCardsBoard(this);
             this.fanJianBoard = new FanJianBoard(this);
+            this.guanXingBoard = new GuanXingBoard(this);
             this.wuGuFengDengBoard = new WuGuFengDengBoard(this);
             this.heroSelectBoard = new HeroSelectBoard(this);
             this.pandingBoard = new PandingBoard(this);

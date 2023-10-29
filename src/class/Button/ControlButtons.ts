@@ -22,6 +22,7 @@ import {
 } from "../../utils/validation/validationUtils";
 import {i18} from "../../i18n/i18nUtils";
 import {i18Config} from "../../i18n/i18Config";
+import {COLOR_CONFIG} from "../../config/colorConfig";
 
 export class ControlButtons {
     obId: string;
@@ -212,7 +213,8 @@ export class ControlButtons {
                 cb && cb()
             }
         });
-        group.img!.setTint(0xcc0000).setInteractive({cursor: 'pointer'})
+        // @ts-ignore
+        group.img!.setTint(COLOR_CONFIG.buttonAble).setInteractive({cursor: 'pointer'})
     }
 
     hideBtn(group: BtnGroup, cb?: Function) {
@@ -230,7 +232,8 @@ export class ControlButtons {
 
 
     disableBtn(group: BtnGroup) {
-        group.img!.setTint(0xcccccc).removeInteractive()
+        // @ts-ignore
+        group.img!.setTint(COLOR_CONFIG.buttonDisable).removeInteractive()
     }
 
     canClickOkBtnInMyPlayStage(gameStatus: GameStatus, gameFEStatus: GameFEStatus) {

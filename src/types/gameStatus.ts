@@ -18,7 +18,8 @@ export type GameStatus = {
     wuxieSimultaneousResponse: WuxieSimultaneousResponse,
 
     cardBoardResponses: CardBoardResponse[],
-    fanjianBoardResponse: FanJianBoardResponse | undefined,
+    fanJianBoardResponse: FanJianBoardResponse | undefined,
+    guanXingBoardResponse: GuanXingBoardResponse | undefined,
 
     // wugufengdengCards
     wugufengdengCards: WugufengdengCard[]
@@ -103,6 +104,11 @@ export type CardBoardResponse = {
 
 export type FanJianBoardResponse = {
     originId: string,
+}
+
+export type GuanXingBoardResponse = {
+    originId: string,
+    guanXingCards: Card[]
 }
 
 export type TieSuoTempStorageItem = {

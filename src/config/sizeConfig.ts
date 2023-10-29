@@ -87,6 +87,10 @@ const sizeConfig = {
     endRoundBtn: {
         width: 75,
         height: 40
+    },
+    boardBtn: {
+        width: 50,
+        height: 20
     }
 }
 

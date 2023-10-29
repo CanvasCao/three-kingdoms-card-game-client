@@ -59,7 +59,7 @@ export class FanJianBoard {
             huaseText.on('pointerdown', () => {
                 const data: EmitFanJianBoardData = {huase}
                 this.gamingScene.socket.emit(
-                    EMIT_TYPE.FANJIAN_BOARD_ACTION,
+                    EMIT_TYPE.FAN_JIAN_BOARD_ACTION,
                     data
                 )
             })
@@ -69,12 +69,12 @@ export class FanJianBoard {
     }
 
     gameStatusNotify(gameStatus: GameStatus) {
-        const fanjianBoardResponse = gameStatus?.fanjianBoardResponse;
-        if (isEqual(this._fanjianBoardResponse, fanjianBoardResponse)) {
+        const fanJianBoardResponse = gameStatus?.fanJianBoardResponse;
+        if (isEqual(this._fanjianBoardResponse, fanJianBoardResponse)) {
             return;
         }
 
-        const showBoard = fanjianBoardResponse?.originId == getMyPlayerId();
+        const showBoard = fanJianBoardResponse?.originId == getMyPlayerId();
         if (showBoard && !this.baseBoard.show) {
             this.boardContent = []
             this.baseBoard.showBoard();
@@ -88,6 +88,6 @@ export class FanJianBoard {
             this.baseBoard.hideBoard();
         }
 
-        this._fanjianBoardResponse = cloneDeep(fanjianBoardResponse);
+        this._fanjianBoardResponse = cloneDeep(fanJianBoardResponse);
     }
 }
